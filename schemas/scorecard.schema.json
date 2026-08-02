@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Highlander Scorecard",
+  "type": "object",
+  "required": ["stack", "task_id", "scores", "hard_gate_failures", "active_operator_hours", "correct_maintainable_draft_prs"],
+  "properties": {
+    "stack": {"type": "string"},
+    "task_id": {"type": "string"},
+    "hard_gate_failures": {"type": "array", "items": {"type": "string"}},
+    "scores": {
+      "type": "object",
+      "required": ["correctness", "autonomy", "throughput", "portability", "operator_experience"],
+      "properties": {
+        "correctness": {"type": "number", "minimum": 0, "maximum": 100},
+        "autonomy": {"type": "number", "minimum": 0, "maximum": 100},
+        "throughput": {"type": "number", "minimum": 0, "maximum": 100},
+        "portability": {"type": "number", "minimum": 0, "maximum": 100},
+        "operator_experience": {"type": "number", "minimum": 0, "maximum": 100}
+      }
+    },
+    "active_operator_hours": {"type": "number", "minimum": 0},
+    "correct_maintainable_draft_prs": {"type": "number", "minimum": 0}
+  }
+}
