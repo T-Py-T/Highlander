@@ -2,24 +2,26 @@
 
 ## There can be only one.
 
-Highlander is a private, reproducible gauntlet for comparing AI coding harnesses on the work that matters: correct, maintainable changes that survive tests, review, CI, and human scrutiny.
+Highlander is a private, reproducible gauntlet for measuring how AI coding harnesses affect the work produced by the same underlying model. It evaluates correct, maintainable changes that survive tests, review, CI, and human scrutiny.
 
-This is an experiment harness, not a popularity contest. Agents receive the same task, repository snapshot, model lane, acceptance tests, and safety boundaries. Their traces and artifacts are scored after the match.
+This is a harness experiment, not a model leaderboard. In the primary lane, every contender receives the same task, repository snapshot, exact model, acceptance tests, and safety boundaries. The harness is the experimental variable; its tools, memory, permissions, orchestration, prompt handling, and recovery behavior are recorded alongside the resulting artifacts.
 
 Current control and challengers:
 
-| Lane | Stack | Question |
+| Lane | Stack | Experimental question |
 |---|---|---|
-| Control | Ghostty → Herdr → OMP | What does the current workflow really produce? |
-| Challenger | OpenCode | Does a different coding runtime improve tool use, permissions, or recovery? |
-| Challenger | Hermes Agent | Does persistence and remote autonomy reduce supervision for operational work? |
-| Conditional | Goose → ACP → native Claude/Codex/Pi | Can subscription reuse add leverage without unsafe credential brokering? |
+| Control | Ghostty → Herdr → OMP | What does the current harness produce with the fixed model? |
+| Challenger | OpenCode | Does a different coding runtime improve tool use, permissions, or recovery for that same model? |
+| Challenger | Hermes Agent | Does persistence and remote autonomy reduce supervision for that same model? |
+| Conditional | Goose → ACP → native Claude/Codex/Pi | Does subscription reuse add harness leverage without changing the model comparison? |
 
 ## Design principles
 
-- Same task, same base SHA, same exact model when the lane permits it.
+- Same task, same base SHA, same exact model, and comparable limits in the primary harness-controlled lane.
+- Never interpret a model change as a harness win. If a contender cannot run the fixed model, record it as a separate subscription-realism result.
 - Separate harness-controlled results from subscription-realism results.
 - Score retained evidence, not agent self-report.
+- Publish the model and harness metadata together so readers can attribute output differences to the available environment.
 - A false green is worse than a slow failure.
 - No merge, deploy, production credentials, or branch-rule changes.
 - Run DevOps and SCADA/MES matches only in disposable, simulated, or read-only environments.
@@ -61,7 +63,7 @@ python3 -m unittest discover -s tests
 4. Paste the same task packet into each harness.
 5. Preserve transcripts, tool events, diffs, tests, review, CI, cleanup, and operator interactions.
 6. Score hard gates first, then the weighted result.
-7. Publish only a private comparison report until the task and rubric are trusted.
+7. Store one result directory per harness, then publish only a redacted comparison report when the task and rubric are trusted.
 
 ## Repository map
 
@@ -71,7 +73,12 @@ python3 -m unittest discover -s tests
 - `tools/prepare-run.sh` — reproducible worktree and task-packet preparation.
 - `tools/score-run.py` — dependency-free weighted scoring and disqualification.
 - `schemas/` — machine-readable run and scorecard contracts.
+- `results/` — the public result-artifact contract; add actual runs only after redaction and review.
 - `tests/` — tests for the benchmark kit itself.
+
+## Result attribution
+
+Every published result must make the causal comparison inspectable. At minimum, show the fixed model identity and limits, harness name and version, enabled tools and MCP servers, memory mode and seed state, permission policy, subagent settings, prompt packet, transcript, tool ledger, diff, tests, review, CI, and operator interventions. A result without this metadata is a score, not an explanation of how the harness affected the model.
 
 ## Future hiring use
 

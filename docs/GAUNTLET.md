@@ -2,21 +2,34 @@
 
 ## The joke and the standard
 
-There can be only one winner in a match, but the benchmark is not designed to crown the most aggressive agent. The winner is the stack that produces the best verified result for the least active human attention without violating safety boundaries.
+There can be only one winner in a match, but Highlander is not a model leaderboard. The primary experiment holds the model constant and changes the harness. The winner is the harness that produces the best verified result from that same model for the least active human attention without violating safety boundaries.
 
 Agents are not allowed to “win” by hiding failures, asking the human to finish the work, weakening tests, or exploiting the evaluator.
+
+## What Highlander measures
+
+The model is the controlled variable. The harness is the experimental variable. A fair primary comparison freezes:
+
+- provider and exact model identifier;
+- model parameters, context and turn limits, and fallback behavior;
+- task version, repository snapshot, acceptance tests, and safety boundaries;
+- machine/runtime conditions where they materially affect the result.
+
+The comparison is about what the harness makes possible for that model: tool access, LSP or shell integration, MCP exposure, memory, permissions, subagent topology, prompt wrapping, parallelism, recovery, persistence, and the amount of human steering required.
+
+Do not call a result a harness win when the model, model tier, context budget, or fallback route changed. Such a run belongs in the subscription-realism lane and must not be ranked with the pure same-model lane.
 
 ## Match lanes
 
 ### Harness-controlled lane
 
-Every contender uses the same exact provider and model identifier, comparable context and turn limits, and the same repository snapshot. This is the primary lane for measuring harness/tool-use quality.
+Every contender uses the same exact provider and model identifier, comparable context and turn limits, and the same repository snapshot. This is the primary lane for measuring harness/tool-use quality. The model identity is a control, not a score dimension.
 
 ### Subscription-realism lane
 
 Each contender uses the supported subscription or native CLI route the operator would actually use. This lane measures setup, portability, billing, provider limits, and practical workflow value. It is not a pure harness comparison.
 
-Never merge both lanes into one unexplained score.
+Never merge both lanes into one unexplained score. If the fixed model cannot be routed through a candidate harness, record the incompatibility as a finding instead of silently substituting another model.
 
 ## Hard gates
 
@@ -50,8 +63,11 @@ The score is deliberately subordinate to safety. A fast unsafe run is not compet
 Every scored run should retain:
 
 - task prompt and task version;
-- stack and underlying CLI versions;
-- exact model, provider, auth mode, and fallback behavior;
+- harness name, version, configuration revision, and underlying CLI versions;
+- exact model, provider, auth mode, parameters, context/turn limits, and fallback behavior;
+- enabled tools, MCP servers, LSPs, shell capabilities, and permission policy;
+- memory mode, scope, seed state, persistence behavior, and relevant retrieval settings;
+- subagent roles, model routing, parallelism, and delegation settings;
 - starting and final commit SHA;
 - transcript and tool-event ledger;
 - diff and commit list;
@@ -60,6 +76,8 @@ Every scored run should retain:
 - operator interaction ledger and survey;
 - cleanup inventory;
 - scorecard and invalidating factors.
+
+The public result must let a reader answer: “What did this model have access to in this harness, what did it actually use, what did it change, and where did the operator intervene?” See `results/README.md` for the artifact layout and redaction contract.
 
 ## Operator interaction categories
 

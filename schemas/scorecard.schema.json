@@ -2,10 +2,70 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Highlander Scorecard",
   "type": "object",
-  "required": ["stack", "task_id", "scores", "hard_gate_failures", "active_operator_hours", "correct_maintainable_draft_prs"],
+  "required": ["match_id", "stack", "task_id", "harness", "model", "provider", "auth_mode", "capabilities", "artifacts", "scores", "hard_gate_failures", "active_operator_hours", "correct_maintainable_draft_prs"],
   "properties": {
+    "match_id": {"type": "string"},
     "stack": {"type": "string"},
     "task_id": {"type": "string"},
+    "harness": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"type": "string"},
+        "version": {"type": "string"},
+        "config_revision": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "model": {
+      "type": "object",
+      "required": ["provider", "id", "parameters", "fallbacks"],
+      "properties": {
+        "provider": {"type": "string"},
+        "id": {"type": "string"},
+        "parameters": {"type": "object"},
+        "fallbacks": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "provider": {"type": "string"},
+    "auth_mode": {"type": "string"},
+    "capabilities": {
+      "type": "object",
+      "required": ["tools", "mcp_servers", "memory", "permissions", "subagents"],
+      "properties": {
+        "tools": {"type": "array", "items": {"type": "string"}},
+        "mcp_servers": {"type": "array", "items": {"type": "string"}},
+        "memory": {
+          "type": "object",
+          "required": ["mode", "scope", "seeded", "persisted"],
+          "properties": {
+            "mode": {"type": "string"},
+            "scope": {"type": "string"},
+            "seeded": {"type": "boolean"},
+            "persisted": {"type": "boolean"}
+          },
+          "additionalProperties": false
+        },
+        "permissions": {"type": "string"},
+        "subagents": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "object",
+      "required": ["transcript", "tool_ledger", "diff", "tests", "review", "ci", "operator_log"],
+      "properties": {
+        "transcript": {"type": "string"},
+        "tool_ledger": {"type": "string"},
+        "diff": {"type": "string"},
+        "tests": {"type": "string"},
+        "review": {"type": "string"},
+        "ci": {"type": "string"},
+        "operator_log": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
     "hard_gate_failures": {"type": "array", "items": {"type": "string"}},
     "scores": {
       "type": "object",
