@@ -1,0 +1,29 @@
+name: Highlander checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Highlander unit tests
+        run: python -m unittest discover -s tests
+
+      - name: Run fixture tests
+        run: python -m unittest discover -s fixtures/job-runner -p 'test_*.py'
+
+      - name: Validate runner syntax
+        run: bash -n tools/prepare-run.sh

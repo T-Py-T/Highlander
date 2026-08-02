@@ -1,0 +1,11 @@
+.runs/
+.highlander/
+agent-harness-bench-runs/
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

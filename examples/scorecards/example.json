@@ -1,0 +1,14 @@
+{
+  "stack": "omp",
+  "task_id": "T001",
+  "hard_gate_failures": [],
+  "scores": {
+    "correctness": 90,
+    "autonomy": 78,
+    "throughput": 82,
+    "portability": 95,
+    "operator_experience": 88
+  },
+  "active_operator_hours": 1.5,
+  "correct_maintainable_draft_prs": 1
+}
