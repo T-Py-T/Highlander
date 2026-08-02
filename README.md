@@ -33,7 +33,7 @@ Prepare isolated worktrees for a match:
 ./tools/prepare-run.sh \
   --repo "$PWD" \
   --task-file tasks/T001-race-fix.md \
-  --base-ref master \
+  --base-ref main \
   --model-id provider/exact-model-id \
   --provider provider-name \
   --stacks omp,opencode,hermes
