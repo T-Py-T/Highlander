@@ -10,29 +10,27 @@ If a harness cannot use the fixed model because of subscription or provider rest
 
 ## Directory layout
 
-Create one directory per match and one child directory per harness:
+Create one immutable directory per Match and one Trial directory per Contender and attempt:
 
 ```text
 results/
   MATCH-ID/
-    match-manifest.json
-    omp/
-      scorecard.json
-      capability-manifest.json
-      prompt.md
-      transcript.md
-      tool-ledger.jsonl
-      diff.patch
-      tests.txt
-      review.md
-      ci.txt
-      operator-log.md
-    opencode/
-      ...
-    comparison.md
+    match-spec.json
+    execution-plan.json
+    control-profile.json
+    match-result.json
+    artifact-manifest.json
+    task/
+    journal/
+    session/
+    trials/
+      omp/attempt-001/
+      opencode/attempt-001/
+    evaluation/
+    report/
 ```
 
-`match-manifest.json` freezes the task version, base SHA, exact model, provider, limits, and lane. Each `capability-manifest.json` records what that harness exposed to the model before the run. The tool ledger records what it actually used, including failed or denied calls.
+`execution-plan.json` freezes the task hash, base SHA, exact model route, controls, adapters, worktrees, and lane. Each `capability.json` records what that harness exposed before release. Native and ATIF evidence record what it actually used, including failed or denied calls. See `docs/EVIDENCE.md` for the complete contract.
 
 ## Redaction before publication
 

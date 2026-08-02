@@ -29,19 +29,37 @@ Current control and challengers:
 
 ## Quick start
 
-Prepare isolated worktrees for a match:
+Inspect the deterministic fake Match without changing anything:
 
 ```text
-./tools/prepare-run.sh \
-  --repo "$PWD" \
-  --task-file tasks/T001-race-fix.md \
-  --base-ref main \
-  --model-id provider/exact-model-id \
-  --provider provider-name \
-  --stacks omp,opencode,hermes
+python3 tools/highlander.py doctor examples/matches/fake-t001.json
+python3 tools/highlander.py run examples/matches/fake-t001.json
 ```
 
-The preparer records one base SHA and creates one detached worktree per contender. It does not install software, authenticate, launch agents, push, merge, or deploy.
+`run` is a dry-run unless `--execute` is present. The plan records one base SHA, the exact Task hash, worktree and evidence paths, adapter versions, model controls, and redacted invocations. It does not create worktrees or panes and cannot make a model call.
+
+Execute two quota-free fake Contenders headlessly or in one detached tmux window:
+
+```text
+python3 tools/highlander.py run examples/matches/fake-t001.json --execute
+python3 tools/highlander.py run examples/matches/fake-t001.json \
+  --session tmux --execute
+```
+
+Change `match_id` before repeating an executed Match. Match directories and worktrees are retained intentionally for audit. The pilot does not delete them automatically.
+
+Inspect the planned OMP-versus-OpenCode low-reasoning command crosswalk:
+
+```text
+python3 tools/highlander.py doctor \
+  examples/matches/omp-opencode-low-reasoning.json
+python3 tools/highlander.py run \
+  examples/matches/omp-opencode-low-reasoning.json
+```
+
+Real Harness Adapters are deliberately execution-blocked until native event capture and configured/runtime/provider control proof are implemented. Highlander never installs a harness, authenticates, copies credentials, updates Herdr integrations, or silently substitutes a model.
+
+The original `tools/prepare-run.sh` remains available as a legacy worktree-only preparer while MatchRunner matures.
 
 Score a completed run after collecting the evidence bundle:
 
@@ -68,9 +86,12 @@ python3 -m unittest discover -s tests
 ## Repository map
 
 - `docs/GAUNTLET.md` — rules, scoring, evidence, and hiring-readiness guidance.
+- `docs/MATCH-RUNNER.md` — pilot CLI, state machine, adapter boundary, and tmux workflow.
+- `docs/EVIDENCE.md` — public Evidence Bundle, control proof, redaction, and qualification contract.
 - `tasks/` — public task cards and task authoring rules.
 - `fixtures/` — small executable targets for calibration; never treat them as production-quality applications.
 - `tools/prepare-run.sh` — reproducible worktree and task-packet preparation.
+- `tools/highlander.py` — source-checkout CLI for planning and running Matches.
 - `tools/score-run.py` — dependency-free weighted scoring and disqualification.
 - `schemas/` — machine-readable run and scorecard contracts.
 - `results/` — the public result-artifact contract; add actual runs only after redaction and review.

@@ -1,0 +1,3 @@
+# Hold the model constant and evaluate the harness
+
+Highlander treats the exact model route and reasoning configuration as the Control Profile and the harness as the experimental variable. A primary Match is invalid when a Contender silently changes the model, reasoning level, fallback route, or materially comparable limits; practical subscription runs with unavoidable differences are reported separately and never merged into the same harness ranking. This keeps published differences attributable to tools, memory, permissions, orchestration, prompting, and recovery supplied by the harness rather than to a stronger model.

@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://highlander.invalid/schemas/match.schema.json",
+  "title": "Highlander Match Specification",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "match_id",
+    "lane",
+    "arena",
+    "task",
+    "control_profile",
+    "contenders",
+    "session"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "match_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"},
+    "lane": {
+      "enum": [
+        "controlled_efficacy",
+        "concurrency",
+        "subscription_realism",
+        "warm_memory"
+      ]
+    },
+    "arena": {
+      "type": "object",
+      "required": ["repository", "base_ref"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "base_ref": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "task": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {"path": {"type": "string", "minLength": 1}},
+      "additionalProperties": false
+    },
+    "control_profile": {
+      "type": "object",
+      "required": [
+        "model",
+        "reasoning",
+        "fallback_policy",
+        "auxiliary_model_policy",
+        "limits",
+        "proof_required"
+      ],
+      "properties": {
+        "model": {
+          "type": "object",
+          "required": [
+            "requested_id",
+            "upstream_id",
+            "provider_id",
+            "endpoint_or_deployment",
+            "region",
+            "auth_route"
+          ],
+          "properties": {
+            "requested_id": {"type": "string", "minLength": 1},
+            "upstream_id": {"type": "string", "minLength": 1},
+            "provider_id": {"type": "string", "minLength": 1},
+            "endpoint_or_deployment": {"type": "string", "minLength": 1},
+            "region": {"type": "string", "minLength": 1},
+            "auth_route": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        },
+        "reasoning": {
+          "type": "object",
+          "required": ["requested", "wire_parameter"],
+          "properties": {
+            "requested": {"type": "string", "minLength": 1},
+            "wire_parameter": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        },
+        "fallback_policy": {"const": "forbidden"},
+        "auxiliary_model_policy": {"enum": ["disabled", "same_model"]},
+        "limits": {
+          "type": "object",
+          "required": ["wall_time_seconds"],
+          "properties": {
+            "wall_time_seconds": {"type": "integer", "minimum": 1, "maximum": 86400},
+            "external_model_request_cap": {"type": "integer", "minimum": 1}
+          },
+          "additionalProperties": false
+        },
+        "proof_required": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["configured", "runtime", "provider_wire"]}
+        }
+      },
+      "additionalProperties": false
+    },
+    "contenders": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["id", "adapter"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"},
+          "adapter": {"type": "string", "minLength": 1},
+          "options": {"type": "object"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "session": {
+      "type": "object",
+      "required": ["adapter"],
+      "properties": {"adapter": {"enum": ["headless", "tmux"]}},
+      "additionalProperties": false
+    },
+    "output_root": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}
