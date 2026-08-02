@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -146,8 +147,12 @@ class MatchRunner:
         plan["plan_hash"] = sha256_bytes(canonical_json(plan).encode("utf-8"))
         return plan
 
-    def execute(self, session_override: str | None = None) -> dict[str, Any]:
-        plan = self.plan(session_override=session_override)
+    def execute(
+        self,
+        reviewed_plan: dict[str, Any],
+        session_override: str | None = None,
+    ) -> dict[str, Any]:
+        plan = self._verify_reviewed_plan(reviewed_plan, session_override)
         unavailable = [
             trial["contender_id"]
             for trial in plan["trials"]
@@ -196,7 +201,12 @@ class MatchRunner:
         execution_error: str | None = None
         try:
             package_root = Path(__file__).resolve().parents[1]
-            launcher = package_root / "tools" / "highlander.py"
+            source_launcher = package_root / "tools" / "highlander.py"
+            launcher_prefix = (
+                [sys.executable, str(source_launcher)]
+                if source_launcher.is_file()
+                else [sys.executable, "-m", "highlander"]
+            )
             for trial in plan["trials"]:
                 worktree = Path(trial["worktree"])
                 trial_dir = Path(trial["trial_dir"])
@@ -225,8 +235,7 @@ class MatchRunner:
                 workers.append(
                     {
                         "argv": [
-                            sys.executable,
-                            str(launcher),
+                            *launcher_prefix,
                             "_worker",
                             "--trial-plan",
                             trial["trial_plan_path"],
@@ -235,6 +244,7 @@ class MatchRunner:
                         "terminal_log": str(
                             trial_dir / "native" / "terminal.log"
                         ),
+                        "environment": self._worker_environment(),
                     }
                 )
             append_event(journal, "PREPARED", trial_count=len(workers))
@@ -297,16 +307,13 @@ class MatchRunner:
             )
             (repository_dir / "final-sha").write_text(final_sha + "\n", encoding="utf-8")
             trial_cleanup = {
-                "process_reconciled": cleanup.get("session_closed", False),
+                **self._reconcile_worker_identity(trial_dir),
                 "session_reconciled": cleanup.get("session_closed", False),
                 "worktree": str(worktree),
                 "worktree_policy": "retained_intentionally_for_review",
-                "unmanaged_resources_detected": False,
             }
             atomic_json(trial_dir / "cleanup.json", trial_cleanup)
-            if not trial_cleanup["process_reconciled"]:
-                outcome.setdefault("invalid_reasons", []).append("cleanup incomplete")
-                outcome["qualification"] = "invalid"
+            outcome = self._audit_trial(plan, trial, outcome, trial_cleanup)
             atomic_json(outcome_path, outcome)
             results.append({"contender_id": trial["contender_id"], **outcome})
 
@@ -327,8 +334,11 @@ class MatchRunner:
             "completed_at": utc_now(),
         }
         atomic_json(run_dir / "match-result.json", match_result)
-        append_event(journal, "VERIFIED", start_skew_ms=start_skew_ms)
-        append_event(journal, "COMPLETE")
+        if execution_error:
+            append_event(journal, "INVALID_SEALED")
+        else:
+            append_event(journal, "VERIFIED", start_skew_ms=start_skew_ms)
+            append_event(journal, "COMPLETE")
         atomic_json(run_dir / "artifact-manifest.json", self._artifact_manifest(run_dir))
         if execution_error:
             raise HighlanderError(
@@ -392,6 +402,172 @@ class MatchRunner:
             )
         return {"schema_version": 1, "generated_at": utc_now(), "artifacts": artifacts}
 
+    def _verify_reviewed_plan(
+        self, reviewed: dict[str, Any], session_override: str | None
+    ) -> dict[str, Any]:
+        if not isinstance(reviewed, dict):
+            raise HighlanderError("reviewed plan must be a JSON object")
+        claimed_hash = reviewed.get("plan_hash")
+        unhashed = dict(reviewed)
+        unhashed.pop("plan_hash", None)
+        actual_hash = sha256_bytes(canonical_json(unhashed).encode("utf-8"))
+        if claimed_hash != actual_hash:
+            raise HighlanderError("reviewed plan hash is invalid")
+        reviewed_session = reviewed.get("session", {}).get("adapter")
+        if session_override and session_override != reviewed_session:
+            raise HighlanderError(
+                "Session Adapter override differs from the reviewed plan"
+            )
+        current = self.plan(session_override=reviewed_session)
+        if canonical_json(reviewed) != canonical_json(current):
+            raise HighlanderError(
+                "Match inputs, base ref, Task, adapter versions, or capabilities changed after plan review"
+            )
+        return reviewed
+
+    @staticmethod
+    def _worker_environment() -> dict[str, str]:
+        safe_names = (
+            "LANG",
+            "LC_ALL",
+            "LC_CTYPE",
+            "PATH",
+            "SYSTEMROOT",
+            "TMPDIR",
+            "WINDIR",
+        )
+        environment = {
+            name: os.environ[name] for name in safe_names if name in os.environ
+        }
+        environment["PYTHONUNBUFFERED"] = "1"
+        return environment
+
+    @staticmethod
+    def _reconcile_worker_identity(trial_dir: Path) -> dict[str, Any]:
+        ready_path = trial_dir / "worker-ready.json"
+        if not ready_path.is_file():
+            return {
+                "process_reconciled": False,
+                "process_identity_available": False,
+                "unmanaged_resources_detected": True,
+            }
+        ready = json.loads(ready_path.read_text(encoding="utf-8"))
+        process_group_id = ready.get("process_group_id")
+        if os.name != "posix" or not isinstance(process_group_id, int):
+            return {
+                "process_reconciled": False,
+                "process_identity_available": False,
+                "unmanaged_resources_detected": True,
+            }
+        alive = _process_group_exists(process_group_id)
+        if alive:
+            try:
+                os.killpg(process_group_id, signal.SIGTERM)
+            except ProcessLookupError:
+                alive = False
+            deadline = time.monotonic() + 2
+            while alive and time.monotonic() < deadline:
+                time.sleep(0.05)
+                alive = _process_group_exists(process_group_id)
+        if alive:
+            try:
+                os.killpg(process_group_id, signal.SIGKILL)
+            except ProcessLookupError:
+                alive = False
+            deadline = time.monotonic() + 2
+            while alive and time.monotonic() < deadline:
+                time.sleep(0.05)
+                alive = _process_group_exists(process_group_id)
+        return {
+            "process_reconciled": not alive,
+            "process_identity_available": True,
+            "process_id": ready.get("process_id"),
+            "process_group_id": process_group_id,
+            "unmanaged_resources_detected": alive,
+        }
+
+    @staticmethod
+    def _audit_trial(
+        plan: dict[str, Any],
+        trial: dict[str, Any],
+        outcome: dict[str, Any],
+        cleanup: dict[str, Any],
+    ) -> dict[str, Any]:
+        trial_dir = Path(trial["trial_dir"])
+        control = plan["control_profile"]
+        reasons = list(outcome.get("invalid_reasons", []))
+        worker_claim = outcome.get("qualification")
+        proof_files = {
+            "configured": trial_dir / "configured-control.json",
+            "runtime": trial_dir / "runtime-control.json",
+            "provider_wire": trial_dir / "provider-control.json",
+        }
+        expected = {
+            "model": control["requested_id"],
+            "provider": control["provider_id"],
+            "reasoning": control["reasoning_requested"],
+        }
+        for proof_name in control["proof_required"]:
+            proof_path = proof_files[proof_name]
+            if not proof_path.is_file():
+                reasons.append(f"required {proof_name} control proof is missing")
+                continue
+            proof = json.loads(proof_path.read_text(encoding="utf-8"))
+            if proof.get("verified") is not True:
+                reasons.append(f"{proof_name} control proof is not verified")
+            for field, expected_value in expected.items():
+                if proof.get(field) != expected_value:
+                    reasons.append(f"{proof_name} {field} diverged")
+            if proof.get("fallback_events") != []:
+                reasons.append(f"{proof_name} recorded fallback events")
+            auxiliary = proof.get("auxiliary_models")
+            if not isinstance(auxiliary, list) or any(
+                model != control["requested_id"] for model in auxiliary
+            ):
+                reasons.append(f"{proof_name} auxiliary model proof diverged")
+            if proof_name == "provider_wire":
+                for field, expected_value in {
+                    "upstream_id": control["upstream_id"],
+                    "endpoint_or_deployment": control["endpoint_or_deployment"],
+                    "region": control["region"],
+                }.items():
+                    if proof.get(field) != expected_value:
+                        reasons.append(f"provider_wire {field} diverged")
+        if outcome.get("task_sha256") != plan["task"]["sha256"]:
+            reasons.append("outcome Task hash diverged")
+        if not (trial_dir / "native" / "transcript.json").is_file():
+            reasons.append("native transcript is missing")
+        if not (trial_dir / "normalized" / "trajectory.atif.json").is_file():
+            reasons.append("ATIF projection is missing")
+        if not cleanup.get("process_reconciled"):
+            reasons.append("worker process group was not reconciled")
+        if not cleanup.get("session_reconciled"):
+            reasons.append("session was not reconciled")
+        events_path = trial_dir / "events.jsonl"
+        if not events_path.is_file() or not events_path.read_text(
+            encoding="utf-8"
+        ).strip():
+            reasons.append("Trial lifecycle events are missing")
+        else:
+            event_lines = events_path.read_text(encoding="utf-8").splitlines()
+            final_event = json.loads(event_lines[-1]).get("event")
+            if final_event not in {"QUALIFIED", "INVALID"}:
+                reasons.append("Trial lifecycle did not reach a terminal evidence event")
+        atif_path = trial_dir / "normalized" / "trajectory.atif.json"
+        if atif_path.is_file():
+            atif = json.loads(atif_path.read_text(encoding="utf-8"))
+            if atif.get("schema_version") != "ATIF-v1.7":
+                reasons.append("ATIF projection is not v1.7")
+        if worker_claim == "invalid" and not reasons:
+            reasons.append("worker invalidated the Trial without an auditable reason")
+
+        audited = dict(outcome)
+        audited["worker_qualification_claim"] = worker_claim
+        audited["invalid_reasons"] = list(dict.fromkeys(reasons))
+        audited["qualification"] = "invalid" if reasons else "qualified"
+        audited["qualification_authority"] = "highlander-parent-audit-v1"
+        return audited
+
     def _git(self, *args: str) -> str:
         return self._git_at(self.spec.arena.repository, *args)
 
@@ -425,7 +601,12 @@ def run_worker(trial_plan_path: str | Path) -> int:
     append_event(events, "WORKER_STARTED")
     atomic_json(
         trial_dir / "worker-ready.json",
-        {"trial_id": plan["trial_id"], "ready_at": utc_now()},
+        {
+            "trial_id": plan["trial_id"],
+            "ready_at": utc_now(),
+            "process_id": os.getpid(),
+            "process_group_id": os.getpgid(0) if os.name == "posix" else None,
+        },
     )
     append_event(events, "ARMED")
     gate = Path(plan["start_gate"])
@@ -436,24 +617,24 @@ def run_worker(trial_plan_path: str | Path) -> int:
             return 4
         time.sleep(0.02)
 
-    prompt_submitted_ns = time.time_ns()
     task_bytes = Path(plan["task"]["stored_path"]).read_bytes()
     observed_hash = sha256_bytes(task_bytes)
+    if observed_hash != plan["task"]["sha256"]:
+        outcome = {
+            "qualification": "invalid",
+            "competitive_outcome": "not_run",
+            "invalid_reasons": ["Task hash mismatch"],
+        }
+        atomic_json(trial_dir / "outcome.json", outcome)
+        return 5
+
+    prompt_submitted_ns = time.time_ns()
     append_event(
         events,
         "TASK_SUBMITTED",
         task_sha256=observed_hash,
         submitted_ns=prompt_submitted_ns,
     )
-    if observed_hash != plan["task"]["sha256"]:
-        outcome = {
-            "qualification": "invalid",
-            "competitive_outcome": "not_run",
-            "invalid_reasons": ["Task hash mismatch"],
-            "prompt_submitted_ns": prompt_submitted_ns,
-        }
-        atomic_json(trial_dir / "outcome.json", outcome)
-        return 5
 
     delay_ms = options.get("delay_ms", 0)
     if isinstance(delay_ms, int) and delay_ms > 0:
@@ -537,9 +718,9 @@ def run_worker(trial_plan_path: str | Path) -> int:
     if not runtime["verified"]:
         invalid_reasons.append("runtime model diverged from configured model")
     competitive = (
-        "harness_failure"
+        "protocol_harness_failure"
         if options.get("behavior") == "harness_failure"
-        else "success"
+        else "protocol_success"
     )
     outcome = {
         "qualification": "invalid" if invalid_reasons else "qualified",
@@ -550,7 +731,19 @@ def run_worker(trial_plan_path: str | Path) -> int:
         "model_calls": 0,
         "cost": 0,
     }
-    atomic_json(trial_dir / "outcome.json", outcome)
     append_event(events, "EVIDENCE_COLLECTED")
     append_event(events, "QUALIFIED" if not invalid_reasons else "INVALID")
+    # Outcome is the final atomic worker write. Its presence therefore proves
+    # that all preceding evidence and lifecycle records were flushed.
+    atomic_json(trial_dir / "outcome.json", outcome)
     return 0
+
+
+def _process_group_exists(process_group_id: int) -> bool:
+    try:
+        os.killpg(process_group_id, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True

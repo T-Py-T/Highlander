@@ -71,6 +71,10 @@ When a harness exposes only a terminal transcript, retain it and mark semantic f
 
 `qualification=invalid` means the experiment cannot support a harness claim. Reasons include control divergence, different Task bytes, contamination, missing required evidence, uncertain duplicate submission, or unreconciled processes and resources.
 
+The worker may make a qualification claim, but it is never the authority. After session cleanup, the parent MatchRunner independently reloads every required proof, compares model/provider/reasoning/endpoint/region/fallback/auxiliary fields with the frozen Control Profile, verifies the Task hash and required native/ATIF artifacts, probes the recorded process group, and writes the final qualification.
+
+Execution also requires the exact content-addressed plan produced by dry-run. If the Task, base ref, adapter version, capability probe, Session Adapter, or plan hash changes after review, Highlander stops before creating the Match directory.
+
 ## Operator interactions
 
 Real Trials append timestamped records using these categories:
