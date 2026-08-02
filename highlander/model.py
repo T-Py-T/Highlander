@@ -186,14 +186,16 @@ class MatchSpec:
             if contender_id in seen:
                 raise SpecError(f"duplicate contender id: {contender_id}")
             seen.add(contender_id)
+            adapter_name = _required_text(contender_raw, "adapter")
             options = contender_raw.get("options", {})
             if not isinstance(options, dict):
                 raise SpecError(f"options for {contender_id} must be an object")
             _reject_secret_keys(options, f"contenders[{index}].options")
+            options = _validated_options(adapter_name, options, contender_id)
             contenders.append(
                 ContenderSpec(
                     id=contender_id,
-                    adapter=_required_text(contender_raw, "adapter"),
+                    adapter=adapter_name,
                     options=options,
                 )
             )
@@ -264,7 +266,11 @@ def _reject_secret_keys(value: Any, location: str) -> None:
     secret_markers = {
         "api_key",
         "access_key",
+        "authorization",
+        "bearer",
+        "cookie",
         "credential",
+        "header",
         "oauth",
         "password",
         "private_key",
@@ -282,3 +288,58 @@ def _reject_secret_keys(value: Any, location: str) -> None:
     elif isinstance(value, list):
         for index, child in enumerate(value):
             _reject_secret_keys(child, f"{location}[{index}]")
+
+
+def _validated_options(
+    adapter: str, options: dict[str, Any], contender_id: str
+) -> dict[str, Any]:
+    allowed = {
+        "fake": {"behavior", "delay_ms", "tools"},
+        "omp": {"approval_mode", "profile"},
+        "opencode": {"pure"},
+    }
+    if adapter not in allowed:
+        if options:
+            raise SpecError(
+                f"unknown adapter {adapter!r} cannot accept serialized options"
+            )
+        return {}
+    unexpected = sorted(set(options) - allowed[adapter])
+    if unexpected:
+        raise SpecError(
+            f"unsupported options for {contender_id}/{adapter}: {', '.join(unexpected)}"
+        )
+
+    validated = dict(options)
+    if adapter == "fake":
+        behavior = validated.get("behavior", "success")
+        if behavior not in {
+            "success",
+            "harness_failure",
+            "control_violation",
+            "pre_gate_failure",
+        }:
+            raise SpecError(f"unsupported fake behavior: {behavior}")
+        delay = validated.get("delay_ms", 0)
+        if not isinstance(delay, int) or not 0 <= delay <= 5000:
+            raise SpecError("fake delay_ms must be an integer from 0 to 5000")
+        tools = validated.get("tools", ["read", "edit", "test"])
+        if not isinstance(tools, list) or not all(
+            isinstance(tool, str) and SAFE_ID.fullmatch(tool) for tool in tools
+        ):
+            raise SpecError("fake tools must be safe string identifiers")
+        validated.update({"behavior": behavior, "delay_ms": delay, "tools": tools})
+    elif adapter == "omp":
+        approval = validated.get("approval_mode", "write")
+        if approval not in {"always-ask", "write", "yolo"}:
+            raise SpecError("OMP approval_mode must be always-ask, write, or yolo")
+        validated["approval_mode"] = approval
+        if profile := validated.get("profile"):
+            if not isinstance(profile, str) or not SAFE_ID.fullmatch(profile):
+                raise SpecError("OMP profile must be a safe identifier")
+    elif adapter == "opencode":
+        pure = validated.get("pure", True)
+        if not isinstance(pure, bool):
+            raise SpecError("OpenCode pure must be boolean")
+        validated["pure"] = pure
+    return validated

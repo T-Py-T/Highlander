@@ -110,16 +110,19 @@ class MatchRunnerTests(unittest.TestCase):
 
     def test_headless_fake_match_uses_one_prompt_and_retains_evidence(self):
         runner = MatchRunner.from_file(self.write_spec())
-        result = runner.execute()
+        result = runner.execute(reviewed_plan=runner.plan())
         run_dir = self.root / "runs" / "fake-match"
         self.assertEqual(result["state"], "COMPLETE")
         self.assertEqual(result["task_sha256"], result["trials"][0]["task_sha256"])
         self.assertEqual(result["task_sha256"], result["trials"][1]["task_sha256"])
         self.assertEqual(result["trials"][0]["qualification"], "qualified")
-        self.assertEqual(result["trials"][0]["competitive_outcome"], "success")
+        self.assertEqual(
+            result["trials"][0]["competitive_outcome"], "protocol_success"
+        )
         self.assertEqual(result["trials"][1]["qualification"], "qualified")
         self.assertEqual(
-            result["trials"][1]["competitive_outcome"], "harness_failure"
+            result["trials"][1]["competitive_outcome"],
+            "protocol_harness_failure",
         )
         self.assertGreaterEqual(result["start_skew_ms"], 0)
         for contender in ("fake-success", "fake-failure"):
@@ -154,7 +157,7 @@ class MatchRunnerTests(unittest.TestCase):
         runner = MatchRunner.from_file(
             self.write_spec(match_id="invalid-control", contenders=contenders)
         )
-        result = runner.execute()
+        result = runner.execute(reviewed_plan=runner.plan())
         divergent = next(
             trial for trial in result["trials"] if trial["contender_id"] == "divergent"
         )
@@ -168,7 +171,7 @@ class MatchRunnerTests(unittest.TestCase):
         runner = MatchRunner.from_file(
             self.write_spec(match_id="tmux-fake", session="tmux")
         )
-        result = runner.execute()
+        result = runner.execute(reviewed_plan=runner.plan())
         self.assertEqual(result["state"], "COMPLETE")
         self.assertTrue(result["session_cleanup"]["session_closed"])
 
@@ -189,7 +192,7 @@ class MatchRunnerTests(unittest.TestCase):
         self.assertIn("--thinking", commands["omp"])
         self.assertIn("--variant", commands["opencode"])
         with self.assertRaises(HighlanderError):
-            runner.execute()
+            runner.execute(reviewed_plan=plan)
 
     def test_pre_gate_failure_is_invalid_and_cleanup_is_retained(self):
         contenders = [
@@ -204,7 +207,7 @@ class MatchRunnerTests(unittest.TestCase):
             self.write_spec(match_id="pre-gate-failure", contenders=contenders)
         )
         with self.assertRaises(HighlanderError):
-            runner.execute()
+            runner.execute(reviewed_plan=runner.plan())
         run_dir = self.root / "runs" / "pre-gate-failure"
         result = json.loads(
             (run_dir / "match-result.json").read_text(encoding="utf-8")
@@ -212,6 +215,13 @@ class MatchRunnerTests(unittest.TestCase):
         self.assertEqual(result["state"], "INVALID")
         self.assertTrue(result["session_cleanup"]["session_closed"])
         self.assertTrue((run_dir / "artifact-manifest.json").is_file())
+        events = [
+            json.loads(line)
+            for line in (run_dir / "journal" / "match-events.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+        ]
+        self.assertEqual(events[-1]["event"], "INVALID_SEALED")
 
     def test_credential_shaped_options_are_rejected(self):
         contenders = [
@@ -226,6 +236,48 @@ class MatchRunnerTests(unittest.TestCase):
             MatchRunner.from_file(
                 self.write_spec(match_id="unsafe-spec", contenders=contenders)
             )
+
+    def test_changed_plan_is_rejected_before_side_effects(self):
+        runner = MatchRunner.from_file(self.write_spec(match_id="reviewed-plan"))
+        plan = runner.plan()
+        self.task.write_text("Changed after review.\n", encoding="utf-8")
+        with self.assertRaises(HighlanderError):
+            runner.execute(reviewed_plan=plan)
+        self.assertFalse((self.root / "runs" / "reviewed-plan").exists())
+
+    def test_worker_options_use_adapter_allowlists(self):
+        contenders = [
+            {
+                "id": "unsafe",
+                "adapter": "fake",
+                "options": {"harmless_name": "Bearer secret"},
+            },
+            {"id": "safe", "adapter": "fake", "options": {}},
+        ]
+        with self.assertRaises(SpecError):
+            MatchRunner.from_file(
+                self.write_spec(match_id="unsafe-options", contenders=contenders)
+            )
+
+    def test_fake_workers_do_not_inherit_provider_credentials(self):
+        environment = MatchRunner._worker_environment()
+        forbidden_fragments = (
+            "API_KEY",
+            "AUTH",
+            "AWS_",
+            "CREDENTIAL",
+            "OAUTH",
+            "SECRET",
+            "TOKEN",
+        )
+        self.assertFalse(
+            any(
+                fragment in name.upper()
+                for name in environment
+                for fragment in forbidden_fragments
+            )
+        )
+        self.assertEqual(environment["PYTHONUNBUFFERED"], "1")
 
 
 if __name__ == "__main__":

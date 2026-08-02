@@ -9,7 +9,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from .engine import MatchRunner, canonical_json, run_worker
+from .engine import MatchRunner, atomic_json, canonical_json, run_worker
 from .model import HighlanderError
 
 
@@ -28,6 +28,14 @@ def build_parser() -> argparse.ArgumentParser:
         "--execute",
         action="store_true",
         help="create worktrees and run workers; omitted means dry-run",
+    )
+    run.add_argument(
+        "--save-plan",
+        help="write the reviewed dry-run plan to this path",
+    )
+    run.add_argument(
+        "--plan",
+        help="execute this exact previously saved plan (required with --execute)",
     )
 
     status = subparsers.add_parser("status", help="read retained Match state")
@@ -50,11 +58,28 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command == "run":
             runner = MatchRunner.from_file(args.match)
-            result = (
-                runner.execute(session_override=args.session)
-                if args.execute
-                else runner.plan(session_override=args.session)
-            )
+            if args.execute:
+                if args.save_plan:
+                    raise HighlanderError(
+                        "--save-plan cannot be combined with --execute"
+                    )
+                if not args.plan:
+                    raise HighlanderError(
+                        "--execute requires --plan with the exact reviewed dry-run plan"
+                    )
+                reviewed_plan = json.loads(
+                    Path(args.plan).expanduser().read_text(encoding="utf-8")
+                )
+                result = runner.execute(
+                    reviewed_plan=reviewed_plan,
+                    session_override=args.session,
+                )
+            else:
+                if args.plan:
+                    raise HighlanderError("--plan is valid only with --execute")
+                result = runner.plan(session_override=args.session)
+                if args.save_plan:
+                    atomic_json(Path(args.save_plan).expanduser().resolve(), result)
             print(canonical_json(result), end="")
             return 0
         if args.command == "status":
@@ -100,6 +125,34 @@ def _stop_tmux(run_dir: Path) -> dict:
     if not binary:
         raise HighlanderError("tmux is not installed")
     session = manifest["tmux_session"]
+    if not session.startswith("highlander-"):
+        raise HighlanderError("refusing to stop a session without a Highlander name")
+    expected_match = manifest.get("match_id")
+    if not isinstance(expected_match, str) or expected_match != root.name:
+        raise HighlanderError("session manifest Match identity does not match its directory")
+    exists = subprocess.run(
+        [binary, "has-session", "-t", session],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    ).returncode == 0
+    if not exists:
+        return {
+            "match_directory": str(root),
+            "tmux_session": session,
+            "stopped": False,
+            "already_absent": True,
+        }
+    marker = subprocess.run(
+        [binary, "show-options", "-v", "-t", session, "@highlander_match_id"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if marker.returncode != 0 or marker.stdout.strip() != expected_match:
+        raise HighlanderError(
+            "refusing to stop a tmux session without the matching Highlander ownership marker"
+        )
     result = subprocess.run(
         [binary, "kill-session", "-t", session],
         capture_output=True,
@@ -110,5 +163,5 @@ def _stop_tmux(run_dir: Path) -> dict:
         "match_directory": str(root),
         "tmux_session": session,
         "stopped": result.returncode == 0,
-        "already_absent": result.returncode != 0,
+        "already_absent": False,
     }

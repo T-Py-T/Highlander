@@ -6,7 +6,8 @@ MatchRunner is Highlander's local execution plane. It makes a controlled Match e
 
 ```text
 highlander doctor MATCH.json
-highlander run MATCH.json [--session headless|tmux] [--execute]
+highlander run MATCH.json [--session headless|tmux] [--save-plan PLAN.json]
+highlander run MATCH.json --plan PLAN.json --execute
 highlander status RUN_DIRECTORY
 highlander stop RUN_DIRECTORY
 ```
@@ -14,7 +15,7 @@ highlander stop RUN_DIRECTORY
 From a source checkout, substitute `python3 tools/highlander.py` for `highlander`.
 
 - `doctor` probes binaries, versions, declared capabilities, model-control proof, and Session Adapter availability. It is read-only and never authenticates or changes configuration.
-- `run` produces a complete dry-run plan by default. `--execute` is required for worktrees, workers, panes, and harness activity.
+- `run` produces a complete dry-run plan by default. Save it outside the Arena, review it, then pass that exact file with `--plan --execute`. Execution recomputes every input and fails before side effects if the base ref, Task, adapter version, capability probe, session, or plan hash changed.
 - `status` reads the append-only journal or completed Match result.
 - `stop` currently terminates a retained tmux session. Foreground headless execution is owned by its controller.
 
@@ -76,6 +77,8 @@ The journal is append-only JSONL. Terminal pane disappearance is never completio
 - Real adapter execution fails closed.
 - Task bytes are hashed before execution and verified again by every worker.
 - Commands are retained as argv arrays; credential values are never serialized.
+- Fake workers receive an explicit environment allowlist and cannot inherit provider keys or OAuth variables. Future native adapters require a separate audited authentication policy before execution can be enabled.
+- Adapter options use per-adapter allowlists; arbitrary headers, environment values, tokens, and unknown fields are rejected.
 - Worktrees are detached from one frozen base SHA.
 - Processes and sessions are reconciled automatically.
 - Worktrees remain for inspection and are marked `retained_intentionally_for_review`; automatic deletion is outside the pilot.

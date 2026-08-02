@@ -41,9 +41,14 @@ python3 tools/highlander.py run examples/matches/fake-t001.json
 Execute two quota-free fake Contenders headlessly or in one detached tmux window:
 
 ```text
-python3 tools/highlander.py run examples/matches/fake-t001.json --execute
 python3 tools/highlander.py run examples/matches/fake-t001.json \
-  --session tmux --execute
+  --save-plan /tmp/highlander-fake-plan.json
+python3 tools/highlander.py run examples/matches/fake-t001.json \
+  --plan /tmp/highlander-fake-plan.json --execute
+python3 tools/highlander.py run examples/matches/fake-t001.json \
+  --session tmux --save-plan /tmp/highlander-fake-tmux-plan.json
+python3 tools/highlander.py run examples/matches/fake-t001.json \
+  --session tmux --plan /tmp/highlander-fake-tmux-plan.json --execute
 ```
 
 Change `match_id` before repeating an executed Match. Match directories and worktrees are retained intentionally for audit. The pilot does not delete them automatically.
