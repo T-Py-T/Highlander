@@ -35,6 +35,32 @@
       "model_routing": "same-fixed-model"
     }
   },
+  "fit": {
+    "cli_only": true,
+    "platforms": ["macOS", "Linux", "WSL"],
+    "herdr": {
+      "mode": "native-pane",
+      "integration": "omp-lifecycle",
+      "status_authority": "lifecycle-hooks",
+      "verified": true
+    },
+    "subscription_routes": [
+      {
+        "provider": "anthropic",
+        "auth_mode": "native-subscription",
+        "uses_existing_subscription": true,
+        "policy_status": "documented",
+        "model_ids": ["claude-opus-fixed-control"]
+      }
+    ],
+    "mobile_control": {
+      "channel": "herdr-over-ssh",
+      "machines": ["macOS", "Linux", "WSL"],
+      "can_monitor": true,
+      "can_respond": true,
+      "verified": true
+    }
+  },
   "artifacts": {
     "transcript": "transcript.md",
     "tool_ledger": "tool-ledger.jsonl",
@@ -46,10 +72,11 @@
   },
   "hard_gate_failures": [],
   "scores": {
+    "environment_fit": 95,
+    "subscription_portability": 90,
     "correctness": 90,
+    "mobile_supervision": 60,
     "autonomy": 78,
-    "throughput": 82,
-    "portability": 95,
     "operator_experience": 88
   },
   "active_operator_hours": 1.5,
