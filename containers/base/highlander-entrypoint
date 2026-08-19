@@ -1,0 +1,60 @@
+#!/bin/sh
+set -eu
+
+home="${HOME:-/home/highlander}"
+export HOME="$home"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$home/.cache}"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$home/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$home/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$home/.local/state}"
+
+mkdir -p "$HOME" "$XDG_CACHE_HOME" "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME"
+
+case "${HIGHLANDER_HARNESS:-}" in
+    omp)
+        export PI_CODING_AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}"
+        mkdir -p "$PI_CODING_AGENT_DIR"
+        if [ -f /run/highlander/seed/agent.db ]; then
+            cp /run/highlander/seed/agent.db "$PI_CODING_AGENT_DIR/agent.db"
+            chmod 0600 "$PI_CODING_AGENT_DIR/agent.db"
+        fi
+        ;;
+    opencode)
+        export OPENCODE_CONFIG_DIR="${OPENCODE_CONFIG_DIR:-$XDG_CONFIG_HOME/opencode-clean}"
+        mkdir -p "$OPENCODE_CONFIG_DIR" "$XDG_DATA_HOME/opencode"
+        if [ -f /run/highlander/seed/opencode/auth.json ]; then
+            cp /run/highlander/seed/opencode/auth.json "$XDG_DATA_HOME/opencode/auth.json"
+            chmod 0600 "$XDG_DATA_HOME/opencode/auth.json"
+        elif [ -f /run/highlander/seed/auth.json ]; then
+            cp /run/highlander/seed/auth.json "$XDG_DATA_HOME/opencode/auth.json"
+            chmod 0600 "$XDG_DATA_HOME/opencode/auth.json"
+        fi
+        export OPENCODE_CONFIG_CONTENT='{"share":"disabled","autoupdate":false}'
+        ;;
+    nanobot)
+        export OAUTH_CLI_KIT_TOKEN_PATH="${OAUTH_CLI_KIT_TOKEN_PATH:-$XDG_DATA_HOME/oauth-cli-kit/auth/oauth.json}"
+        mkdir -p "$(dirname "$OAUTH_CLI_KIT_TOKEN_PATH")"
+        if [ -f /run/highlander/seed/oauth.json ]; then
+            cp /run/highlander/seed/oauth.json "$OAUTH_CLI_KIT_TOKEN_PATH"
+            chmod 0600 "$OAUTH_CLI_KIT_TOKEN_PATH"
+        fi
+        ;;
+    codex)
+        export CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
+        mkdir -p "$CODEX_HOME"
+        if [ -f /run/highlander/seed/auth.json ]; then
+            cp /run/highlander/seed/auth.json "$CODEX_HOME/auth.json"
+            chmod 0600 "$CODEX_HOME/auth.json"
+        fi
+        ;;
+    hermes)
+        export HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
+        mkdir -p "$HERMES_HOME"
+        if [ -f /run/highlander/seed/auth.json ]; then
+            cp /run/highlander/seed/auth.json "$HERMES_HOME/auth.json"
+            chmod 0600 "$HERMES_HOME/auth.json"
+        fi
+        ;;
+esac
+
+exec "$@"

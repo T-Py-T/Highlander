@@ -85,8 +85,9 @@ class OmpHarnessAdapter(HarnessAdapter):
         return {
             "harness": {"name": "oh-my-pi", "version": _version(binary)},
             "binary": binary,
-            "execution_implemented": False,
+            "execution_implemented": True,
             "execution_ready": False,
+            "execution_requires": "digest-pinned OCI clean room",
             "protocol": "omp-rpc",
             "prompt_transport": "rpc-exact-message",
             "control_proof": {
@@ -100,7 +101,7 @@ class OmpHarnessAdapter(HarnessAdapter):
             "permissions": contender.options.get("approval_mode", "write"),
             "subagents": {"policy": control.auxiliary_model_policy},
             "limitations": [
-                "native RPC execution and post-run control parser are not implemented",
+                "host execution is blocked; native execution requires a clean-room image",
                 "provider/wire proof is unavailable on ordinary subscription routes",
             ],
         }
@@ -114,8 +115,9 @@ class OmpHarnessAdapter(HarnessAdapter):
     ) -> dict[str, Any]:
         argv = [
             "omp",
+            "--print",
             "--mode",
-            "rpc",
+            "json",
             "--cwd",
             str(worktree),
             "--model",
@@ -130,6 +132,10 @@ class OmpHarnessAdapter(HarnessAdapter):
             control.requested_id,
             "--no-prewalk",
             "--no-title",
+            "--no-session",
+            "--no-extensions",
+            "--no-skills",
+            "--no-rules",
             "--max-time",
             f"{control.wall_time_seconds}s",
             "--approval-mode",
@@ -140,8 +146,8 @@ class OmpHarnessAdapter(HarnessAdapter):
         return {
             "argv": argv,
             "cwd": str(worktree),
-            "protocol": "omp-rpc",
-            "prompt_transport": "RPC prompt message after start gate",
+            "protocol": "omp-json",
+            "prompt_transport": "exact Task UTF-8 appended as one argv element after start gate",
             "task_sha_source": str(task_path),
             "inherited_environment_names": [],
             "credential_values_recorded": False,
@@ -158,8 +164,9 @@ class OpenCodeHarnessAdapter(HarnessAdapter):
         return {
             "harness": {"name": "opencode", "version": _version(binary)},
             "binary": binary,
-            "execution_implemented": False,
+            "execution_implemented": True,
             "execution_ready": False,
+            "execution_requires": "digest-pinned OCI clean room",
             "protocol": "opencode-json",
             "prompt_transport": "argv-exact-string",
             "control_proof": {
@@ -173,7 +180,7 @@ class OpenCodeHarnessAdapter(HarnessAdapter):
             "permissions": "native policy; freeze before execution",
             "subagents": {"policy": control.auxiliary_model_policy},
             "limitations": [
-                "native JSON execution and post-run control parser are not implemented",
+                "host execution is blocked; native execution requires a clean-room image",
                 "reasoning variants are provider-specific",
                 "provider/wire proof is unavailable on ordinary subscription routes",
             ],
@@ -197,6 +204,7 @@ class OpenCodeHarnessAdapter(HarnessAdapter):
             control.requested_id,
             "--variant",
             control.reasoning_requested,
+            "--auto",
         ]
         if contender.options.get("pure", True):
             argv.append("--pure")
@@ -211,9 +219,210 @@ class OpenCodeHarnessAdapter(HarnessAdapter):
         }
 
 
+class CodexHarnessAdapter(HarnessAdapter):
+    name = "codex"
+
+    def probe(
+        self, contender: ContenderSpec, control: ControlProfile
+    ) -> dict[str, Any]:
+        binary = shutil.which("codex")
+        return {
+            "harness": {"name": "codex", "version": _version(binary)},
+            "binary": binary,
+            "execution_implemented": True,
+            "execution_ready": False,
+            "execution_requires": "digest-pinned OCI clean room",
+            "protocol": "codex-jsonl",
+            "prompt_transport": "argv-exact-string",
+            "control_proof": {
+                "configured": True,
+                "runtime": True,
+                "provider_wire": False,
+            },
+            "tools": ["native Codex toolset; capture required at execution"],
+            "mcp_servers": [],
+            "memory": {"mode": "ephemeral", "scope": "trial", "seeded": False},
+            "permissions": "container boundary with non-interactive full workspace access",
+            "subagents": {"policy": control.auxiliary_model_policy},
+            "limitations": [
+                "host execution is blocked; native execution requires a clean-room image",
+                "subscription provider/wire proof depends on native JSONL evidence",
+            ],
+        }
+
+    def invocation(
+        self,
+        contender: ContenderSpec,
+        control: ControlProfile,
+        worktree: Path,
+        task_path: Path,
+    ) -> dict[str, Any]:
+        return {
+            "argv": [
+                "codex",
+                "exec",
+                "--json",
+                "--ephemeral",
+                "--ignore-user-config",
+                "--ignore-rules",
+                "--dangerously-bypass-approvals-and-sandbox",
+                "--cd",
+                str(worktree),
+                "--model",
+                control.requested_id,
+                "--config",
+                f'model_reasoning_effort="{control.wire_parameter}"',
+            ],
+            "cwd": str(worktree),
+            "protocol": "codex-jsonl",
+            "prompt_transport": "exact Task string appended as one argv element",
+            "task_sha_source": str(task_path),
+            "inherited_environment_names": [],
+            "credential_values_recorded": False,
+        }
+
+
+class HermesHarnessAdapter(HarnessAdapter):
+    name = "hermes"
+
+    def probe(
+        self, contender: ContenderSpec, control: ControlProfile
+    ) -> dict[str, Any]:
+        binary = shutil.which("hermes")
+        return {
+            "harness": {"name": "hermes-agent", "version": _version(binary)},
+            "binary": binary,
+            "execution_implemented": True,
+            "execution_ready": False,
+            "execution_requires": "digest-pinned OCI clean room",
+            "protocol": "hermes-oneshot",
+            "prompt_transport": "argv-exact-string",
+            "control_proof": {
+                "configured": True,
+                "runtime": True,
+                "provider_wire": False,
+            },
+            "tools": ["native Hermes clean-core toolset; capture required at execution"],
+            "mcp_servers": [],
+            "memory": {"mode": "safe-mode fresh home", "scope": "trial"},
+            "permissions": "container boundary with Hermes yolo mode",
+            "subagents": {"policy": control.auxiliary_model_policy},
+            "limitations": [
+                "safe mode disables user plugins, memories, rules, and MCP servers",
+                "subscription provider/wire proof requires a post-run usage projection",
+            ],
+        }
+
+    def invocation(
+        self,
+        contender: ContenderSpec,
+        control: ControlProfile,
+        worktree: Path,
+        task_path: Path,
+    ) -> dict[str, Any]:
+        return {
+            "argv": [
+                "hermes",
+                "--model",
+                control.requested_id,
+                "--provider",
+                control.provider_id,
+                "--reasoning",
+                control.wire_parameter,
+                "--yolo",
+                "--safe-mode",
+                "--oneshot",
+            ],
+            "cwd": str(worktree),
+            "protocol": "hermes-oneshot",
+            "prompt_transport": "exact Task string appended after --oneshot",
+            "task_sha_source": str(task_path),
+            "inherited_environment_names": [],
+            "credential_values_recorded": False,
+        }
+
+
+class NanoBotHarnessAdapter(HarnessAdapter):
+    name = "nanobot"
+
+    def probe(
+        self, contender: ContenderSpec, control: ControlProfile
+    ) -> dict[str, Any]:
+        binary = shutil.which("nanobot")
+        return {
+            "harness": {"name": "nanobot", "version": _version(binary)},
+            "binary": binary,
+            "execution_implemented": True,
+            "execution_ready": False,
+            "execution_requires": "digest-pinned OCI clean room",
+            "protocol": "nanobot-direct",
+            "prompt_transport": "argv-exact-string",
+            "control_proof": {
+                "configured": True,
+                "runtime": True,
+                "provider_wire": False,
+            },
+            "tools": ["native NanoBot toolset; capture required at execution"],
+            "mcp_servers": [],
+            "memory": {"mode": "fresh workspace", "scope": "trial"},
+            "permissions": "container boundary with workspace restriction",
+            "subagents": {"policy": control.auxiliary_model_policy},
+            "limitations": [
+                "historical temporal proxy rather than a same-date Harness release",
+                "Python transitive dependencies are image-local but not yet cross-machine locked",
+            ],
+        }
+
+    def invocation(
+        self,
+        contender: ContenderSpec,
+        control: ControlProfile,
+        worktree: Path,
+        task_path: Path,
+    ) -> dict[str, Any]:
+        provider = control.provider_id.replace("-", "_")
+        model = (
+            control.requested_id
+            if "/" in control.requested_id
+            else f"{control.provider_id}/{control.requested_id}"
+        )
+        return {
+            "argv": [
+                "env",
+                f"NANOBOT_AGENTS__DEFAULTS__MODEL={model}",
+                f"NANOBOT_AGENTS__DEFAULTS__PROVIDER={provider}",
+                f"NANOBOT_AGENTS__DEFAULTS__REASONING_EFFORT={control.wire_parameter}",
+                f"NANOBOT_AGENTS__DEFAULTS__WORKSPACE={worktree}",
+                "NANOBOT_TOOLS__RESTRICT_TO_WORKSPACE=true",
+                "nanobot",
+                "agent",
+                "--workspace",
+                str(worktree),
+                "--session",
+                "highlander:direct",
+                "--no-markdown",
+                "--logs",
+                "--message",
+            ],
+            "cwd": str(worktree),
+            "protocol": "nanobot-direct",
+            "prompt_transport": "exact Task string appended after --message",
+            "task_sha_source": str(task_path),
+            "inherited_environment_names": [],
+            "credential_values_recorded": False,
+        }
+
+
 ADAPTERS: dict[str, HarnessAdapter] = {
     adapter.name: adapter
-    for adapter in (FakeHarnessAdapter(), OmpHarnessAdapter(), OpenCodeHarnessAdapter())
+    for adapter in (
+        FakeHarnessAdapter(),
+        OmpHarnessAdapter(),
+        OpenCodeHarnessAdapter(),
+        CodexHarnessAdapter(),
+        HermesHarnessAdapter(),
+        NanoBotHarnessAdapter(),
+    )
 }
 
 

@@ -10,6 +10,9 @@ from typing import Any
 
 
 SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
+PINNED_IMAGE = re.compile(
+    r"^(?:[A-Za-z0-9][A-Za-z0-9._/:.-]*@)?sha256:[0-9a-f]{64}$"
+)
 LANES = {
     "controlled_efficacy",
     "concurrency",
@@ -28,9 +31,23 @@ class SpecError(HighlanderError):
 
 
 @dataclass(frozen=True)
+class CleanRoomSpec:
+    runtime: str
+    profile: str
+    evaluator_image: str
+    network: str
+    cpus: float
+    memory_mb: int
+    pids_limit: int
+    tmpfs_mb: int
+    retain_workspaces: bool
+
+
+@dataclass(frozen=True)
 class ArenaSpec:
     repository: Path
     base_ref: str
+    clean_room: CleanRoomSpec | None
 
 
 @dataclass(frozen=True)
@@ -68,6 +85,19 @@ class SessionSpec:
 
 
 @dataclass(frozen=True)
+class EvaluationCommandSpec:
+    id: str
+    argv: tuple[str, ...]
+    timeout_seconds: int
+
+
+@dataclass(frozen=True)
+class EvaluationSpec:
+    commands: tuple[EvaluationCommandSpec, ...]
+    overlay: Path | None
+
+
+@dataclass(frozen=True)
 class MatchSpec:
     schema_version: int
     match_id: str
@@ -76,6 +106,7 @@ class MatchSpec:
     task: TaskSpec
     control_profile: ControlProfile
     contenders: tuple[ContenderSpec, ...]
+    evaluation: EvaluationSpec | None
     session: SessionSpec
     output_root: Path
     source_path: Path
@@ -111,9 +142,11 @@ class MatchSpec:
             (repository / ".git").is_dir() or (repository / ".git").is_file()
         ):
             raise SpecError(f"Arena is not a Git worktree: {repository}")
+        clean_room = _load_clean_room(arena_raw.get("clean_room"))
         arena = ArenaSpec(
             repository=repository,
             base_ref=_required_text(arena_raw, "base_ref"),
+            clean_room=clean_room,
         )
 
         task_raw = _required_object(raw, "task")
@@ -200,6 +233,26 @@ class MatchSpec:
                 )
             )
 
+        if clean_room:
+            missing_images = [
+                contender.id
+                for contender in contenders
+                if not isinstance(contender.options.get("image"), str)
+            ]
+            if missing_images:
+                raise SpecError(
+                    "clean-room contenders require a pinned image: "
+                    + ", ".join(missing_images)
+                )
+        elif any("image" in contender.options for contender in contenders):
+            raise SpecError(
+                "contender images require arena.clean_room so host configuration cannot leak into a Trial"
+            )
+
+        evaluation = _load_evaluation(raw.get("evaluation"), root)
+        if clean_room and evaluation is None:
+            raise SpecError("clean-room Matches require deterministic evaluation.commands")
+
         session_raw = raw.get("session", {"adapter": "headless"})
         if not isinstance(session_raw, dict):
             raise SpecError("session must be an object")
@@ -225,6 +278,7 @@ class MatchSpec:
             task=task,
             control_profile=control,
             contenders=tuple(contenders),
+            evaluation=evaluation,
             session=session,
             output_root=output_root,
             source_path=source_path,
@@ -233,6 +287,8 @@ class MatchSpec:
     def as_dict(self) -> dict[str, Any]:
         value = asdict(self)
         value["arena"]["repository"] = str(self.arena.repository)
+        if self.arena.clean_room is None:
+            value["arena"].pop("clean_room", None)
         value["task"]["path"] = str(self.task.path)
         value["output_root"] = str(self.output_root)
         value["source_path"] = str(self.source_path)
@@ -240,6 +296,15 @@ class MatchSpec:
             self.control_profile.proof_required
         )
         value["contenders"] = [asdict(item) for item in self.contenders]
+        if self.evaluation:
+            evaluation_value: dict[str, Any] = {
+                "commands": [asdict(item) for item in self.evaluation.commands]
+            }
+            if self.evaluation.overlay:
+                evaluation_value["overlay"] = str(self.evaluation.overlay)
+            value["evaluation"] = evaluation_value
+        else:
+            value.pop("evaluation", None)
         return value
 
 
@@ -295,8 +360,11 @@ def _validated_options(
 ) -> dict[str, Any]:
     allowed = {
         "fake": {"behavior", "delay_ms", "tools"},
-        "omp": {"approval_mode", "profile"},
-        "opencode": {"pure"},
+        "omp": {"approval_mode", "profile", "image", "seed_profile"},
+        "opencode": {"pure", "image", "seed_profile"},
+        "codex": {"image", "seed_profile"},
+        "hermes": {"image", "seed_profile"},
+        "nanobot": {"image", "seed_profile"},
     }
     if adapter not in allowed:
         if options:
@@ -311,6 +379,18 @@ def _validated_options(
         )
 
     validated = dict(options)
+    image = validated.get("image")
+    if image is not None and (
+        not isinstance(image, str) or not PINNED_IMAGE.fullmatch(image)
+    ):
+        raise SpecError(
+            f"{contender_id} image must be a pinned image ID or repository digest"
+        )
+    seed_profile = validated.get("seed_profile")
+    if seed_profile is not None and (
+        not isinstance(seed_profile, str) or not SAFE_ID.fullmatch(seed_profile)
+    ):
+        raise SpecError(f"{contender_id} seed_profile must be a safe identifier")
     if adapter == "fake":
         behavior = validated.get("behavior", "success")
         if behavior not in {
@@ -343,3 +423,116 @@ def _validated_options(
             raise SpecError("OpenCode pure must be boolean")
         validated["pure"] = pure
     return validated
+
+
+def _load_clean_room(value: Any) -> CleanRoomSpec | None:
+    if value is None:
+        return None
+    if not isinstance(value, dict):
+        raise SpecError("arena.clean_room must be an object")
+    allowed = {
+        "runtime",
+        "profile",
+        "evaluator_image",
+        "network",
+        "cpus",
+        "memory_mb",
+        "pids_limit",
+        "tmpfs_mb",
+        "retain_workspaces",
+    }
+    unexpected = sorted(set(value) - allowed)
+    if unexpected:
+        raise SpecError(
+            "unsupported arena.clean_room fields: " + ", ".join(unexpected)
+        )
+    runtime = _required_text(value, "runtime")
+    if runtime not in {"docker", "podman"}:
+        raise SpecError("arena.clean_room.runtime must be docker or podman")
+    profile = _required_text(value, "profile")
+    if profile not in {"clean-core", "production-stack", "plugin-ablation"}:
+        raise SpecError(
+            "arena.clean_room.profile must be clean-core, production-stack, or plugin-ablation"
+        )
+    evaluator_image = _required_text(value, "evaluator_image")
+    if not PINNED_IMAGE.fullmatch(evaluator_image):
+        raise SpecError("arena.clean_room.evaluator_image must be a pinned image")
+    network = value.get("network", "bridge")
+    if not isinstance(network, str) or not SAFE_ID.fullmatch(network):
+        raise SpecError("arena.clean_room.network must be a safe runtime network name")
+    if network == "host" or network.startswith("container"):
+        raise SpecError("clean-room Matches cannot use host or container-shared networking")
+    cpus = value.get("cpus", 2)
+    if not isinstance(cpus, (int, float)) or isinstance(cpus, bool) or not 0.25 <= cpus <= 64:
+        raise SpecError("arena.clean_room.cpus must be from 0.25 to 64")
+    memory_mb = _bounded_integer(value, "memory_mb", 4096, 256, 131072)
+    pids_limit = _bounded_integer(value, "pids_limit", 512, 64, 4096)
+    tmpfs_mb = _bounded_integer(value, "tmpfs_mb", 1024, 64, 16384)
+    retain = value.get("retain_workspaces", False)
+    if not isinstance(retain, bool):
+        raise SpecError("arena.clean_room.retain_workspaces must be boolean")
+    return CleanRoomSpec(
+        runtime=runtime,
+        profile=profile,
+        evaluator_image=evaluator_image,
+        network=network,
+        cpus=float(cpus),
+        memory_mb=memory_mb,
+        pids_limit=pids_limit,
+        tmpfs_mb=tmpfs_mb,
+        retain_workspaces=retain,
+    )
+
+
+def _load_evaluation(value: Any, root: Path) -> EvaluationSpec | None:
+    if value is None:
+        return None
+    if not isinstance(value, dict) or not set(value).issubset({"commands", "overlay"}):
+        raise SpecError("evaluation may contain only commands and overlay")
+    commands_raw = value.get("commands")
+    if not isinstance(commands_raw, list) or not commands_raw:
+        raise SpecError("evaluation.commands must be a non-empty list")
+    commands: list[EvaluationCommandSpec] = []
+    seen: set[str] = set()
+    for index, command in enumerate(commands_raw):
+        if not isinstance(command, dict) or not set(command).issubset(
+            {"id", "argv", "timeout_seconds"}
+        ):
+            raise SpecError(f"evaluation.commands[{index}] has unsupported fields")
+        command_id = _required_text(command, "id")
+        if not SAFE_ID.fullmatch(command_id) or command_id in seen:
+            raise SpecError(f"unsafe or duplicate evaluation command id: {command_id}")
+        seen.add(command_id)
+        argv = command.get("argv")
+        if not isinstance(argv, list) or not argv or not all(
+            isinstance(item, str) and item and "\x00" not in item for item in argv
+        ):
+            raise SpecError(
+                f"evaluation.commands[{index}].argv must be a non-empty argv array"
+            )
+        timeout = _bounded_integer(command, "timeout_seconds", 300, 1, 3600)
+        commands.append(
+            EvaluationCommandSpec(
+                id=command_id, argv=tuple(argv), timeout_seconds=timeout
+            )
+        )
+    overlay_value = value.get("overlay")
+    overlay = None
+    if overlay_value is not None:
+        if not isinstance(overlay_value, str) or not overlay_value:
+            raise SpecError("evaluation.overlay must be a directory path")
+        overlay = _resolve(root, overlay_value)
+        if not overlay.is_dir():
+            raise SpecError(f"evaluation overlay directory not found: {overlay}")
+        if any(path.is_symlink() for path in overlay.rglob("*")):
+            raise SpecError("evaluation overlays cannot contain symbolic links")
+    return EvaluationSpec(commands=tuple(commands), overlay=overlay)
+
+
+def _bounded_integer(
+    parent: dict[str, Any], name: str, default: int, minimum: int, maximum: int
+) -> int:
+    value = parent.get(name, default)
+    if not isinstance(value, int) or isinstance(value, bool) or not minimum <= value <= maximum:
+        raise SpecError(f"{name} must be an integer from {minimum} to {maximum}")
+    return value
