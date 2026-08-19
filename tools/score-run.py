@@ -7,11 +7,12 @@ import sys
 
 
 WEIGHTS = {
-    "correctness": 30,
-    "autonomy": 25,
-    "throughput": 15,
-    "portability": 15,
-    "operator_experience": 15,
+    "environment_fit": 30,
+    "subscription_portability": 25,
+    "correctness": 20,
+    "mobile_supervision": 10,
+    "autonomy": 10,
+    "operator_experience": 5,
 }
 
 

@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "season_id": "hb-devhard-v1-gpt-5.4-medium-r1",
+  "pack_id": "hb-devhard-v1",
+  "status": "frozen_pending_runtime_qualification",
+  "title": "HarnessBench developer hard pack, round 1",
+  "upstream": {
+    "repository": "https://github.com/Qihoo360/harness-bench",
+    "commit": "1025086a446653702b80cfb48babbeec35db6b2c",
+    "source_tree": "49208501704f1d7e2ada03800ac14621f760e1b6",
+    "task_files_modified": false
+  },
+  "control": {
+    "model_label": "GPT-5.4",
+    "requested_model_id": "gpt-5.4",
+    "reasoning": "medium",
+    "auth_route": "ChatGPT/Codex subscription OAuth",
+    "fallback_policy": "forbidden",
+    "auxiliary_model_policy": "disabled_or_same_model",
+    "configuration_profile": "clean-core",
+    "execution_order": "randomized_matched_blocks",
+    "simultaneous_execution": false
+  },
+  "attempts_per_task": 3,
+  "bundle_sha256_method": "Within each task directory: find . -type f -print0 | sort -z | xargs -0 sha256sum, then SHA-256 the resulting byte stream.",
+  "contenders": [
+    {
+      "id": "omp",
+      "name": "Oh My Pi",
+      "version": "17.2.10",
+      "role": "current"
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "version": "1.18.15",
+      "role": "current"
+    },
+    {
+      "id": "codex",
+      "name": "Codex CLI",
+      "version": "0.147.0",
+      "role": "current"
+    },
+    {
+      "id": "hermes",
+      "name": "Hermes Agent",
+      "version": "0.20.0",
+      "role": "current"
+    },
+    {
+      "id": "nanobot",
+      "name": "NanoBot",
+      "version": "0.1.5.post3",
+      "role": "historical-temporal-proxy"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "039-repo-architecture-map",
+      "domain": "coding",
+      "difficulty": "hard",
+      "git_tree_sha1": "0da3912ea4fbdd1eeb53db2a4d718f8d725e6d4b",
+      "bundle_sha256": "f31c89e7c06e3e0828b03bc2b008d61fff32868e5d6ef1d30e919026094047e1",
+      "file_count": 17
+    },
+    {
+      "id": "041-frontend-state-bug",
+      "domain": "coding",
+      "difficulty": "medium",
+      "git_tree_sha1": "a563e52e84552cd89c930cc14a9fdff613feacb4",
+      "bundle_sha256": "010009b344a2e60ba13d405a8877b29ebf8528e833d15d32693c9c3649dc66e6",
+      "file_count": 7
+    },
+    {
+      "id": "042-api-schema-migration",
+      "domain": "coding",
+      "difficulty": "hard",
+      "git_tree_sha1": "c31ad82fbc7a26a784db28d0b9be72594b815763",
+      "bundle_sha256": "4fd1c176aa7546c3d1b24226706697cf22424d02e9de3df101b203b56d4dc384",
+      "file_count": 12
+    },
+    {
+      "id": "043-db-migration-safety",
+      "domain": "coding-devops",
+      "difficulty": "hard",
+      "git_tree_sha1": "0cd97524725619f70410ea6ef038ab7b42438516",
+      "bundle_sha256": "3b3363874ca74ce6c4e7ccd638c0443fdef7627cf61f9b39063e169d51a609fb",
+      "file_count": 8
+    },
+    {
+      "id": "047-code-review-risk-report",
+      "domain": "coding",
+      "difficulty": "medium",
+      "git_tree_sha1": "b9f375236d27af262550c3ca3a169fdc57e75ae9",
+      "bundle_sha256": "41948f07ba1c8f939119bf56f34f75b3fd3fd807ce7d365b80efff68abbea6ea",
+      "file_count": 9
+    },
+    {
+      "id": "082-compose-config-repair",
+      "domain": "devops",
+      "difficulty": "medium-hard",
+      "git_tree_sha1": "ac504ee0f619d469ca0a9b24cc11cbd127846192",
+      "bundle_sha256": "17e0d91baecae0bedc38092a683680791a8c2944a83c346b24f5f2d18fc0822f",
+      "file_count": 8
+    },
+    {
+      "id": "083-monorepo-interface-repair",
+      "domain": "coding",
+      "difficulty": "unlabeled",
+      "git_tree_sha1": "a0380fa11f388497fdcbdfb0384e6a55167015bd",
+      "bundle_sha256": "d6c0da4b06c2b85a4b2a4989af73f7d5ca82796f1c49fe678dff99881d17f013",
+      "file_count": 15
+    },
+    {
+      "id": "085-flaky-test-root-cause",
+      "domain": "coding",
+      "difficulty": "unlabeled",
+      "git_tree_sha1": "113b20f47d448142165533f99860189b7c0b5500",
+      "bundle_sha256": "22674852c3b9763013ec035b69df8a8d5ac357033b48c7fb60f6a74f516c0eaf",
+      "file_count": 11
+    },
+    {
+      "id": "087-cli-parser-bug-tests",
+      "domain": "coding",
+      "difficulty": "medium-hard",
+      "git_tree_sha1": "426c3d28a82774acf681bf99b1ef2fbeaf84cd31",
+      "bundle_sha256": "9556a2ea2193c5454e2576f6e43e21f515132230e2645898c67f3bc39fb6d2e4",
+      "file_count": 9
+    },
+    {
+      "id": "019-incident-runbook-synthesis",
+      "domain": "devops",
+      "difficulty": "unlabeled",
+      "git_tree_sha1": "00736f027f3a19e8d5c923dafc974cf76794b5e9",
+      "bundle_sha256": "3db4071f92e4882d0648971b2acffb9c231bdc9af578739abae7fbd87d08dac3",
+      "file_count": 15
+    },
+    {
+      "id": "064-service-dependency-triage",
+      "domain": "devops",
+      "difficulty": "hard",
+      "git_tree_sha1": "36716a449bba3922c64dc6559ac4d51e70f52bc0",
+      "bundle_sha256": "c683ae6288d89659f31e657f7b4a1a3fe1b8f80691fee9412cc1749265a33fd3",
+      "file_count": 11
+    },
+    {
+      "id": "086-sql-migration-preflight-rollback",
+      "domain": "coding-devops",
+      "difficulty": "unlabeled",
+      "git_tree_sha1": "21d8907875d778d674d3971fb0b79f610be22432",
+      "bundle_sha256": "a9f21e90b18d2dd10c93309e0ff43a9bf9509f4baba64635d014e3511176c343",
+      "file_count": 7
+    }
+  ],
+  "scoring": {
+    "outcome_scale": [0.0, 1.0],
+    "primary": "mean_of_per_task_best_valid_outcome",
+    "tie_breakers": [
+      "mean_all_valid_outcomes_desc",
+      "zero_score_rate_asc",
+      "median_elapsed_seconds_asc_when_comparable"
+    ],
+    "required_views": [
+      "best_capability",
+      "mean",
+      "median",
+      "per_task_worst",
+      "full_credit_rate",
+      "zero_score_rate",
+      "attempt_dispersion",
+      "invalid_attempts",
+      "elapsed_time",
+      "operator_interventions"
+    ],
+    "process_score": "optional_separate_frozen_judge_lane",
+    "legacy_weighted_scorecard": "forbidden"
+  },
+  "claim_boundary": "This season compares harness behavior under one frozen local protocol. NanoBot is a temporal sanity baseline; public HarnessBench rows are historical context, not an exact reproduction target.",
+  "deviations": [
+    {
+      "date": "2026-08-09",
+      "removed": "088-api-contract-mock-client-compat",
+      "added": "082-compose-config-repair",
+      "reason": "Task 088 requires a public tunnel and would confound coding quality with external network reachability in disposable workers.",
+      "tracker": "https://github.com/T-Py-T/Highlander/issues/32"
+    }
+  ]
+}

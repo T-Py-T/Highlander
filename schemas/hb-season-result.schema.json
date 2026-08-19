@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://highlander.invalid/schemas/hb-season-result.schema.json",
+  "title": "Highlander HarnessBench season result row",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "run_id",
+    "season_id",
+    "task_id",
+    "harness_id",
+    "attempt",
+    "qualification",
+    "outcome_score"
+  ],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "season_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "harness_id": {"type": "string", "minLength": 1},
+    "attempt": {"type": "integer", "minimum": 1},
+    "qualification": {"enum": ["valid", "invalid"]},
+    "outcome_score": {
+      "oneOf": [
+        {"type": "number", "minimum": 0, "maximum": 1},
+        {"type": "null"}
+      ]
+    },
+    "elapsed_seconds": {"type": "number", "minimum": 0},
+    "intervention_count": {"type": "integer", "minimum": 0},
+    "invalid_reason": {"type": "string"},
+    "artifact_path": {"type": "string"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"qualification": {"const": "valid"}}},
+      "then": {
+        "properties": {
+          "outcome_score": {"type": "number", "minimum": 0, "maximum": 1}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"qualification": {"const": "invalid"}}},
+      "then": {"properties": {"outcome_score": {"type": "null"}}}
+    }
+  ]
+}
