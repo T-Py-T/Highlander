@@ -1,0 +1,19 @@
+{
+  "auth_route": "none",
+  "auxiliary_model_policy": "disabled",
+  "endpoint_or_deployment": "local-fixture",
+  "external_model_request_cap": 1,
+  "fallback_policy": "forbidden",
+  "proof_required": [
+    "configured",
+    "runtime",
+    "provider_wire"
+  ],
+  "provider_id": "fake-provider",
+  "reasoning_requested": "low",
+  "region": "local",
+  "requested_id": "fake/exact-model-v1",
+  "upstream_id": "fake/exact-model-v1",
+  "wall_time_seconds": 30,
+  "wire_parameter": "low"
+}

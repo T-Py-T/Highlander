@@ -45,6 +45,22 @@ An Evidence Bundle is Highlander's public result interface. It must let a reader
 
 The pilot creates the applicable subset and reserves the remaining paths for real coding, validation, and operator evidence. `artifact-manifest.json` hashes retained evidence but intentionally excludes raw worktree contents. The patch and repository inventory are the publishable candidate representation.
 
+Clean-room evaluation copies the completed raw workspace, applies the reviewed evaluator overlay only to that copy, runs every command in the pinned evaluator image, and removes the copy. The overlay hash, command argv, output, duration, exit status, timeout, and cleanup proof are retained under `validation/`. Evaluator files never enter the Harness workspace or contender patch.
+
+## Public export gate
+
+Raw Match directories are machine-local review surfaces. Publish only through the fail-closed exporter:
+
+```text
+python3 tools/evidence-bundle.py export \
+  --source .highlander/runs/MATCH-ID \
+  --output results/MATCH-ID \
+  --runner-repository /path/to/clean/highlander-checkout
+python3 tools/evidence-bundle.py verify results/MATCH-ID
+```
+
+The exporter verifies the sealed source manifest before copying, refuses a dirty runner checkout, copies only manifested files, excludes worktrees and workspaces, replaces machine-local roots with stable placeholders, rejects high-confidence credential patterns, records runner/Arena/Task/plan provenance, and seals the public copy with a new manifest. Existing destinations are immutable; choose a new Match ID instead of editing published evidence in place.
+
 ## Three control proofs
 
 A strict Trial needs all three:

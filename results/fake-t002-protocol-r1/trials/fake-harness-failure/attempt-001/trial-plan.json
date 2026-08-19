@@ -1,0 +1,88 @@
+{
+  "adapter": "fake",
+  "capability": {
+    "control_proof": {
+      "configured": true,
+      "provider_wire": true,
+      "runtime": true
+    },
+    "execution_implemented": true,
+    "execution_ready": true,
+    "harness": {
+      "name": "fake",
+      "version": "1"
+    },
+    "limitations": [
+      "deterministic test double; not a coding harness"
+    ],
+    "mcp_servers": [],
+    "memory": {
+      "mode": "none",
+      "scope": "trial",
+      "seeded": false
+    },
+    "permissions": "fixture-only",
+    "prompt_transport": "exact-bytes",
+    "protocol": "highlander-fake-v1",
+    "subagents": {
+      "enabled": false
+    },
+    "tools": [
+      "read",
+      "edit",
+      "test"
+    ]
+  },
+  "contender_id": "fake-harness-failure",
+  "control_profile": {
+    "auth_route": "none",
+    "auxiliary_model_policy": "disabled",
+    "endpoint_or_deployment": "local-fixture",
+    "external_model_request_cap": 1,
+    "fallback_policy": "forbidden",
+    "proof_required": [
+      "configured",
+      "runtime",
+      "provider_wire"
+    ],
+    "provider_id": "fake-provider",
+    "reasoning_requested": "low",
+    "region": "local",
+    "requested_id": "fake/exact-model-v1",
+    "upstream_id": "fake/exact-model-v1",
+    "wall_time_seconds": 30,
+    "wire_parameter": "low"
+  },
+  "invocation": {
+    "argv": [
+      "<internal:fake-harness>"
+    ],
+    "credential_values_recorded": false,
+    "cwd": "<SOURCE_EVIDENCE_ROOT>/worktrees/fake-harness-failure/attempt-001",
+    "inherited_environment_names": [],
+    "prompt_transport": "exact-bytes",
+    "protocol": "highlander-fake-v1"
+  },
+  "lane": "controlled_efficacy",
+  "match_id": "fake-t002-protocol-r1",
+  "options": {
+    "behavior": "harness_failure",
+    "delay_ms": 0,
+    "tools": [
+      "read",
+      "edit",
+      "test"
+    ]
+  },
+  "start_gate": "<SOURCE_EVIDENCE_ROOT>/start-gate.json",
+  "task": {
+    "byte_length": 1521,
+    "sha256": "30197b3a7a673b847ed586c6be7592e5375900cb380134732e31893cc1c650d9",
+    "source": "<HOME>/Documents/HomeLife/Highlander/tasks/T002-linewatch-alarm-id-whitespace.md",
+    "stored_path": "<SOURCE_EVIDENCE_ROOT>/task/task.bin"
+  },
+  "trial_dir": "<SOURCE_EVIDENCE_ROOT>/trials/fake-harness-failure/attempt-001",
+  "trial_id": "fake-harness-failure-attempt-001",
+  "trial_plan_path": "<SOURCE_EVIDENCE_ROOT>/trials/fake-harness-failure/attempt-001/trial-plan.json",
+  "worktree": "<SOURCE_EVIDENCE_ROOT>/worktrees/fake-harness-failure/attempt-001"
+}
