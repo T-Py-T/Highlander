@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from .adapters import adapter_for
+from .cleanroom import CleanRoom, extract_control_proof
 from .model import HighlanderError, MatchSpec
 from .sessions import session_adapter_for
 
@@ -28,6 +29,20 @@ def canonical_json(value: Any) -> str:
 
 def sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+def sha256_tree(root: Path) -> tuple[str, int]:
+    digest = hashlib.sha256()
+    files = 0
+    for path in sorted(item for item in root.rglob("*") if item.is_file()):
+        relative = path.relative_to(root).as_posix().encode("utf-8")
+        content = path.read_bytes()
+        digest.update(len(relative).to_bytes(8, "big"))
+        digest.update(relative)
+        digest.update(len(content).to_bytes(8, "big"))
+        digest.update(content)
+        files += 1
+    return digest.hexdigest(), files
 
 
 def atomic_json(path: Path, value: Any) -> None:
@@ -80,22 +95,101 @@ class MatchRunner:
     def plan(self, session_override: str | None = None) -> dict[str, Any]:
         session_name = session_override or self.spec.session.adapter
         session_adapter = session_adapter_for(session_name)
+        clean_spec = self.spec.arena.clean_room
+        clean_room = CleanRoom(clean_spec) if clean_spec else None
+        clean_room_capability = clean_room.probe() if clean_room else None
+        evaluator_image = None
+        evaluator_error = None
+        if clean_room and clean_room_capability and clean_room_capability["available"]:
+            assert clean_spec is not None
+            try:
+                evaluator_image = clean_room.inspect_image(
+                    clean_spec.evaluator_image, "evaluator"
+                )
+            except HighlanderError as exc:
+                evaluator_error = str(exc)
         base_sha = self._git("rev-parse", f"{self.spec.arena.base_ref}^{{commit}}")
         task_bytes = self.spec.task.path.read_bytes()
         task_sha = sha256_bytes(task_bytes)
         run_dir = (self.spec.output_root / self.spec.match_id).resolve()
         source_dirty = bool(self._git("status", "--porcelain"))
+        evaluation = self.spec.as_dict().get("evaluation")
+        if evaluation and self.spec.evaluation and self.spec.evaluation.overlay:
+            overlay_hash, overlay_files = sha256_tree(self.spec.evaluation.overlay)
+            evaluation["overlay_sha256"] = overlay_hash
+            evaluation["overlay_files"] = overlay_files
         trials: list[dict[str, Any]] = []
         for contender in self.spec.contenders:
             trial_dir = run_dir / "trials" / contender.id / "attempt-001"
-            worktree = run_dir / "worktrees" / contender.id / "attempt-001"
+            worktree = run_dir / (
+                "workspaces" if clean_room else "worktrees"
+            ) / contender.id / "attempt-001"
             adapter = adapter_for(contender.adapter)
             capability = adapter.probe(contender, self.spec.control_profile)
+            clean_plan = None
+            if clean_room:
+                assert clean_spec is not None
+                if clean_room_capability and clean_room_capability["available"]:
+                    try:
+                        clean_plan = clean_room.plan_trial(
+                            match_id=self.spec.match_id,
+                            contender_id=contender.id,
+                            adapter=contender.adapter,
+                            image=contender.options["image"],
+                            seed_profile=contender.options.get("seed_profile"),
+                            authentication_required=self.spec.control_profile.auth_route
+                            != "none",
+                        )
+                    except HighlanderError as exc:
+                        clean_plan = {
+                            "adapter": "oci",
+                            "runtime": clean_spec.runtime,
+                            "profile": clean_spec.profile,
+                            "image_reference": contender.options["image"],
+                            "image_id": None,
+                            "digest_verified": False,
+                            "seed_profile": contender.options.get("seed_profile"),
+                            "container_name": f"highlander-{self.spec.match_id}-{contender.id}-a1".lower()[:120],
+                            "error": str(exc),
+                        }
+                else:
+                    clean_plan = {
+                        "adapter": "oci",
+                        "runtime": clean_spec.runtime,
+                        "profile": clean_spec.profile,
+                        "image_reference": contender.options["image"],
+                        "image_id": None,
+                        "digest_verified": False,
+                        "seed_profile": contender.options.get("seed_profile"),
+                        "container_name": f"highlander-{self.spec.match_id}-{contender.id}-a1".lower()[:120],
+                        "error": clean_room_capability["reason"] if clean_room_capability else "clean-room runtime unavailable",
+                    }
+                capability = {
+                    **capability,
+                    "binary": f"{clean_plan['runtime']}:{clean_plan['image_reference']}",
+                    "execution_ready": bool(
+                        clean_room_capability
+                        and clean_room_capability["available"]
+                        and clean_plan.get("digest_verified")
+                        and clean_plan.get("seed", {}).get("available", False)
+                        and evaluator_image
+                    ),
+                    "clean_room": clean_plan,
+                }
+                if clean_plan.get("labels"):
+                    capability["harness"] = {
+                        "name": contender.adapter,
+                        "version": clean_plan["labels"].get(
+                            "io.highlander.version"
+                        ),
+                    }
             invocation = adapter.invocation(
                 contender,
                 self.spec.control_profile,
-                worktree,
-                run_dir / "task" / "task.bin",
+                Path("/workspace") if clean_room else worktree,
+                Path("/highlander/task/task.bin")
+                if clean_room
+                else run_dir / "task" / "task.bin",
             )
             trials.append(
                 {
@@ -106,6 +200,10 @@ class MatchRunner:
                     "trial_dir": str(trial_dir),
                     "trial_plan_path": str(trial_dir / "trial-plan.json"),
                     "worktree": str(worktree),
+                    "workspace_kind": "independent_disposable_clone"
+                    if clean_room
+                    else "detached_git_worktree",
+                    "clean_room": clean_plan,
                     "capability": capability,
                     "invocation": invocation,
                 }
@@ -123,6 +221,10 @@ class MatchRunner:
                 "base_ref": self.spec.arena.base_ref,
                 "base_sha": base_sha,
                 "source_worktree_dirty": source_dirty,
+                "isolation": "independent_disposable_clone"
+                if clean_room
+                else "detached_git_worktree",
+                "clean_room": self.spec.as_dict()["arena"].get("clean_room"),
             },
             "task": {
                 "source": str(self.spec.task.path),
@@ -131,6 +233,10 @@ class MatchRunner:
                 "byte_length": len(task_bytes),
             },
             "control_profile": self.spec.as_dict()["control_profile"],
+            "evaluation": evaluation,
+            "clean_room_capability": clean_room_capability,
+            "evaluator_image": evaluator_image,
+            "evaluator_error": evaluator_error,
             "session": {
                 "adapter": session_name,
                 "capability": session_adapter.probe(),
@@ -141,7 +247,10 @@ class MatchRunner:
                 "dry_run_default": True,
                 "credentials_brokered": False,
                 "paid_model_calls_in_plan": False,
-                "worktrees_retained": True,
+                "worktrees_retained": not bool(clean_room),
+                "disposable_containers": bool(clean_room),
+                "publication_available": False,
+                "host_home_mounted": False if clean_room else None,
             },
         }
         plan["plan_hash"] = sha256_bytes(canonical_json(plan).encode("utf-8"))
@@ -160,7 +269,7 @@ class MatchRunner:
         ]
         if unavailable:
             raise HighlanderError(
-                "execution is blocked until native adapters pass control verification: "
+                "execution is blocked until clean-room adapters and images pass preflight: "
                 + ", ".join(unavailable)
             )
         if not plan["session"]["capability"]["available"]:
@@ -193,6 +302,8 @@ class MatchRunner:
 
         workers: list[dict[str, Any]] = []
         session_adapter = session_adapter_for(plan["session"]["adapter"])
+        clean_spec = self.spec.arena.clean_room
+        clean_room = CleanRoom(clean_spec) if clean_spec else None
         handle = None
         cleanup: dict[str, Any] = {
             "session_closed": True,
@@ -212,19 +323,29 @@ class MatchRunner:
                 trial_dir = Path(trial["trial_dir"])
                 worktree.parent.mkdir(parents=True, exist_ok=True)
                 trial_dir.mkdir(parents=True, exist_ok=True)
-                self._git(
-                    "worktree",
-                    "add",
-                    "--detach",
-                    str(worktree),
-                    plan["arena"]["base_sha"],
-                )
+                if clean_room:
+                    clean_room.prepare_clone(
+                        self.spec.arena.repository,
+                        plan["arena"]["base_sha"],
+                        worktree,
+                        trial["trial_id"],
+                    )
+                else:
+                    self._git(
+                        "worktree",
+                        "add",
+                        "--detach",
+                        str(worktree),
+                        plan["arena"]["base_sha"],
+                    )
                 trial_plan = {
                     **trial,
                     "match_id": plan["match_id"],
                     "lane": plan["lane"],
                     "task": plan["task"],
                     "control_profile": plan["control_profile"],
+                    "evaluation": plan.get("evaluation"),
+                    "clean_room_config": plan["arena"].get("clean_room"),
                     "start_gate": str(run_dir / "start-gate.json"),
                 }
                 atomic_json(Path(trial["trial_plan_path"]), trial_plan)
@@ -290,8 +411,8 @@ class MatchRunner:
             repository_dir.mkdir(parents=True, exist_ok=True)
             if worktree.is_dir():
                 status = self._git_at(worktree, "status", "--porcelain=v1")
-                diff = self._git_at(
-                    worktree, "diff", "--binary", plan["arena"]["base_sha"]
+                diff = self._repository_patch(
+                    worktree, plan["arena"]["base_sha"]
                 )
                 final_sha = self._git_at(worktree, "rev-parse", "HEAD")
             else:
@@ -309,9 +430,24 @@ class MatchRunner:
             trial_cleanup = {
                 **self._reconcile_worker_identity(trial_dir),
                 "session_reconciled": cleanup.get("session_closed", False),
-                "worktree": str(worktree),
-                "worktree_policy": "retained_intentionally_for_review",
             }
+            if clean_room:
+                assert clean_spec is not None
+                container_cleanup = clean_room.reconcile(trial["clean_room"])
+                workspace_cleanup = clean_room.remove_workspace(
+                    worktree,
+                    run_dir,
+                    clean_spec.retain_workspaces,
+                )
+                trial_cleanup.update(container_cleanup)
+                trial_cleanup.update(workspace_cleanup)
+            else:
+                trial_cleanup.update(
+                    {
+                        "worktree": str(worktree),
+                        "worktree_policy": "retained_intentionally_for_review",
+                    }
+                )
             atomic_json(trial_dir / "cleanup.json", trial_cleanup)
             outcome = self._audit_trial(plan, trial, outcome, trial_cleanup)
             atomic_json(outcome_path, outcome)
@@ -391,7 +527,10 @@ class MatchRunner:
         artifacts = []
         for path in sorted(item for item in root.rglob("*") if item.is_file()):
             relative = path.relative_to(root)
-            if path.name == "artifact-manifest.json" or relative.parts[0] == "worktrees":
+            if path.name == "artifact-manifest.json" or relative.parts[0] in {
+                "worktrees",
+                "workspaces",
+            }:
                 continue
             artifacts.append(
                 {
@@ -440,6 +579,10 @@ class MatchRunner:
             name: os.environ[name] for name in safe_names if name in os.environ
         }
         environment["PYTHONUNBUFFERED"] = "1"
+        environment["HIGHLANDER_SEED_ROOT"] = os.environ.get(
+            "HIGHLANDER_SEED_ROOT",
+            str(Path.home() / ".config" / "highlander" / "seeds"),
+        )
         return environment
 
     @staticmethod
@@ -543,6 +686,12 @@ class MatchRunner:
             reasons.append("worker process group was not reconciled")
         if not cleanup.get("session_reconciled"):
             reasons.append("session was not reconciled")
+        if trial.get("clean_room"):
+            if not cleanup.get("container_reconciled"):
+                reasons.append("clean-room container was not reconciled")
+            validation_path = trial_dir / "validation" / "summary.json"
+            if not validation_path.is_file():
+                reasons.append("clean-room evaluator summary is missing")
         events_path = trial_dir / "events.jsonl"
         if not events_path.is_file() or not events_path.read_text(
             encoding="utf-8"
@@ -584,6 +733,58 @@ class MatchRunner:
                 f"git {' '.join(args)} failed in {repository}: {result.stderr.strip()}"
             )
         return result.stdout.strip()
+
+    @classmethod
+    def _repository_patch(cls, repository: Path, base_sha: str) -> str:
+        """Capture tracked and untracked raw changes without touching the index."""
+
+        tracked = cls._git_at(repository, "diff", "--binary", base_sha)
+        untracked_result = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(repository),
+                "ls-files",
+                "--others",
+                "--exclude-standard",
+                "-z",
+            ],
+            capture_output=True,
+            check=False,
+        )
+        if untracked_result.returncode != 0:
+            raise HighlanderError(
+                f"git could not enumerate untracked files in {repository}"
+            )
+        additions: list[str] = []
+        for raw_path in untracked_result.stdout.split(b"\0"):
+            if not raw_path:
+                continue
+            relative = raw_path.decode("utf-8", errors="surrogateescape")
+            result = subprocess.run(
+                [
+                    "git",
+                    "-C",
+                    str(repository),
+                    "diff",
+                    "--no-index",
+                    "--binary",
+                    "--",
+                    "/dev/null",
+                    relative,
+                ],
+                capture_output=True,
+                text=True,
+                errors="surrogateescape",
+                check=False,
+            )
+            if result.returncode not in {0, 1}:
+                raise HighlanderError(
+                    f"git could not capture untracked file {relative!r}: {result.stderr.strip()}"
+                )
+            additions.append(result.stdout.rstrip())
+        sections = [section for section in [tracked, *additions] if section]
+        return "\n".join(sections) + ("\n" if sections else "")
 
 
 def run_worker(trial_plan_path: str | Path) -> int:
@@ -635,6 +836,15 @@ def run_worker(trial_plan_path: str | Path) -> int:
         task_sha256=observed_hash,
         submitted_ns=prompt_submitted_ns,
     )
+
+    if plan.get("clean_room"):
+        return _run_clean_room_worker(
+            plan,
+            task_bytes,
+            observed_hash,
+            prompt_submitted_ns,
+            events,
+        )
 
     delay_ms = options.get("delay_ms", 0)
     if isinstance(delay_ms, int) and delay_ms > 0:
@@ -735,6 +945,163 @@ def run_worker(trial_plan_path: str | Path) -> int:
     append_event(events, "QUALIFIED" if not invalid_reasons else "INVALID")
     # Outcome is the final atomic worker write. Its presence therefore proves
     # that all preceding evidence and lifecycle records were flushed.
+    atomic_json(trial_dir / "outcome.json", outcome)
+    return 0
+
+
+def _run_clean_room_worker(
+    plan: dict[str, Any],
+    task_bytes: bytes,
+    observed_hash: str,
+    prompt_submitted_ns: int,
+    events: Path,
+) -> int:
+    """Run one native Harness in a fresh OCI container, then evaluate it unchanged."""
+
+    trial_dir = Path(plan["trial_dir"])
+    native_dir = trial_dir / "native"
+    native_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        task_text = task_bytes.decode("utf-8")
+    except UnicodeDecodeError:
+        outcome = {
+            "qualification": "invalid",
+            "competitive_outcome": "not_run",
+            "invalid_reasons": ["clean-room native adapters require a UTF-8 Task"],
+            "task_sha256": observed_hash,
+            "prompt_submitted_ns": prompt_submitted_ns,
+        }
+        atomic_json(trial_dir / "outcome.json", outcome)
+        return 6
+
+    clean_room = CleanRoom(plan["clean_room_config"])
+    execution = clean_room.execute_harness(
+        plan,
+        task_text,
+        native_dir / "harness-output.jsonl",
+        plan["control_profile"]["wall_time_seconds"],
+    )
+    atomic_json(native_dir / "container-execution.json", execution)
+
+    control = plan["control_profile"]
+    expected = {
+        "model": control["requested_id"],
+        "provider": control["provider_id"],
+        "reasoning": control["reasoning_requested"],
+        "upstream_id": control["upstream_id"],
+        "endpoint_or_deployment": control["endpoint_or_deployment"],
+        "region": control["region"],
+    }
+    extracted, final_text = extract_control_proof(
+        native_dir / "harness-output.jsonl", expected
+    )
+    configured = {
+        "proof": "configured",
+        **expected,
+        "fallback_events": [],
+        "auxiliary_models": [],
+        "verified": True,
+        "native_invocation": plan["invocation"],
+        "clean_room_image_id": plan["clean_room"]["image_id"],
+    }
+    observed = extracted["observed"]
+    runtime = {
+        "proof": "runtime",
+        "model": observed["model"],
+        "provider": observed["provider"],
+        "reasoning": observed["reasoning"],
+        "fallback_events": [],
+        "auxiliary_models": [],
+        "verified": extracted["runtime_verified"],
+        "records_examined": extracted["records_examined"],
+    }
+    provider = {
+        **runtime,
+        "proof": "provider_wire",
+        "upstream_id": observed["upstream_id"],
+        "endpoint_or_deployment": observed["endpoint_or_deployment"],
+        "region": observed["region"],
+        "verified": extracted["provider_verified"],
+    }
+    atomic_json(trial_dir / "configured-control.json", configured)
+    atomic_json(trial_dir / "runtime-control.json", runtime)
+    atomic_json(trial_dir / "provider-control.json", provider)
+
+    transcript = {
+        "format": f"{plan['adapter']}-native-container-v1",
+        "task_sha256": observed_hash,
+        "raw_output": "harness-output.jsonl",
+        "returncode": execution["returncode"],
+        "timed_out": execution["timed_out"],
+        "final_text": final_text,
+    }
+    atomic_json(native_dir / "transcript.json", transcript)
+    atif = {
+        "schema_version": "ATIF-v1.7",
+        "session_id": plan["trial_id"],
+        "trajectory_id": plan["trial_id"],
+        "agent": {
+            "name": plan["adapter"],
+            "version": plan["capability"]["harness"].get("version"),
+            "model_name": observed["model"],
+            "extra": {
+                "harness_adapter": plan["adapter"],
+                "clean_room_image_id": plan["clean_room"]["image_id"],
+            },
+        },
+        "steps": [
+            {
+                "step_id": 1,
+                "timestamp": utc_now(),
+                "source": "user",
+                "message": task_text,
+                "extra": {"sha256": observed_hash},
+            },
+            {
+                "step_id": 2,
+                "timestamp": utc_now(),
+                "source": "agent",
+                "model_name": observed["model"],
+                "message": final_text,
+            },
+        ],
+        "extra": {
+            "native_evidence": "../native/harness-output.jsonl",
+            "metrics_unavailable": True,
+        },
+    }
+    atomic_json(trial_dir / "normalized" / "trajectory.atif.json", atif)
+
+    evaluation = clean_room.evaluate(
+        plan,
+        list((plan.get("evaluation") or {}).get("commands", [])),
+        trial_dir / "validation",
+    )
+    atomic_json(trial_dir / "validation" / "summary.json", evaluation)
+
+    invalid_reasons: list[str] = []
+    if execution["timed_out"]:
+        invalid_reasons.append("Harness container exceeded the Trial wall-time limit")
+    if not execution["container_reconciled"]:
+        invalid_reasons.append("Harness container could not be reconciled")
+    if execution["returncode"] != 0:
+        competitive = "harness_failure"
+    elif evaluation["status"] == "passed":
+        competitive = "evaluation_passed"
+    else:
+        competitive = "evaluation_failed"
+    outcome = {
+        "qualification": "invalid" if invalid_reasons else "qualified",
+        "competitive_outcome": competitive,
+        "invalid_reasons": invalid_reasons,
+        "task_sha256": observed_hash,
+        "prompt_submitted_ns": prompt_submitted_ns,
+        "model_calls": None,
+        "cost": None,
+        "validation_status": evaluation["status"],
+    }
+    append_event(events, "EVIDENCE_COLLECTED")
+    append_event(events, "QUALIFIED" if not invalid_reasons else "INVALID")
     atomic_json(trial_dir / "outcome.json", outcome)
     return 0
 

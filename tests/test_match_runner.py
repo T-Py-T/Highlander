@@ -179,6 +179,9 @@ class MatchRunnerTests(unittest.TestCase):
         contenders = [
             {"id": "omp", "adapter": "omp", "options": {}},
             {"id": "opencode", "adapter": "opencode", "options": {}},
+            {"id": "codex", "adapter": "codex", "options": {}},
+            {"id": "hermes", "adapter": "hermes", "options": {}},
+            {"id": "nanobot", "adapter": "nanobot", "options": {}},
         ]
         runner = MatchRunner.from_file(
             self.write_spec(match_id="real-dry-run", contenders=contenders)
@@ -188,9 +191,13 @@ class MatchRunnerTests(unittest.TestCase):
             trial["adapter"]: trial["invocation"]["argv"]
             for trial in plan["trials"]
         }
-        self.assertIn("rpc", commands["omp"])
+        self.assertIn("json", commands["omp"])
         self.assertIn("--thinking", commands["omp"])
+        self.assertIn("--no-extensions", commands["omp"])
         self.assertIn("--variant", commands["opencode"])
+        self.assertIn("--ephemeral", commands["codex"])
+        self.assertIn("--safe-mode", commands["hermes"])
+        self.assertIn("NANOBOT_TOOLS__RESTRICT_TO_WORKSPACE=true", commands["nanobot"])
         with self.assertRaises(HighlanderError):
             runner.execute(reviewed_plan=plan)
 

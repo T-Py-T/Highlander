@@ -29,7 +29,26 @@
       "required": ["repository", "base_ref"],
       "properties": {
         "repository": {"type": "string", "minLength": 1},
-        "base_ref": {"type": "string", "minLength": 1}
+        "base_ref": {"type": "string", "minLength": 1},
+        "clean_room": {
+          "type": "object",
+          "required": ["runtime", "profile", "evaluator_image"],
+          "properties": {
+            "runtime": {"enum": ["docker", "podman"]},
+            "profile": {"enum": ["clean-core", "production-stack", "plugin-ablation"]},
+            "evaluator_image": {
+              "type": "string",
+              "pattern": "^(?:[A-Za-z0-9][A-Za-z0-9._/:.-]*@)?sha256:[0-9a-f]{64}$"
+            },
+            "network": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"},
+            "cpus": {"type": "number", "minimum": 0.25, "maximum": 64},
+            "memory_mb": {"type": "integer", "minimum": 256, "maximum": 131072},
+            "pids_limit": {"type": "integer", "minimum": 64, "maximum": 4096},
+            "tmpfs_mb": {"type": "integer", "minimum": 64, "maximum": 16384},
+            "retain_workspaces": {"type": "boolean"}
+          },
+          "additionalProperties": false
+        }
       },
       "additionalProperties": false
     },
@@ -147,6 +166,14 @@
                   "profile": {
                     "type": "string",
                     "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+                  },
+                  "image": {
+                    "type": "string",
+                    "pattern": "^(?:[A-Za-z0-9][A-Za-z0-9._/:.-]*@)?sha256:[0-9a-f]{64}$"
+                  },
+                  "seed_profile": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
                   }
                 },
                 "additionalProperties": false
@@ -158,7 +185,36 @@
               "adapter": {"const": "opencode"},
               "options": {
                 "type": "object",
-                "properties": {"pure": {"type": "boolean"}},
+                "properties": {
+                  "pure": {"type": "boolean"},
+                  "image": {
+                    "type": "string",
+                    "pattern": "^(?:[A-Za-z0-9][A-Za-z0-9._/:.-]*@)?sha256:[0-9a-f]{64}$"
+                  },
+                  "seed_profile": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "adapter": {"enum": ["codex", "hermes", "nanobot"]},
+              "options": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "pattern": "^(?:[A-Za-z0-9][A-Za-z0-9._/:.-]*@)?sha256:[0-9a-f]{64}$"
+                  },
+                  "seed_profile": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+                  }
+                },
                 "additionalProperties": false
               }
             }
@@ -166,6 +222,32 @@
         ],
         "additionalProperties": false
       }
+    },
+    "evaluation": {
+      "type": "object",
+      "required": ["commands"],
+      "properties": {
+        "overlay": {"type": "string", "minLength": 1},
+        "commands": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "argv"],
+            "properties": {
+              "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"},
+              "argv": {
+                "type": "array",
+                "minItems": 1,
+                "items": {"type": "string", "minLength": 1}
+              },
+              "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 3600}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
     },
     "session": {
       "type": "object",

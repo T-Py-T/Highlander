@@ -42,7 +42,7 @@ MatchRunner ── freezes base SHA, Task hash, Control Profile, commands
                     the exact stored Task bytes
 ```
 
-The pilot's fake Harness Adapter makes no model calls. OMP and OpenCode produce redacted invocation plans but cannot execute yet. This is intentional: a Harness Adapter does not graduate until it can retain native events and verify configured, runtime, and provider/wire controls.
+The fake Harness Adapter makes no model calls. Host OMP and OpenCode execution remains blocked. Their first executable adapters run only through the OCI Clean Room, which captures native JSON output and fails closed when that output cannot prove the configured controls. See [CLEAN-ROOM.md](CLEAN-ROOM.md).
 
 ## Session boundary
 
@@ -80,9 +80,11 @@ The journal is append-only JSONL. Terminal pane disappearance is never completio
 - Fake workers receive an explicit environment allowlist and cannot inherit provider keys or OAuth variables. Future native adapters require a separate audited authentication policy before execution can be enabled.
 - Adapter options use per-adapter allowlists; arbitrary headers, environment values, tokens, and unknown fields are rejected.
 - Worktrees are detached from one frozen base SHA.
+- OCI Trials instead use independent `--no-local` clones, remove `origin`, mount no host home or publication credentials, and destroy the workspace after raw patch capture.
 - Processes and sessions are reconciled automatically.
 - Worktrees remain for inspection and are marked `retained_intentionally_for_review`; automatic deletion is outside the pilot.
 - No merge, push, deployment, configuration update, or credential brokering exists in MatchRunner.
+- Controller evaluation is observational only. No commit, PR, no-mistakes gate, auto-fix, or post-Trial repair is part of a raw Harness Match.
 
 ## Local validation
 
