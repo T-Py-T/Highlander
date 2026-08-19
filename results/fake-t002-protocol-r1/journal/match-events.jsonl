@@ -1,0 +1,9 @@
+{"event": "PLANNED", "plan_hash": "b3a9f60ced131653ee59cdb780eb11aecbb94cd4ac99e119bb30c2b51e17ce6b", "timestamp": "2026-08-19T18:24:43.827202Z"}
+{"event": "PREFLIGHTED", "timestamp": "2026-08-19T18:24:43.827471Z"}
+{"event": "PREPARED", "timestamp": "2026-08-19T18:24:43.870867Z", "trial_count": 2}
+{"event": "LAUNCHED", "session": {"adapter": "headless", "credential_values_recorded": false, "match_id": "fake-t002-protocol-r1", "ownership_marker": null, "pane_ids": [], "process_ids": [14101, 14102], "tmux_session": null}, "timestamp": "2026-08-19T18:24:43.873689Z"}
+{"event": "ARMED", "timestamp": "2026-08-19T18:24:43.931219Z"}
+{"event": "RELEASED", "released_at": "2026-08-19T18:24:43.931375Z", "released_ns": 1787163883931384000, "timestamp": "2026-08-19T18:24:43.931619Z"}
+{"event": "COLLECTED", "timestamp": "2026-08-19T18:24:43.989536Z"}
+{"event": "VERIFIED", "start_skew_ms": 2.804, "timestamp": "2026-08-19T18:24:44.033670Z"}
+{"event": "COMPLETE", "timestamp": "2026-08-19T18:24:44.033722Z"}

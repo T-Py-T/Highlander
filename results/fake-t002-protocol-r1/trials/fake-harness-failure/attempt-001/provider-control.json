@@ -1,0 +1,12 @@
+{
+  "auxiliary_models": [],
+  "endpoint_or_deployment": "local-fixture",
+  "fallback_events": [],
+  "model": "fake/exact-model-v1",
+  "proof": "provider_wire",
+  "provider": "fake-provider",
+  "reasoning": "low",
+  "region": "local",
+  "upstream_id": "fake/exact-model-v1",
+  "verified": true
+}

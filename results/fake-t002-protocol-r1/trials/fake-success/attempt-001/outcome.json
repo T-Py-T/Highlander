@@ -1,0 +1,11 @@
+{
+  "competitive_outcome": "protocol_success",
+  "cost": 0,
+  "invalid_reasons": [],
+  "model_calls": 0,
+  "prompt_submitted_ns": 1787163883944916000,
+  "qualification": "qualified",
+  "qualification_authority": "highlander-parent-audit-v1",
+  "task_sha256": "30197b3a7a673b847ed586c6be7592e5375900cb380134732e31893cc1c650d9",
+  "worker_qualification_claim": "qualified"
+}

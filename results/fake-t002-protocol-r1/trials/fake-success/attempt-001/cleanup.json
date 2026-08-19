@@ -1,0 +1,10 @@
+{
+  "process_group_id": 14101,
+  "process_id": 14101,
+  "process_identity_available": true,
+  "process_reconciled": true,
+  "session_reconciled": true,
+  "unmanaged_resources_detected": false,
+  "worktree": "<SOURCE_EVIDENCE_ROOT>/worktrees/fake-success/attempt-001",
+  "worktree_policy": "retained_intentionally_for_review"
+}

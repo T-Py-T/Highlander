@@ -1,0 +1,10 @@
+{
+  "exit_codes": {
+    "14101": 0,
+    "14102": 0
+  },
+  "forced_process_ids": [],
+  "session_closed": true,
+  "session_started": true,
+  "unreconciled_process_ids": []
+}

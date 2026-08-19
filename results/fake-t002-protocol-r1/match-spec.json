@@ -1,0 +1,64 @@
+{
+  "arena": {
+    "base_ref": "HEAD",
+    "repository": "<ARENA_ROOT>"
+  },
+  "contenders": [
+    {
+      "adapter": "fake",
+      "id": "fake-success",
+      "options": {
+        "behavior": "success",
+        "delay_ms": 25,
+        "tools": [
+          "read",
+          "edit",
+          "test"
+        ]
+      }
+    },
+    {
+      "adapter": "fake",
+      "id": "fake-harness-failure",
+      "options": {
+        "behavior": "harness_failure",
+        "delay_ms": 0,
+        "tools": [
+          "read",
+          "edit",
+          "test"
+        ]
+      }
+    }
+  ],
+  "control_profile": {
+    "auth_route": "none",
+    "auxiliary_model_policy": "disabled",
+    "endpoint_or_deployment": "local-fixture",
+    "external_model_request_cap": 1,
+    "fallback_policy": "forbidden",
+    "proof_required": [
+      "configured",
+      "runtime",
+      "provider_wire"
+    ],
+    "provider_id": "fake-provider",
+    "reasoning_requested": "low",
+    "region": "local",
+    "requested_id": "fake/exact-model-v1",
+    "upstream_id": "fake/exact-model-v1",
+    "wall_time_seconds": 30,
+    "wire_parameter": "low"
+  },
+  "lane": "controlled_efficacy",
+  "match_id": "fake-t002-protocol-r1",
+  "output_root": "<HOME>/Documents/HomeLife/Highlander/.highlander/runs",
+  "schema_version": 1,
+  "session": {
+    "adapter": "headless"
+  },
+  "source_path": "<HOME>/Documents/HomeLife/Highlander/examples/matches/.fake-t002-local-evidence.json",
+  "task": {
+    "path": "<HOME>/Documents/HomeLife/Highlander/tasks/T002-linewatch-alarm-id-whitespace.md"
+  }
+}
