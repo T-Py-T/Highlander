@@ -1,0 +1,29 @@
+{
+  "method": "exact-root replacement plus high-confidence secret scan",
+  "raw_worktrees_exported": false,
+  "replacements": [
+    {
+      "occurrences": 2,
+      "placeholder": "<ARENA_ROOT>"
+    },
+    {
+      "occurrences": 0,
+      "placeholder": "<RUNNER_ROOT>"
+    },
+    {
+      "occurrences": 26,
+      "placeholder": "<SOURCE_EVIDENCE_ROOT>"
+    },
+    {
+      "occurrences": 6,
+      "placeholder": "<HOME>"
+    }
+  ],
+  "schema_version": 1,
+  "secret_patterns_checked": [
+    "bearer_token",
+    "github_token",
+    "openai_key",
+    "private_key"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "match_id": "fake-t001-concurrency",
+  "lane": "concurrency",
+  "arena": {
+    "repository": "../..",
+    "base_ref": "HEAD"
+  },
+  "task": {
+    "path": "../../tasks/T001-race-fix.md"
+  },
+  "control_profile": {
+    "model": {
+      "requested_id": "fake/exact-model-v1",
+      "upstream_id": "fake/exact-model-v1",
+      "provider_id": "fake-provider",
+      "endpoint_or_deployment": "local-fixture",
+      "region": "local",
+      "auth_route": "none"
+    },
+    "reasoning": {
+      "requested": "low",
+      "wire_parameter": "low"
+    },
+    "fallback_policy": "forbidden",
+    "auxiliary_model_policy": "disabled",
+    "limits": {
+      "wall_time_seconds": 30,
+      "external_model_request_cap": 1
+    },
+    "proof_required": [
+      "configured",
+      "runtime",
+      "provider_wire"
+    ]
+  },
+  "contenders": [
+    {
+      "id": "fake-success",
+      "adapter": "fake",
+      "options": {
+        "behavior": "success"
+      }
+    },
+    {
+      "id": "fake-harness-failure",
+      "adapter": "fake",
+      "options": {
+        "behavior": "harness_failure"
+      }
+    }
+  ],
+  "session": {
+    "adapter": "headless"
+  }
+}

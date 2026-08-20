@@ -2,6 +2,8 @@
 
 Each task must be independently runnable from a frozen repository snapshot.
 
+`T002-linewatch-alarm-id-whitespace.md` is the first disposable-container Arena task. Its controller-only regression tests live under `evaluators/T002-linewatch-alarm-id-whitespace/` and are applied after each raw Trial.
+
 ## Required sections
 
 - Task ID and version.

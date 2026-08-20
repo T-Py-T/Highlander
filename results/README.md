@@ -10,29 +10,27 @@ If a harness cannot use the fixed model because of subscription or provider rest
 
 ## Directory layout
 
-Create one directory per match and one child directory per harness:
+Create one immutable directory per Match and one Trial directory per Contender and attempt:
 
 ```text
 results/
   MATCH-ID/
-    match-manifest.json
-    omp/
-      scorecard.json
-      capability-manifest.json
-      prompt.md
-      transcript.md
-      tool-ledger.jsonl
-      diff.patch
-      tests.txt
-      review.md
-      ci.txt
-      operator-log.md
-    opencode/
-      ...
-    comparison.md
+    match-spec.json
+    execution-plan.json
+    control-profile.json
+    match-result.json
+    artifact-manifest.json
+    task/
+    journal/
+    session/
+    trials/
+      omp/attempt-001/
+      opencode/attempt-001/
+    evaluation/
+    report/
 ```
 
-`match-manifest.json` freezes the task version, base SHA, exact model, provider, limits, and lane. Each `capability-manifest.json` records what that harness exposed to the model before the run. The tool ledger records what it actually used, including failed or denied calls.
+`execution-plan.json` freezes the task hash, base SHA, exact model route, controls, adapters, worktrees, and lane. Each `capability.json` records what that harness exposed before release. Native and ATIF evidence record what it actually used, including failed or denied calls. See `docs/EVIDENCE.md` for the complete contract.
 
 ## Redaction before publication
 
@@ -54,4 +52,16 @@ results/
 - weighted score and correct maintainable draft PRs per active operator hour;
 - limitations, repeat count, and whether the result is stable enough to influence the stack.
 
-No result directories are included yet. The first intended public-quality comparison is OMP versus OpenCode on T001 with an identical model lane.
+No real-harness result directory is included yet. The first intended public-quality comparison remains a controlled, repeated clean-room Match with an identical model lane.
+
+## Retained protocol qualification
+
+`fake-t002-protocol-r1/` is the first retained public bundle. It contains 48 manifest-verified artifacts from two deterministic fake Contenders and is tied to the exact clean MatchRunner and Arena commit. It is deliberately labeled as protocol evidence rather than a real-harness comparison: no model was called, T002 was not solved, and no performance rank can be inferred.
+
+Verify its integrity from the repository root:
+
+```text
+python3 tools/evidence-bundle.py verify results/fake-t002-protocol-r1
+```
+
+Public export verifies the sealed source manifest, copies only manifested artifacts, excludes raw worktrees/workspaces, replaces machine-local roots, scans for high-confidence credential material, records clean runner provenance, and generates a fresh public manifest. Export fails if the source is tampered with or the runner worktree is not tied to one clean commit.

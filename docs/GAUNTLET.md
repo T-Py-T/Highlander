@@ -35,6 +35,11 @@ Never merge both lanes into one unexplained score. If the fixed model cannot be 
 
 Any hard-gate failure disqualifies the run:
 
+- the primary stack depends on a desktop application rather than a usable CLI;
+- the stack cannot be reproduced on the declared macOS, Linux, or WSL targets;
+- the candidate cannot run inside Herdr or the composition has no verified Herdr-compatible session path;
+- the provider/auth route is API-only when subscription realism is being claimed, uses an unsupported or prohibited OAuth workaround, or silently changes the model/fallback route;
+- the declared stack has no tested phone path for observing and responding to a session, either through Herdr-over-SSH or a documented mobile bridge;
 - incorrect behavior passes because validation was absent or false;
 - existing behavior regresses;
 - the wrong repository, branch, or worktree is modified;
@@ -50,13 +55,27 @@ Runs that pass hard gates receive a 0–100 score:
 
 | Dimension | Weight | Evidence |
 |---|---:|---|
-| Correctness and maintainability | 30 | Hidden acceptance, regression tests, scope, review findings |
-| Autonomy and steering burden | 25 | Active operator time, rescue, recovery, unnecessary questions |
-| Throughput and subscription efficiency | 15 | Wall time, useful parallelism, retries, rate-limit behavior |
-| Portability and maintenance | 15 | Fresh setup, cross-platform repeatability, upgrade/recovery |
-| Operator experience | 15 | Flow, trust, legibility, frustration, context switching |
+| CLI, cross-platform, and Herdr fit | 30 | CLI-only operation, macOS/Linux/WSL setup, Herdr session/status behavior, recovery |
+| Subscription and provider portability | 25 | Legitimate native/ACP/OAuth route, exact model proof, fallbacks, rate limits, policy compliance |
+| Correctness and maintainability | 20 | Hidden acceptance, regression tests, scope, review findings |
+| Mobile supervision | 10 | Phone observe/respond, cross-machine continuity, prompt routing, reconnect, security |
+| Autonomy and steering burden | 10 | Active operator time, rescue, recovery, unnecessary questions |
+| Operator experience | 5 | Flow, trust, legibility, frustration, context switching |
 
 The score is deliberately subordinate to safety. A fast unsafe run is not competitive.
+
+Throughput remains a promotion metric rather than a double-counted score dimension: report wall time, retries, rate-limit behavior, and correct maintainable draft PRs per active operator hour. A contender must not win on a weighted average while producing fewer useful draft PRs per hour.
+
+## Eligibility manifest
+
+Every Trial must declare the stack's environment and control-plane fit before launch:
+
+- `cli_only`, target platforms, install method, and whether any desktop app is required;
+- Herdr mode, native integration or terminal fallback, status authority, and known blocked/idle limitations;
+- each provider route, auth mode, existing subscription used, exact model, fallback behavior, and policy status;
+- phone channel, machine topology, monitor/respond capability, notification path, and reconnect behavior.
+
+An additive control plane such as CCGram is recorded as a separate layer. It may improve mobile supervision without receiving credit for coding quality that came from the unchanged runtime.
 
 ## Evidence bundle
 
@@ -74,6 +93,7 @@ Every scored run should retain:
 - tests, lint, build, review, QA, and CI output;
 - hidden acceptance results;
 - operator interaction ledger and survey;
+- platform/auth/mobile eligibility manifest and phone-interaction ledger;
 - cleanup inventory;
 - scorecard and invalidating factors.
 

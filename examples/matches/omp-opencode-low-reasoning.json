@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "match_id": "omp-opencode-low-reasoning-pilot",
+  "lane": "concurrency",
+  "arena": {
+    "repository": "../..",
+    "base_ref": "HEAD"
+  },
+  "task": {
+    "path": "../../tasks/T001-race-fix.md"
+  },
+  "control_profile": {
+    "model": {
+      "requested_id": "provider/exact-immutable-model-id",
+      "upstream_id": "provider/exact-immutable-model-id",
+      "provider_id": "same-provider-route",
+      "endpoint_or_deployment": "same-endpoint-or-deployment",
+      "region": "same-region",
+      "auth_route": "subscription"
+    },
+    "reasoning": {
+      "requested": "low",
+      "wire_parameter": "provider-specific-low"
+    },
+    "fallback_policy": "forbidden",
+    "auxiliary_model_policy": "same_model",
+    "limits": {
+      "wall_time_seconds": 1800,
+      "external_model_request_cap": 90
+    },
+    "proof_required": [
+      "configured",
+      "runtime",
+      "provider_wire"
+    ]
+  },
+  "contenders": [
+    {
+      "id": "omp",
+      "adapter": "omp",
+      "options": {
+        "approval_mode": "write",
+        "profile": "highlander"
+      }
+    },
+    {
+      "id": "opencode",
+      "adapter": "opencode",
+      "options": {
+        "pure": true
+      }
+    }
+  ],
+  "session": {
+    "adapter": "tmux"
+  }
+}

@@ -22,6 +22,11 @@ jobs:
       - name: Run Highlander unit tests
         run: python -m unittest discover -s tests
 
+      - name: Validate MatchRunner source and example
+        run: |
+          python -m compileall -q highlander tools
+          python tools/highlander.py doctor examples/matches/fake-t001.json
+
       - name: Run fixture tests
         run: python -m unittest discover -s fixtures/job-runner -p 'test_*.py'
 

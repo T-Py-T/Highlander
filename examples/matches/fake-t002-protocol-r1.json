@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "match_id": "fake-t002-protocol-r1",
+  "lane": "controlled_efficacy",
+  "arena": {
+    "repository": "../..",
+    "base_ref": "HEAD"
+  },
+  "task": {
+    "path": "../../tasks/T002-linewatch-alarm-id-whitespace.md"
+  },
+  "control_profile": {
+    "model": {
+      "requested_id": "fake/exact-model-v1",
+      "upstream_id": "fake/exact-model-v1",
+      "provider_id": "fake-provider",
+      "endpoint_or_deployment": "local-fixture",
+      "region": "local",
+      "auth_route": "none"
+    },
+    "reasoning": {
+      "requested": "low",
+      "wire_parameter": "low"
+    },
+    "fallback_policy": "forbidden",
+    "auxiliary_model_policy": "disabled",
+    "limits": {
+      "wall_time_seconds": 30,
+      "external_model_request_cap": 1
+    },
+    "proof_required": [
+      "configured",
+      "runtime",
+      "provider_wire"
+    ]
+  },
+  "contenders": [
+    {
+      "id": "fake-success",
+      "adapter": "fake",
+      "options": {
+        "behavior": "success",
+        "delay_ms": 25
+      }
+    },
+    {
+      "id": "fake-harness-failure",
+      "adapter": "fake",
+      "options": {
+        "behavior": "harness_failure"
+      }
+    }
+  ],
+  "session": {
+    "adapter": "headless"
+  },
+  "output_root": "../../.highlander/runs"
+}
