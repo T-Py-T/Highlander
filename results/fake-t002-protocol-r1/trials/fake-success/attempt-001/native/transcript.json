@@ -1,0 +1,6 @@
+{
+  "behavior": "success",
+  "format": "highlander-fake-native-v1",
+  "message": "Deterministic fake harness completed without a model call.",
+  "task_sha256": "30197b3a7a673b847ed586c6be7592e5375900cb380134732e31893cc1c650d9"
+}

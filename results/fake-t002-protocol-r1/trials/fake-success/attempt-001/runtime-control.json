@@ -1,0 +1,9 @@
+{
+  "auxiliary_models": [],
+  "fallback_events": [],
+  "model": "fake/exact-model-v1",
+  "proof": "runtime",
+  "provider": "fake-provider",
+  "reasoning": "low",
+  "verified": true
+}

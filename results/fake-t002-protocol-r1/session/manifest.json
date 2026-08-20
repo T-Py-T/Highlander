@@ -1,0 +1,12 @@
+{
+  "adapter": "headless",
+  "credential_values_recorded": false,
+  "match_id": "fake-t002-protocol-r1",
+  "ownership_marker": null,
+  "pane_ids": [],
+  "process_ids": [
+    14101,
+    14102
+  ],
+  "tmux_session": null
+}

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Highlander Scorecard",
   "type": "object",
-  "required": ["match_id", "stack", "task_id", "harness", "model", "provider", "auth_mode", "capabilities", "artifacts", "scores", "hard_gate_failures", "active_operator_hours", "correct_maintainable_draft_prs"],
+  "required": ["match_id", "stack", "task_id", "harness", "model", "provider", "auth_mode", "capabilities", "fit", "artifacts", "scores", "hard_gate_failures", "active_operator_hours", "correct_maintainable_draft_prs"],
   "properties": {
     "match_id": {"type": "string"},
     "stack": {"type": "string"},
@@ -52,6 +52,53 @@
       },
       "additionalProperties": false
     },
+    "fit": {
+      "type": "object",
+      "required": ["cli_only", "platforms", "herdr", "subscription_routes", "mobile_control"],
+      "properties": {
+        "cli_only": {"type": "boolean"},
+        "platforms": {"type": "array", "items": {"type": "string"}},
+        "herdr": {
+          "type": "object",
+          "required": ["mode", "integration", "status_authority", "verified"],
+          "properties": {
+            "mode": {"type": "string"},
+            "integration": {"type": "string"},
+            "status_authority": {"type": "string"},
+            "verified": {"type": "boolean"}
+          },
+          "additionalProperties": false
+        },
+        "subscription_routes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["provider", "auth_mode", "uses_existing_subscription", "policy_status"],
+            "properties": {
+              "provider": {"type": "string"},
+              "auth_mode": {"type": "string"},
+              "uses_existing_subscription": {"type": "boolean"},
+              "policy_status": {"type": "string"},
+              "model_ids": {"type": "array", "items": {"type": "string"}}
+            },
+            "additionalProperties": false
+          }
+        },
+        "mobile_control": {
+          "type": "object",
+          "required": ["channel", "machines", "can_monitor", "can_respond", "verified"],
+          "properties": {
+            "channel": {"type": "string"},
+            "machines": {"type": "array", "items": {"type": "string"}},
+            "can_monitor": {"type": "boolean"},
+            "can_respond": {"type": "boolean"},
+            "verified": {"type": "boolean"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "artifacts": {
       "type": "object",
       "required": ["transcript", "tool_ledger", "diff", "tests", "review", "ci", "operator_log"],
@@ -69,12 +116,13 @@
     "hard_gate_failures": {"type": "array", "items": {"type": "string"}},
     "scores": {
       "type": "object",
-      "required": ["correctness", "autonomy", "throughput", "portability", "operator_experience"],
+      "required": ["environment_fit", "subscription_portability", "correctness", "mobile_supervision", "autonomy", "operator_experience"],
       "properties": {
+        "environment_fit": {"type": "number", "minimum": 0, "maximum": 100},
+        "subscription_portability": {"type": "number", "minimum": 0, "maximum": 100},
         "correctness": {"type": "number", "minimum": 0, "maximum": 100},
+        "mobile_supervision": {"type": "number", "minimum": 0, "maximum": 100},
         "autonomy": {"type": "number", "minimum": 0, "maximum": 100},
-        "throughput": {"type": "number", "minimum": 0, "maximum": 100},
-        "portability": {"type": "number", "minimum": 0, "maximum": 100},
         "operator_experience": {"type": "number", "minimum": 0, "maximum": 100}
       }
     },

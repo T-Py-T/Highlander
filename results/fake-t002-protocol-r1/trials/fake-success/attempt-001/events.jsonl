@@ -1,0 +1,5 @@
+{"event": "WORKER_STARTED", "timestamp": "2026-08-19T18:24:43.917181Z"}
+{"event": "ARMED", "timestamp": "2026-08-19T18:24:43.917729Z"}
+{"event": "TASK_SUBMITTED", "submitted_ns": 1787163883944916000, "task_sha256": "30197b3a7a673b847ed586c6be7592e5375900cb380134732e31893cc1c650d9", "timestamp": "2026-08-19T18:24:43.944938Z"}
+{"event": "EVIDENCE_COLLECTED", "timestamp": "2026-08-19T18:24:43.976816Z"}
+{"event": "QUALIFIED", "timestamp": "2026-08-19T18:24:43.976885Z"}

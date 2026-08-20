@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "<internal:fake-harness>"
+  ],
+  "credential_values_recorded": false,
+  "cwd": "<SOURCE_EVIDENCE_ROOT>/worktrees/fake-success/attempt-001",
+  "inherited_environment_names": [],
+  "prompt_transport": "exact-bytes",
+  "protocol": "highlander-fake-v1"
+}

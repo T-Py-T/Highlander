@@ -1,0 +1,33 @@
+{
+  "control_proof": {
+    "configured": true,
+    "provider_wire": true,
+    "runtime": true
+  },
+  "execution_implemented": true,
+  "execution_ready": true,
+  "harness": {
+    "name": "fake",
+    "version": "1"
+  },
+  "limitations": [
+    "deterministic test double; not a coding harness"
+  ],
+  "mcp_servers": [],
+  "memory": {
+    "mode": "none",
+    "scope": "trial",
+    "seeded": false
+  },
+  "permissions": "fixture-only",
+  "prompt_transport": "exact-bytes",
+  "protocol": "highlander-fake-v1",
+  "subagents": {
+    "enabled": false
+  },
+  "tools": [
+    "read",
+    "edit",
+    "test"
+  ]
+}

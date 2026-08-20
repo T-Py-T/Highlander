@@ -1,0 +1,45 @@
+{
+  "completed_at": "2026-08-19T18:24:44.033508Z",
+  "lane": "controlled_efficacy",
+  "match_id": "fake-t002-protocol-r1",
+  "plan_hash": "b3a9f60ced131653ee59cdb780eb11aecbb94cd4ac99e119bb30c2b51e17ce6b",
+  "session_cleanup": {
+    "exit_codes": {
+      "14101": 0,
+      "14102": 0
+    },
+    "forced_process_ids": [],
+    "session_closed": true,
+    "session_started": true,
+    "unreconciled_process_ids": []
+  },
+  "start_skew_ms": 2.804,
+  "state": "COMPLETE",
+  "task_sha256": "30197b3a7a673b847ed586c6be7592e5375900cb380134732e31893cc1c650d9",
+  "trials": [
+    {
+      "competitive_outcome": "protocol_success",
+      "contender_id": "fake-success",
+      "cost": 0,
+      "invalid_reasons": [],
+      "model_calls": 0,
+      "prompt_submitted_ns": 1787163883944916000,
+      "qualification": "qualified",
+      "qualification_authority": "highlander-parent-audit-v1",
+      "task_sha256": "30197b3a7a673b847ed586c6be7592e5375900cb380134732e31893cc1c650d9",
+      "worker_qualification_claim": "qualified"
+    },
+    {
+      "competitive_outcome": "protocol_harness_failure",
+      "contender_id": "fake-harness-failure",
+      "cost": 0,
+      "invalid_reasons": [],
+      "model_calls": 0,
+      "prompt_submitted_ns": 1787163883947720000,
+      "qualification": "qualified",
+      "qualification_authority": "highlander-parent-audit-v1",
+      "task_sha256": "30197b3a7a673b847ed586c6be7592e5375900cb380134732e31893cc1c650d9",
+      "worker_qualification_claim": "qualified"
+    }
+  ]
+}
