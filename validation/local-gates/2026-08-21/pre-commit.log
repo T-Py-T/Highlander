@@ -1,0 +1,26 @@
+command: PRE_COMMIT_COLOR=never pre-commit run --all-files --verbose
+exit_code: 0
+
+Highlander unit tests....................................................Passed
+Ran 43 tests in 11.809s
+OK (skipped=2)
+
+Compile Highlander Python sources........................................Passed
+Validate MatchRunner source and example..................................Passed
+ready_for_execution: true
+
+Highlander fixture tests.................................................Passed
+Ran 2 tests in 0.000s
+OK
+
+Validate runner shell syntax.............................................Passed
+
+Verify quota-free evidence manifest......................................Passed
+artifact_count: 48
+manifest_sha256: f7e625941503db7bd42cc44a9afb5993acef428af2916d8eb49c00b6d98eabed
+status: verified
+
+Verify retained HarnessBench evidence manifest...........................Passed
+artifact_count: 314
+manifest_sha256: 86f73b81ede425f3fecf910b3bf3f8b2a9eacf0e42270fc1f3e85e3323c48217
+status: verified

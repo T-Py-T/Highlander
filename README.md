@@ -8,7 +8,23 @@ This is a harness experiment, not a model leaderboard. In the primary lane, ever
 
 ## Evidence at a glance
 
-Start with the retained [T002 quota-free protocol bundle](results/fake-t002-protocol-r1/README.md). It ties 48 sanitized artifacts to MatchRunner commit `383b7a7`, proves the all-ready release and parent-owned qualification path with two deterministic fake Contenders, and records zero model calls and zero cost. Its claim boundary is intentionally narrow: it validates the evidence protocol, not real-harness coding performance.
+The first retained real pilot ran official HarnessBench task 043 three times for
+each available harness with GPT-5.4 at medium reasoning. The image is sorted by
+mean outcome for readability; one task is not enough evidence to declare a
+winner or replace the daily stack.
+
+![HarnessBench task 043 repeated pilot results](docs/assets/harnessbench-task-043-results.svg)
+
+See the [complete result report](results/hb-devhard-043-gpt54-medium-host4-r1/report.md)
+for per-Trial outcomes, durations, variance, tool observations, and the
+314-artifact verification manifest.
+
+The retained [T002 quota-free protocol bundle](results/fake-t002-protocol-r1/README.md)
+ties 48 sanitized artifacts to MatchRunner commit `383b7a7`, proves the
+all-ready release and parent-owned qualification path with two deterministic
+fake Contenders, and records zero model calls and zero cost. Its claim boundary
+is intentionally narrow: it validates the evidence protocol, not real-harness
+coding performance.
 
 Verify the complete bundle locally:
 
@@ -16,7 +32,8 @@ Verify the complete bundle locally:
 python3 tools/evidence-bundle.py verify results/fake-t002-protocol-r1
 ```
 
-The next evidence gate is a repeated, evaluator-backed result from real clean-room Harness Adapters. Until that exists, Highlander does not claim a real-harness winner.
+The next evidence gate is the remaining 11-task DevHard breadth run. Highlander
+does not claim a real-harness winner from the task-043 pilot.
 
 Current control and challengers:
 
@@ -28,6 +45,21 @@ Current control and challengers:
 | Challenger | Ghostty → Herdr → Pi + Firstmate | Does a Pi-based factory layer improve planning, crew coordination, and delivery with the same model? |
 | Challenger | Hermes Agent | Does persistence and remote autonomy reduce supervision for that same model? |
 | Conditional | Goose → ACP → native Claude/Codex/Pi | Does subscription reuse add harness leverage without changing the model comparison? |
+
+## Software factory
+
+| Tool | Use |
+|---|---|
+| Ghostty | Fast cross-platform terminal interface |
+| Herdr | Start, arrange, and monitor concurrent terminal agent sessions |
+| OMP (Oh My Pi) | Daily coding harness and multi-project control |
+| Codex, Claude Code, OpenCode, Hermes | Coding-agent runtimes used directly or compared as Highlander contenders |
+| Podman | Disposable Linux containers and authentication-isolated harness homes |
+| Highlander | Same-model harness scheduling, evidence capture, scoring, and comparison |
+| HarnessBench | Frozen coding tasks and deterministic evaluators |
+| pre-commit | Fast local repository gate before a commit or PR |
+| act | Offline execution of the GitHub Actions workflow through Podman |
+| Git and GitHub | Branch, review, retained evidence, and pull-request history |
 
 ## Design principles
 
@@ -88,6 +120,15 @@ Real Harness Adapters are deliberately blocked from host execution. Highlander n
 
 Digest-pinned OMP, OpenCode, Codex, Hermes, and NanoBot execution is available through the disposable OCI clean room. It creates independent clones with no publication remote, starts each Harness without host configuration, evaluates the raw result, captures tracked and untracked changes, and destroys Trial state. See [docs/CLEAN-ROOM.md](docs/CLEAN-ROOM.md) for image build, clean login seeds, Match generation, and execution. Ordinary MatchRunner host execution remains blocked. The separately labeled `tools/hb-pilot.py` path exists only for a frozen, dedicated-profile subscription-realism protocol when clean-room auth is explicitly recorded as unavailable.
 
+Authentication is a one-time setup per harness and computer, not a login before
+every Trial. Each clean-room OAuth seed persists outside the repository under
+`~/.config/highlander/seeds` and supplies only the harness's credential file to
+each disposable home. Personal plugins, extensions, skills, rules, MCP servers,
+memory, and ordinary harness configuration are not imported. Reauthenticate
+only when the provider revokes or expires that dedicated grant; never commit or
+cloud-sync the seed directory. The five setup commands and exact imported files
+are documented in [docs/CLEAN-ROOM.md](docs/CLEAN-ROOM.md#one-time-host-setup).
+
 The original `tools/prepare-run.sh` remains available as a legacy worktree-only preparer while MatchRunner matures.
 
 Score a completed legacy pilot run after collecting the evidence bundle:
@@ -118,11 +159,28 @@ python3 tools/hb-evidence.py verify \
   results/hb-devhard-043-gpt54-medium-host4-r1
 ```
 
-Run the local checks:
+Run the complete pre-commit gate:
 
 ```text
-python3 -m unittest discover -s tests
+pre-commit install
+pre-commit run --all-files --verbose
 ```
+
+Run the same GitHub Actions workflow locally through Podman without consuming
+hosted Actions minutes or fetching workflow actions during execution:
+
+```text
+podman machine start
+tools/run-act-local.sh
+```
+
+The standard `catthehacker/ubuntu:act-latest` runner image and the pinned
+workflow actions must already be cached; offline mode fails closed instead of
+downloading missing dependencies. The hosted workflow pins Python 3.11;
+network-disabled `act` uses the runner image's preinstalled Python 3.12 and
+asserts that the repository's Python 3.11 minimum is satisfied.
+The retained output from the first accepted local gate is under
+[`validation/local-gates/2026-08-21`](validation/local-gates/2026-08-21/README.md).
 
 ## Match lifecycle
 
