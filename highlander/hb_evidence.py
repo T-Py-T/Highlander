@@ -129,6 +129,55 @@ def export_pilot_bundle(
             }
         )
         _write_json(temporary / "summary.json", summary)
+        with (temporary / "results.jsonl").open("w", encoding="utf-8") as handle:
+            for row in sorted(summary["trial_rows"], key=lambda item: int(item["sequence"])):
+                handle.write(
+                    json.dumps(
+                        {
+                            "run_id": (
+                                f"{protocol['protocol_id']}-{row['harness_id']}-"
+                                f"{int(row['attempt']):03d}"
+                            ),
+                            "protocol_id": protocol["protocol_id"],
+                            "task_id": row["task_id"],
+                            "harness_id": row["harness_id"],
+                            "attempt": row["attempt"],
+                            "sequence": row["sequence"],
+                            "qualification": row["qualification"],
+                            "invalid_reason": row.get("invalid_reason"),
+                            "outcome_score": row.get("outcome_score"),
+                            "process_score": None,
+                            "combined_score": None,
+                            "elapsed_seconds": (
+                                row.get("process_observations", {}).get(
+                                    "elapsed_seconds"
+                                )
+                                if isinstance(row.get("process_observations"), dict)
+                                else None
+                            ),
+                            "intervention_count": row.get(
+                                "operator_interventions", 0
+                            ),
+                            "artifacts": row.get("artifacts"),
+                        },
+                        sort_keys=True,
+                    )
+                    + "\n"
+                )
+        _write_json(
+            temporary / "leaderboard.json",
+            {
+                "schema_version": 1,
+                "protocol_id": protocol["protocol_id"],
+                "task_id": protocol["task"]["id"],
+                "claim_status": summary["claim_status"],
+                "ranking_permitted": False,
+                "winner": None,
+                "process_score": None,
+                "combined_score": None,
+                "harnesses": summary["harnesses"],
+            },
+        )
         (temporary / "report.md").write_text(
             _report(protocol, summary), encoding="utf-8"
         )
