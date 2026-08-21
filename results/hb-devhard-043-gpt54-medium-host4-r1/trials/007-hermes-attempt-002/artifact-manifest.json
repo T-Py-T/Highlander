@@ -1,0 +1,136 @@
+{
+  "artifacts": [
+    {
+      "bytes": 255,
+      "path": "cleanup.json",
+      "sha256": "88f7cef951c6cd354a3f209a00616b62422d218bb18cb155bf7e9f5be41e4d4c"
+    },
+    {
+      "bytes": 479,
+      "path": "control/app.json",
+      "sha256": "a2f414bf92697d996a0a1608452ba61b6c61bfd73dd5cd44e8ebda749cebbbf6"
+    },
+    {
+      "bytes": 560,
+      "path": "control/harness.json",
+      "sha256": "9004eeca94a0f2aa2e40324b64117bb6a9861c5086d5e8bcb73839b4d1b18d03"
+    },
+    {
+      "bytes": 338,
+      "path": "control/trial.json",
+      "sha256": "6bb92d87c04744a406cc229d57572d77cbf1fa500602aa379e9c011559765f6e"
+    },
+    {
+      "bytes": 481,
+      "path": "control-proof.json",
+      "sha256": "01826905abe4b0069a89674dc16d726f9ff86521e74c32a013c4dd45faf59c7f"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 4868,
+      "path": "controller.stdout.raw",
+      "sha256": "b9065caf5ac885872793baa6bf26239e0fa1effaf1d250cc80fc2ff39bc20209"
+    },
+    {
+      "bytes": 6332,
+      "path": "diff.patch",
+      "sha256": "79d76dc885ea6b6820b745dde325319e5e1c8b98e75569e01107a599fd71439a"
+    },
+    {
+      "bytes": 436,
+      "path": "native/execution.json",
+      "sha256": "e0f02094d4e51afe69ff1ec97a1fd9b2d58239d0a57e0fcf5911a711adcaa6b7"
+    },
+    {
+      "bytes": 1442,
+      "path": "native/invocation.json",
+      "sha256": "c53e7ebc6eaaf88f65dd1f117617b99319ddb5ea5096318655f2b0834ea8e4df"
+    },
+    {
+      "bytes": 0,
+      "path": "native/stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1964,
+      "path": "native/stdout.raw",
+      "sha256": "4f6c17338106fe46fb738a38aab196b3093ab24050fa9a8c93d016ff81805a35"
+    },
+    {
+      "bytes": 0,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 426,
+      "path": "native/usage.json",
+      "sha256": "83aa5642c7c04b54c00f4a49d086798a0c60355cf8886f07aef77af872f22f35"
+    },
+    {
+      "bytes": 332,
+      "path": "process/observations.json",
+      "sha256": "1f192eaeef32257915f6143c3da3dda3ae38a9cc1029f1bd050351d3ed63f61c"
+    },
+    {
+      "bytes": 0,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2319,
+      "path": "result.json",
+      "sha256": "a2c20b314488109bdaa40cacaa08789c3f4d37fb31e39fe665ba5f463b41ea7c"
+    },
+    {
+      "bytes": 9646,
+      "path": "upstream-result.json",
+      "sha256": "57661d0c25ff5ce0f6d21be07fde36d9923a5dccbd5279ec38dfe64cf675677f"
+    },
+    {
+      "bytes": 480,
+      "path": "usage-normalized.json",
+      "sha256": "010dce8f8805d873a95925442c65752bdf0b2e070d3556cc2d4db6ccd02b0b66"
+    },
+    {
+      "bytes": 893,
+      "path": "workspace-final/in/db/migration.sql",
+      "sha256": "24985c30ca3de725ee5d378eae4d4e5adf89dff6d560ff94b7cb14a01812a6ec"
+    },
+    {
+      "bytes": 937,
+      "path": "workspace-final/in/db/migration_policy.md",
+      "sha256": "e3638314798a2c7419e68baa7c1e52663ee752f513f1a025127a3a8ada6b5465"
+    },
+    {
+      "bytes": 2116,
+      "path": "workspace-final/in/db/migration_report.md",
+      "sha256": "e199a1f1fe884f0f3d0e166c7a509e5b5f3f5602858361f11d78bfd04413db41"
+    },
+    {
+      "bytes": 1254,
+      "path": "workspace-final/in/db/postcheck.sql",
+      "sha256": "863bb09b7d483888c443b01afcf272d7d217a6e7c50edde6af5c93cd988d4158"
+    },
+    {
+      "bytes": 923,
+      "path": "workspace-final/in/db/preflight_report.md",
+      "sha256": "5f614357e73ef7a3c3498fd50e7ddf5ba818654b1cbdf84b48a48b4410196fe6"
+    },
+    {
+      "bytes": 485,
+      "path": "workspace-final/in/db/rollback.sql",
+      "sha256": "1d3f5aa9ef615694f6657c26ca73fe2766116336f96a7f23eb23afba3d7edc3c"
+    },
+    {
+      "bytes": 964,
+      "path": "workspace-final/in/db/schema.sql",
+      "sha256": "3f097b5cdbd1e6a2522b6252e51a55f1e145cd4a3566c0bcaf71c492fc947a9a"
+    }
+  ],
+  "generated_at": "2026-08-21T18:24:33.581278Z",
+  "schema_version": 1
+}

@@ -1,0 +1,75 @@
+{
+  "artifacts": {
+    "diff": "trials/004-hermes-attempt-001/diff.patch",
+    "final_workspace": "trials/004-hermes-attempt-001/workspace-final",
+    "native": "trials/004-hermes-attempt-001/native",
+    "trial": "trials/004-hermes-attempt-001",
+    "upstream_result": "trials/004-hermes-attempt-001/upstream-result.json"
+  },
+  "attempt": 1,
+  "combined_score": null,
+  "control_proof": {
+    "configured_model_id": "gpt-5.4",
+    "configured_verified": true,
+    "fallback_policy": "forbidden",
+    "observed": {
+      "model": [
+        "gpt-5.4"
+      ],
+      "provider": [
+        "openai-codex"
+      ],
+      "reasoning": []
+    },
+    "provider_route": "openai-codex subscription OAuth",
+    "provider_wire_verified": false,
+    "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+    "reasoning": "medium",
+    "runtime_observation_available": true
+  },
+  "elapsed_seconds": 249.759,
+  "harness_id": "hermes",
+  "invalid_reason": null,
+  "operator_interventions": 0,
+  "outcome_score": 0.995,
+  "outer_elapsed_seconds": 250.199,
+  "process_observations": {
+    "combined_score": null,
+    "cross_harness_comparability": "limited by native event semantics",
+    "elapsed_seconds": 249.759,
+    "native_event_count": null,
+    "native_observability": "final_response_only",
+    "operator_interventions": 0,
+    "process_score": null,
+    "status": "observed_not_scored",
+    "tool_invocation_count": null
+  },
+  "process_score": null,
+  "process_status": "not_evaluated",
+  "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+  "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+  "qualification": "valid",
+  "schema_version": 1,
+  "sequence": 4,
+  "task_id": "043-db-migration-safety",
+  "usage_normalized": {
+    "api_calls": 13,
+    "available": true,
+    "cache_read_tokens": 306688,
+    "cache_write_tokens": 0,
+    "cost_status": "native_report_says_no_cost_source",
+    "cost_usd": 0.0,
+    "cross_harness_comparability": "not comparable; native accounting semantics differ",
+    "input_tokens": 59110,
+    "models": [
+      "gpt-5.4"
+    ],
+    "output_tokens": 11875,
+    "providers": [
+      "openai-codex"
+    ],
+    "reasoning_tokens": 3752,
+    "source": "hermes_native_usage_file",
+    "total_tokens": 377673
+  }
+}

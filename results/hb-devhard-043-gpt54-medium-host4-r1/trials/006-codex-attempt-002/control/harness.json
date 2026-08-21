@@ -1,0 +1,24 @@
+{
+  "models": {
+    "codex": {
+      "adapter": "generic_cli",
+      "args": [
+        "<RUNNER_ROOT>/tools/hb-host-adapter.py",
+        "--harness",
+        "codex",
+        "--workspace",
+        "{workspace}",
+        "--prompt-file",
+        "{prompt_file}",
+        "--evidence-dir",
+        "{sandbox}/highlander-native",
+        "--timeout-seconds",
+        "1200"
+      ],
+      "command": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "model": "gpt-5.4",
+      "session_prefix": "highlander-codex-a2",
+      "timeout_sec": 1200
+    }
+  }
+}

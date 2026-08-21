@@ -1,0 +1,16 @@
+{
+  "api_calls": null,
+  "available": true,
+  "cache_read_tokens": 366720,
+  "cache_write_tokens": 0,
+  "cost_status": "not_available",
+  "cost_usd": null,
+  "cross_harness_comparability": "not comparable; native accounting semantics differ",
+  "input_tokens": 398702,
+  "models": [],
+  "output_tokens": 17401,
+  "providers": [],
+  "reasoning_tokens": 7719,
+  "source": "codex_turn_completed",
+  "total_tokens": 416103
+}

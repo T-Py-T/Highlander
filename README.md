@@ -86,7 +86,7 @@ python3 tools/highlander.py run \
 
 Real Harness Adapters are deliberately blocked from host execution. Highlander never changes the normal Harness installation, authentication, Herdr integrations, or model selection.
 
-Digest-pinned OMP, OpenCode, Codex, Hermes, and NanoBot execution is available only through the disposable OCI clean room. It creates independent clones with no publication remote, starts each Harness without host configuration, evaluates the raw result, captures tracked and untracked changes, and destroys Trial state. See [docs/CLEAN-ROOM.md](docs/CLEAN-ROOM.md) for image build, clean login seeds, Match generation, and execution. Host execution remains blocked.
+Digest-pinned OMP, OpenCode, Codex, Hermes, and NanoBot execution is available through the disposable OCI clean room. It creates independent clones with no publication remote, starts each Harness without host configuration, evaluates the raw result, captures tracked and untracked changes, and destroys Trial state. See [docs/CLEAN-ROOM.md](docs/CLEAN-ROOM.md) for image build, clean login seeds, Match generation, and execution. Ordinary MatchRunner host execution remains blocked. The separately labeled `tools/hb-pilot.py` path exists only for a frozen, dedicated-profile subscription-realism protocol when clean-room auth is explicitly recorded as unavailable.
 
 The original `tools/prepare-run.sh` remains available as a legacy worktree-only preparer while MatchRunner matures.
 
@@ -108,6 +108,15 @@ python3 tools/hb-leaderboard.py \
 
 See [docs/LEADERBOARD.md](docs/LEADERBOARD.md) for the best-attempt,
 reliability, invalid-run, and ranking contract.
+
+The first retained real pilot covers official HarnessBench task 043 with three
+GPT-5.4/medium repeats each for OMP, OpenCode, Codex, and Hermes. It is a
+single-task host-isolated baseline, not a winner claim:
+
+```text
+python3 tools/hb-evidence.py verify \
+  results/hb-devhard-043-gpt54-medium-host4-r1
+```
 
 Run the local checks:
 
@@ -141,6 +150,8 @@ python3 -m unittest discover -s tests
 - `tools/score-run.py` — dependency-free weighted scoring and disqualification.
 - `tools/hb-leaderboard.py` — deterministic capability and reliability views for HarnessBench-aligned seasons.
 - `tools/evidence-bundle.py` — fail-closed public export and manifest verification for retained Match evidence.
+- `tools/hb-pilot.py` — frozen, sequential HarnessBench subscription-realism pilot controller.
+- `tools/hb-evidence.py` — path-safe export, process/usage normalization, and verification for pilot evidence.
 - `schemas/` — machine-readable run and scorecard contracts.
 - `results/` — the public result-artifact contract; add actual runs only after redaction and review.
 - `tests/` — tests for the benchmark kit itself.

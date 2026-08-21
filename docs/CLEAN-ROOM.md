@@ -137,6 +137,14 @@ until all five isolated subscription seeds exist. No host Harness login is a
 substitute for those seeds. Production-stack and plugin-ablation Matches need
 separately labeled images and manifests.
 
+The 2026-08-21 task-043 pilot therefore ran in the separately declared
+`host_isolated_subscription_realism` lane with four dedicated profiles. That
+result does not qualify the clean-core lane. NanoBot and all five clean-room
+contenders remained unavailable rather than receiving zero scores. The probe
+also exposed two Podman/Codex startup defects now covered by local tests:
+Podman-incompatible tmpfs ownership options and Codex's missing explicit
+file-backed credential-store override.
+
 Podman exposes local image IDs as bare 64-character hashes while Docker often
 returns the `sha256:` form. Highlander normalizes that runtime representation at
 the OCI boundary and always serializes the explicit `sha256:` form required by

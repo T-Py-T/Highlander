@@ -5,6 +5,7 @@ import tempfile
 import textwrap
 import unittest
 from pathlib import Path
+from typing import cast
 
 from highlander.hb_pilot import (
     aggregate_pilot,
@@ -226,9 +227,10 @@ class HarnessBenchPilotTests(unittest.TestCase):
             {"harness_id": "nanobot", "qualification": "unavailable", "outcome_score": None, "elapsed_seconds": None, "tool_event_count": None},
         ]
         summary = aggregate_pilot(rows, expected_attempts=2)
-        omp = next(row for row in summary["harnesses"] if row["harness_id"] == "omp")
-        codex = next(row for row in summary["harnesses"] if row["harness_id"] == "codex")
-        nanobot = next(row for row in summary["harnesses"] if row["harness_id"] == "nanobot")
+        harnesses = cast(list[dict[str, object]], summary["harnesses"])
+        omp = next(row for row in harnesses if row["harness_id"] == "omp")
+        codex = next(row for row in harnesses if row["harness_id"] == "codex")
+        nanobot = next(row for row in harnesses if row["harness_id"] == "nanobot")
         self.assertEqual(omp["mean_outcome"], 0.9)
         self.assertEqual(omp["population_stddev"], 0.1)
         self.assertEqual(omp["valid_trials"], 2)
@@ -236,6 +238,17 @@ class HarnessBenchPilotTests(unittest.TestCase):
         self.assertEqual(nanobot["unavailable_trials"], 1)
         self.assertIsNone(summary["winner"])
         self.assertEqual(summary["claim_status"], "underpowered_single_task_pilot")
+
+    def test_aggregate_rejects_valid_result_without_numeric_score(self):
+        rows = [
+            {
+                "harness_id": "omp",
+                "qualification": "valid",
+                "outcome_score": None,
+            }
+        ]
+        with self.assertRaisesRegex(ValueError, "numeric outcome_score"):
+            aggregate_pilot(rows, expected_attempts=1)
 
 
 if __name__ == "__main__":

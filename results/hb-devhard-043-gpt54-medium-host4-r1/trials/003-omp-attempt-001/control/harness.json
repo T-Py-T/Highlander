@@ -1,0 +1,24 @@
+{
+  "models": {
+    "omp": {
+      "adapter": "generic_cli",
+      "args": [
+        "<RUNNER_ROOT>/tools/hb-host-adapter.py",
+        "--harness",
+        "omp",
+        "--workspace",
+        "{workspace}",
+        "--prompt-file",
+        "{prompt_file}",
+        "--evidence-dir",
+        "{sandbox}/highlander-native",
+        "--timeout-seconds",
+        "1200"
+      ],
+      "command": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "model": "openai-codex/gpt-5.4",
+      "session_prefix": "highlander-omp-a1",
+      "timeout_sec": 1200
+    }
+  }
+}

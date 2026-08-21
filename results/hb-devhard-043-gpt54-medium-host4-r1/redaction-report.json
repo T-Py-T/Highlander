@@ -1,0 +1,28 @@
+{
+  "credential_values_exported": false,
+  "method": "exact-root replacement plus high-confidence secret scan",
+  "native_transcripts_exported": true,
+  "private_raw_source_retained": true,
+  "replacements": [
+    {
+      "occurrences": 0,
+      "placeholder": "<SOURCE_EVIDENCE_ROOT>"
+    },
+    {
+      "occurrences": 2401,
+      "placeholder": "<RUNNER_ROOT>"
+    },
+    {
+      "occurrences": 0,
+      "placeholder": "<HOME>"
+    }
+  ],
+  "schema_version": 1,
+  "secret_patterns_checked": [
+    "bearer_token",
+    "github_token",
+    "oauth_token",
+    "openai_key",
+    "private_key"
+  ]
+}

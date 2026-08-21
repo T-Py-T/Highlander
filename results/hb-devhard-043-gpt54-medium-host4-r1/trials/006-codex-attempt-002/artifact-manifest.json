@@ -1,0 +1,131 @@
+{
+  "artifacts": [
+    {
+      "bytes": 255,
+      "path": "cleanup.json",
+      "sha256": "88f7cef951c6cd354a3f209a00616b62422d218bb18cb155bf7e9f5be41e4d4c"
+    },
+    {
+      "bytes": 476,
+      "path": "control/app.json",
+      "sha256": "a952e434c11b2d0c98bd0f4553f45eecc128e248a90a30d124e8b489e10d73a8"
+    },
+    {
+      "bytes": 557,
+      "path": "control/harness.json",
+      "sha256": "dc9f5657f262a17360ae658705e12d28e1267cef1fc55df77f723406a217d015"
+    },
+    {
+      "bytes": 345,
+      "path": "control/trial.json",
+      "sha256": "d87636fe78b5e4da60805b5c960be2dda2cd934512839446af3d80bd599695ed"
+    },
+    {
+      "bytes": 443,
+      "path": "control-proof.json",
+      "sha256": "c74a87324d56e05c3dd817bf1629f7dd5e1eb9968fa46073a00655ff50f7baa8"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2774,
+      "path": "controller.stdout.raw",
+      "sha256": "6d48772809ad615f3148b7bc0cb5bb678d44e85be32e86a2dd82fcd795d1885a"
+    },
+    {
+      "bytes": 7618,
+      "path": "diff.patch",
+      "sha256": "dd095d3ecd6a63c111a2d9809b131a7e7ab2a8153bdcd775914cccd74d8bfbea"
+    },
+    {
+      "bytes": 436,
+      "path": "native/execution.json",
+      "sha256": "67eb0a8372279ee4ca1b670f13a843e8a57b2e9a0d632ea93365b7f895ac3a8e"
+    },
+    {
+      "bytes": 1604,
+      "path": "native/invocation.json",
+      "sha256": "d286dae4956bbd8d237f165db9cf918afdca4b7aa0b0306819db7f778239016e"
+    },
+    {
+      "bytes": 390,
+      "path": "native/stderr.raw",
+      "sha256": "7666708852cd8bf6d26dbacb39f4fc3524e61e5837beb91650ba4cc160ece919"
+    },
+    {
+      "bytes": 26798,
+      "path": "native/stdout.raw",
+      "sha256": "fda9a7e207b1cd4317954d0a4651dc04315d7123b429600e6fe77c2f9c4c6dc3"
+    },
+    {
+      "bytes": 0,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 321,
+      "path": "process/observations.json",
+      "sha256": "d3ffa4bb5dec84115745a0acf0f4902eb2224293e92ab414ca56f43828787f64"
+    },
+    {
+      "bytes": 1057,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "644c61acfa08535e6cd2411bc7ffe3f3275b1d72f4ea311826d656a2bb25276c"
+    },
+    {
+      "bytes": 2188,
+      "path": "result.json",
+      "sha256": "876aee78500a2e1b4d42e50d3fc1d9b4ab7aaee509f26c5c22b19be2d3b509b7"
+    },
+    {
+      "bytes": 35280,
+      "path": "upstream-result.json",
+      "sha256": "fa28408988ad68fa825fae6d8a148d504abd1581ac42875880ecb5386f84f352"
+    },
+    {
+      "bytes": 421,
+      "path": "usage-normalized.json",
+      "sha256": "7deb796d7e1d46d7b31e8cf5dcb77ea79fa691dc077faaf4c34bd5bf37099064"
+    },
+    {
+      "bytes": 1597,
+      "path": "workspace-final/in/db/migration.sql",
+      "sha256": "a06d86290dcb1677b6ead4685ec7e0018c7ba10adf52b8d7152fcf458b9e270e"
+    },
+    {
+      "bytes": 937,
+      "path": "workspace-final/in/db/migration_policy.md",
+      "sha256": "e3638314798a2c7419e68baa7c1e52663ee752f513f1a025127a3a8ada6b5465"
+    },
+    {
+      "bytes": 2489,
+      "path": "workspace-final/in/db/migration_report.md",
+      "sha256": "1b3c8d4e23500210d6d01bbbbfefc338c25d215203d78641aa5511e2169afb7b"
+    },
+    {
+      "bytes": 1348,
+      "path": "workspace-final/in/db/postcheck.sql",
+      "sha256": "2104e67635085d0c0d131a87184afd3952fd6a98f2ec56561cc91f261e4588fb"
+    },
+    {
+      "bytes": 999,
+      "path": "workspace-final/in/db/preflight_report.md",
+      "sha256": "b89a945e9b16788e900deb9328fa5b3b3717ab9019b3c8f0a73da0c2595e26ed"
+    },
+    {
+      "bytes": 487,
+      "path": "workspace-final/in/db/rollback.sql",
+      "sha256": "cfc897a937d318c172a025047637f381654cdd3d6800d270c54b7237ffee8a74"
+    },
+    {
+      "bytes": 964,
+      "path": "workspace-final/in/db/schema.sql",
+      "sha256": "3f097b5cdbd1e6a2522b6252e51a55f1e145cd4a3566c0bcaf71c492fc947a9a"
+    }
+  ],
+  "generated_at": "2026-08-21T18:24:33.578839Z",
+  "schema_version": 1
+}

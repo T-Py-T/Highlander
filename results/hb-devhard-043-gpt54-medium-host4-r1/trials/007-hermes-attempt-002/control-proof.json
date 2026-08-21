@@ -1,0 +1,19 @@
+{
+  "configured_model_id": "gpt-5.4",
+  "configured_verified": true,
+  "fallback_policy": "forbidden",
+  "observed": {
+    "model": [
+      "gpt-5.4"
+    ],
+    "provider": [
+      "openai-codex"
+    ],
+    "reasoning": []
+  },
+  "provider_route": "openai-codex subscription OAuth",
+  "provider_wire_verified": false,
+  "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+  "reasoning": "medium",
+  "runtime_observation_available": true
+}

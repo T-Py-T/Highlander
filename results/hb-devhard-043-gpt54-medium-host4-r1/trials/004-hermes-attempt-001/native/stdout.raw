@@ -1,0 +1,39 @@
+Ad-hoc verification rerun complete.
+
+Temporary script:
+- /private/var/folders/56/9gldf4zd5l526h1c7r293fzr0000gn/T/hermes-verify-fx_lsbzb.sh
+
+Execution:
+- run exit: 0
+- cleanup exit: 0
+- script removed after run
+
+What this ad-hoc verification did:
+- created a fresh SQLite DB from `schema.sql`
+- ran `migration.sql`
+- ran `postcheck.sql`
+- ran `migration.sql` a second time to verify idempotency
+- ran `rollback.sql`
+- inspected restored `users` schema and preserved `orders`
+
+Observed results:
+- `postcheck.sql` returned all checks with `ok = 1`
+- user count: 6
+- order count: 4
+- preserved dependent orders:
+  - `o2 -> u4`
+  - `o3 -> u5`
+  - `o4 -> u6`
+- cleaned migrated emails were exact:
+  - `u4 -> ada+u4@example.com`
+  - `u5 -> missing+u5@example.invalid`
+  - `u6 -> missing+u6@example.invalid`
+- `created_at` values were preserved
+- migrated `users.email` is non-null, unique, and nonblank
+- migrated `users.status` is `NOT NULL DEFAULT 'active'`
+- second migration run completed cleanly with no duplication/corruption
+- rollback restored old `users` shape:
+  - `id, email, name, created_at`
+- rollback preserved all orders and restored original legacy email values from backup
+
+So this is freshly verified as ad-hoc SQLite migration validation, not a canonical suite green.
