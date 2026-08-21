@@ -55,6 +55,22 @@ directories. Codex uses device authorization with file-based credential
 storage. Hermes obtains a separate device-code grant instead of sharing
 Codex's rotating refresh token.
 
+These are persistent authentication-only seeds. Run the five login commands
+once per computer, then reuse those seeds for every disposable Match until the
+provider expires or revokes a grant. Do not log in before every Trial, copy the
+ordinary host harness directories, or store seeds in Git, Dropbox, or another
+unsecured synchronization location. The seed directory is outside the
+repository and each Trial receives only the listed credential artifact in a
+fresh temporary home. Harness plugins, extensions, skills, rules, memories,
+sessions, and MCP configuration remain absent or disabled.
+
+Use a distinct OAuth grant for each Harness, even when two Harnesses use the
+same subscription. Codex and Hermes must not share one rotating refresh token.
+Run attempts for one Harness sequentially so two containers never race to use
+the same grant. If a grant becomes invalid, create a new seed profile name and
+update the Match specification; do not silently repair credentials during a
+scored Trial.
+
 OMP's SQLite store can include provider backoff state in addition to credentials. Subscription-backed results must therefore remain in the subscription-realism lane unless stronger routing proof is captured.
 
 ## Generate the first Match
