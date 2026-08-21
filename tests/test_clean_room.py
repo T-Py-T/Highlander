@@ -323,6 +323,59 @@ class CleanRoomMatchTests(unittest.TestCase):
             self.assertTrue(result["available"])
             self.assertEqual(result["imported_file"], "auth.json")
 
+    def test_podman_tmpfs_options_are_portable_and_writable_by_runtime_user(self):
+        clean_room = CleanRoom(
+            {
+                "runtime": "podman",
+                "profile": "clean-core",
+                "evaluator_image": self.EVALUATOR_IMAGE,
+                "network": "bridge",
+                "cpus": 2,
+                "memory_mb": 2048,
+                "pids_limit": 256,
+                "tmpfs_mb": 512,
+                "retain_workspaces": False,
+            }
+        )
+        argv = clean_room._container_argv(
+            name="highlander-test",
+            image=self.OMP_IMAGE,
+            workspace=self.repository,
+            command=["true"],
+            adapter="omp",
+            seed=None,
+            read_only_workspace=False,
+        )
+        tmpfs_values = [
+            argv[index + 1]
+            for index, value in enumerate(argv)
+            if value == "--tmpfs"
+        ]
+        self.assertEqual(len(tmpfs_values), 2)
+        self.assertTrue(
+            all("uid=" not in value and "gid=" not in value for value in tmpfs_values)
+        )
+        self.assertTrue(all("mode=1777" in value for value in tmpfs_values))
+
+    def test_clean_room_codex_forces_file_backed_subscription_auth(self):
+        spec_path = self.write_spec(match_id="codex-auth-config")
+        payload = json.loads(spec_path.read_text(encoding="utf-8"))
+        payload["contenders"] = [
+            {
+                "id": "codex-clean",
+                "adapter": "codex",
+                "options": {"image": self.CODEX_IMAGE},
+            },
+            {
+                "id": "opencode-clean",
+                "adapter": "opencode",
+                "options": {"image": self.OPENCODE_IMAGE},
+            },
+        ]
+        spec_path.write_text(json.dumps(payload), encoding="utf-8")
+        plan = MatchRunner.from_file(spec_path).plan()["trials"][0]
+        self.assertIn('cli_auth_credentials_store="file"', plan["invocation"]["argv"])
+
     @unittest.skipUnless(
         os.environ.get("HIGHLANDER_TEST_TMUX") == "1", "opt-in tmux integration"
     )

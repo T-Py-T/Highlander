@@ -1,0 +1,67 @@
+{
+  "artifacts": {
+    "diff": "trials/006-codex-attempt-002/diff.patch",
+    "final_workspace": "trials/006-codex-attempt-002/workspace-final",
+    "native": "trials/006-codex-attempt-002/native",
+    "trial": "trials/006-codex-attempt-002",
+    "upstream_result": "trials/006-codex-attempt-002/upstream-result.json"
+  },
+  "attempt": 2,
+  "combined_score": null,
+  "control_proof": {
+    "configured_model_id": "gpt-5.4",
+    "configured_verified": true,
+    "fallback_policy": "forbidden",
+    "observed": {
+      "model": [],
+      "provider": [],
+      "reasoning": []
+    },
+    "provider_route": "openai-codex ChatGPT subscription OAuth",
+    "provider_wire_verified": false,
+    "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+    "reasoning": "medium",
+    "runtime_observation_available": false
+  },
+  "elapsed_seconds": 224.712,
+  "harness_id": "codex",
+  "invalid_reason": null,
+  "operator_interventions": 0,
+  "outcome_score": 0.27,
+  "outer_elapsed_seconds": 225.194,
+  "process_observations": {
+    "combined_score": null,
+    "cross_harness_comparability": "limited by native event semantics",
+    "elapsed_seconds": 224.712,
+    "native_event_count": 44,
+    "native_observability": "event_stream",
+    "operator_interventions": 0,
+    "process_score": null,
+    "status": "observed_not_scored",
+    "tool_invocation_count": 14
+  },
+  "process_score": null,
+  "process_status": "not_evaluated",
+  "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+  "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+  "qualification": "valid",
+  "schema_version": 1,
+  "sequence": 6,
+  "task_id": "043-db-migration-safety",
+  "usage_normalized": {
+    "api_calls": null,
+    "available": true,
+    "cache_read_tokens": 277376,
+    "cache_write_tokens": 0,
+    "cost_status": "not_available",
+    "cost_usd": null,
+    "cross_harness_comparability": "not comparable; native accounting semantics differ",
+    "input_tokens": 301109,
+    "models": [],
+    "output_tokens": 11513,
+    "providers": [],
+    "reasoning_tokens": 3586,
+    "source": "codex_turn_completed",
+    "total_tokens": 312622
+  }
+}

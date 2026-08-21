@@ -1,0 +1,67 @@
+{
+  "artifacts": {
+    "diff": "trials/008-opencode-attempt-002/diff.patch",
+    "final_workspace": "trials/008-opencode-attempt-002/workspace-final",
+    "native": "trials/008-opencode-attempt-002/native",
+    "trial": "trials/008-opencode-attempt-002",
+    "upstream_result": "trials/008-opencode-attempt-002/upstream-result.json"
+  },
+  "attempt": 2,
+  "combined_score": null,
+  "control_proof": {
+    "configured_model_id": "openai/gpt-5.4",
+    "configured_verified": true,
+    "fallback_policy": "forbidden",
+    "observed": {
+      "model": [],
+      "provider": [],
+      "reasoning": []
+    },
+    "provider_route": "OpenAI subscription OAuth",
+    "provider_wire_verified": false,
+    "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+    "reasoning": "medium",
+    "runtime_observation_available": false
+  },
+  "elapsed_seconds": 273.477,
+  "harness_id": "opencode",
+  "invalid_reason": null,
+  "operator_interventions": 0,
+  "outcome_score": 0.995,
+  "outer_elapsed_seconds": 274.226,
+  "process_observations": {
+    "combined_score": null,
+    "cross_harness_comparability": "limited by native event semantics",
+    "elapsed_seconds": 273.477,
+    "native_event_count": 43,
+    "native_observability": "event_stream",
+    "operator_interventions": 0,
+    "process_score": null,
+    "status": "observed_not_scored",
+    "tool_invocation_count": 15
+  },
+  "process_score": null,
+  "process_status": "not_evaluated",
+  "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+  "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+  "qualification": "valid",
+  "schema_version": 1,
+  "sequence": 8,
+  "task_id": "043-db-migration-safety",
+  "usage_normalized": {
+    "api_calls": 11,
+    "available": true,
+    "cache_read_tokens": 165888,
+    "cache_write_tokens": 0,
+    "cost_status": "native_value_not_subscription_comparable",
+    "cost_usd": 0.0,
+    "cross_harness_comparability": "not comparable; native accounting semantics differ",
+    "input_tokens": 22493,
+    "models": [],
+    "output_tokens": 8620,
+    "providers": [],
+    "reasoning_tokens": 5439,
+    "source": "opencode_step_finish",
+    "total_tokens": 202440
+  }
+}

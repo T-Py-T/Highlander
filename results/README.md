@@ -52,7 +52,25 @@ results/
 - weighted score and correct maintainable draft PRs per active operator hour;
 - limitations, repeat count, and whether the result is stable enough to influence the stack.
 
-No real-harness result directory is included yet. The first intended public-quality comparison remains a controlled, repeated clean-room Match with an identical model lane.
+The first real-harness result is
+`hb-devhard-043-gpt54-medium-host4-r1/`. It is a repeated, identical-model
+host-isolated subscription-realism pilot, not a clean-room season or a winner
+claim. Its private byte-retained source remains outside Git; the checked-in
+copy retains path-redacted native transcripts, tool ledgers, diffs, final
+workspaces, deterministic oracle output, usage observations, cleanup proof,
+and self-verifying manifests.
+
+Verify it with:
+
+```text
+python3 tools/hb-evidence.py verify \
+  results/hb-devhard-043-gpt54-medium-host4-r1
+```
+
+The bundle's `results.jsonl`, `leaderboard.json`, `summary.json`, and
+`report.md` are canonical views of the same 12 valid Trials. Process and
+combined scores are null because no process judge ran. NanoBot is explicitly
+unavailable, not scored zero.
 
 ## Retained protocol qualification
 

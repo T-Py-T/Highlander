@@ -1,0 +1,71 @@
+{
+  "artifacts": {
+    "diff": "trials/009-omp-attempt-003/diff.patch",
+    "final_workspace": "trials/009-omp-attempt-003/workspace-final",
+    "native": "trials/009-omp-attempt-003/native",
+    "trial": "trials/009-omp-attempt-003",
+    "upstream_result": "trials/009-omp-attempt-003/upstream-result.json"
+  },
+  "attempt": 3,
+  "combined_score": null,
+  "control_proof": {
+    "configured_model_id": "openai-codex/gpt-5.4",
+    "configured_verified": true,
+    "fallback_policy": "forbidden",
+    "observed": {
+      "model": [],
+      "provider": [],
+      "reasoning": []
+    },
+    "provider_route": "openai-codex subscription OAuth",
+    "provider_wire_verified": false,
+    "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+    "reasoning": "medium",
+    "runtime_observation_available": false
+  },
+  "elapsed_seconds": 248.831,
+  "harness_id": "omp",
+  "invalid_reason": null,
+  "operator_interventions": 0,
+  "outcome_score": 0.995,
+  "outer_elapsed_seconds": 249.508,
+  "process_observations": {
+    "combined_score": null,
+    "cross_harness_comparability": "limited by native event semantics",
+    "elapsed_seconds": 248.831,
+    "native_event_count": 3354,
+    "native_observability": "event_stream",
+    "operator_interventions": 0,
+    "process_score": null,
+    "status": "observed_not_scored",
+    "tool_invocation_count": 24
+  },
+  "process_score": null,
+  "process_status": "not_evaluated",
+  "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+  "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+  "qualification": "valid",
+  "schema_version": 1,
+  "sequence": 9,
+  "task_id": "043-db-migration-safety",
+  "usage_normalized": {
+    "api_calls": 11,
+    "available": true,
+    "cache_read_tokens": 282624,
+    "cache_write_tokens": 0,
+    "cost_status": "harness_estimate_not_subscription_comparable",
+    "cost_usd": 0.321336,
+    "cross_harness_comparability": "not comparable; native accounting semantics differ",
+    "input_tokens": 24426,
+    "models": [
+      "gpt-5.4"
+    ],
+    "output_tokens": 12641,
+    "providers": [
+      "openai-codex"
+    ],
+    "reasoning_tokens": 5647,
+    "source": "omp_assistant_message_end",
+    "total_tokens": 319691
+  }
+}

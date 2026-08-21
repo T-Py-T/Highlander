@@ -1,0 +1,14 @@
+{"event_type": "item.started", "line": 4, "tool_kind": "command_execution"}
+{"event_type": "item.started", "line": 5, "tool_kind": "command_execution"}
+{"event_type": "item.started", "line": 8, "tool_kind": "command_execution"}
+{"event_type": "item.started", "line": 14, "tool_kind": "file_change"}
+{"event_type": "item.started", "line": 16, "tool_kind": "file_change"}
+{"event_type": "item.started", "line": 20, "tool_kind": "command_execution"}
+{"event_type": "item.started", "line": 23, "tool_kind": "command_execution"}
+{"event_type": "item.started", "line": 26, "tool_kind": "command_execution"}
+{"event_type": "item.started", "line": 29, "tool_kind": "command_execution"}
+{"event_type": "item.started", "line": 31, "tool_kind": "command_execution"}
+{"event_type": "item.started", "line": 34, "tool_kind": "command_execution"}
+{"event_type": "item.started", "line": 36, "tool_kind": "command_execution"}
+{"event_type": "item.started", "line": 40, "tool_kind": "file_change"}
+{"event_type": "item.started", "line": 42, "tool_kind": "command_execution"}

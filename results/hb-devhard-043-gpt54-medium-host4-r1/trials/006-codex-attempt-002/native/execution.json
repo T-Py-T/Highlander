@@ -1,0 +1,17 @@
+{
+  "completed_at": "2026-08-21T17:49:48.394498Z",
+  "completed_ns": 1787334588394530000,
+  "elapsed_seconds": 224.712,
+  "harness_id": "codex",
+  "operator_interventions": 0,
+  "process_metrics": {
+    "event_count": 44,
+    "tool_event_count": 0
+  },
+  "returncode": 0,
+  "schema_version": 1,
+  "started_at": "2026-08-21T17:46:03.682990Z",
+  "started_ns": 1787334363682988000,
+  "temporary_home_removed": true,
+  "timed_out": false
+}

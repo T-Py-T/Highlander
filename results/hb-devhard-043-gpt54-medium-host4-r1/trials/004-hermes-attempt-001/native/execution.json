@@ -1,0 +1,17 @@
+{
+  "completed_at": "2026-08-21T17:38:37.634489Z",
+  "completed_ns": 1787333917634510000,
+  "elapsed_seconds": 249.759,
+  "harness_id": "hermes",
+  "operator_interventions": 0,
+  "process_metrics": {
+    "event_count": 0,
+    "tool_event_count": 0
+  },
+  "returncode": 0,
+  "schema_version": 1,
+  "started_at": "2026-08-21T17:34:27.875714Z",
+  "started_ns": 1787333667875712000,
+  "temporary_home_removed": true,
+  "timed_out": false
+}

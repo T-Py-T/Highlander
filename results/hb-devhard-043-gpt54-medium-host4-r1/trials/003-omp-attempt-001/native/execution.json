@@ -1,0 +1,17 @@
+{
+  "completed_at": "2026-08-21T17:34:27.528693Z",
+  "completed_ns": 1787333667528713000,
+  "elapsed_seconds": 265.87,
+  "harness_id": "omp",
+  "operator_interventions": 0,
+  "process_metrics": {
+    "event_count": 4139,
+    "tool_event_count": 70
+  },
+  "returncode": 0,
+  "schema_version": 1,
+  "started_at": "2026-08-21T17:30:01.659122Z",
+  "started_ns": 1787333401659120000,
+  "temporary_home_removed": true,
+  "timed_out": false
+}

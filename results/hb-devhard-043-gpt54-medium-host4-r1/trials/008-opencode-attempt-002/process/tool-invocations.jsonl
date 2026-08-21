@@ -1,0 +1,15 @@
+{"event_type": "tool_use", "line": 3, "tool_kind": "todowrite"}
+{"event_type": "tool_use", "line": 6, "tool_kind": "read"}
+{"event_type": "tool_use", "line": 7, "tool_kind": "read"}
+{"event_type": "tool_use", "line": 8, "tool_kind": "read"}
+{"event_type": "tool_use", "line": 12, "tool_kind": "apply_patch"}
+{"event_type": "tool_use", "line": 16, "tool_kind": "bash"}
+{"event_type": "tool_use", "line": 17, "tool_kind": "bash"}
+{"event_type": "tool_use", "line": 20, "tool_kind": "bash"}
+{"event_type": "tool_use", "line": 24, "tool_kind": "apply_patch"}
+{"event_type": "tool_use", "line": 27, "tool_kind": "bash"}
+{"event_type": "tool_use", "line": 31, "tool_kind": "todowrite"}
+{"event_type": "tool_use", "line": 34, "tool_kind": "bash"}
+{"event_type": "tool_use", "line": 35, "tool_kind": "bash"}
+{"event_type": "tool_use", "line": 36, "tool_kind": "bash"}
+{"event_type": "tool_use", "line": 39, "tool_kind": "todowrite"}

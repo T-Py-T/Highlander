@@ -78,3 +78,41 @@ Do not build custom harder tasks until at least two modern Harnesses exceed
 trigger fires, the next pack should emphasize repository-scale repair,
 Terraform/Kubernetes/CI, migration safety, rollback, and offline incident
 diagnosis.
+
+## Retained task-043 pilot
+
+`hb-devhard-043-gpt54-medium-host4-r1` is the first real, repeated
+HarnessBench-aligned pilot. It used official task `043-db-migration-safety`,
+GPT-5.4 at medium reasoning, three attempts per available Harness, and the
+deterministic upstream oracle. It is a **host-isolated subscription-realism**
+stratum because the canonical disposable login seeds were unavailable. It is
+not the clean-core season and is not rankable as a season.
+
+| Harness | Per-trial outcome | Mean | Population σ | Mean seconds |
+|---|---|---:|---:|---:|
+| OpenCode 1.18.15 | 0.995, 0.995, 0.987 | 0.9923 | 0.0038 | 209.134 |
+| Hermes 0.20.0 | 0.995, 0.995, 0.980 | 0.9900 | 0.0071 | 275.101 |
+| OMP 17.2.10 | 0.909, 0.909, 0.995 | 0.9377 | 0.0405 | 319.955 |
+| Codex 0.149.0 | 0.917, 0.270, 0.987 | 0.7247 | 0.3228 | 278.197 |
+| NanoBot | unavailable | — | — | — |
+
+All 12 scheduled paid Trials were valid and required zero operator
+interventions. Codex's 0.270 Trial is a valid failure, not infrastructure
+noise: independent rescoring reproduced a foreign-key constraint failure.
+NanoBot had no qualified dedicated host OAuth profile and was not scored zero.
+
+No process judge ran, so process and combined scores are null. Native event,
+tool-invocation, duration, and usage records are observations only; their
+accounting semantics differ among Harnesses. This one-task pilot estimates
+within-task repeatability and must not declare a winner.
+
+Verify the 314-file sanitized evidence bundle:
+
+```text
+python3 tools/hb-evidence.py verify \
+  results/hb-devhard-043-gpt54-medium-host4-r1
+```
+
+The next highest-evidence run is the same frozen control across the remaining
+11 DevHard tasks. The full-pack season should remain a separate stratum unless
+the five disposable subscription seeds are requalified first.

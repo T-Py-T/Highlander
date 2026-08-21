@@ -1,0 +1,274 @@
+--- a/in/db/migration.sql
++++ b/in/db/migration.sql
+@@ -1,9 +1,97 @@
+-DROP TABLE users;
++PRAGMA foreign_keys = OFF;
++BEGIN IMMEDIATE;
+ 
+-CREATE TABLE users (
++-- Persist status values across reruns. The first migration seeds every user as active.
++CREATE TABLE IF NOT EXISTS users__status_shadow (
+     id TEXT PRIMARY KEY,
+-    email TEXT UNIQUE,
++    status TEXT NOT NULL
++);
++
++INSERT OR IGNORE INTO users__status_shadow (id, status)
++SELECT id, 'active'
++FROM users;
++
++DELETE FROM users__status_shadow
++WHERE id NOT IN (SELECT id FROM users);
++
++DROP TABLE IF EXISTS users__migration_new;
++
++CREATE TABLE users__migration_new (
++    id TEXT PRIMARY KEY,
++    email TEXT NOT NULL,
+     name TEXT NOT NULL,
+     status TEXT NOT NULL DEFAULT 'active',
+-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
++    created_at TEXT NOT NULL
+ );
++
++-- Deterministic cleanup for legacy dirty emails.
++INSERT INTO users__migration_new (id, email, name, status, created_at)
++SELECT
++    u.id,
++    CASE u.id
++        WHEN 'u4' THEN 'ada+u4@example.com'
++        WHEN 'u5' THEN 'missing+u5@example.invalid'
++        WHEN 'u6' THEN 'missing+u6@example.invalid'
++        ELSE u.email
++    END AS email,
++    u.name,
++    COALESCE(s.status, 'active') AS status,
++    u.created_at
++FROM users AS u
++LEFT JOIN users__status_shadow AS s
++    ON s.id = u.id;
++
++DROP TABLE users;
++ALTER TABLE users__migration_new RENAME TO users;
++
++CREATE UNIQUE INDEX users_email_unique
++    ON users(email);
++
++CREATE TRIGGER users_email_required_insert
++BEFORE INSERT ON users
++FOR EACH ROW
++WHEN NEW.email IS NULL OR TRIM(NEW.email) = ''
++BEGIN
++    SELECT RAISE(ABORT, 'users.email must be non-null and non-blank');
++END;
++
++CREATE TRIGGER users_email_required_update
++BEFORE UPDATE OF email ON users
++FOR EACH ROW
++WHEN NEW.email IS NULL OR TRIM(NEW.email) = ''
++BEGIN
++    SELECT RAISE(ABORT, 'users.email must be non-null and non-blank');
++END;
++
++CREATE TRIGGER users_status_shadow_insert
++AFTER INSERT ON users
++FOR EACH ROW
++BEGIN
++    INSERT INTO users__status_shadow (id, status)
++    VALUES (NEW.id, NEW.status)
++    ON CONFLICT(id) DO UPDATE SET status = excluded.status;
++END;
++
++CREATE TRIGGER users_status_shadow_update
++AFTER UPDATE OF id, status ON users
++FOR EACH ROW
++BEGIN
++    DELETE FROM users__status_shadow
++    WHERE id = OLD.id
++      AND OLD.id <> NEW.id;
++
++    INSERT INTO users__status_shadow (id, status)
++    VALUES (NEW.id, NEW.status)
++    ON CONFLICT(id) DO UPDATE SET status = excluded.status;
++END;
++
++CREATE TRIGGER users_status_shadow_delete
++AFTER DELETE ON users
++FOR EACH ROW
++BEGIN
++    DELETE FROM users__status_shadow
++    WHERE id = OLD.id;
++END;
++
++COMMIT;
++PRAGMA foreign_keys = ON;
+--- a/in/db/migration_report.md
++++ b/in/db/migration_report.md
+@@ -0,0 +1,33 @@
++# Migration report
++
++## Strategy
++- Run the migration inside `BEGIN IMMEDIATE` / `COMMIT` with foreign keys temporarily disabled during the table swap.
++- Rebuild `users` into a new table with the target schema instead of dropping data in place.
++- Copy every existing user row forward, preserve every `id`, preserve every `created_at`, and keep `orders.user_id` values unchanged.
++- Recreate the final `users` table with `status TEXT NOT NULL DEFAULT 'active'` and a unique email index.
++
++## Dirty-data cleanup
++- `u1` keeps `ada@example.com`.
++- `u4` is rewritten to `ada+u4@example.com`.
++- `u5` is rewritten to `missing+u5@example.invalid`.
++- `u6` is rewritten to `missing+u6@example.invalid`.
++- The cleanup is deterministic and re-applies the same canonical values on later runs.
++
++## Idempotency approach
++- The script always rebuilds the `users` table into a fresh staging table, so rerunning it does not duplicate rows.
++- A companion `users__status_shadow` table plus sync triggers preserves `status` values across reruns after the first migration.
++- `DROP ... IF EXISTS`, `CREATE ... IF NOT EXISTS`, and fixed email rewrites make the migration repeatable on the same database.
++
++## Rollback behavior and limitation
++- Run `rollback.sql` after the migration to restore the old `users` schema shape: `id`, `email`, `name`, `created_at`.
++- Rollback preserves user-row count, order-row count, user ids, and dependent order references.
++- Rollback intentionally keeps the cleaned email values; it removes the `status` column and migration-side enforcement objects, but it does not reconstruct the original dirty email values.
++
++## Post-migration verification
++Run `postcheck.sql` after the migration. It checks:
++- user and order row counts,
++- preserved dependent orders for `u4`, `u5`, and `u6`,
++- the cleaned email values for dirty users,
++- absence of duplicate / null / blank emails,
++- presence of `status TEXT NOT NULL DEFAULT 'active'`,
++- presence of the unique email index and email-required triggers.
+--- a/in/db/postcheck.sql
++++ b/in/db/postcheck.sql
+@@ -0,0 +1,69 @@
++SELECT 'user_row_count' AS check_name, COUNT(*) AS actual, 6 AS expected, COUNT(*) = 6 AS pass
++FROM users;
++
++SELECT 'order_row_count' AS check_name, COUNT(*) AS actual, 4 AS expected, COUNT(*) = 4 AS pass
++FROM orders;
++
++SELECT 'order_refs_for_dirty_users' AS check_name, COUNT(*) AS actual, 3 AS expected, COUNT(*) = 3 AS pass
++FROM orders
++WHERE user_id IN ('u4', 'u5', 'u6');
++
++SELECT 'dirty_user_orders' AS section, id, user_id, total_cents, created_at
++FROM orders
++WHERE user_id IN ('u4', 'u5', 'u6')
++ORDER BY id;
++
++SELECT 'cleaned_dirty_users' AS section, id, email, status, created_at
++FROM users
++WHERE id IN ('u4', 'u5', 'u6')
++ORDER BY id;
++
++SELECT 'duplicate_email_groups' AS check_name, COUNT(*) AS actual, 0 AS expected, COUNT(*) = 0 AS pass
++FROM (
++    SELECT email
++    FROM users
++    GROUP BY email
++    HAVING COUNT(*) > 1
++);
++
++SELECT 'null_or_blank_emails' AS check_name, COUNT(*) AS actual, 0 AS expected, COUNT(*) = 0 AS pass
++FROM users
++WHERE email IS NULL OR TRIM(email) = '';
++
++SELECT 'null_status_rows' AS check_name, COUNT(*) AS actual, 0 AS expected, COUNT(*) = 0 AS pass
++FROM users
++WHERE status IS NULL;
++
++SELECT 'status_column_definition' AS check_name,
++       COUNT(*) AS actual,
++       1 AS expected,
++       COUNT(*) = 1 AS pass
++FROM pragma_table_info('users')
++WHERE name = 'status'
++  AND type = 'TEXT'
++  AND "notnull" = 1
++  AND dflt_value = '''active''';
++
++SELECT 'email_unique_index_present' AS check_name,
++       COUNT(*) AS actual,
++       1 AS expected,
++       COUNT(*) = 1 AS pass
++FROM pragma_index_list('users')
++WHERE name = 'users_email_unique'
++  AND "unique" = 1;
++
++SELECT 'email_required_insert_trigger_present' AS check_name,
++       COUNT(*) AS actual,
++       1 AS expected,
++       COUNT(*) = 1 AS pass
++FROM sqlite_master
++WHERE type = 'trigger'
++  AND name = 'users_email_required_insert';
++
++SELECT 'email_required_update_trigger_present' AS check_name,
++       COUNT(*) AS actual,
++       1 AS expected,
++       COUNT(*) = 1 AS pass
++FROM sqlite_master
++WHERE type = 'trigger'
++  AND name = 'users_email_required_update';
+--- a/in/db/preflight_report.md
++++ b/in/db/preflight_report.md
+@@ -0,0 +1,28 @@
++# Preflight report
++
++## Source state
++- `users` rows: 6
++- `orders` rows: 4
++- Existing `users.email` is nullable and not unique.
++- Existing `users` schema has no `status` column.
++
++## Dirty email findings
++- Duplicate email: `ada@example.com` is present on `u1` and `u4`.
++- Null email: `u5` has `email = NULL`.
++- Blank email: `u6` has `email = ''`.
++
++## Required deterministic cleanup
++- Keep `u1` unchanged as `ada@example.com`.
++- Rewrite duplicate user `u4` to `ada+u4@example.com`.
++- Rewrite null-email user `u5` to `missing+u5@example.invalid`.
++- Rewrite blank-email user `u6` to `missing+u6@example.invalid`.
++
++## Dependent orders for dirty users
++- `u4` is referenced by order `o2`.
++- `u5` is referenced by order `o3`.
++- `u6` is referenced by order `o4`.
++
++## Migration risk in the draft
++- Dropping `users` before copying data would delete all user rows.
++- Dependent `orders.user_id` references would be left without their original parent rows.
++- Recreating `created_at` with a new default would destroy historical timestamps.
+--- a/in/db/rollback.sql
++++ b/in/db/rollback.sql
+@@ -0,0 +1,28 @@
++PRAGMA foreign_keys = OFF;
++BEGIN IMMEDIATE;
++
++DROP TRIGGER IF EXISTS users_email_required_insert;
++DROP TRIGGER IF EXISTS users_email_required_update;
++DROP TRIGGER IF EXISTS users_status_shadow_insert;
++DROP TRIGGER IF EXISTS users_status_shadow_update;
++DROP TRIGGER IF EXISTS users_status_shadow_delete;
++DROP INDEX IF EXISTS users_email_unique;
++DROP TABLE IF EXISTS users__rollback_old;
++
++CREATE TABLE users__rollback_old (
++    id TEXT PRIMARY KEY,
++    email TEXT,
++    name TEXT NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO users__rollback_old (id, email, name, created_at)
++SELECT id, email, name, created_at
++FROM users;
++
++DROP TABLE users;
++ALTER TABLE users__rollback_old RENAME TO users;
++DROP TABLE IF EXISTS users__status_shadow;
++
++COMMIT;
++PRAGMA foreign_keys = ON;

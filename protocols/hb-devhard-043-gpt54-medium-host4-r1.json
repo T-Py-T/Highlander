@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+  "created_at": "2026-08-21T17:17:33Z",
+  "lane": "host_isolated_subscription_realism",
+  "purpose": "Bounded real pilot of harness treatment on one hard coding-and-DevOps task using matched model and reasoning controls.",
+  "claim_boundary": "Single deterministic task with three repeated trials per available host-isolated harness. Estimates within-task repeatability only; no landscape winner, clean-room claim, provider-wire identity claim, or cross-task generalization is permitted.",
+  "runner": {
+    "repository": "https://github.com/taylorsmithgg/Highlander",
+    "implementation_commit": "aa462027af785eaa6d4f033d06b513ca826ab304",
+    "implementation_tree": "df2029fc95d59dd18235541f10f39c2a956ebeeb"
+  },
+  "source_hashes": {
+    "highlander/hb_pilot.py": "e217fb52deb1d91445d889849beb0e2331f00722f452baa0d9fa5122f6c7956a",
+    "tools/hb-host-adapter.py": "f94df72bcdd4ac605cff718fde459e1305aeca90136514d92f044aeb47e3f7bc",
+    "tools/hb-pilot.py": "7076432ada180d3cc2c98420178d3f2fb1de4b248a2469c02ba8361edd8316f0"
+  },
+  "upstream": {
+    "repository": "https://github.com/Qihoo360/harness-bench",
+    "commit": "1025086a446653702b80cfb48babbeec35db6b2c",
+    "tree": "49208501704f1d7e2ada03800ac14621f760e1b6"
+  },
+  "benchmark_pack": {
+    "id": "hb-devhard-v1",
+    "source": "benchmark-packs/hb-devhard-v1.json",
+    "official_task_count": 12,
+    "pilot_task_count": 1
+  },
+  "task": {
+    "id": "043-db-migration-safety",
+    "class": "Software Engineering & Codebase Maintenance",
+    "difficulty": "hard",
+    "fixtures_dir": "fixtures",
+    "git_tree": "0cd97524725619f70410ea6ef038ab7b42438516",
+    "bundle_sha256": "3b3363874ca74ce6c4e7ccd638c0443fdef7627cf61f9b39063e169d51a609fb",
+    "file_count": 8,
+    "file_hashes": {
+      "fixtures/in/db/migration.sql": "cd19eff3d4869cf43d3bf0f9daa41557c6724af3e1da605b0c70bd0c83d857f8",
+      "fixtures/in/db/migration_policy.md": "e3638314798a2c7419e68baa7c1e52663ee752f513f1a025127a3a8ada6b5465",
+      "fixtures/in/db/schema.sql": "3f097b5cdbd1e6a2522b6252e51a55f1e145cd4a3566c0bcaf71c492fc947a9a",
+      "ground_truth.json": "2b1d4c545e09b93081b670c9f92078eba5764464ee0b8aade98cf9eb2d67c2d5",
+      "llm_rubric.py": "13768abab8303bd656c4107e35bfe55831dbc8f8453436650beadc14e6ccccfd",
+      "oracle_grade.py": "c5f3c3d33940e8f8c5bc7e4c719291f235cbd036ebcf33694041e6173f0c1171",
+      "prompt.txt": "7006dc9f181565bf81c7bd64bdf30e3d0df62991b6a022307bc2aa39dbebbeb8",
+      "task.yaml": "349a967547a7271f3c65e7c705e78aeeff0083d7fa5d3bcb461bcccbd572e2ee"
+    }
+  },
+  "scoring": {
+    "outcome": {
+      "type": "deterministic_oracle",
+      "oracle_path": "tasks/043-db-migration-safety/oracle_grade.py",
+      "oracle_sha256": "c5f3c3d33940e8f8c5bc7e4c719291f235cbd036ebcf33694041e6173f0c1171",
+      "python": "CPython 3.14.7",
+      "score_range": [0.0, 1.0]
+    },
+    "process": {
+      "status": "not_evaluated",
+      "judge": null,
+      "judge_version": null,
+      "score": null,
+      "observations_only": [
+        "elapsed_seconds",
+        "native_event_count_where_observable",
+        "native_tool_event_count_where_observable",
+        "operator_interventions",
+        "usage_and_cost_where_natively_reported"
+      ]
+    },
+    "combined": {
+      "status": "not_computed",
+      "score": null,
+      "reason": "HarnessBench's default process value when its LLM judge is skipped is not a measurement."
+    }
+  },
+  "authentication": {
+    "route": "subscription_oauth",
+    "profile_id": "hb-gpt54-20260808",
+    "profile_scope": "dedicated host-isolated profiles, never daily profiles",
+    "credential_values_recorded": false,
+    "qualification_basis": "Previous live qualification recorded in GitHub issue 28 plus structural profile checks at pilot start.",
+    "wire_proof_available": false
+  },
+  "harnesses": [
+    {
+      "id": "omp",
+      "version": "17.2.10",
+      "configured_model_id": "openai-codex/gpt-5.4",
+      "provider_route": "openai-codex subscription OAuth",
+      "reasoning": "medium",
+      "required_profile_files": ["omp/agent.db"],
+      "customization_controls": ["no extensions", "no skills", "no rules", "no prewalk", "no session", "no title", "all auxiliary model roles pinned to the primary model"]
+    },
+    {
+      "id": "opencode",
+      "version": "1.18.15",
+      "configured_model_id": "openai/gpt-5.4",
+      "provider_route": "OpenAI subscription OAuth",
+      "reasoning": "medium",
+      "required_profile_files": ["opencode/data/opencode/auth.json"],
+      "customization_controls": ["pure mode", "automatic permissions", "isolated XDG config/data/cache/state"]
+    },
+    {
+      "id": "codex",
+      "version": "0.149.0",
+      "configured_model_id": "gpt-5.4",
+      "provider_route": "openai-codex ChatGPT subscription OAuth",
+      "reasoning": "medium",
+      "required_profile_files": ["codex/auth.json"],
+      "customization_controls": ["ephemeral", "ignore user config", "ignore rules", "workspace-write sandbox", "never ask for approval", "file-backed credential store"]
+    },
+    {
+      "id": "hermes",
+      "version": "0.20.0 (2026.8.3)",
+      "configured_model_id": "gpt-5.4",
+      "provider_route": "openai-codex subscription OAuth",
+      "reasoning": "medium",
+      "required_profile_files": ["hermes/auth.json"],
+      "customization_controls": ["safe mode", "yolo", "one-shot", "native usage report"]
+    }
+  ],
+  "unavailable_harnesses": [
+    {
+      "id": "nanobot",
+      "reason": "No qualified dedicated host OAuth profile and all canonical disposable seed profiles are empty."
+    }
+  ],
+  "attempts_per_harness_task": 3,
+  "trial_order_policy": {
+    "type": "seeded_randomized_matched_blocks",
+    "seed": 54043,
+    "parallelism": 1,
+    "reason": "One trial per harness in each repeat block; sequential execution avoids shared subscription-profile races."
+  },
+  "trial_order": [
+    {"sequence": 1, "attempt": 1, "harness_id": "opencode"},
+    {"sequence": 2, "attempt": 1, "harness_id": "codex"},
+    {"sequence": 3, "attempt": 1, "harness_id": "omp"},
+    {"sequence": 4, "attempt": 1, "harness_id": "hermes"},
+    {"sequence": 5, "attempt": 2, "harness_id": "omp"},
+    {"sequence": 6, "attempt": 2, "harness_id": "codex"},
+    {"sequence": 7, "attempt": 2, "harness_id": "hermes"},
+    {"sequence": 8, "attempt": 2, "harness_id": "opencode"},
+    {"sequence": 9, "attempt": 3, "harness_id": "omp"},
+    {"sequence": 10, "attempt": 3, "harness_id": "hermes"},
+    {"sequence": 11, "attempt": 3, "harness_id": "opencode"},
+    {"sequence": 12, "attempt": 3, "harness_id": "codex"}
+  ],
+  "permissions": {
+    "workspace": "fresh HarnessBench task workspace per trial",
+    "shell_and_file_tools": "native harness treatment; write access limited by each harness to the task workspace where supported",
+    "network": "host network and subscription provider access available; task is offline and requires no network",
+    "publication": "disabled; no GitHub, SSH agent, cloud, or provider API-key environment variables inherited by contender processes",
+    "memory": "ephemeral or disabled where supported; dedicated auth profile persistence remains a documented host-lane limitation",
+    "operator_intervention": "none after start"
+  },
+  "limits": {
+    "wall_time_seconds": 1200,
+    "outer_grace_seconds": 90,
+    "common_token_cap": null,
+    "common_cost_cap": null,
+    "reason": "Subscription CLIs do not expose one enforceable comparable token or dollar cap. The bounded budget is 12 scheduled calls on one task, with no replacement retries."
+  },
+  "invalidation_and_disqualification": {
+    "invalid_trial": [
+      "authentication failure",
+      "harness nonzero exit",
+      "wall-time timeout",
+      "missing deterministic oracle result",
+      "task, oracle, runner, protocol, or upstream hash drift",
+      "controller or HarnessBench infrastructure failure"
+    ],
+    "unavailable_lane": [
+      "required dedicated auth artifact absent before start",
+      "first attempted trial proves subscription authentication unavailable"
+    ],
+    "valid_low_score_policy": "A completed harness run with deterministic oracle output is valid even if its score is zero; it is never retried or replaced for poor performance.",
+    "invalid_score_policy": "Invalid and unavailable trials have null outcome, process, and combined scores; they are never converted to zero.",
+    "fallback_policy": "forbidden",
+    "replacement_retry_policy": "none"
+  },
+  "environment": {
+    "os": "Darwin 25.6.0 arm64",
+    "python": "3.14.7",
+    "podman": "5.8.3"
+  },
+  "clean_room_reference": {
+    "status": "unavailable_for_this_pilot",
+    "reason": "All five canonical disposable seed profiles are empty. Image readiness alone is not auth readiness.",
+    "images": {
+      "evaluator": "sha256:9808d60810b834a04c0f83512291b087c7934cc3eec1c6767a9fcfea54b9dd83",
+      "omp": "sha256:7ded067b894b52d6773f367b5765d2b3ba704c7466e1d04b701c9d051c348553",
+      "opencode": "sha256:ad18862fe18a34a7dc9f5a2255001e8ad3f72ba80a7863eb59fa35dec92064a7",
+      "codex": "sha256:04240cd47fbc71fd17c0e2745dbe1b59da622f6419b158ccb69c55429924ea88",
+      "hermes": "sha256:580c8ca095ab7c731fc4d9a591f8990a4fdd40d628de4c186ed24ac323b24720",
+      "nanobot": "sha256:722850ba0bfbe599843d1da9084d817a5c1cc6d31832f5f3421de3a2874984c3"
+    }
+  }
+}

@@ -1,0 +1,685 @@
+{
+  "claim_boundary": "Single deterministic task with three repeated trials per available host-isolated harness. Estimates within-task repeatability only; no landscape winner, clean-room claim, provider-wire identity claim, or cross-task generalization is permitted.",
+  "claim_status": "underpowered_single_task_pilot",
+  "combined_score": null,
+  "completed_at": "2026-08-21T18:15:07.270850Z",
+  "harnesses": [
+    {
+      "expected_trials": 3,
+      "harness_id": "codex",
+      "invalid_trials": 0,
+      "maximum_outcome": 0.987,
+      "mean_elapsed_seconds": 278.197,
+      "mean_outcome": 0.7247,
+      "minimum_outcome": 0.27,
+      "operator_interventions": 0,
+      "population_stddev": 0.3228,
+      "sample_stddev": 0.3953,
+      "total_tool_events": 0,
+      "unavailable_trials": 0,
+      "valid_trials": 3
+    },
+    {
+      "expected_trials": 3,
+      "harness_id": "hermes",
+      "invalid_trials": 0,
+      "maximum_outcome": 0.995,
+      "mean_elapsed_seconds": 275.101,
+      "mean_outcome": 0.99,
+      "minimum_outcome": 0.98,
+      "operator_interventions": 0,
+      "population_stddev": 0.0071,
+      "sample_stddev": 0.0087,
+      "total_tool_events": null,
+      "unavailable_trials": 0,
+      "valid_trials": 3
+    },
+    {
+      "expected_trials": 3,
+      "harness_id": "nanobot",
+      "invalid_trials": 0,
+      "maximum_outcome": null,
+      "mean_elapsed_seconds": null,
+      "mean_outcome": null,
+      "minimum_outcome": null,
+      "operator_interventions": 0,
+      "population_stddev": null,
+      "sample_stddev": null,
+      "total_tool_events": null,
+      "unavailable_trials": 1,
+      "valid_trials": 0
+    },
+    {
+      "expected_trials": 3,
+      "harness_id": "omp",
+      "invalid_trials": 0,
+      "maximum_outcome": 0.995,
+      "mean_elapsed_seconds": 319.955,
+      "mean_outcome": 0.9377,
+      "minimum_outcome": 0.909,
+      "operator_interventions": 0,
+      "population_stddev": 0.0405,
+      "sample_stddev": 0.0497,
+      "total_tool_events": 221,
+      "unavailable_trials": 0,
+      "valid_trials": 3
+    },
+    {
+      "expected_trials": 3,
+      "harness_id": "opencode",
+      "invalid_trials": 0,
+      "maximum_outcome": 0.995,
+      "mean_elapsed_seconds": 209.134,
+      "mean_outcome": 0.9923,
+      "minimum_outcome": 0.987,
+      "operator_interventions": 0,
+      "population_stddev": 0.0038,
+      "sample_stddev": 0.0046,
+      "total_tool_events": 42,
+      "unavailable_trials": 0,
+      "valid_trials": 3
+    }
+  ],
+  "process_score": null,
+  "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+  "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+  "ranking_permitted": false,
+  "schema_version": 1,
+  "task_id": "043-db-migration-safety",
+  "trial_rows": [
+    {
+      "artifacts": {
+        "diff": "trials/001-opencode-attempt-001/diff.patch",
+        "final_workspace": "trials/001-opencode-attempt-001/workspace-final",
+        "native": "trials/001-opencode-attempt-001/native",
+        "trial": "trials/001-opencode-attempt-001",
+        "upstream_result": "trials/001-opencode-attempt-001/upstream-result.json"
+      },
+      "attempt": 1,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "openai/gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [],
+          "provider": [],
+          "reasoning": []
+        },
+        "provider_route": "OpenAI subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": false
+      },
+      "elapsed_seconds": 208.389,
+      "event_count": 47,
+      "harness_id": "opencode",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.995,
+      "outer_elapsed_seconds": 209.215,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 1,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": 18,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-opencode-a1-043-db-migration-safety-c406034a"
+      }
+    },
+    {
+      "artifacts": {
+        "diff": "trials/002-codex-attempt-001/diff.patch",
+        "final_workspace": "trials/002-codex-attempt-001/workspace-final",
+        "native": "trials/002-codex-attempt-001/native",
+        "trial": "trials/002-codex-attempt-001",
+        "upstream_result": "trials/002-codex-attempt-001/upstream-result.json"
+      },
+      "attempt": 1,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [],
+          "provider": [],
+          "reasoning": []
+        },
+        "provider_route": "openai-codex ChatGPT subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": false
+      },
+      "elapsed_seconds": 338.174,
+      "event_count": 48,
+      "harness_id": "codex",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.917,
+      "outer_elapsed_seconds": 338.837,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 2,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": 0,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-codex-a1-043-db-migration-safety-616f99bf"
+      }
+    },
+    {
+      "artifacts": {
+        "diff": "trials/003-omp-attempt-001/diff.patch",
+        "final_workspace": "trials/003-omp-attempt-001/workspace-final",
+        "native": "trials/003-omp-attempt-001/native",
+        "trial": "trials/003-omp-attempt-001",
+        "upstream_result": "trials/003-omp-attempt-001/upstream-result.json"
+      },
+      "attempt": 1,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "openai-codex/gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [],
+          "provider": [],
+          "reasoning": []
+        },
+        "provider_route": "openai-codex subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": false
+      },
+      "elapsed_seconds": 265.87,
+      "event_count": 4139,
+      "harness_id": "omp",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.909,
+      "outer_elapsed_seconds": 266.197,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 3,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": 70,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-omp-a1-043-db-migration-safety-e25ca176"
+      }
+    },
+    {
+      "artifacts": {
+        "diff": "trials/004-hermes-attempt-001/diff.patch",
+        "final_workspace": "trials/004-hermes-attempt-001/workspace-final",
+        "native": "trials/004-hermes-attempt-001/native",
+        "trial": "trials/004-hermes-attempt-001",
+        "upstream_result": "trials/004-hermes-attempt-001/upstream-result.json"
+      },
+      "attempt": 1,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [
+            "gpt-5.4"
+          ],
+          "provider": [
+            "openai-codex"
+          ],
+          "reasoning": []
+        },
+        "provider_route": "openai-codex subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": true
+      },
+      "elapsed_seconds": 249.759,
+      "event_count": 0,
+      "harness_id": "hermes",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.995,
+      "outer_elapsed_seconds": 250.199,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 4,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": null,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-hermes-a1-043-db-migration-safety-2c54de4a"
+      }
+    },
+    {
+      "artifacts": {
+        "diff": "trials/005-omp-attempt-002/diff.patch",
+        "final_workspace": "trials/005-omp-attempt-002/workspace-final",
+        "native": "trials/005-omp-attempt-002/native",
+        "trial": "trials/005-omp-attempt-002",
+        "upstream_result": "trials/005-omp-attempt-002/upstream-result.json"
+      },
+      "attempt": 2,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "openai-codex/gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [],
+          "provider": [],
+          "reasoning": []
+        },
+        "provider_route": "openai-codex subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": false
+      },
+      "elapsed_seconds": 445.164,
+      "event_count": 6640,
+      "harness_id": "omp",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.909,
+      "outer_elapsed_seconds": 445.581,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 5,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": 93,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-omp-a2-043-db-migration-safety-9fb0b624"
+      }
+    },
+    {
+      "artifacts": {
+        "diff": "trials/006-codex-attempt-002/diff.patch",
+        "final_workspace": "trials/006-codex-attempt-002/workspace-final",
+        "native": "trials/006-codex-attempt-002/native",
+        "trial": "trials/006-codex-attempt-002",
+        "upstream_result": "trials/006-codex-attempt-002/upstream-result.json"
+      },
+      "attempt": 2,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [],
+          "provider": [],
+          "reasoning": []
+        },
+        "provider_route": "openai-codex ChatGPT subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": false
+      },
+      "elapsed_seconds": 224.712,
+      "event_count": 44,
+      "harness_id": "codex",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.27,
+      "outer_elapsed_seconds": 225.194,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 6,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": 0,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-codex-a2-043-db-migration-safety-08e11b18"
+      }
+    },
+    {
+      "artifacts": {
+        "diff": "trials/007-hermes-attempt-002/diff.patch",
+        "final_workspace": "trials/007-hermes-attempt-002/workspace-final",
+        "native": "trials/007-hermes-attempt-002/native",
+        "trial": "trials/007-hermes-attempt-002",
+        "upstream_result": "trials/007-hermes-attempt-002/upstream-result.json"
+      },
+      "attempt": 2,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [
+            "gpt-5.4"
+          ],
+          "provider": [
+            "openai-codex"
+          ],
+          "reasoning": []
+        },
+        "provider_route": "openai-codex subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": true
+      },
+      "elapsed_seconds": 342.285,
+      "event_count": 0,
+      "harness_id": "hermes",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.995,
+      "outer_elapsed_seconds": 342.832,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 7,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": null,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-hermes-a2-043-db-migration-safety-b23a7fd6"
+      }
+    },
+    {
+      "artifacts": {
+        "diff": "trials/008-opencode-attempt-002/diff.patch",
+        "final_workspace": "trials/008-opencode-attempt-002/workspace-final",
+        "native": "trials/008-opencode-attempt-002/native",
+        "trial": "trials/008-opencode-attempt-002",
+        "upstream_result": "trials/008-opencode-attempt-002/upstream-result.json"
+      },
+      "attempt": 2,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "openai/gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [],
+          "provider": [],
+          "reasoning": []
+        },
+        "provider_route": "OpenAI subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": false
+      },
+      "elapsed_seconds": 273.477,
+      "event_count": 43,
+      "harness_id": "opencode",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.995,
+      "outer_elapsed_seconds": 274.226,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 8,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": 15,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-opencode-a2-043-db-migration-safety-215698cf"
+      }
+    },
+    {
+      "artifacts": {
+        "diff": "trials/009-omp-attempt-003/diff.patch",
+        "final_workspace": "trials/009-omp-attempt-003/workspace-final",
+        "native": "trials/009-omp-attempt-003/native",
+        "trial": "trials/009-omp-attempt-003",
+        "upstream_result": "trials/009-omp-attempt-003/upstream-result.json"
+      },
+      "attempt": 3,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "openai-codex/gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [],
+          "provider": [],
+          "reasoning": []
+        },
+        "provider_route": "openai-codex subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": false
+      },
+      "elapsed_seconds": 248.831,
+      "event_count": 3354,
+      "harness_id": "omp",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.995,
+      "outer_elapsed_seconds": 249.508,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 9,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": 58,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-omp-a3-043-db-migration-safety-308700be"
+      }
+    },
+    {
+      "artifacts": {
+        "diff": "trials/010-hermes-attempt-003/diff.patch",
+        "final_workspace": "trials/010-hermes-attempt-003/workspace-final",
+        "native": "trials/010-hermes-attempt-003/native",
+        "trial": "trials/010-hermes-attempt-003",
+        "upstream_result": "trials/010-hermes-attempt-003/upstream-result.json"
+      },
+      "attempt": 3,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [
+            "gpt-5.4"
+          ],
+          "provider": [
+            "openai-codex"
+          ],
+          "reasoning": []
+        },
+        "provider_route": "openai-codex subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": true
+      },
+      "elapsed_seconds": 233.259,
+      "event_count": 0,
+      "harness_id": "hermes",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.98,
+      "outer_elapsed_seconds": 233.732,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 10,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": null,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-hermes-a3-043-db-migration-safety-27b8fc48"
+      }
+    },
+    {
+      "artifacts": {
+        "diff": "trials/011-opencode-attempt-003/diff.patch",
+        "final_workspace": "trials/011-opencode-attempt-003/workspace-final",
+        "native": "trials/011-opencode-attempt-003/native",
+        "trial": "trials/011-opencode-attempt-003",
+        "upstream_result": "trials/011-opencode-attempt-003/upstream-result.json"
+      },
+      "attempt": 3,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "openai/gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [],
+          "provider": [],
+          "reasoning": []
+        },
+        "provider_route": "OpenAI subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": false
+      },
+      "elapsed_seconds": 145.536,
+      "event_count": 27,
+      "harness_id": "opencode",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.987,
+      "outer_elapsed_seconds": 146.029,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 11,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": 9,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-opencode-a3-043-db-migration-safety-6a7ba9b4"
+      }
+    },
+    {
+      "artifacts": {
+        "diff": "trials/012-codex-attempt-003/diff.patch",
+        "final_workspace": "trials/012-codex-attempt-003/workspace-final",
+        "native": "trials/012-codex-attempt-003/native",
+        "trial": "trials/012-codex-attempt-003",
+        "upstream_result": "trials/012-codex-attempt-003/upstream-result.json"
+      },
+      "attempt": 3,
+      "combined_score": null,
+      "control_proof": {
+        "configured_model_id": "gpt-5.4",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "model": [],
+          "provider": [],
+          "reasoning": []
+        },
+        "provider_route": "openai-codex ChatGPT subscription OAuth",
+        "provider_wire_verified": false,
+        "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+        "reasoning": "medium",
+        "runtime_observation_available": false
+      },
+      "elapsed_seconds": 271.704,
+      "event_count": 47,
+      "harness_id": "codex",
+      "invalid_reason": null,
+      "operator_interventions": 0,
+      "outcome_score": 0.987,
+      "outer_elapsed_seconds": 272.194,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+      "qualification": "valid",
+      "schema_version": 1,
+      "sequence": 12,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": 0,
+      "usage": {
+        "available": false,
+        "reason": "adapter metadata has no usage root",
+        "session_id": "highlander-codex-a3-043-db-migration-safety-1956d08a"
+      }
+    },
+    {
+      "attempt": 0,
+      "combined_score": null,
+      "elapsed_seconds": null,
+      "harness_id": "nanobot",
+      "invalid_reason": "No qualified dedicated host OAuth profile and all canonical disposable seed profiles are empty.",
+      "operator_interventions": 0,
+      "outcome_score": null,
+      "process_score": null,
+      "process_status": "not_evaluated",
+      "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+      "qualification": "unavailable",
+      "schema_version": 1,
+      "sequence": 0,
+      "task_id": "043-db-migration-safety",
+      "tool_event_count": null
+    }
+  ],
+  "winner": null
+}

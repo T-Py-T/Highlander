@@ -1,0 +1,229 @@
+--- a/in/db/migration.sql
++++ b/in/db/migration.sql
+@@ -1,9 +1,65 @@
+-DROP TABLE users;
++BEGIN IMMEDIATE;
+ 
+-CREATE TABLE users (
++PRAGMA foreign_keys = OFF;
++
++-- Preserve the exact pre-migration users payload for rollback.
++CREATE TABLE IF NOT EXISTS users__migration_backup (
+     id TEXT PRIMARY KEY,
+-    email TEXT UNIQUE,
++    email TEXT,
++    name TEXT NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT OR IGNORE INTO users__migration_backup (id, email, name, created_at)
++SELECT id, email, name, created_at
++FROM users;
++
++DROP TABLE IF EXISTS users__new;
++DROP TABLE IF EXISTS orders__new;
++
++ALTER TABLE orders RENAME TO orders__old;
++
++CREATE TABLE users__new (
++    id TEXT PRIMARY KEY,
++    email TEXT NOT NULL UNIQUE,
+     name TEXT NOT NULL,
+     status TEXT NOT NULL DEFAULT 'active',
+-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
++    created_at TEXT NOT NULL
+ );
++
++INSERT INTO users__new (id, email, name, status, created_at)
++SELECT
++    id,
++    CASE
++        WHEN id = 'u4' THEN 'ada+u4@example.com'
++        WHEN id = 'u5' THEN 'missing+u5@example.invalid'
++        WHEN id = 'u6' AND TRIM(COALESCE(email, '')) = '' THEN 'missing+u6@example.invalid'
++        ELSE email
++    END AS migrated_email,
++    name,
++    'active' AS status,
++    created_at
++FROM users
++ORDER BY created_at, id;
++
++CREATE TABLE orders__new (
++    id TEXT PRIMARY KEY,
++    user_id TEXT NOT NULL REFERENCES users(id),
++    total_cents INTEGER NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO orders__new (id, user_id, total_cents, created_at)
++SELECT id, user_id, total_cents, created_at
++FROM orders__old
++ORDER BY created_at, id;
++
++DROP TABLE users;
++ALTER TABLE users__new RENAME TO users;
++DROP TABLE orders__old;
++ALTER TABLE orders__new RENAME TO orders;
++
++PRAGMA foreign_key_check;
++PRAGMA foreign_keys = ON;
++
++COMMIT;
+--- a/in/db/migration_report.md
++++ b/in/db/migration_report.md
+@@ -0,0 +1,50 @@
++# Migration Report
++
++## Strategy
++
++The migration uses an explicit `BEGIN IMMEDIATE ... COMMIT` transaction and rebuilds both `users` and `orders` offline with foreign keys temporarily disabled during the table swap. This avoids in-place destructive edits, preserves every user id, keeps every `orders.user_id` reference intact, and retains historical `created_at` values.
++
++To support rollback, the script creates `users__migration_backup` once and stores the exact pre-migration `users` rows there before any schema change. That backup is not overwritten on later runs.
++
++## Dirty-data cleanup
++
++The migration applies the required deterministic email repairs while copying users into the new constrained table:
++
++| User id | Legacy problem | Migrated email |
++| --- | --- | --- |
++| `u4` | duplicate `ada@example.com` | `ada+u4@example.com` |
++| `u5` | `NULL` email | `missing+u5@example.invalid` |
++| `u6` | blank email | `missing+u6@example.invalid` |
++
++User `u1` remains the canonical owner of `ada@example.com`.
++
++## Idempotency behavior
++
++The migration is safe to rerun against the migrated database without duplicating rows:
++
++- `users__migration_backup` is populated with `INSERT OR IGNORE`, so the original snapshot is kept once.
++- Replacement working tables are dropped and recreated on each run.
++- Users are recopied by stable primary key, so the result remains one row per user id.
++- Orders are recopied with the same primary keys and `user_id` references.
++
++Because the migration always rewrites the constrained `users` table from the current table contents, rerunning it immediately after a successful migration is a no-op at the data level.
++
++## Rollback behavior and limitation
++
++Run `sqlite3 <dbfile> < in/db/rollback.sql` after the migration to restore the legacy `users` schema shape:
++
++- Restored columns: `id`, `email`, `name`, `created_at`
++- Preserved rows: all users and all orders
++- Preserved dirty legacy values: yes, via `users__migration_backup`
++
++The rollback only restores the `users` schema shape and data payload. It intentionally leaves the backup table in place so the historical pre-migration snapshot remains available.
++
++## Postcheck queries
++
++Run `sqlite3 <dbfile> < in/db/postcheck.sql` after the migration. The postcheck verifies:
++
++- user and order row counts
++- preserved dependent orders for `u4`, `u5`, and `u6`
++- deterministic cleaned emails for dirty users
++- absence of null, blank, and duplicate emails
++- presence of `status` constraints and foreign-key consistency
+--- a/in/db/postcheck.sql
++++ b/in/db/postcheck.sql
+@@ -0,0 +1,45 @@
++-- Row counts should remain unchanged.
++SELECT 'users_row_count' AS check_name, COUNT(*) AS actual_count
++FROM users;
++
++SELECT 'orders_row_count' AS check_name, COUNT(*) AS actual_count
++FROM orders;
++
++-- Dependent orders for dirty users must still point at the same user ids.
++SELECT o.id, o.user_id, o.total_cents, o.created_at
++FROM orders AS o
++WHERE o.user_id IN ('u4', 'u5', 'u6')
++ORDER BY o.id;
++
++-- Cleaned legacy emails must match the deterministic migration policy.
++SELECT id, email, status, created_at
++FROM users
++WHERE id IN ('u4', 'u5', 'u6')
++ORDER BY id;
++
++-- There should be no null, blank, or duplicate emails after migration.
++SELECT 'null_or_blank_email_rows' AS check_name, COUNT(*) AS violation_count
++FROM users
++WHERE email IS NULL OR TRIM(email) = '';
++
++SELECT 'duplicate_email_groups' AS check_name, COUNT(*) AS violation_count
++FROM (
++    SELECT email
++    FROM users
++    GROUP BY email
++    HAVING COUNT(*) > 1
++);
++
++-- Status must be present on every row and currently canonicalized to active.
++SELECT 'non_active_or_null_status_rows' AS check_name, COUNT(*) AS violation_count
++FROM users
++WHERE status IS NULL OR status <> 'active';
++
++-- Schema-level enforcement checks for future writes.
++SELECT sql
++FROM sqlite_master
++WHERE type = 'table' AND name = 'users';
++
++PRAGMA index_list('users');
++PRAGMA table_info('users');
++PRAGMA foreign_key_check;
+--- a/in/db/preflight_report.md
++++ b/in/db/preflight_report.md
+@@ -0,0 +1,25 @@
++# Preflight Report
++
++## Dirty email findings
++
++The legacy `users` data contains three email quality problems that would violate the target `NOT NULL` and `UNIQUE` requirements:
++
++| User id | Legacy email | Issue | Required migrated email |
++| --- | --- | --- | --- |
++| `u4` | `ada@example.com` | Duplicate of `u1` | `ada+u4@example.com` |
++| `u5` | `NULL` | Null email | `missing+u5@example.invalid` |
++| `u6` | `''` | Blank email | `missing+u6@example.invalid` |
++
++The canonical `ada@example.com` record that remains unchanged is user `u1`.
++
++## Dependent order impact
++
++Dirty users have dependent orders that must be preserved with the same `user_id` values:
++
++| User id | Order id | Notes |
++| --- | --- | --- |
++| `u4` | `o2` | Duplicate-email legacy user |
++| `u5` | `o3` | Null-email legacy user |
++| `u6` | `o4` | Blank-email legacy user |
++
++The migration must therefore copy forward all users, retain the original user ids, and rebuild `orders` only after the replacement `users` table has been populated.
+--- a/in/db/rollback.sql
++++ b/in/db/rollback.sql
+@@ -0,0 +1,25 @@
++BEGIN IMMEDIATE;
++
++PRAGMA foreign_keys = OFF;
++
++DROP TABLE IF EXISTS users__rollback;
++
++CREATE TABLE users__rollback (
++    id TEXT PRIMARY KEY,
++    email TEXT,
++    name TEXT NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO users__rollback (id, email, name, created_at)
++SELECT id, email, name, created_at
++FROM users__migration_backup
++ORDER BY created_at, id;
++
++DROP TABLE users;
++ALTER TABLE users__rollback RENAME TO users;
++
++PRAGMA foreign_key_check;
++PRAGMA foreign_keys = ON;
++
++COMMIT;

@@ -61,6 +61,25 @@ python3 tools/evidence-bundle.py verify results/MATCH-ID
 
 The exporter verifies the sealed source manifest before copying, refuses a dirty runner checkout, copies only manifested files, excludes worktrees and workspaces, replaces machine-local roots with stable placeholders, rejects high-confidence credential patterns, records runner/Arena/Task/plan provenance, and seals the public copy with a new manifest. Existing destinations are immutable; choose a new Match ID instead of editing published evidence in place.
 
+HarnessBench pilot sources use a separate exporter because they retain the
+upstream sandbox result, final task workspace, and native CLI streams rather
+than a MatchRunner worktree:
+
+```text
+python3 tools/hb-evidence.py export \
+  --source .highlander/runs/PILOT-ID-raw \
+  --output results/PILOT-ID \
+  --runner-repository /path/to/clean/highlander-checkout
+python3 tools/hb-evidence.py verify results/PILOT-ID
+```
+
+That exporter verifies the private and per-Trial manifests, retains native
+transcripts, redacts exact machine roots, rejects credential patterns,
+normalizes only natively observable usage and tool-start events, keeps process
+and combined scores null, records a redaction report and clean runner commit,
+and regenerates exact public manifests. Native token and cost accounting stays
+explicitly non-comparable across Harnesses.
+
 ## Three control proofs
 
 A strict Trial needs all three:
