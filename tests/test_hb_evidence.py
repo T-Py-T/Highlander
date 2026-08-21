@@ -169,6 +169,10 @@ class HarnessBenchEvidenceTests(unittest.TestCase):
         )
         self.assertNotIn(str(Path.home()), all_text)
         self.assertIn("<HOME>", all_text)
+        self.assertTrue((output / "results.jsonl").is_file())
+        leaderboard = json.loads((output / "leaderboard.json").read_text())
+        self.assertFalse(leaderboard["ranking_permitted"])
+        self.assertIsNone(leaderboard["winner"])
         verify_pilot_bundle(output)
 
     def test_export_rejects_oauth_json_values(self):
