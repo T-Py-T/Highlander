@@ -1,0 +1,46 @@
+minimum_pre_commit_version: "4.0.0"
+
+repos:
+  - repo: local
+    hooks:
+      - id: highlander-unit-tests
+        name: Highlander unit tests
+        entry: python3 -m unittest discover -s tests
+        language: system
+        pass_filenames: false
+
+      - id: highlander-python-compile
+        name: Compile Highlander Python sources
+        entry: python3 -m compileall -q highlander tools
+        language: system
+        pass_filenames: false
+
+      - id: highlander-match-doctor
+        name: Validate MatchRunner source and example
+        entry: python3 tools/highlander.py doctor examples/matches/fake-t001.json
+        language: system
+        pass_filenames: false
+
+      - id: highlander-fixture-tests
+        name: Highlander fixture tests
+        entry: python3 -m unittest discover -s fixtures/job-runner -p test_*.py
+        language: system
+        pass_filenames: false
+
+      - id: highlander-shell-syntax
+        name: Validate runner shell syntax
+        entry: bash -n tools/prepare-run.sh tools/run-act-local.sh
+        language: system
+        pass_filenames: false
+
+      - id: highlander-fake-evidence
+        name: Verify quota-free evidence manifest
+        entry: python3 tools/evidence-bundle.py verify results/fake-t002-protocol-r1
+        language: system
+        pass_filenames: false
+
+      - id: highlander-pilot-evidence
+        name: Verify retained HarnessBench evidence manifest
+        entry: python3 tools/hb-evidence.py verify results/hb-devhard-043-gpt54-medium-host4-r1
+        language: system
+        pass_filenames: false

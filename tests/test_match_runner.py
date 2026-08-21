@@ -145,6 +145,20 @@ class MatchRunnerTests(unittest.TestCase):
             any(item["path"].startswith("worktrees/") for item in manifest["artifacts"])
         )
 
+    def test_nested_worktrees_ignore_pre_commit_index_override(self):
+        runner = MatchRunner.from_file(self.write_spec(match_id="pre-commit-index"))
+        previous = os.environ.get("GIT_INDEX_FILE")
+        os.environ["GIT_INDEX_FILE"] = ".git/index"
+        try:
+            result = runner.execute(reviewed_plan=runner.plan())
+        finally:
+            if previous is None:
+                os.environ.pop("GIT_INDEX_FILE", None)
+            else:
+                os.environ["GIT_INDEX_FILE"] = previous
+
+        self.assertEqual(result["state"], "COMPLETE")
+
     def test_control_divergence_invalidates_without_becoming_a_model_loss(self):
         contenders = [
             {"id": "control", "adapter": "fake", "options": {}},
