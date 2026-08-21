@@ -1,0 +1,17 @@
+{
+  "completed_at": "2026-08-21T18:10:34.785652Z",
+  "completed_ns": 1787335834785671000,
+  "elapsed_seconds": 145.536,
+  "harness_id": "opencode",
+  "operator_interventions": 0,
+  "process_metrics": {
+    "event_count": 27,
+    "tool_event_count": 9
+  },
+  "returncode": 0,
+  "schema_version": 1,
+  "started_at": "2026-08-21T18:08:09.249749Z",
+  "started_ns": 1787335689249745000,
+  "temporary_home_removed": true,
+  "timed_out": false
+}

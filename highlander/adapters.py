@@ -272,6 +272,8 @@ class CodexHarnessAdapter(HarnessAdapter):
                 control.requested_id,
                 "--config",
                 f'model_reasoning_effort="{control.wire_parameter}"',
+                "--config",
+                'cli_auth_credentials_store="file"',
             ],
             "cwd": str(worktree),
             "protocol": "codex-jsonl",
