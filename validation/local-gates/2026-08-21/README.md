@@ -26,6 +26,19 @@ the normalized output. Machine-local paths and routine container plumbing are
 omitted; test counts, skips, step outcomes, image identity, Python version, and
 manifest hashes are retained.
 
+## Post-commit clean-clone verification
+
+Commit `b40092f92800c11372e7af13dd1e59ed8f139564` was cloned locally with
+independent Git metadata and verified before publication:
+
+- pre-commit: all seven hooks passed; 43 unit tests passed with two skips;
+- static analysis: zero errors, warnings, or informational findings;
+- evidence: 48-artifact and 314-artifact manifests matched their retained
+  SHA-256 values;
+- act: the network-isolated job passed with Python 3.12.3, 43 unit tests, two
+  skips, doctor, fixture tests, and shell syntax;
+- repository status and Git object verification were clean.
+
 ## Rejected setup attempts
 
 - The first wrapper invocation failed before workflow execution because act
@@ -42,6 +55,10 @@ manifest hashes are retained.
   Podman and `act` in the same validation session restored the local API proxy;
   that infrastructure-only failure is rejected, and the subsequent green run
   is the retained result.
+- A detached linked worktree passed pre-commit and evidence verification, but
+  its act replay was rejected because act copied the worktree's `.git` pointer
+  without the parent Git directory. The accepted post-commit replay used an
+  independent local clone, preserving valid Git metadata inside the container.
 
 ## Defect caught by the real commit hook
 
