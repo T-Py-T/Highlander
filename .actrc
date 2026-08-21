@@ -1,0 +1,5 @@
+--action-offline-mode
+--pull=false
+--platform ubuntu-latest=docker.io/catthehacker/ubuntu:act-latest
+--network none
+--env ACT=true

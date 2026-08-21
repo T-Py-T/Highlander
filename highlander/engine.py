@@ -19,6 +19,23 @@ from .model import HighlanderError, MatchSpec
 from .sessions import session_adapter_for
 
 
+_REPOSITORY_ROUTING_ENV = (
+    "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+    "GIT_COMMON_DIR",
+    "GIT_DIR",
+    "GIT_INDEX_FILE",
+    "GIT_OBJECT_DIRECTORY",
+    "GIT_WORK_TREE",
+)
+
+
+def repository_git_environment() -> dict[str, str]:
+    environment = os.environ.copy()
+    for name in _REPOSITORY_ROUTING_ENV:
+        environment.pop(name, None)
+    return environment
+
+
 def utc_now() -> str:
     return datetime.now(UTC).isoformat().replace("+00:00", "Z")
 
@@ -727,6 +744,7 @@ class MatchRunner:
             capture_output=True,
             text=True,
             check=False,
+            env=repository_git_environment(),
         )
         if result.returncode != 0:
             raise HighlanderError(
@@ -751,6 +769,7 @@ class MatchRunner:
             ],
             capture_output=True,
             check=False,
+            env=repository_git_environment(),
         )
         if untracked_result.returncode != 0:
             raise HighlanderError(
@@ -777,6 +796,7 @@ class MatchRunner:
                 text=True,
                 errors="surrogateescape",
                 check=False,
+                env=repository_git_environment(),
             )
             if result.returncode not in {0, 1}:
                 raise HighlanderError(
