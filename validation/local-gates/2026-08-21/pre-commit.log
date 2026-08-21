@@ -20,6 +20,14 @@ artifact_count: 48
 manifest_sha256: f7e625941503db7bd42cc44a9afb5993acef428af2916d8eb49c00b6d98eabed
 status: verified
 
+post_commit_clean_clone:
+commit: b40092f92800c11372e7af13dd1e59ed8f139564
+exit_code: 0
+all_hooks: passed
+unit_tests: 43 passed, 2 skipped (11.889s)
+static_analysis: 0 errors, 0 warnings, 0 informations
+git_status: clean
+
 Verify retained HarnessBench evidence manifest...........................Passed
 artifact_count: 314
 manifest_sha256: 86f73b81ede425f3fecf910b3bf3f8b2a9eacf0e42270fc1f3e85e3323c48217

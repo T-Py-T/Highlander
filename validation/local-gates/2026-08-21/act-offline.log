@@ -25,3 +25,15 @@ OK
 Validate runner syntax...................................................Success
 Complete job.............................................................Success
 Job succeeded
+
+post_commit_clean_clone:
+commit: b40092f92800c11372e7af13dd1e59ed8f139564
+exit_code: 0
+container_network: none
+Python 3.12.3
+Ran 43 tests in 41.279s
+OK (skipped=2)
+doctor: success
+fixture_tests: 2 passed
+runner_syntax: success
+Job succeeded
