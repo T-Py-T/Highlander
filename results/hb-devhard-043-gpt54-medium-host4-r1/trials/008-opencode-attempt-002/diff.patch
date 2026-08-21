@@ -1,0 +1,245 @@
+--- a/in/db/migration.sql
++++ b/in/db/migration.sql
+@@ -1,9 +1,87 @@
+-DROP TABLE users;
++PRAGMA foreign_keys = OFF;
+ 
+-CREATE TABLE users (
++BEGIN IMMEDIATE;
++
++CREATE TEMP TABLE IF NOT EXISTS _users_migration_counts (
++    user_count INTEGER NOT NULL,
++    order_count INTEGER NOT NULL
++);
++
++CREATE TEMP TABLE IF NOT EXISTS _users_migration_assert (
++    ok INTEGER NOT NULL CHECK (ok = 1)
++);
++
++DELETE FROM _users_migration_counts;
++
++INSERT INTO _users_migration_counts (user_count, order_count)
++SELECT
++    (SELECT COUNT(*) FROM users),
++    (SELECT COUNT(*) FROM orders);
++
++DELETE FROM _users_migration_assert;
++
++DROP TABLE IF EXISTS users__migration_new;
++
++CREATE TABLE users__migration_new (
+     id TEXT PRIMARY KEY,
+-    email TEXT UNIQUE,
++    email TEXT NOT NULL UNIQUE,
+     name TEXT NOT NULL,
+     status TEXT NOT NULL DEFAULT 'active',
+-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
++    created_at TEXT NOT NULL
+ );
++
++INSERT INTO users__migration_new (id, email, name, status, created_at)
++SELECT
++    id,
++    CASE
++        WHEN id = 'u4' THEN 'ada+u4@example.com'
++        WHEN id = 'u5' THEN 'missing+u5@example.invalid'
++        WHEN id = 'u6' THEN 'missing+u6@example.invalid'
++        WHEN email IS NULL OR TRIM(email) = '' THEN 'missing+' || id || '@example.invalid'
++        ELSE email
++    END AS email,
++    name,
++    'active' AS status,
++    created_at
++FROM users;
++
++INSERT INTO _users_migration_assert (ok)
++SELECT CASE
++    WHEN (SELECT COUNT(*) FROM users__migration_new) = (SELECT user_count FROM _users_migration_counts)
++        THEN 1
++    ELSE 0
++END;
++
++DROP TABLE users;
++ALTER TABLE users__migration_new RENAME TO users;
++
++DELETE FROM _users_migration_assert;
++
++INSERT INTO _users_migration_assert (ok)
++SELECT CASE
++    WHEN (SELECT COUNT(*) FROM users) = (SELECT user_count FROM _users_migration_counts)
++        THEN 1
++    ELSE 0
++END;
++
++DELETE FROM _users_migration_assert;
++
++INSERT INTO _users_migration_assert (ok)
++SELECT CASE
++    WHEN (SELECT COUNT(*) FROM orders) = (SELECT order_count FROM _users_migration_counts)
++        THEN 1
++    ELSE 0
++END;
++
++DELETE FROM _users_migration_assert;
++
++INSERT INTO _users_migration_assert (ok)
++SELECT CASE
++    WHEN EXISTS (SELECT 1 FROM pragma_foreign_key_check)
++        THEN 0
++    ELSE 1
++END;
++
++COMMIT;
++
++PRAGMA foreign_keys = ON;
+--- a/in/db/migration_report.md
++++ b/in/db/migration_report.md
+@@ -0,0 +1,37 @@
++# Migration Report
++
++## Strategy
++
++`migration.sql` replaces the unsafe drop-only draft with an explicit SQLite transaction that rebuilds `users` into a new table with the target schema, verifies row counts, checks foreign keys, and renames the rebuilt table into place only after the copy succeeds.
++
++## Dirty-data cleanup
++
++The migration preserves every existing `users.id`, every `orders.user_id`, and every historical `created_at` value while applying these deterministic email fixes before enforcing `NOT NULL` and `UNIQUE`:
++
++- `u4` -> `ada+u4@example.com`
++- `u5` -> `missing+u5@example.invalid`
++- `u6` -> `missing+u6@example.invalid`
++
++The first `ada@example.com` row (`u1`) remains unchanged.
++
++## Idempotency approach
++
++The migration always rebuilds `users` from the current `users` rows into a fresh `users__migration_new` table inside one transaction. Re-running it does not duplicate rows because it copies each current user exactly once and replaces the table atomically. The cleanup mappings are deterministic, so `u4`, `u5`, and `u6` stay on the same migrated addresses across repeated runs.
++
++## Rollback behavior and limitation
++
++`rollback.sql` also runs in an explicit transaction. It restores the pre-migration `users` schema shape to `id`, `email`, `name`, and `created_at`, and preserves all user rows plus all dependent orders.
++
++Rollback is shape-only: it removes the `status` column, but it does not reintroduce the original dirty emails. The cleaned email values remain in place after rollback.
++
++## Post-migration verification
++
++Run `postcheck.sql` after the migration to verify:
++
++- user and order row counts
++- preserved orders for `u4`, `u5`, and `u6`
++- cleaned email values and populated `status`
++- absence of null, blank, or duplicate emails in data
++- `email` and `status` `NOT NULL` schema flags
++- a unique index backing `users.email`
++- no foreign-key violations
+--- a/in/db/postcheck.sql
++++ b/in/db/postcheck.sql
+@@ -0,0 +1,44 @@
++SELECT 'user_row_count' AS check_name, COUNT(*) AS actual, 6 AS expected
++FROM users;
++
++SELECT 'order_row_count' AS check_name, COUNT(*) AS actual, 4 AS expected
++FROM orders;
++
++SELECT id, email, status, created_at
++FROM users
++WHERE id IN ('u4', 'u5', 'u6')
++ORDER BY id;
++
++SELECT id, user_id, total_cents, created_at
++FROM orders
++WHERE user_id IN ('u4', 'u5', 'u6')
++ORDER BY id;
++
++SELECT 'invalid_email_or_status_rows' AS check_name, COUNT(*) AS invalid_rows
++FROM users
++WHERE email IS NULL OR TRIM(email) = '' OR status IS NULL OR TRIM(status) = '';
++
++SELECT 'duplicate_email_rows' AS check_name, COUNT(*) AS duplicate_groups
++FROM (
++    SELECT email
++    FROM users
++    GROUP BY email
++    HAVING COUNT(*) > 1
++);
++
++SELECT name, "notnull" AS is_not_null, dflt_value
++FROM pragma_table_info('users')
++WHERE name IN ('email', 'status')
++ORDER BY name;
++
++SELECT il.name AS index_name, il."unique" AS is_unique
++FROM pragma_index_list('users') AS il
++WHERE il."unique" = 1
++  AND EXISTS (
++      SELECT 1
++      FROM pragma_index_info(il.name) AS ii
++      WHERE ii.name = 'email'
++  );
++
++SELECT *
++FROM pragma_foreign_key_check;
+--- a/in/db/preflight_report.md
++++ b/in/db/preflight_report.md
+@@ -0,0 +1,22 @@
++# Preflight Report
++
++## Dirty user emails before migration
++
++| User ID | Current email | Issue | Planned cleanup |
++| --- | --- | --- | --- |
++| `u1` | `ada@example.com` | First copy of a duplicate email; retained unchanged | Keep `ada@example.com` |
++| `u4` | `ada@example.com` | Duplicate of `u1.email` | Set to `ada+u4@example.com` |
++| `u5` | `NULL` | Null email blocks a future `NOT NULL` constraint | Set to `missing+u5@example.invalid` |
++| `u6` | `` (blank string) | Blank email is invalid for the future constraint and unique enforcement | Set to `missing+u6@example.invalid` |
++
++## Dependent orders for dirty users
++
++| Order ID | User ID | Reason to preserve |
++| --- | --- | --- |
++| `o2` | `u4` | Confirms the duplicate-email user keeps the same `users.id` after cleanup |
++| `o3` | `u5` | Confirms the null-email user keeps the same `users.id` after cleanup |
++| `o4` | `u6` | Confirms the blank-email user keeps the same `users.id` after cleanup |
++
++## Migration risk in the original draft
++
++The original draft dropped `users` before copying data into a replacement table. In SQLite that destroys all user rows, loses historical `created_at` values, and breaks dependent `orders.user_id` references.
+--- a/in/db/rollback.sql
++++ b/in/db/rollback.sql
+@@ -0,0 +1,36 @@
++PRAGMA foreign_keys = OFF;
++
++BEGIN IMMEDIATE;
++
++CREATE TEMP TABLE IF NOT EXISTS _users_rollback_assert (
++    ok INTEGER NOT NULL CHECK (ok = 1)
++);
++
++DROP TABLE IF EXISTS users__rollback_new;
++
++CREATE TABLE users__rollback_new (
++    id TEXT PRIMARY KEY,
++    email TEXT,
++    name TEXT NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO users__rollback_new (id, email, name, created_at)
++SELECT id, email, name, created_at
++FROM users;
++
++DROP TABLE users;
++ALTER TABLE users__rollback_new RENAME TO users;
++
++DELETE FROM _users_rollback_assert;
++
++INSERT INTO _users_rollback_assert (ok)
++SELECT CASE
++    WHEN EXISTS (SELECT 1 FROM pragma_foreign_key_check)
++        THEN 0
++    ELSE 1
++END;
++
++COMMIT;
++
++PRAGMA foreign_keys = ON;

@@ -1,0 +1,131 @@
+{
+  "artifacts": [
+    {
+      "bytes": 255,
+      "path": "cleanup.json",
+      "sha256": "88f7cef951c6cd354a3f209a00616b62422d218bb18cb155bf7e9f5be41e4d4c"
+    },
+    {
+      "bytes": 485,
+      "path": "control/app.json",
+      "sha256": "5667fbe0bfa75cc558af2c2a33b55e31027bbf01ab6bc3c27705e1e1b1895364"
+    },
+    {
+      "bytes": 573,
+      "path": "control/harness.json",
+      "sha256": "2e213fb08c1992d235903b4800a4d665119743a9adcd65530b840c28052d6600"
+    },
+    {
+      "bytes": 342,
+      "path": "control/trial.json",
+      "sha256": "39d01977748877e0666c29974eb99e78df85c41180af46b9fe897f6dbf840d1f"
+    },
+    {
+      "bytes": 436,
+      "path": "control-proof.json",
+      "sha256": "bd9a4423ea13bb3ec6454ed902167527ebc2db26f55a8331e5fae4332ea10f12"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 4876,
+      "path": "controller.stdout.raw",
+      "sha256": "cd2bbad822f244297b2c9cfe20b8a4735e7ff3a5dbeecb5f83da6f3e81bde434"
+    },
+    {
+      "bytes": 5238,
+      "path": "diff.patch",
+      "sha256": "0823e4b7a48ce34c57923cd1d65fe1e23db4826ad80ed27ae773694535cd9efc"
+    },
+    {
+      "bytes": 439,
+      "path": "native/execution.json",
+      "sha256": "dfde3cc7071563f0ae57029bd4cfdc702ede51517ecc3fc69070169740703e2a"
+    },
+    {
+      "bytes": 1485,
+      "path": "native/invocation.json",
+      "sha256": "a6923121631bea1c6affcec1a8f808b0a119dddf93ee119840d6a6fc09bc4884"
+    },
+    {
+      "bytes": 0,
+      "path": "native/stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 67688,
+      "path": "native/stdout.raw",
+      "sha256": "8dda480b120f06f3b8e9325dcd9f58d457f4e4ca20ba37da5f5730e08e97522b"
+    },
+    {
+      "bytes": 608,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "413dea44b6e9b6aeffb179f97834e1c48a057c9f25bc3d812d2e09159a10cfae"
+    },
+    {
+      "bytes": 320,
+      "path": "process/observations.json",
+      "sha256": "0fe0ef879dcb64c13a8a8b2bd59f43362b171a5e7b9d205031a4ab3b16e70009"
+    },
+    {
+      "bytes": 553,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "80a601ed376d56603fc6d89b5b8e79cd7d26a5197a864bc9104a88c9c501e3f0"
+    },
+    {
+      "bytes": 2219,
+      "path": "result.json",
+      "sha256": "1ed40897360f7cae2809aeeabcbcf4b81390a2dd0b9b8437c63492b18b02cf05"
+    },
+    {
+      "bytes": 78760,
+      "path": "upstream-result.json",
+      "sha256": "c16f87aca123312396f0361aa0f295359eb33c7961fa4308ecf46971bda8af8e"
+    },
+    {
+      "bytes": 440,
+      "path": "usage-normalized.json",
+      "sha256": "de7b6aacac9252e8ef6d681bcc3699767d7ba472de8f94b35442fdfe005aa165"
+    },
+    {
+      "bytes": 835,
+      "path": "workspace-final/in/db/migration.sql",
+      "sha256": "aafac6f83e2112c1111ce43108860bc31b507f01f2305aea071d1857a572254c"
+    },
+    {
+      "bytes": 937,
+      "path": "workspace-final/in/db/migration_policy.md",
+      "sha256": "e3638314798a2c7419e68baa7c1e52663ee752f513f1a025127a3a8ada6b5465"
+    },
+    {
+      "bytes": 1741,
+      "path": "workspace-final/in/db/migration_report.md",
+      "sha256": "4c23bbcbc6bf53994960eb7300f75222b51a2dbebd1f7cfc6d0d17c300a2d509"
+    },
+    {
+      "bytes": 964,
+      "path": "workspace-final/in/db/postcheck.sql",
+      "sha256": "078a9e8de303996f698bff3d5ae006e51b7d6d6be467c422d03262f5ba2fc921"
+    },
+    {
+      "bytes": 625,
+      "path": "workspace-final/in/db/preflight_report.md",
+      "sha256": "39baa7d133e3984453a0d71631475388663b971f427c1893d71611ee76514b6a"
+    },
+    {
+      "bytes": 435,
+      "path": "workspace-final/in/db/rollback.sql",
+      "sha256": "9cb160d9ab445545a6bb712719e59b6e9dc9982b9cf540c543ec984dfc091c15"
+    },
+    {
+      "bytes": 964,
+      "path": "workspace-final/in/db/schema.sql",
+      "sha256": "3f097b5cdbd1e6a2522b6252e51a55f1e145cd4a3566c0bcaf71c492fc947a9a"
+    }
+  ],
+  "generated_at": "2026-08-21T18:24:33.609638Z",
+  "schema_version": 1
+}

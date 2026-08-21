@@ -1,0 +1,17 @@
+{
+  "normalization": {
+    "combined_score": null,
+    "process_score": null,
+    "tool_counts": "native invocation starts only",
+    "usage": "native harness reports; accounting is not cross-harness comparable"
+  },
+  "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+  "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+  "runner": {
+    "commit": "88647f1d994d7cda437871c0cda14c3db4492f82",
+    "repository": "<RUNNER_ROOT>",
+    "worktree_clean": true
+  },
+  "schema_version": 1,
+  "source_artifact_manifest_sha256": "2ffb638a60a593df749e1631fd775aa87dd3a36d1c4774d4f76e28857a0be354"
+}

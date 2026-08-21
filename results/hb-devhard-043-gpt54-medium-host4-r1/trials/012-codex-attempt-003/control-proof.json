@@ -1,0 +1,15 @@
+{
+  "configured_model_id": "gpt-5.4",
+  "configured_verified": true,
+  "fallback_policy": "forbidden",
+  "observed": {
+    "model": [],
+    "provider": [],
+    "reasoning": []
+  },
+  "provider_route": "openai-codex ChatGPT subscription OAuth",
+  "provider_wire_verified": false,
+  "qualification_boundary": "host-isolated subscription-realism; exact wire proof unavailable",
+  "reasoning": "medium",
+  "runtime_observation_available": false
+}

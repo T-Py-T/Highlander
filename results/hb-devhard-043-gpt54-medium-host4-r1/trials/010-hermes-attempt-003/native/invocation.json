@@ -1,0 +1,50 @@
+{
+  "argv": [
+    "hermes",
+    "--model",
+    "gpt-5.4",
+    "--provider",
+    "openai-codex",
+    "--reasoning",
+    "medium",
+    "--yolo",
+    "--safe-mode",
+    "--usage-file",
+    "<RUNNER_ROOT>/results/hb-devhard-043-gpt54-medium-host4-r1/trials/010-hermes-attempt-003/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260821-140415-2ec17bca/highlander-native/usage.json",
+    "--oneshot",
+    "<TASK_BYTES_UTF8>"
+  ],
+  "credential_binding": {
+    "environment_name": "HERMES_HOME",
+    "profile_id": "hb-gpt54-20260808/hermes",
+    "value_retained": false
+  },
+  "cwd": "<RUNNER_ROOT>/results/hb-devhard-043-gpt54-medium-host4-r1/trials/010-hermes-attempt-003/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260821-140415-2ec17bca/workspace",
+  "environment_names": [
+    "CI",
+    "HARNESSBENCH_APP_CONFIG",
+    "HARNESSBENCH_HARNESS_CONFIG",
+    "HARNESSBENCH_LLM_PROXY_ROUTES",
+    "HARNESSBENCH_LLM_PROXY_URL",
+    "HARNESSBENCH_MODEL_ID",
+    "HARNESSBENCH_PROMPT_FILE",
+    "HARNESSBENCH_SANDBOX",
+    "HARNESSBENCH_SESSION_ID",
+    "HARNESSBENCH_SKIP_PROCESS_GRADE",
+    "HARNESSBENCH_TASK_ID",
+    "HARNESSBENCH_WORKSPACE",
+    "HERMES_HOME",
+    "HOME",
+    "LANG",
+    "LC_ALL",
+    "LC_CTYPE",
+    "NO_COLOR",
+    "PATH",
+    "TERM",
+    "TMPDIR"
+  ],
+  "harness_id": "hermes",
+  "prompt_bytes": 4313,
+  "prompt_source": "HarnessBench rendered prompt file",
+  "schema_version": 1
+}

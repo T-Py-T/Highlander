@@ -1,0 +1,49 @@
+Ad-hoc verification is now done.
+
+What I ran
+- Wrote a temporary verifier at:
+  /private/var/folders/56/9gldf4zd5l526h1c7r293fzr0000gn/T/hermes-verify-sqlite-migration.py
+- Executed:
+  python3 /private/var/folders/56/9gldf4zd5l526h1c7r293fzr0000gn/T/hermes-verify-sqlite-migration.py
+- Then removed the temp script.
+
+What the ad-hoc verifier checked
+- Created a fresh SQLite DB from `in/db/schema.sql`
+- Applied `in/db/migration.sql`
+- Applied `in/db/migration.sql` a second time to verify rerun safety
+- Executed `in/db/postcheck.sql`
+- Applied `in/db/rollback.sql`
+
+Observed result
+- Verification output reported `verification: ok`
+- users: 6
+- orders: 4
+- orphaned_orders: 0
+- duplicate_emails: 0
+- null_or_blank_emails: 0
+- null_status: 0
+- cleaned emails:
+  - u4 = ada+u4@example.com
+  - u5 = missing+u5@example.invalid
+  - u6 = missing+u6@example.invalid
+- migrated `users` DDL:
+  CREATE TABLE "users" (
+      id TEXT PRIMARY KEY,
+      email TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'active',
+      created_at TEXT NOT NULL
+  )
+- rollback restored columns:
+  - id
+  - email
+  - name
+  - created_at
+
+Files in scope
+- <RUNNER_ROOT>/results/hb-devhard-043-gpt54-medium-host4-r1/trials/007-hermes-attempt-002/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260821-134948-8ca7c7ca/workspace/in/db/migration.sql
+- <RUNNER_ROOT>/results/hb-devhard-043-gpt54-medium-host4-r1/trials/007-hermes-attempt-002/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260821-134948-8ca7c7ca/workspace/in/db/postcheck.sql
+- <RUNNER_ROOT>/results/hb-devhard-043-gpt54-medium-host4-r1/trials/007-hermes-attempt-002/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260821-134948-8ca7c7ca/workspace/in/db/rollback.sql
+
+Caveat
+- This is targeted ad-hoc verification, not a project test suite green, because no canonical test/lint/build command was available for this SQL-only task.

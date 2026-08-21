@@ -1,0 +1,11 @@
+{
+  "attempt": 1,
+  "configured_model_id": "openai-codex/gpt-5.4",
+  "harness_id": "omp",
+  "operator_interventions": 0,
+  "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+  "provider_route": "openai-codex subscription OAuth",
+  "reasoning": "medium",
+  "sequence": 3,
+  "task_id": "043-db-migration-safety"
+}

@@ -240,21 +240,32 @@ def aggregate_pilot(
 ) -> dict[str, object]:
     """Aggregate repeatability and process observations without ranking."""
 
+    def required_score(row: Mapping[str, object]) -> float:
+        value = row.get("outcome_score")
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError("a valid pilot result must have a numeric outcome_score")
+        return float(value)
+
     harness_ids = sorted({str(row["harness_id"]) for row in rows})
     harnesses: list[dict[str, object]] = []
     for harness_id in harness_ids:
         lane = [row for row in rows if str(row["harness_id"]) == harness_id]
         valid = [row for row in lane if row.get("qualification") == "valid"]
-        scores = [float(row["outcome_score"]) for row in valid]
+        scores = [required_score(row) for row in valid]
         elapsed = [
-            float(row["elapsed_seconds"])
+            float(value)
             for row in valid
-            if isinstance(row.get("elapsed_seconds"), (int, float))
+            if isinstance(value := row.get("elapsed_seconds"), (int, float))
         ]
         tool_events = [
-            int(row["tool_event_count"])
+            value
             for row in valid
-            if isinstance(row.get("tool_event_count"), int)
+            if isinstance(value := row.get("tool_event_count"), int)
+        ]
+        operator_interventions = [
+            value
+            for row in lane
+            if isinstance(value := row.get("operator_interventions", 0), int)
         ]
         harnesses.append(
             {
@@ -278,9 +289,7 @@ def aggregate_pilot(
                 if elapsed
                 else None,
                 "total_tool_events": sum(tool_events) if tool_events else None,
-                "operator_interventions": sum(
-                    int(row.get("operator_interventions", 0) or 0) for row in lane
-                ),
+                "operator_interventions": sum(operator_interventions),
             }
         )
     return {

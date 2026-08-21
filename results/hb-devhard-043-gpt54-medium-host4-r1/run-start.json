@@ -1,0 +1,14 @@
+{
+  "credential_values_recorded": false,
+  "highlander_head": "e8c5272a251a9309192401e5a0acb9de1c543476",
+  "initial_unavailable_lanes": {
+    "nanobot": "No qualified dedicated host OAuth profile and all canonical disposable seed profiles are empty."
+  },
+  "profile_id": "hb-gpt54-20260808",
+  "protocol_id": "hb-devhard-043-gpt54-medium-host4-r1",
+  "protocol_sha256": "514cd5958b812ab5c4c6c9e6e84910721cd3294663718ea2c09e601cab06d1d9",
+  "schema_version": 1,
+  "started_at": "2026-08-21T17:20:53.352006Z",
+  "upstream_commit": "1025086a446653702b80cfb48babbeec35db6b2c",
+  "upstream_tree": "49208501704f1d7e2ada03800ac14621f760e1b6"
+}
