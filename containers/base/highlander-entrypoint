@@ -55,6 +55,14 @@ case "${HIGHLANDER_HARNESS:-}" in
             chmod 0600 "$HERMES_HOME/auth.json"
         fi
         ;;
+    atomic)
+        export ATOMIC_CODING_AGENT_DIR="${ATOMIC_CODING_AGENT_DIR:-$HOME/.atomic/agent}"
+        mkdir -p "$ATOMIC_CODING_AGENT_DIR"
+        if [ -f /run/highlander/seed/auth.json ]; then
+            cp /run/highlander/seed/auth.json "$ATOMIC_CODING_AGENT_DIR/auth.json"
+            chmod 0600 "$ATOMIC_CODING_AGENT_DIR/auth.json"
+        fi
+        ;;
 esac
 
 exec "$@"

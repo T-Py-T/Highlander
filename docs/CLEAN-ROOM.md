@@ -6,7 +6,7 @@ There is deliberately no commit, push, PR, no-mistakes run, auto-fix, or post-Tr
 
 ## What is controlled
 
-- The OMP, OpenCode, Codex, Hermes, NanoBot, and evaluator images are resolved to immutable local image IDs before planning.
+- The OMP, OpenCode, Codex, Hermes, Atomic, NanoBot, and evaluator images are resolved to immutable local image IDs before planning.
 - Every Trial clones the same base SHA with `--no-local`, checks out detached, and removes `origin` before the Harness starts.
 - The same Task bytes, requested model, reasoning level, limits, and evaluator commands are frozen in the reviewed execution plan.
 - The container root is read-only; Linux capabilities are dropped; `no-new-privileges`, CPU, memory, PID, and wall-time limits are applied.
@@ -16,11 +16,16 @@ There is deliberately no commit, push, PR, no-mistakes run, auto-fix, or post-Tr
 - NanoBot `0.1.5.post3` is retained as a historical temporal-proxy image. Its OAuth token is seeded independently; host NanoBot and Codex configuration are never mounted.
 - Codex `0.147.0` uses OpenAI's checksum-verified Linux release binary. Its trial home is ephemeral and only the isolated `auth.json` is imported.
 - Hermes `0.20.0` is built from tag `v2026.8.3` at its exact Git commit using the release's hash-locked `uv.lock`; safe mode excludes host plugins, memories, rules, and MCP configuration.
+- Atomic `0.9.15` uses the checksum-verified official Linux binary, JSON
+  non-interactive mode, an ephemeral session, and disabled personal skills,
+  templates, themes, and context-file discovery. Its shipped native coding
+  tools remain part of the Harness treatment; the OCI boundary supplies the
+  sandbox Atomic does not provide itself.
 - The controller captures native output, control observations, repository status, tracked and untracked changes, evaluator results, timing, and cleanup proof.
 
 ## One-time host setup
 
-Start Podman or Docker/Colima, then build the six local images. Podman is the
+Start Podman or Docker/Colima, then build the seven local images. Podman is the
 documented local path; replace `podman` with `docker` on hosts that use Docker:
 
 ```text
@@ -29,7 +34,7 @@ python3 tools/clean-room.py --runtime podman build
 python3 tools/clean-room.py --runtime podman doctor
 ```
 
-The build verifies the published OMP, OpenCode, Codex, and `uv` binary
+The build verifies the published OMP, OpenCode, Codex, Atomic, and `uv` binary
 checksums, verifies Hermes's exact source commit and locked dependency graph,
 verifies the pinned NanoBot Python package version, and writes
 `.highlander/images.lock.json`. That file is machine-local because image IDs
@@ -43,19 +48,20 @@ python3 tools/clean-room.py --runtime podman seed omp omp-subscription
 python3 tools/clean-room.py --runtime podman seed opencode opencode-subscription
 python3 tools/clean-room.py --runtime podman seed codex codex-subscription
 python3 tools/clean-room.py --runtime podman seed hermes hermes-subscription
+python3 tools/clean-room.py --runtime podman seed atomic atomic-subscription
 python3 tools/clean-room.py --runtime podman seed nanobot nanobot-subscription
 ```
 
 Complete the provider login in each disposable container and exit. Seeds
 default to `~/.config/highlander/seeds`; set `HIGHLANDER_SEED_ROOT` to relocate
 them. A Trial imports only OMP's `agent.db`, OpenCode's `auth.json`, Codex's
-`auth.json`, Hermes's independent `auth.json`, or NanoBot/oauth-cli-kit's
-`oauth.json` into its temporary home. It never mounts the normal host Harness
-directories. Codex uses device authorization with file-based credential
-storage. Hermes obtains a separate device-code grant instead of sharing
-Codex's rotating refresh token.
+`auth.json`, Hermes's independent `auth.json`, Atomic's independent `auth.json`,
+or NanoBot/oauth-cli-kit's `oauth.json` into its temporary home. It never
+mounts the normal host Harness directories. Codex uses device authorization
+with file-based credential storage. Hermes and Atomic each obtain a separate
+grant instead of sharing Codex's rotating refresh token.
 
-These are persistent authentication-only seeds. Run the five login commands
+These are persistent authentication-only seeds. Run the six login commands
 once per computer, then reuse those seeds for every disposable Match until the
 provider expires or revokes a grant. Do not log in before every Trial, copy the
 ordinary host harness directories, or store seeds in Git, Dropbox, or another
@@ -65,7 +71,8 @@ fresh temporary home. Harness plugins, extensions, skills, rules, memories,
 sessions, and MCP configuration remain absent or disabled.
 
 Use a distinct OAuth grant for each Harness, even when two Harnesses use the
-same subscription. Codex and Hermes must not share one rotating refresh token.
+same subscription. Codex, Hermes, and Atomic must not share one rotating
+refresh token.
 Run attempts for one Harness sequentially so two containers never race to use
 the same grant. If a grant becomes invalid, create a new seed profile name and
 update the Match specification; do not silently repair credentials during a
@@ -114,7 +121,7 @@ python3 tools/highlander.py run \
 Review the saved plan before `--execute`. It must show:
 
 - `arena.isolation = independent_disposable_clone`;
-- verified image IDs for all five Harnesses and the evaluator;
+- verified image IDs for all six Harnesses and the evaluator;
 - `publication_available = false` and `host_home_mounted = false`;
 - the intended seed profile names, resources, model controls, Task hash, evaluator-overlay hash, and commands;
 - no host Harness configuration paths or credential values.
@@ -146,17 +153,21 @@ Configured control proves what Highlander requested. Runtime and provider proofs
 ## Current boundary
 
 The MatchRunner execution path supports clean-core OMP, OpenCode, Codex,
-Hermes, and NanoBot on Linux containers. The six ARM64 images and their exact
-local IDs passed the Podman doctor on 2026-08-09. The pilot Match
+Hermes, Atomic, and NanoBot on Linux containers. All seven ARM64 images and
+their exact local IDs passed the Podman build and doctor on 2026-08-22. A
+six-Harness no-auth Match doctor also passed without a model call. The
+subscription Match remains unavailable until its six dedicated seed files
+exist; image qualification is not authentication or model-route proof. The
+pilot Match
 `.highlander/matches/five-harness-login-gate-r1.json` is intentionally blocked
-until all five isolated subscription seeds exist. No host Harness login is a
+until all required isolated subscription seeds exist. No host Harness login is a
 substitute for those seeds. Production-stack and plugin-ablation Matches need
 separately labeled images and manifests.
 
 The 2026-08-21 task-043 pilot therefore ran in the separately declared
 `host_isolated_subscription_realism` lane with four dedicated profiles. That
-result does not qualify the clean-core lane. NanoBot and all five clean-room
-contenders remained unavailable rather than receiving zero scores. The probe
+result does not qualify the clean-core lane. NanoBot and all five original
+clean-room contenders remained unavailable rather than receiving zero scores. The probe
 also exposed two Podman/Codex startup defects now covered by local tests:
 Podman-incompatible tmpfs ownership options and Codex's missing explicit
 file-backed credential-store override.
