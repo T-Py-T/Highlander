@@ -48,12 +48,31 @@ class SeasonLeaderboardTests(unittest.TestCase):
 
         self.assertEqual(summary["status"], "complete")
         self.assertEqual(alpha["rank"], 1)
+        self.assertEqual(alpha["metrics"]["overall_outcome"], 0.95)
         self.assertEqual(alpha["metrics"]["best_outcome"], 0.95)
         self.assertEqual(alpha["metrics"]["mean_outcome"], 0.8)
         self.assertEqual(alpha["metrics"]["per_task_worst_outcome"], 0.65)
         self.assertEqual(beta["rank"], 2)
         self.assertEqual(beta["metrics"]["attempt_score_stddev"], 0.0)
-        self.assertIn("Best is the mean", leaderboard_markdown(summary))
+        markdown = leaderboard_markdown(summary)
+        self.assertIn("mean_of_per_task_best_valid_outcome", markdown)
+        self.assertIn("## Per-task outcome scores", markdown)
+        self.assertIn("0.8000 (0.7000–0.9000)", markdown)
+
+    def test_typical_primary_ranks_by_per_task_mean(self):
+        manifest = self.manifest()
+        manifest["scoring"]["primary"] = "mean_of_per_task_mean_valid_outcome"
+        rows = self.complete_rows()
+        rows[0]["outcome_score"] = 0.0
+
+        summary = aggregate_season(manifest, rows)
+        alpha = next(row for row in summary["contenders"] if row["harness_id"] == "alpha")
+        beta = next(row for row in summary["contenders"] if row["harness_id"] == "beta")
+
+        self.assertEqual(beta["rank"], 1)
+        self.assertEqual(beta["metrics"]["overall_outcome"], 0.8)
+        self.assertEqual(alpha["rank"], 2)
+        self.assertEqual(alpha["metrics"]["overall_outcome"], 0.625)
 
     def test_invalid_replacement_is_retained_and_counted(self):
         rows = self.complete_rows()

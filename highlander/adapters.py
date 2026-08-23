@@ -415,6 +415,74 @@ class NanoBotHarnessAdapter(HarnessAdapter):
         }
 
 
+class AtomicHarnessAdapter(HarnessAdapter):
+    name = "atomic"
+
+    def probe(
+        self, contender: ContenderSpec, control: ControlProfile
+    ) -> dict[str, Any]:
+        binary = shutil.which("atomic")
+        return {
+            "harness": {"name": "atomic", "version": _version(binary)},
+            "binary": binary,
+            "execution_implemented": True,
+            "execution_ready": False,
+            "execution_requires": "digest-pinned OCI clean room",
+            "protocol": "atomic-jsonl",
+            "prompt_transport": "argv-exact-string",
+            "control_proof": {
+                "configured": True,
+                "runtime": True,
+                "provider_wire": False,
+            },
+            "tools": ["native Atomic clean-core toolset; capture required at execution"],
+            "mcp_servers": [],
+            "memory": {"mode": "ephemeral no-session", "scope": "trial"},
+            "permissions": "container boundary; Atomic has no built-in sandbox",
+            "subagents": {"policy": control.auxiliary_model_policy},
+            "limitations": [
+                "personal resources and project-local executable configuration are disabled",
+                "subscription provider/wire proof depends on native JSONL evidence",
+            ],
+        }
+
+    def invocation(
+        self,
+        contender: ContenderSpec,
+        control: ControlProfile,
+        worktree: Path,
+        task_path: Path,
+    ) -> dict[str, Any]:
+        return {
+            "argv": [
+                "atomic",
+                "--mode",
+                "json",
+                "--print",
+                "--provider",
+                control.provider_id,
+                "--model",
+                control.requested_id,
+                "--thinking",
+                control.reasoning_requested,
+                "--no-session",
+                "--no-skills",
+                "--no-prompt-templates",
+                "--no-themes",
+                "--no-context-files",
+                "--no-approve",
+                "--offline",
+                "--",
+            ],
+            "cwd": str(worktree),
+            "protocol": "atomic-jsonl",
+            "prompt_transport": "exact Task string appended after --",
+            "task_sha_source": str(task_path),
+            "inherited_environment_names": [],
+            "credential_values_recorded": False,
+        }
+
+
 ADAPTERS: dict[str, HarnessAdapter] = {
     adapter.name: adapter
     for adapter in (
@@ -424,6 +492,7 @@ ADAPTERS: dict[str, HarnessAdapter] = {
         CodexHarnessAdapter(),
         HermesHarnessAdapter(),
         NanoBotHarnessAdapter(),
+        AtomicHarnessAdapter(),
     )
 }
 

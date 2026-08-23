@@ -176,7 +176,7 @@ class CleanRoom:
             candidates = [seed / "opencode" / "auth.json", seed / "auth.json"]
         elif adapter == "nanobot":
             candidates = [seed / "oauth.json"]
-        elif adapter in {"codex", "hermes"}:
+        elif adapter in {"codex", "hermes", "atomic"}:
             candidates = [seed / "auth.json"]
         else:
             candidates = []

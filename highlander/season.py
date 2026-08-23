@@ -109,22 +109,35 @@ def aggregate_season(
             for row in valid_rows
             if row.get("elapsed_seconds") is not None
         ]
-        task_best = {
+        task_best: dict[str, float] = {
             task_id: max(row["outcome_score"] for row in task_rows)
             for task_id, task_rows in valid_by_task.items()
             if task_rows
         }
-        task_worst = {
+        task_worst: dict[str, float] = {
             task_id: min(row["outcome_score"] for row in task_rows)
             for task_id, task_rows in valid_by_task.items()
             if task_rows
         }
+        task_mean: dict[str, float] = {
+            task_id: statistics.fmean(
+                row["outcome_score"] for row in valid_by_task.get(task_id, [])
+            )
+            for task_id in task_ids
+            if valid_by_task.get(task_id)
+        }
         task_ranges = [
-            task_best[task_id] - task_worst[task_id]
-            for task_id in task_best
+            task_best[task_id] - task_worst[task_id] for task_id in task_best
         ]
         complete = not missing_valid_slots
+        primary = manifest["scoring"]["primary"]
+        overall_outcome = (
+            _mean(task_best.values())
+            if primary == "mean_of_per_task_best_valid_outcome"
+            else _mean(task_mean.values())
+        )
         metrics = {
+            "overall_outcome": overall_outcome,
             "best_outcome": _mean(task_best.values()),
             "mean_outcome": _mean(scores),
             "median_outcome": statistics.median(scores) if scores else None,
@@ -154,10 +167,7 @@ def aggregate_season(
                     task_id: {
                         "valid_attempts": len(valid_by_task.get(task_id, [])),
                         "best": task_best.get(task_id),
-                        "mean": _mean(
-                            row["outcome_score"]
-                            for row in valid_by_task.get(task_id, [])
-                        ),
+                        "mean": task_mean.get(task_id),
                         "worst": task_worst.get(task_id),
                     }
                     for task_id in task_ids
@@ -188,21 +198,23 @@ def aggregate_season(
 
 
 def leaderboard_markdown(summary: dict[str, Any]) -> str:
+    primary = summary["ranking_contract"]["primary"]
     lines = [
         f"# {summary['season_id']}",
         "",
         f"Status: **{summary['status']}**",
         "",
-        "| Rank | Harness | Best | Mean | Median | Worst/task | Zero | Stddev | Invalid | Valid |",
-        "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| Rank | Harness | Overall | Best/task | Mean | Median | Worst/task | Zero | Stddev | Invalid | Valid |",
+        "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in summary["contenders"]:
         metrics = row["metrics"]
         lines.append(
-            "| {rank} | {harness} | {best} | {mean} | {median} | {worst} | "
+            "| {rank} | {harness} | {overall} | {best} | {mean} | {median} | {worst} | "
             "{zero} | {stddev} | {invalid} | {valid}/{expected} |".format(
                 rank=row["rank"] if row["rank"] is not None else "—",
                 harness=row["harness_id"],
+                overall=_format(metrics["overall_outcome"]),
                 best=_format(metrics["best_outcome"]),
                 mean=_format(metrics["mean_outcome"]),
                 median=_format(metrics["median_outcome"]),
@@ -217,9 +229,27 @@ def leaderboard_markdown(summary: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
-            "Best is the mean of each task's best valid attempt. Incomplete contenders are shown but never ranked.",
+            f"Overall follows the frozen primary rule `{primary}`. Incomplete contenders are shown but never ranked.",
+            "",
+            "## Per-task outcome scores",
+            "",
+            "Each cell is the task mean followed by the worst–best attempt range. A single value means all valid attempts matched.",
+            "",
         ]
     )
+    harnesses = [row["harness_id"] for row in summary["contenders"]]
+    task_ids = list(summary["contenders"][0]["per_task"])
+    lines.append("| Task | " + " | ".join(harnesses) + " |")
+    lines.append("|---|" + "---:|" * len(harnesses))
+    rows_by_harness = {
+        row["harness_id"]: row["per_task"] for row in summary["contenders"]
+    }
+    for task_id in task_ids:
+        cells = [
+            _format_task_score(rows_by_harness[harness_id][task_id])
+            for harness_id in harnesses
+        ]
+        lines.append(f"| {task_id} | " + " | ".join(cells) + " |")
     return "\n".join(lines) + "\n"
 
 
@@ -242,7 +272,11 @@ def _validate_manifest(manifest: Any) -> None:
         if len(set(ids)) != len(ids):
             raise SeasonError(f"duplicate id in season {field}")
     scoring = manifest.get("scoring")
-    if not isinstance(scoring, dict) or scoring.get("primary") != "mean_of_per_task_best_valid_outcome":
+    supported_primary = {
+        "mean_of_per_task_best_valid_outcome",
+        "mean_of_per_task_mean_valid_outcome",
+    }
+    if not isinstance(scoring, dict) or scoring.get("primary") not in supported_primary:
         raise SeasonError("unsupported or missing season scoring contract")
 
 
@@ -295,6 +329,7 @@ def _rank_key(row: dict[str, Any]) -> tuple[Any, ...]:
     metrics = row["metrics"]
     elapsed = metrics["median_elapsed_seconds"]
     return (
+        -metrics["overall_outcome"],
         -metrics["best_outcome"],
         -metrics["mean_outcome"],
         metrics["zero_score_rate"],
@@ -322,3 +357,14 @@ def _rounded(value: Any) -> Any:
 
 def _format(value: float | None) -> str:
     return f"{value:.4f}" if value is not None else "—"
+
+
+def _format_task_score(task: dict[str, Any]) -> str:
+    mean = task["mean"]
+    worst = task["worst"]
+    best = task["best"]
+    if mean is None or worst is None or best is None:
+        return "—"
+    if worst == best:
+        return _format(mean)
+    return f"{_format(mean)} ({_format(worst)}–{_format(best)})"

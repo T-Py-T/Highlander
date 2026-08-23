@@ -4,7 +4,30 @@ The leaderboard answers one narrow question: with the model, reasoning level,
 task bytes, evaluator, limits, and clean configuration held fixed, which
 Harness produces the strongest coding and DevOps results?
 
-## First season
+## Hard-first six-Harness season
+
+`benchmark-packs/hb-devhard-hardcore-v1.json` freezes nine unchanged official
+HarnessBench coding and DevOps tasks. The field is OMP (the current control),
+OpenCode, Codex, Hermes, Atomic, and NanoBot. Each Harness receives three fixed
+attempt slots per task, for 27 scored slots per Harness and 162 total slots.
+
+The tasks run in two declared stages. The first stage starts with the five
+hardest architecture, schema migration, database safety, service dependency,
+and SQL rollback tasks. The second stage adds monorepo repair, flaky-test root
+cause, Compose repair, and CLI parser testing. The task bytes and upstream
+evaluators are unchanged.
+
+This is the stack-displacement season. Its headline `Overall` score is the
+mean of the nine per-task means across all valid attempts. That measures
+typical performance across the workload rather than selecting each Harness's
+best try. The per-task matrix is mandatory, so the aggregate can always be
+traced back to the tasks a Harness solved or missed.
+
+The season remains provisional until the clean-core Atomic route and the
+repaired NanoBot OAuth seed qualify. An unavailable lane is shown as
+unavailable, never as zero.
+
+## Original breadth season
 
 `benchmark-packs/hb-devhard-v1.json` freezes 12 unmodified tasks from one
 Qihoo360 HarnessBench commit. It includes four current Harnesses and NanoBot as
@@ -28,9 +51,11 @@ without rewarding result shopping.
 
 ## Views
 
-The primary rank is the mean of each task's best valid outcome across the
-three attempts. It measures demonstrated maximum capability, not what the user
-should expect every day.
+The hard-first season's primary rank is the mean of each task's mean valid
+outcome across the three attempts. This is the expected or typical outcome.
+The original breadth season retains its frozen primary: the mean of each
+task's best valid outcome. That older primary measures demonstrated maximum
+capability, not what the user should expect every day.
 
 The same leaderboard must also show:
 
@@ -39,9 +64,10 @@ The same leaderboard must also show:
 - full-credit and zero-score rates;
 - attempt-score dispersion and mean within-task range;
 - invalid attempts, elapsed time, and operator interventions; and
-- every per-task score.
+- every per-task mean and worst–best attempt range.
 
-Best-of-three is never published by itself. Process judging, when authorized,
+Best-of-three is never the hard-first headline and is never published by
+itself. Process judging, when authorized,
 is a separate frozen-judge lane and is never fabricated from outcome scores.
 The legacy Highlander weighted scorecard does not apply to this season.
 
@@ -71,18 +97,34 @@ python3 tools/hb-leaderboard.py \
   --format json
 ```
 
+Build the empty, provisional hard-first matrix before running any paid Trial:
+
+```text
+python3 tools/hb-leaderboard.py \
+  --manifest benchmark-packs/hb-devhard-hardcore-v1.json \
+  --results /dev/null \
+  --format markdown
+```
+
+Append one retained row for each fixed attempt slot as Trials complete. A
+complete hard-first leaderboard contains a row for every Harness/task/attempt
+combination and shows a separate score cell for all nine tasks.
+
 ## Interpretation gate
 
-Do not build custom harder tasks until at least two modern Harnesses exceed
-0.90 primary best outcome and 0.85 mean outcome with low dispersion. If that
-trigger fires, the next pack should emphasize repository-scale repair,
-Terraform/Kubernetes/CI, migration safety, rollback, and offline incident
-diagnosis.
+Do not spend research or model budget inventing harder tasks until the complete
+nine-task matrix exists. Trigger a deep-research successor only if at least
+three current Harnesses exceed 0.90 overall and at least 70% of current-Harness
+task means exceed 0.95. That is evidence that the official pack is saturating,
+not merely that one task was easy. The successor should emphasize
+repository-scale bug repair, Terraform/Kubernetes/CI, migration recovery,
+deployment rollback, and offline incident diagnosis.
 
 ## Retained task-043 pilot
 
 `hb-devhard-043-gpt54-medium-host4-r1` is the first real, repeated
-HarnessBench-aligned pilot. It used official task `043-db-migration-safety`,
+HarnessBench-aligned pilot. It used **only** official task
+`043-db-migration-safety`,
 GPT-5.4 at medium reasoning, three attempts per available Harness, and the
 deterministic upstream oracle. It is a **host-isolated subscription-realism**
 stratum because the canonical disposable login seeds were unavailable. It is
@@ -113,6 +155,6 @@ python3 tools/hb-evidence.py verify \
   results/hb-devhard-043-gpt54-medium-host4-r1
 ```
 
-The next highest-evidence run is the same frozen control across the remaining
-11 DevHard tasks. The full-pack season should remain a separate stratum unless
-the five disposable subscription seeds are requalified first.
+The next highest-evidence run is the hard-first six-Harness season above. It
+remains a separate clean-core stratum and must not be blended with this
+host-isolated one-task pilot.

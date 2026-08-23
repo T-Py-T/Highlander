@@ -32,8 +32,12 @@ Verify the complete bundle locally:
 python3 tools/evidence-bundle.py verify results/fake-t002-protocol-r1
 ```
 
-The next evidence gate is the remaining 11-task DevHard breadth run. Highlander
-does not claim a real-harness winner from the task-043 pilot.
+The next evidence gate is a nine-task hard coding/DevOps season with three
+attempts per task and six Harnesses. Its leaderboard shows every task score and
+ranks complete Harnesses by the mean of their per-task means—the result to
+expect on a typical run. Best-of-three remains visible as a separate maximum
+capability view. Highlander does not claim a real-harness winner from the
+task-043 pilot.
 
 Current control and challengers:
 
@@ -42,6 +46,8 @@ Current control and challengers:
 | Control | Ghostty → Herdr → OMP | What does the current harness produce with the fixed model? |
 | Control-plus | Ghostty → Herdr → OMP → optional CCGram | Does phone supervision improve continuity without changing the coding runtime? |
 | Challenger | OpenCode | Does a different coding runtime improve tool use, permissions, or recovery for that same model? |
+| Challenger | Atomic | Does Atomic's native coding toolset and subscription route improve raw task outcomes with the same model? |
+| Challenger | Codex CLI | How much leverage comes from the first-party coding runtime with the same model and clean controls? |
 | Challenger | Ghostty → Herdr → Pi + Firstmate | Does a Pi-based factory layer improve planning, crew coordination, and delivery with the same model? |
 | Challenger | Hermes Agent | Does persistence and remote autonomy reduce supervision for that same model? |
 | Conditional | Goose → ACP → native Claude/Codex/Pi | Does subscription reuse add harness leverage without changing the model comparison? |
@@ -53,7 +59,7 @@ Current control and challengers:
 | Ghostty | Fast cross-platform terminal interface |
 | Herdr | Start, arrange, and monitor concurrent terminal agent sessions |
 | OMP (Oh My Pi) | Daily coding harness and multi-project control |
-| Codex, Claude Code, OpenCode, Hermes | Coding-agent runtimes used directly or compared as Highlander contenders |
+| Codex, Claude Code, OpenCode, Hermes, Atomic | Coding-agent runtimes used directly or compared as Highlander contenders |
 | Podman | Disposable Linux containers and authentication-isolated harness homes |
 | Highlander | Same-model harness scheduling, evidence capture, scoring, and comparison |
 | HarnessBench | Frozen coding tasks and deterministic evaluators |
@@ -118,7 +124,7 @@ python3 tools/highlander.py run \
 
 Real Harness Adapters are deliberately blocked from host execution. Highlander never changes the normal Harness installation, authentication, Herdr integrations, or model selection.
 
-Digest-pinned OMP, OpenCode, Codex, Hermes, and NanoBot execution is available through the disposable OCI clean room. It creates independent clones with no publication remote, starts each Harness without host configuration, evaluates the raw result, captures tracked and untracked changes, and destroys Trial state. See [docs/CLEAN-ROOM.md](docs/CLEAN-ROOM.md) for image build, clean login seeds, Match generation, and execution. Ordinary MatchRunner host execution remains blocked. The separately labeled `tools/hb-pilot.py` path exists only for a frozen, dedicated-profile subscription-realism protocol when clean-room auth is explicitly recorded as unavailable.
+Digest-pinned OMP, OpenCode, Codex, Hermes, Atomic, and NanoBot execution is available through the disposable OCI clean room. It creates independent clones with no publication remote, starts each Harness without host configuration, evaluates the raw result, captures tracked and untracked changes, and destroys Trial state. See [docs/CLEAN-ROOM.md](docs/CLEAN-ROOM.md) for image build, clean login seeds, Match generation, and execution. Ordinary MatchRunner host execution remains blocked. The separately labeled `tools/hb-pilot.py` path exists only for a frozen, dedicated-profile subscription-realism protocol when clean-room auth is explicitly recorded as unavailable.
 
 Authentication is a one-time setup per harness and computer, not a login before
 every Trial. Each clean-room OAuth seed persists outside the repository under
@@ -126,7 +132,7 @@ every Trial. Each clean-room OAuth seed persists outside the repository under
 each disposable home. Personal plugins, extensions, skills, rules, MCP servers,
 memory, and ordinary harness configuration are not imported. Reauthenticate
 only when the provider revokes or expires that dedicated grant; never commit or
-cloud-sync the seed directory. The five setup commands and exact imported files
+cloud-sync the seed directory. The six setup commands and exact imported files
 are documented in [docs/CLEAN-ROOM.md](docs/CLEAN-ROOM.md#one-time-host-setup).
 
 The original `tools/prepare-run.sh` remains available as a legacy worktree-only preparer while MatchRunner matures.
@@ -147,8 +153,19 @@ python3 tools/hb-leaderboard.py \
   --results results/hb-devhard-v1/results.jsonl
 ```
 
-See [docs/LEADERBOARD.md](docs/LEADERBOARD.md) for the best-attempt,
-reliability, invalid-run, and ranking contract.
+The next hard-first extension is frozen separately in
+`benchmark-packs/hb-devhard-hardcore-v1.json`. It runs nine unchanged official
+tasks three times each for OMP, OpenCode, Codex, Hermes, Atomic, and NanoBot.
+Generate its provisional per-task matrix before any paid run:
+
+```text
+python3 tools/hb-leaderboard.py \
+  --manifest benchmark-packs/hb-devhard-hardcore-v1.json \
+  --results /dev/null
+```
+
+See [docs/LEADERBOARD.md](docs/LEADERBOARD.md) for the typical-outcome,
+best-attempt, per-task, reliability, invalid-run, and ranking contract.
 
 The first retained real pilot covers official HarnessBench task 043 with three
 GPT-5.4/medium repeats each for OMP, OpenCode, Codex, and Hermes. It is a
