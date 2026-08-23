@@ -1,0 +1,27 @@
+command: tools/run-act-local.sh
+exit_code: 0
+workflow: Highlander checks
+job: tests
+runner_image: docker.io/catthehacker/ubuntu:act-latest
+runner_image_id: cb041d0df9a749a73358ded823dd44f7c24111ef3efd152a3e6f3f4e3846f153
+container_network: none
+
+Set up job...............................................................Success
+Check out repository.....................................................Success
+Confirm local act Python.................................................Success
+Python 3.12.3
+
+Run Highlander unit tests................................................Success
+Ran 45 tests in 26.601s
+OK (skipped=2)
+
+Validate MatchRunner source and example.................................Success
+ready_for_execution: true
+
+Run fixture tests........................................................Success
+Ran 2 tests in 0.002s
+OK
+
+Validate runner syntax...................................................Success
+Complete job.............................................................Success
+Job succeeded

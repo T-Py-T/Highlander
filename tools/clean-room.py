@@ -27,6 +27,7 @@ TAGS = {
     "nanobot": "highlander/nanobot:0.1.5.post3-clean-core",
     "codex": "highlander/codex:0.147.0-clean-core",
     "hermes": "highlander/hermes:0.20.0-clean-core",
+    "atomic": "highlander/atomic:0.9.15-clean-core",
 }
 
 
@@ -42,7 +43,7 @@ def parser() -> argparse.ArgumentParser:
 
     seed = commands.add_parser("seed", help="create an authentication-only seed")
     seed.add_argument(
-        "harness", choices=("omp", "opencode", "nanobot", "codex", "hermes")
+        "harness", choices=("omp", "opencode", "nanobot", "codex", "hermes", "atomic")
     )
     seed.add_argument("profile")
     seed.add_argument(
@@ -73,6 +74,7 @@ def parser() -> argparse.ArgumentParser:
     match.add_argument("--codex-seed", default="codex-subscription")
     match.add_argument("--hermes-seed", default="hermes-subscription")
     match.add_argument("--nanobot-seed", default="nanobot-subscription")
+    match.add_argument("--atomic-seed", default="atomic-subscription")
     match.add_argument("--session", choices=("headless", "tmux"), default="tmux")
     match.add_argument("--wall-time", type=int, default=1800)
     match.add_argument("--output-root")
@@ -214,6 +216,22 @@ def build(runtime: str, lock_path: Path) -> None:
                 str(ROOT),
             ],
         ),
+        (
+            "atomic",
+            [
+                runtime,
+                "build",
+                "--build-arg",
+                f"TARGETARCH={target_arch}",
+                "--build-arg",
+                f"BASE_IMAGE={TAGS['evaluator']}",
+                "--tag",
+                TAGS["atomic"],
+                "--file",
+                str(ROOT / "containers" / "atomic" / "Dockerfile"),
+                str(ROOT),
+            ],
+        ),
     ]
     for name, argv in builds:
         print(f"Building {name} clean-room image...", flush=True)
@@ -253,6 +271,12 @@ def build(runtime: str, lock_path: Path) -> None:
                 "commit": "3c27eb6234bf91b8ceee9e9071591b31e9b148cb",
                 "uv_lock_sha256": "aab3c83f71b683507a590b6315b23bdc0abd6b63b76b2349eae15bf00dfbaf2b",
                 "uv_version": "0.12.3",
+            },
+            "atomic": {
+                "version": "0.9.15",
+                "release_tag": "0.9.15",
+                "linux_amd64_sha256": "ef5fed6b3510b1842ad8d7768cfb78b27659093e37a5e078d7eb2ca7363634f1",
+                "linux_arm64_sha256": "2364d968d34deec3e64ac795f3fb3debac8463745b89ca7b6e71469fbd4200a8",
             },
         },
     }
@@ -359,7 +383,7 @@ def seed(runtime: str, lock: dict[str, Any], harness: str, profile: str, seed_ro
             ]
         )
         expected = destination / "auth.json"
-    else:
+    elif harness == "hermes":
         argv.extend(
             [
                 "--env",
@@ -374,6 +398,28 @@ def seed(runtime: str, lock: dict[str, Any], harness: str, profile: str, seed_ro
                 "--no-browser",
                 "--label",
                 "highlander",
+            ]
+        )
+        expected = destination / "auth.json"
+    else:
+        argv.extend(
+            [
+                "--env",
+                "ATOMIC_CODING_AGENT_DIR=/seed-output",
+                image,
+                "atomic",
+                "--provider",
+                "openai-codex",
+                "--model",
+                "gpt-5.6-luna",
+                "--no-session",
+                "--no-extensions",
+                "--no-skills",
+                "--no-prompt-templates",
+                "--no-themes",
+                "--no-context-files",
+                "--no-approve",
+                "--offline",
             ]
         )
         expected = destination / "auth.json"
@@ -434,6 +480,7 @@ def new_match(args: argparse.Namespace, lock: dict[str, Any]) -> None:
             "codex": {"seed_profile": args.codex_seed},
             "hermes": {"seed_profile": args.hermes_seed},
             "nanobot": {"seed_profile": args.nanobot_seed},
+            "atomic": {"seed_profile": args.atomic_seed},
         }
         if args.auth_route != "none"
         else {
@@ -442,6 +489,7 @@ def new_match(args: argparse.Namespace, lock: dict[str, Any]) -> None:
             "codex": {},
             "hermes": {},
             "nanobot": {},
+            "atomic": {},
         }
     )
     payload = {
@@ -528,6 +576,14 @@ def new_match(args: argparse.Namespace, lock: dict[str, Any]) -> None:
                 "options": {
                     "image": lock["images"]["nanobot"]["image_id"],
                     **seed_options["nanobot"],
+                },
+            },
+            {
+                "id": "atomic-clean",
+                "adapter": "atomic",
+                "options": {
+                    "image": lock["images"]["atomic"]["image_id"],
+                    **seed_options["atomic"],
                 },
             },
         ],
