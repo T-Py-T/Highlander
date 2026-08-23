@@ -365,6 +365,7 @@ def _validated_options(
         "codex": {"image", "seed_profile"},
         "hermes": {"image", "seed_profile"},
         "nanobot": {"image", "seed_profile"},
+        "atomic": {"image", "seed_profile"},
     }
     if adapter not in allowed:
         if options:

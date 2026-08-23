@@ -29,7 +29,7 @@ repos:
 
       - id: highlander-shell-syntax
         name: Validate runner shell syntax
-        entry: bash -n tools/prepare-run.sh tools/run-act-local.sh
+        entry: bash -n tools/prepare-run.sh tools/run-act-local.sh containers/base/highlander-entrypoint
         language: system
         pass_filenames: false
 

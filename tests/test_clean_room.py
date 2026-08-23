@@ -18,6 +18,7 @@ class CleanRoomMatchTests(unittest.TestCase):
     CODEX_IMAGE = "sha256:" + "4" * 64
     HERMES_IMAGE = "sha256:" + "5" * 64
     NANOBOT_IMAGE = "sha256:" + "6" * 64
+    ATOMIC_IMAGE = "sha256:" + "7" * 64
 
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -87,6 +88,7 @@ class CleanRoomMatchTests(unittest.TestCase):
                 CODEX = {self.CODEX_IMAGE!r}
                 HERMES = {self.HERMES_IMAGE!r}
                 NANOBOT = {self.NANOBOT_IMAGE!r}
+                ATOMIC = {self.ATOMIC_IMAGE!r}
 
                 args = sys.argv[1:]
                 if args == ["--version"]:
@@ -104,6 +106,7 @@ class CleanRoomMatchTests(unittest.TestCase):
                         CODEX: "codex",
                         HERMES: "hermes",
                         NANOBOT: "nanobot",
+                        ATOMIC: "atomic",
                     }}[image]
                     labels = {{
                         "io.highlander.harness": harness,
@@ -130,7 +133,7 @@ class CleanRoomMatchTests(unittest.TestCase):
                             if "dst=/workspace" in mount:
                                 fields = dict(item.split("=", 1) for item in mount.split(",") if "=" in item)
                                 workspace = Path(fields["src"])
-                    image_index = next(index for index, value in enumerate(args) if value in {{OMP, OPENCODE, EVALUATOR, CODEX, HERMES, NANOBOT}})
+                    image_index = next(index for index, value in enumerate(args) if value in {{OMP, OPENCODE, EVALUATOR, CODEX, HERMES, NANOBOT, ATOMIC}})
                     command = args[image_index + 1:]
                     if args[image_index] != EVALUATOR:
                         harness = {{
@@ -139,6 +142,7 @@ class CleanRoomMatchTests(unittest.TestCase):
                             CODEX: "codex",
                             HERMES: "hermes",
                             NANOBOT: "nanobot",
+                            ATOMIC: "atomic",
                         }}[args[image_index]]
                         (workspace / "harness.txt").write_text(harness + "\\n", encoding="utf-8")
                         print(json.dumps({{
@@ -298,7 +302,7 @@ class CleanRoomMatchTests(unittest.TestCase):
         self.assertTrue(result["available"])
         self.assertEqual(result["imported_file"], "oauth.json")
 
-    def test_codex_and_hermes_seed_probes_accept_only_isolated_auth_files(self):
+    def test_codex_hermes_and_atomic_seed_probes_accept_only_isolated_auth_files(self):
         clean_room = CleanRoom(
             {
                 "runtime": "docker",
@@ -312,7 +316,7 @@ class CleanRoomMatchTests(unittest.TestCase):
                 "retain_workspaces": False,
             }
         )
-        for harness in ("codex", "hermes"):
+        for harness in ("codex", "hermes", "atomic"):
             profile = f"{harness}-subscription"
             seed = self.root / "seeds" / profile
             seed.mkdir(parents=True)
@@ -376,6 +380,34 @@ class CleanRoomMatchTests(unittest.TestCase):
         plan = MatchRunner.from_file(spec_path).plan()["trials"][0]
         self.assertIn('cli_auth_credentials_store="file"', plan["invocation"]["argv"])
 
+    def test_clean_room_atomic_uses_json_without_personal_resources(self):
+        spec_path = self.write_spec(match_id="atomic-clean-core")
+        payload = json.loads(spec_path.read_text(encoding="utf-8"))
+        payload["contenders"] = [
+            {
+                "id": "atomic-clean",
+                "adapter": "atomic",
+                "options": {"image": self.ATOMIC_IMAGE},
+            },
+            {
+                "id": "opencode-clean",
+                "adapter": "opencode",
+                "options": {"image": self.OPENCODE_IMAGE},
+            },
+        ]
+        spec_path.write_text(json.dumps(payload), encoding="utf-8")
+
+        argv = MatchRunner.from_file(spec_path).plan()["trials"][0]["invocation"]["argv"]
+
+        self.assertEqual(argv[argv.index("--mode") + 1], "json")
+        self.assertIn("--print", argv)
+        self.assertIn("--no-session", argv)
+        self.assertIn("--no-skills", argv)
+        self.assertIn("--no-context-files", argv)
+        self.assertIn("--no-approve", argv)
+        self.assertIn("--offline", argv)
+        self.assertEqual(argv[-1], "--")
+
     @unittest.skipUnless(
         os.environ.get("HIGHLANDER_TEST_TMUX") == "1", "opt-in tmux integration"
     )
@@ -403,6 +435,7 @@ class CleanRoomMatchTests(unittest.TestCase):
                         "codex": {"image_id": self.CODEX_IMAGE},
                         "hermes": {"image_id": self.HERMES_IMAGE},
                         "nanobot": {"image_id": self.NANOBOT_IMAGE},
+                        "atomic": {"image_id": self.ATOMIC_IMAGE},
                         "evaluator": {"image_id": self.EVALUATOR_IMAGE},
                     },
                 }
@@ -462,6 +495,7 @@ class CleanRoomMatchTests(unittest.TestCase):
                 self.CODEX_IMAGE,
                 self.HERMES_IMAGE,
                 self.NANOBOT_IMAGE,
+                self.ATOMIC_IMAGE,
             ],
         )
         self.assertEqual(plan["evaluation"]["overlay_files"], 1)

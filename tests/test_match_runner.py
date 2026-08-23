@@ -196,6 +196,7 @@ class MatchRunnerTests(unittest.TestCase):
             {"id": "codex", "adapter": "codex", "options": {}},
             {"id": "hermes", "adapter": "hermes", "options": {}},
             {"id": "nanobot", "adapter": "nanobot", "options": {}},
+            {"id": "atomic", "adapter": "atomic", "options": {}},
         ]
         runner = MatchRunner.from_file(
             self.write_spec(match_id="real-dry-run", contenders=contenders)
@@ -212,6 +213,13 @@ class MatchRunnerTests(unittest.TestCase):
         self.assertIn("--ephemeral", commands["codex"])
         self.assertIn("--safe-mode", commands["hermes"])
         self.assertIn("NANOBOT_TOOLS__RESTRICT_TO_WORKSPACE=true", commands["nanobot"])
+        self.assertIn("--mode", commands["atomic"])
+        self.assertIn("json", commands["atomic"])
+        self.assertIn("--print", commands["atomic"])
+        self.assertIn("--no-session", commands["atomic"])
+        self.assertIn("--no-context-files", commands["atomic"])
+        self.assertIn("--no-approve", commands["atomic"])
+        self.assertEqual(commands["atomic"][-1], "--")
         with self.assertRaises(HighlanderError):
             runner.execute(reviewed_plan=plan)
 
