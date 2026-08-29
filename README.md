@@ -6,7 +6,7 @@ Highlander is a reproducible local acceptance lab for measuring how AI coding ha
 
 This is a harness experiment, not a model leaderboard. In the primary lane, every contender receives the same task, repository snapshot, exact model, acceptance tests, and safety boundaries. The harness is the experimental variable; its tools, memory, permissions, orchestration, prompt handling, and recovery behavior are recorded alongside the resulting artifacts.
 
-## Evidence at a glance
+## Results
 
 The first retained real pilot ran official HarnessBench task 043 three times for
 each available harness with GPT-5.4 at medium reasoning. The image is sorted by
@@ -211,7 +211,7 @@ The retained output from the first accepted local gate is under
 
 ## Repository map
 
-- `docs/GAUNTLET.md` — rules, scoring, evidence, and hiring-readiness guidance.
+- `docs/GAUNTLET.md` — rules, scoring, evidence, and benchmark-design guidance.
 - `docs/MOBILE-SUPERVISION.md` — phone monitoring/responding protocol and control-plane ablations.
 - `docs/MATCH-RUNNER.md` — pilot CLI, state machine, adapter boundary, and tmux workflow.
 - `docs/CLEAN-ROOM.md` — pinned images, authentication seeds, disposable clones, raw evaluation, and cleanup.
@@ -235,6 +235,17 @@ The retained output from the first accepted local gate is under
 
 Every published result must make the causal comparison inspectable. At minimum, show the fixed model identity and limits, harness name and version, enabled tools and MCP servers, memory mode and seed state, permission policy, subagent settings, prompt packet, transcript, tool ledger, diff, tests, review, CI, and operator interventions. A result without this metadata is a score, not an explanation of how the harness affected the model.
 
-## Future hiring use
+## Publishing results
 
-If Highlander becomes a hiring artifact, add sanitized task packs and public evaluator instructions only after removing private provider details, proprietary code, hidden gold patches, and personal workflow configuration. Hiring scores should be one signal among engineering judgment, communication, security thinking, and code review—not an autonomous-agent leaderboard.
+Publish only sanitized task packs and evaluator instructions. Remove private
+provider details, proprietary code, hidden gold patches, credentials, and
+personal workflow configuration before exporting a result bundle. A harness
+score should always be presented with the task, model controls, evaluator,
+reliability data, and operator-intervention record needed to interpret it.
+
+## License
+
+Highlander's original code, tests, schemas, and documentation are available
+under the [MIT License](LICENSE). HarnessBench inputs, third-party harnesses,
+provider software, and captured third-party output remain under their own
+licenses and terms. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
