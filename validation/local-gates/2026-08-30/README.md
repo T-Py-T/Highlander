@@ -23,10 +23,17 @@ scored model calls.
 - R2 qualification: OMP, Hermes, Atomic, and NanoBot qualified; OpenCode and
   Codex were unavailable after root-owned image paths blocked their isolated
   auth copy. No scored call ran.
-- Current protocol: `hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3`, SHA-256
+- R3 protocol: `hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3`, SHA-256
   `3c116fcecca9e63076df671b78be14703556b4bc66d11513001b11dd247df76b`.
-  It preserves the complete r2 matrix and controls and scopes every home/XDG
-  path below a fresh writable tmpfs child.
+  It preserved the complete r2 matrix and controls, scoped every home/XDG path
+  below a fresh writable tmpfs child, and received the exact qualification
+  reply from all six harnesses. No scored call ran because its proof parser
+  mistook numeric reasoning-token counters for reasoning-effort identities.
+- Current protocol: `hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4`, SHA-256
+  `c0033d61cc3bdc1c30716c3edf6cf8d815f5b96fe17229491c74b1f178fe37df`.
+  It preserves the complete r3 matrix and controls while accepting only
+  symbolic identity observations and distinguishing partial visibility from
+  an explicit mismatch.
 
 Artifacts:
 
@@ -40,6 +47,9 @@ Artifacts:
 - `season-doctor-r3.log` — exact no-model report for the current protocol.
 - `pre-commit-r3.log` — complete verbose local gate after the writable-home
   regression fix and r3 freeze.
+- `season-doctor-r4.log` — exact no-model report for the current protocol.
+- `pre-commit-r4.log` — complete verbose local gate after the proof-parser
+  regression fix and r4 freeze.
 
 The initially unavailable lanes were not assigned zero scores. Qualification
 and scoring remained blocked until clean auth-only seeds existed for Atomic
