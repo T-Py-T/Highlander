@@ -35,6 +35,12 @@ _PROVIDER_ENCRYPTED_FIELD = re.compile(
     r'(?P<value>[^"\\]+)(?P<suffix>\\*")'
 )
 _PROVIDER_ENCRYPTED_REDACTION = "<PROVIDER_ENCRYPTED_PAYLOAD_REDACTED>"
+_GENERATED_CACHE_PARTS = {
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+}
 
 
 def export_pilot_bundle(
@@ -76,8 +82,12 @@ def export_pilot_bundle(
     temporary.mkdir(parents=True)
     counts = {placeholder: 0 for _, placeholder in replacements}
     counts[_PROVIDER_ENCRYPTED_REDACTION] = 0
+    omitted_generated_cache_artifacts = 0
     try:
         for relative in source_artifacts:
+            if _is_generated_cache_artifact(relative):
+                omitted_generated_cache_artifacts += 1
+                continue
             source_path = source_root / relative
             destination_path = temporary / relative
             destination_path.parent.mkdir(parents=True, exist_ok=True)
@@ -221,6 +231,7 @@ def export_pilot_bundle(
                 "provider_encrypted_payloads_redacted": counts[
                     _PROVIDER_ENCRYPTED_REDACTION
                 ],
+                "generated_cache_artifacts_omitted": omitted_generated_cache_artifacts,
                 "credential_values_exported": False,
                 "private_raw_source_retained": True,
             },
@@ -313,8 +324,12 @@ def export_season_bundle(
     temporary.mkdir(parents=True)
     counts = {placeholder: 0 for _, placeholder in replacements}
     counts[_PROVIDER_ENCRYPTED_REDACTION] = 0
+    omitted_generated_cache_artifacts = 0
     try:
         for relative in source_artifacts:
+            if _is_generated_cache_artifact(relative):
+                omitted_generated_cache_artifacts += 1
+                continue
             source_path = source_root / relative
             destination_path = temporary / relative
             destination_path.parent.mkdir(parents=True, exist_ok=True)
@@ -429,6 +444,7 @@ def export_season_bundle(
                 "provider_encrypted_payloads_redacted": counts[
                     _PROVIDER_ENCRYPTED_REDACTION
                 ],
+                "generated_cache_artifacts_omitted": omitted_generated_cache_artifacts,
                 "credential_values_exported": False,
                 "private_raw_source_retained": True,
             },
@@ -897,6 +913,13 @@ def _sanitize_bytes(
     )
     counts[_PROVIDER_ENCRYPTED_REDACTION] = encrypted_count
     return text.encode("utf-8"), counts
+
+
+def _is_generated_cache_artifact(relative: Path) -> bool:
+    return (
+        relative.suffix == ".pyc"
+        or bool(_GENERATED_CACHE_PARTS.intersection(relative.parts))
+    )
 
 
 def _reject_secret_material(path: Path, raw: bytes) -> None:

@@ -155,6 +155,14 @@ class HarnessBenchEvidenceTests(unittest.TestCase):
         self._manifest(self.source)
 
     def test_export_redacts_paths_and_normalizes_process_and_usage(self):
+        generated = (
+            self.source
+            / "trials/001-omp-attempt-001/workspace-final/__pycache__/client.cpython-314.pyc"
+        )
+        generated.parent.mkdir(parents=True)
+        generated.write_bytes(b"compiled-path=" + str(Path.home()).encode("utf-8"))
+        self._manifest(self.source / "trials/001-omp-attempt-001")
+        self._manifest(self.source)
         output = self.root / "public" / "pilot-r1"
         verified = export_pilot_bundle(self.source, output, self.runner)
         self.assertEqual(verified["status"], "verified")
@@ -171,6 +179,14 @@ class HarnessBenchEvidenceTests(unittest.TestCase):
         )
         self.assertNotIn(str(Path.home()), all_text)
         self.assertIn("<HOME>", all_text)
+        self.assertFalse(
+            (
+                output
+                / "trials/001-omp-attempt-001/workspace-final/__pycache__/client.cpython-314.pyc"
+            ).exists()
+        )
+        redaction = json.loads((output / "redaction-report.json").read_text())
+        self.assertEqual(redaction["generated_cache_artifacts_omitted"], 1)
         self.assertTrue((output / "results.jsonl").is_file())
         leaderboard = json.loads((output / "leaderboard.json").read_text())
         self.assertFalse(leaderboard["ranking_permitted"])
