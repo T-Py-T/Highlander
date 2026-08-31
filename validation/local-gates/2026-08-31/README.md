@@ -16,10 +16,10 @@ This directory retains the local release checks for the two public Highlander ha
 3. `pre-commit.log` passed 55 tests with two documented skips, compilation, doctor, fixture tests, shell syntax, and all four retained evidence verifiers.
 4. `act-offline-attempt-2.log` passed the same tests but correctly exposed a clone-reproducibility defect: nested NanoBot `.gitignore` rules had kept 790 manifest-listed artifacts out of Git even though they existed in the local export. Exactly those manifest members were force-added: 408 for GPT-5.6 and 382 for GPT-5.4. Trial-level `artifact-manifest.json` files are retained separately by design.
 5. `act-offline.log` is the successful post-fix run. In an offline, network-isolated Podman runner it passed 55 tests with two documented skips, MatchRunner validation, two fixture tests, shell syntax, and all four evidence verifiers. The GPT-5.6 and GPT-5.4 bundles verified at 4,821 and 6,090 artifacts respectively.
-6. The clean-checkout verification is recorded below after it completes.
+6. `clean-checkout.log` records a local `--no-local` clone of release commit `020e456`. From that fresh clone, every pre-commit hook passed again: 55 tests with two documented skips, compilation, MatchRunner validation, fixture tests, shell syntax, and all four evidence manifests.
 
 Failed attempts are retained because they explain the fixes and make the release-gate history auditable. An invalid local gate never changes a benchmark score.
 
 ## Offline workflow result
 
-`PASS` — the local GitHub Actions workflow completed with exit code 0. The remaining release check is reproduction from a fresh clone of the committed branch.
+`PASS` — the local GitHub Actions workflow completed with exit code 0, and release commit `020e456` reproduced from a fresh clone with every pre-commit hook passing. The post-verification documentation commit contains only this retained log and this status update.
