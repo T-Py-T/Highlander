@@ -41,44 +41,39 @@ SOURCE_FILES = (
     "tools/hb-season.py",
 )
 
-LANE_CONTROLS: dict[str, dict[str, str]] = {
-    "omp": {
-        "configured_model_id": "openai-codex/gpt-5.6-luna",
-        "provider_id": "openai-codex",
-        "expected_runtime_model_id": "gpt-5.6-luna",
-        "expected_runtime_provider_id": "openai-codex",
-    },
-    "opencode": {
-        "configured_model_id": "openai/gpt-5.6-luna",
-        "provider_id": "openai",
-        "expected_runtime_model_id": "gpt-5.6-luna",
-        "expected_runtime_provider_id": "openai",
-    },
-    "codex": {
-        "configured_model_id": "gpt-5.6-luna",
-        "provider_id": "openai-codex",
-        "expected_runtime_model_id": "gpt-5.6-luna",
-        "expected_runtime_provider_id": "openai-codex",
-    },
-    "hermes": {
-        "configured_model_id": "gpt-5.6-luna",
-        "provider_id": "openai-codex",
-        "expected_runtime_model_id": "gpt-5.6-luna",
-        "expected_runtime_provider_id": "openai-codex",
-    },
-    "atomic": {
-        "configured_model_id": "gpt-5.6-luna",
-        "provider_id": "openai-codex",
-        "expected_runtime_model_id": "gpt-5.6-luna",
-        "expected_runtime_provider_id": "openai-codex",
-    },
-    "nanobot": {
-        "configured_model_id": "openai-codex/gpt-5.6-luna",
-        "provider_id": "openai-codex",
-        "expected_runtime_model_id": "gpt-5.6-luna",
-        "expected_runtime_provider_id": "openai-codex",
-    },
+GENERATED_TASK_PATH_PARTS = {
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
 }
+
+
+def _lane_controls(model_id: str) -> dict[str, dict[str, str]]:
+    if (
+        not model_id
+        or "/" in model_id
+        or any(character.isspace() for character in model_id)
+    ):
+        raise ValueError("model_id must be one non-empty provider-neutral model name")
+    direct = {
+        "provider_id": "openai-codex",
+        "expected_runtime_model_id": model_id,
+        "expected_runtime_provider_id": "openai-codex",
+    }
+    return {
+        "omp": {**direct, "configured_model_id": f"openai-codex/{model_id}"},
+        "opencode": {
+            "configured_model_id": f"openai/{model_id}",
+            "provider_id": "openai",
+            "expected_runtime_model_id": model_id,
+            "expected_runtime_provider_id": "openai",
+        },
+        "codex": {**direct, "configured_model_id": model_id},
+        "hermes": {**direct, "configured_model_id": model_id},
+        "atomic": {**direct, "configured_model_id": model_id},
+        "nanobot": {**direct, "configured_model_id": f"openai-codex/{model_id}"},
+    }
 
 
 def freeze_protocol(
@@ -89,6 +84,7 @@ def freeze_protocol(
     image_lock_path: Path,
     output: Path,
     schedule_seed: int = 56001,
+    model_id: str = "gpt-5.6-luna",
 ) -> dict[str, Any]:
     """Freeze every executable input before route qualification or scoring calls."""
 
@@ -116,6 +112,7 @@ def freeze_protocol(
         }
         tasks.append({**task, "file_hashes": files, "oracle_sha256": files["oracle_grade.py"]})
 
+    lane_controls = _lane_controls(model_id)
     versions = {str(item["id"]): str(item["version"]) for item in manifest["contenders"]}
     harnesses = []
     for harness_id in contender_ids:
@@ -123,7 +120,7 @@ def freeze_protocol(
             {
                 "id": harness_id,
                 "version": versions[harness_id],
-                **LANE_CONTROLS[harness_id],
+                **lane_controls[harness_id],
                 "reasoning": "medium",
                 "expected_runtime_reasoning": "medium",
                 "wire_reasoning": "medium",
@@ -153,7 +150,10 @@ def freeze_protocol(
         "protocol_id": manifest["season_id"],
         "created_at": _utc_now(),
         "lane": "oci_clean_core_subscription_realism",
-        "purpose": "Same-model hard coding and DevOps comparison using unchanged HarnessBench tasks and deterministic oracles.",
+        "purpose": (
+            f"Same-model {model_id} hard coding and DevOps comparison using unchanged "
+            "HarnessBench tasks and deterministic oracles."
+        ),
         "claim_boundary": (
             "HarnessBench outcome comparison under frozen configured subscription routes. "
             "Native runtime and wire identity are reported when exposed; absence of wire proof "
@@ -163,6 +163,11 @@ def freeze_protocol(
             "repository": "https://github.com/T-Py-T/Highlander",
             "implementation_commit": _git(root, "rev-parse", "HEAD"),
             "implementation_tree": _git(root, "rev-parse", "HEAD^{tree}"),
+        },
+        "control_profile": {
+            "model_id": model_id,
+            "reasoning": "medium",
+            "fallback_policy": "forbidden",
         },
         "source_hashes": {
             relative: _sha256((root / relative).read_bytes()) for relative in SOURCE_FILES
@@ -526,6 +531,7 @@ def _execute_trial(
     env = os.environ.copy()
     env.update({
         "PYTHONPATH": str(upstream / "src"),
+        "PYTHONDONTWRITEBYTECODE": "1",
         "HARNESSBENCH_APP_CONFIG": str(app_path),
         "HARNESSBENCH_HARNESS_CONFIG": str(harness_path),
         "HARNESSBENCH_SKIP_PROCESS_GRADE": "1",
@@ -601,7 +607,7 @@ def _execute_trial(
     final_workspace = None
     if workspace and workspace.is_dir():
         final_workspace = trial_dir / "workspace-final"
-        shutil.copytree(workspace, final_workspace)
+        _copy_final_workspace(workspace, final_workspace)
         _write_fixture_diff(upstream / "tasks" / task_id / "fixtures", final_workspace, trial_dir / "diff.patch")
     row = {
         "schema_version": 1,
@@ -779,7 +785,20 @@ def _write_manifest(root: Path) -> None:
 
 
 def _files_below(root: Path) -> list[Path]:
-    return sorted(path for path in root.rglob("*") if path.is_file() and not path.is_symlink())
+    return sorted(
+        path
+        for path in root.rglob("*")
+        if path.is_file()
+        and not path.is_symlink()
+        and path.suffix != ".pyc"
+        and not GENERATED_TASK_PATH_PARTS.intersection(path.relative_to(root).parts)
+    )
+
+
+def _copy_final_workspace(source: Path, destination: Path) -> None:
+    """Retain workspace bytes without following environment-specific symlinks."""
+
+    shutil.copytree(source, destination, symlinks=True)
 
 
 def _load_json(path: Path) -> dict[str, Any]:

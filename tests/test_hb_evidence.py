@@ -185,6 +185,35 @@ class HarnessBenchEvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(PilotEvidenceError, "oauth_token"):
             export_pilot_bundle(self.source, self.root / "public" / "leaked", self.runner)
 
+    def test_export_redacts_provider_encrypted_payload_before_secret_scan(self):
+        stdout = self.source / "trials/001-omp-attempt-001/native/stdout.raw"
+        rows = stdout.read_text(encoding="utf-8")
+        opaque = "psk-" + "A" * 80
+        stdout.write_text(
+            rows
+            + json.dumps(
+                {
+                    "type": "response_metadata",
+                    "encrypted_content": opaque,
+                }
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        self._manifest(stdout.parent.parent)
+        self._manifest(self.source)
+
+        output = self.root / "public" / "provider-redacted"
+        export_pilot_bundle(self.source, output, self.runner)
+
+        exported = (
+            output / "trials/001-omp-attempt-001/native/stdout.raw"
+        ).read_text(encoding="utf-8")
+        self.assertNotIn(opaque, exported)
+        self.assertIn("<PROVIDER_ENCRYPTED_PAYLOAD_REDACTED>", exported)
+        report = json.loads((output / "redaction-report.json").read_text())
+        self.assertEqual(report["provider_encrypted_payloads_redacted"], 1)
+
     def test_season_export_rebuilds_ranked_leaderboard(self):
         source = self.root / "private" / "season-r1"
         trial = source / "trials" / "001-task-a-omp-a01-r01"

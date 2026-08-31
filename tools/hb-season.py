@@ -24,6 +24,7 @@ def main() -> int:
     freeze.add_argument("--image-lock", default=ROOT / ".highlander/images.lock.json", type=Path)
     freeze.add_argument("--output", required=True, type=Path)
     freeze.add_argument("--schedule-seed", default=56001, type=int)
+    freeze.add_argument("--model-id", default="gpt-5.6-luna")
     for name in ("doctor", "qualify", "run"):
         command = sub.add_parser(name)
         command.add_argument("--protocol", required=True, type=Path)
@@ -47,6 +48,7 @@ def main() -> int:
             image_lock_path=args.image_lock,
             output=args.output,
             schedule_seed=args.schedule_seed,
+            model_id=args.model_id,
         )
     elif args.command == "doctor":
         result = doctor(args.protocol, args.protocol_sha256, args.upstream, ROOT)

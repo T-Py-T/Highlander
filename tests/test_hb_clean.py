@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import tempfile
 import unittest
@@ -6,10 +7,28 @@ from pathlib import Path
 
 from highlander.cleanroom import extract_control_proof
 from highlander.hb_clean import SUPPORTED_HARNESSES, build_container_command
-from highlander.hb_season_run import SOURCE_FILES, freeze_protocol
+from highlander.hb_season_run import SOURCE_FILES, _copy_final_workspace, freeze_protocol
 
 
 class CleanHarnessBenchTests(unittest.TestCase):
+    def test_final_workspace_copy_preserves_symlinks(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "source"
+            destination = root / "workspace-final"
+            source.mkdir()
+            (source / "payload.txt").write_text("evidence\n", encoding="utf-8")
+            os.symlink("/usr/bin/python3", source / "python")
+
+            _copy_final_workspace(source, destination)
+
+            self.assertTrue((destination / "python").is_symlink())
+            self.assertEqual(os.readlink(destination / "python"), "/usr/bin/python3")
+            self.assertEqual(
+                (destination / "payload.txt").read_bytes(),
+                (source / "payload.txt").read_bytes(),
+            )
+
     def test_token_usage_reasoning_counter_is_not_runtime_reasoning(self):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary) / "native.jsonl"
@@ -146,6 +165,9 @@ class CleanHarnessBenchTests(unittest.TestCase):
             (task_dir / "prompt.txt").write_text("work in $WORKSPACE\n", encoding="utf-8")
             (task_dir / "oracle_grade.py").write_text("def score_workspace(path): return {'outcome_score': 1}\n", encoding="utf-8")
             (task_dir / "task.yaml").write_text("task_id: task-hard\n", encoding="utf-8")
+            generated = task_dir / "__pycache__" / "oracle_grade.cpython-314.pyc"
+            generated.parent.mkdir()
+            generated.write_bytes(b"generated-bytecode")
             subprocess.run(["git", "add", "."], cwd=upstream, check=True)
             subprocess.run(["git", "commit", "-m", "upstream"], cwd=upstream, check=True, capture_output=True)
             contenders = [
@@ -180,6 +202,7 @@ class CleanHarnessBenchTests(unittest.TestCase):
                 upstream=upstream,
                 image_lock_path=lock_path,
                 output=output,
+                model_id="gpt-5.4",
             )
 
             protocol = json.loads(output.read_text(encoding="utf-8"))
@@ -194,6 +217,18 @@ class CleanHarnessBenchTests(unittest.TestCase):
                 )
             )
             self.assertTrue(output.with_suffix(".json.sha256").is_file())
+            self.assertNotIn(
+                "__pycache__/oracle_grade.cpython-314.pyc",
+                protocol["tasks"][0]["file_hashes"],
+            )
+            self.assertEqual(protocol["control_profile"]["model_id"], "gpt-5.4")
+            configured = {
+                lane["id"]: lane["configured_model_id"]
+                for lane in protocol["harnesses"]
+            }
+            self.assertEqual(configured["omp"], "openai-codex/gpt-5.4")
+            self.assertEqual(configured["opencode"], "openai/gpt-5.4")
+            self.assertEqual(configured["codex"], "gpt-5.4")
 
 
 if __name__ == "__main__":

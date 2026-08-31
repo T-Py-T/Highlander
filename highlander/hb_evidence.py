@@ -30,6 +30,11 @@ _SECRET_PATTERNS = {
         re.I,
     ),
 }
+_PROVIDER_ENCRYPTED_FIELD = re.compile(
+    r'(?P<prefix>\\?"(?:encrypted_content|encryptedContent)\\?"\s*:\s*\\?")'
+    r'(?P<value>[^"\\]+)(?P<suffix>\\?")'
+)
+_PROVIDER_ENCRYPTED_REDACTION = "<PROVIDER_ENCRYPTED_PAYLOAD_REDACTED>"
 
 
 def export_pilot_bundle(
@@ -70,6 +75,7 @@ def export_pilot_bundle(
         raise PilotEvidenceError(f"stale temporary export exists: {temporary}")
     temporary.mkdir(parents=True)
     counts = {placeholder: 0 for _, placeholder in replacements}
+    counts[_PROVIDER_ENCRYPTED_REDACTION] = 0
     try:
         for relative in source_artifacts:
             source_path = source_root / relative
@@ -212,6 +218,9 @@ def export_pilot_bundle(
                 ],
                 "secret_patterns_checked": sorted(_SECRET_PATTERNS),
                 "native_transcripts_exported": True,
+                "provider_encrypted_payloads_redacted": counts[
+                    _PROVIDER_ENCRYPTED_REDACTION
+                ],
                 "credential_values_exported": False,
                 "private_raw_source_retained": True,
             },
@@ -303,6 +312,7 @@ def export_season_bundle(
         raise PilotEvidenceError(f"stale temporary export exists: {temporary}")
     temporary.mkdir(parents=True)
     counts = {placeholder: 0 for _, placeholder in replacements}
+    counts[_PROVIDER_ENCRYPTED_REDACTION] = 0
     try:
         for relative in source_artifacts:
             source_path = source_root / relative
@@ -416,6 +426,9 @@ def export_season_bundle(
                 ],
                 "secret_patterns_checked": sorted(_SECRET_PATTERNS),
                 "native_transcripts_exported": True,
+                "provider_encrypted_payloads_redacted": counts[
+                    _PROVIDER_ENCRYPTED_REDACTION
+                ],
                 "credential_values_exported": False,
                 "private_raw_source_retained": True,
             },
@@ -874,6 +887,15 @@ def _sanitize_bytes(
         if count:
             text = text.replace(value, placeholder)
         counts[placeholder] = count
+    text, encrypted_count = _PROVIDER_ENCRYPTED_FIELD.subn(
+        lambda match: (
+            match.group("prefix")
+            + _PROVIDER_ENCRYPTED_REDACTION
+            + match.group("suffix")
+        ),
+        text,
+    )
+    counts[_PROVIDER_ENCRYPTED_REDACTION] = encrypted_count
     return text.encode("utf-8"), counts
 
 
