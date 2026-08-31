@@ -93,6 +93,34 @@ def run_checked(argv: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
     return result
 
 
+def strip_container_file_metadata(path: Path) -> None:
+    """Remove container-runtime ownership overrides from a host-exported file."""
+
+    if not path.is_file():
+        return
+    names = ("user.containers.override_stat", "security.selinux")
+    if hasattr(os, "listxattr"):
+        present = set(os.listxattr(path))
+        for name in names:
+            if name in present:
+                os.removexattr(path, name)
+        return
+    if sys.platform == "darwin":
+        for name in names:
+            present = subprocess.run(
+                ["/usr/bin/xattr", "-p", name, str(path)],
+                check=False,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            if present.returncode == 0:
+                run_checked(
+                    ["/usr/bin/xattr", "-d", name, str(path)],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+
+
 def runtime_ready(runtime: str) -> None:
     run_checked([runtime, "--version"], stdout=subprocess.DEVNULL)
     run_checked(
@@ -306,6 +334,43 @@ def seed(runtime: str, lock: dict[str, Any], harness: str, profile: str, seed_ro
     image = lock["images"][harness]["image_id"]
     uid = os.getuid() if hasattr(os, "getuid") else 1000
     gid = os.getgid() if hasattr(os, "getgid") else 1000
+    managed_volume = harness == "omp"
+    volume_name = f"highlander-seed-{profile}" if managed_volume else None
+    if volume_name:
+        found = subprocess.run(
+            [runtime, "volume", "inspect", volume_name],
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        if found.returncode == 0:
+            raise RuntimeError(
+                f"auth seed volume already exists; inspect or remove it first: {volume_name}"
+            )
+        run_checked(
+            [
+                runtime,
+                "volume",
+                "create",
+                "--label",
+                "com.highlander.managed=true",
+                "--label",
+                "com.highlander.purpose=auth-seed",
+                volume_name,
+            ],
+            stdout=subprocess.DEVNULL,
+        )
+    # OMP stores credentials in SQLite. Docker Desktop and Podman Desktop host
+    # binds do not reliably provide the locking semantics SQLite needs, so OMP
+    # logs in on a private engine volume as root. Only its checkpointed agent.db
+    # is exported afterward. Scored Trial containers remain unprivileged and
+    # import that one file read-only.
+    seed_uid, seed_gid = (0, 0) if managed_volume else (uid, gid)
+    seed_mount = (
+        f"type=volume,src={volume_name},dst=/seed-output,rw"
+        if volume_name
+        else f"type=bind,src={destination},dst=/seed-output,rw"
+    )
     argv = [
         runtime,
         "run",
@@ -318,13 +383,24 @@ def seed(runtime: str, lock: dict[str, Any], harness: str, profile: str, seed_ro
         "--network",
         "bridge",
         "--user",
-        f"{uid}:{gid}",
+        f"{seed_uid}:{seed_gid}",
         "--tmpfs",
         "/home/highlander:rw,nosuid,nodev,size=512m,mode=1777",
         "--mount",
-        f"type=bind,src={destination},dst=/seed-output,rw",
+        seed_mount,
         "--env",
-        "HOME=/home/highlander",
+        # The image contains root-owned .config/.local directories under the
+        # tmpfs mount point.  Use a fresh child exactly like scored Trials so
+        # the unprivileged runtime user can initialize a clean login home.
+        "HOME=/home/highlander/runtime",
+        "--env",
+        "XDG_CACHE_HOME=/home/highlander/runtime/.cache",
+        "--env",
+        "XDG_CONFIG_HOME=/home/highlander/runtime/.config",
+        "--env",
+        "XDG_DATA_HOME=/home/highlander/runtime/.local/share",
+        "--env",
+        "XDG_STATE_HOME=/home/highlander/runtime/.local/state",
         "--env",
         f"HIGHLANDER_HARNESS={harness}",
     ]
@@ -428,12 +504,70 @@ def seed(runtime: str, lock: dict[str, Any], harness: str, profile: str, seed_ro
         flush=True,
     )
     result = subprocess.run(argv, check=False)
+    if result.returncode == 0 and volume_name:
+        run_checked(
+            [
+                runtime,
+                "run",
+                "--rm",
+                "--read-only",
+                "--cap-drop=ALL",
+                "--security-opt=no-new-privileges",
+                "--network",
+                "none",
+                "--user",
+                "0:0",
+                "--mount",
+                f"type=volume,src={volume_name},dst=/seed-output,rw",
+                image,
+                "python3",
+                "-c",
+                (
+                    "import sqlite3; "
+                    "db=sqlite3.connect('/seed-output/agent.db'); "
+                    "db.execute('PRAGMA wal_checkpoint(TRUNCATE)').fetchall(); "
+                    "db.close()"
+                ),
+            ],
+            stdout=subprocess.DEVNULL,
+        )
+        run_checked(
+            [
+                runtime,
+                "run",
+                "--rm",
+                "--read-only",
+                "--cap-drop=ALL",
+                "--security-opt=no-new-privileges",
+                "--network",
+                "none",
+                "--user",
+                "0:0",
+                "--mount",
+                f"type=volume,src={volume_name},dst=/seed-output,ro",
+                "--mount",
+                f"type=bind,src={destination},dst=/seed-export,rw",
+                image,
+                "/bin/sh",
+                "-c",
+                "cp /seed-output/agent.db /seed-export/agent.db && chmod 600 /seed-export/agent.db",
+            ],
+            stdout=subprocess.DEVNULL,
+        )
+        strip_container_file_metadata(expected)
     if result.returncode != 0 or not expected.is_file():
+        retained = f" and engine volume {volume_name}" if volume_name else ""
         raise RuntimeError(
-            f"login seed was not completed; partial state retained for inspection at {destination}"
+            "login seed was not completed; partial state retained for inspection at "
+            f"{destination}{retained}"
         )
     os.chmod(destination, 0o700)
     os.chmod(expected, 0o600)
+    if volume_name:
+        run_checked(
+            [runtime, "volume", "rm", volume_name],
+            stdout=subprocess.DEVNULL,
+        )
     print(f"Clean authentication seed created: {profile} ({expected.name} only is imported into Trials)")
 
 
