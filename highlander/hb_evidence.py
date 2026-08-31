@@ -31,8 +31,8 @@ _SECRET_PATTERNS = {
     ),
 }
 _PROVIDER_ENCRYPTED_FIELD = re.compile(
-    r'(?P<prefix>\\?"(?:encrypted_content|encryptedContent)\\?"\s*:\s*\\?")'
-    r'(?P<value>[^"\\]+)(?P<suffix>\\?")'
+    r'(?P<prefix>\\*"(?:encrypted_content|encryptedContent)\\*"\s*:\s*\\*")'
+    r'(?P<value>[^"\\]+)(?P<suffix>\\*")'
 )
 _PROVIDER_ENCRYPTED_REDACTION = "<PROVIDER_ENCRYPTED_PAYLOAD_REDACTED>"
 

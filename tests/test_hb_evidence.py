@@ -189,6 +189,7 @@ class HarnessBenchEvidenceTests(unittest.TestCase):
         stdout = self.source / "trials/001-omp-attempt-001/native/stdout.raw"
         rows = stdout.read_text(encoding="utf-8")
         opaque = "psk-" + "A" * 80
+        nested_opaque = "psk-" + "B" * 80
         stdout.write_text(
             rows
             + json.dumps(
@@ -200,6 +201,22 @@ class HarnessBenchEvidenceTests(unittest.TestCase):
             + "\n",
             encoding="utf-8",
         )
+        with stdout.open("a", encoding="utf-8") as handle:
+            handle.write(
+                json.dumps(
+                    {
+                        "type": "nested_response_metadata",
+                        "payload": json.dumps(
+                            {
+                                "nested": json.dumps(
+                                    {"encrypted_content": nested_opaque}
+                                )
+                            }
+                        ),
+                    }
+                )
+                + "\n"
+            )
         self._manifest(stdout.parent.parent)
         self._manifest(self.source)
 
@@ -210,9 +227,10 @@ class HarnessBenchEvidenceTests(unittest.TestCase):
             output / "trials/001-omp-attempt-001/native/stdout.raw"
         ).read_text(encoding="utf-8")
         self.assertNotIn(opaque, exported)
+        self.assertNotIn(nested_opaque, exported)
         self.assertIn("<PROVIDER_ENCRYPTED_PAYLOAD_REDACTED>", exported)
         report = json.loads((output / "redaction-report.json").read_text())
-        self.assertEqual(report["provider_encrypted_payloads_redacted"], 1)
+        self.assertEqual(report["provider_encrypted_payloads_redacted"], 2)
 
     def test_season_export_rebuilds_ranked_leaderboard(self):
         source = self.root / "private" / "season-r1"
