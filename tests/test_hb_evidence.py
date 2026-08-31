@@ -8,7 +8,9 @@ from pathlib import Path
 from highlander.hb_evidence import (
     PilotEvidenceError,
     export_pilot_bundle,
+    export_season_bundle,
     verify_pilot_bundle,
+    verify_season_bundle,
 )
 
 
@@ -182,6 +184,86 @@ class HarnessBenchEvidenceTests(unittest.TestCase):
         self._manifest(self.source)
         with self.assertRaisesRegex(PilotEvidenceError, "oauth_token"):
             export_pilot_bundle(self.source, self.root / "public" / "leaked", self.runner)
+
+    def test_season_export_rebuilds_ranked_leaderboard(self):
+        source = self.root / "private" / "season-r1"
+        trial = source / "trials" / "001-task-a-omp-a01-r01"
+        native = trial / "native"
+        native.mkdir(parents=True)
+        (native / "stdout.raw").write_text(
+            json.dumps(
+                {
+                    "type": "message_end",
+                    "message": {
+                        "role": "assistant",
+                        "model": "gpt-5.6-luna",
+                        "provider": "openai-codex",
+                        "usage": {"input": 10, "output": 5, "totalTokens": 15},
+                    },
+                }
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        (native / "stderr.raw").write_text("", encoding="utf-8")
+        self._write_json(
+            native / "execution.json",
+            {"returncode": 0, "timed_out": False, "elapsed_seconds": 7.5},
+        )
+        row = {
+            "schema_version": 1,
+            "run_id": "season-r1-task-a-omp-a01-r01",
+            "season_id": "season-r1",
+            "task_id": "task-a",
+            "harness_id": "omp",
+            "attempt": 1,
+            "retry": 1,
+            "sequence": 1,
+            "qualification": "valid",
+            "outcome_score": 0.75,
+            "elapsed_seconds": 7.5,
+            "intervention_count": 0,
+            "process_score": None,
+            "combined_score": None,
+        }
+        self._write_json(trial / "result.json", row)
+        self._manifest(trial)
+        season_manifest = {
+            "schema_version": 1,
+            "season_id": "season-r1",
+            "pack_id": "pack-r1",
+            "attempts_per_task": 1,
+            "tasks": [{"id": "task-a"}],
+            "contenders": [{"id": "omp"}],
+            "scoring": {"primary": "mean_of_per_task_mean_valid_outcome"},
+        }
+        self._write_json(source / "season-manifest.json", season_manifest)
+        self._write_json(
+            source / "protocol.json",
+            {"protocol_id": "season-r1", "claim_boundary": "one frozen fixture"},
+        )
+        (source / "protocol.json.sha256").write_text("fixture\n", encoding="utf-8")
+        self._write_json(
+            source / "summary.json",
+            {
+                "protocol_id": "season-r1",
+                "protocol_sha256": "fixture",
+                "updated_at": "2026-08-30T00:00:00Z",
+                "trial_rows": [row],
+            },
+        )
+        (source / "leaderboard.md").write_text("first pass\n", encoding="utf-8")
+        (source / "results.jsonl").write_text(json.dumps(row) + "\n", encoding="utf-8")
+        self._manifest(source)
+
+        output = self.root / "public" / "season-r1"
+        verified = export_season_bundle(source, output, self.runner)
+
+        self.assertEqual(verified["season_status"], "complete")
+        leaderboard = json.loads((output / "leaderboard.json").read_text())
+        self.assertEqual(leaderboard["contenders"][0]["rank"], 1)
+        self.assertEqual(leaderboard["contenders"][0]["metrics"]["overall_outcome"], 0.75)
+        verify_season_bundle(output)
 
 
 if __name__ == "__main__":

@@ -261,6 +261,7 @@ class CleanRoom:
         )
         started_ns = time.time_ns()
         returncode, timed_out = _capture_process(argv, output_path, timeout_seconds)
+        completed_ns = time.time_ns()
         reconciliation = self.reconcile(clean)
         redacted_argv = list(argv)
         redacted_argv[-1] = "<TASK_BYTES_UTF8>"
@@ -269,7 +270,8 @@ class CleanRoom:
             "returncode": returncode,
             "timed_out": timed_out,
             "started_ns": started_ns,
-            "completed_ns": time.time_ns(),
+            "completed_ns": completed_ns,
+            "elapsed_seconds": round((completed_ns - started_ns) / 1_000_000_000, 3),
             **reconciliation,
         }
 
@@ -420,11 +422,10 @@ class CleanRoom:
     def _seed_path(self, profile: str | None) -> Path | None:
         if not profile:
             return None
-        root_value = os.environ.get("HIGHLANDER_SEED_ROOT")
-        if not root_value:
-            raise HighlanderError(
-                f"seed profile {profile!r} requires HIGHLANDER_SEED_ROOT"
-            )
+        root_value = os.environ.get(
+            "HIGHLANDER_SEED_ROOT",
+            str(Path.home() / ".config" / "highlander" / "seeds"),
+        )
         root = Path(root_value).expanduser().resolve()
         seed = (root / profile).resolve()
         if root not in seed.parents or not seed.is_dir():
