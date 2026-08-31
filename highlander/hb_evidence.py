@@ -83,10 +83,14 @@ def export_pilot_bundle(
     counts = {placeholder: 0 for _, placeholder in replacements}
     counts[_PROVIDER_ENCRYPTED_REDACTION] = 0
     omitted_generated_cache_artifacts = 0
+    omitted_worktree_vcs_artifacts = 0
     try:
         for relative in source_artifacts:
             if _is_generated_cache_artifact(relative):
                 omitted_generated_cache_artifacts += 1
+                continue
+            if _is_worktree_vcs_artifact(relative):
+                omitted_worktree_vcs_artifacts += 1
                 continue
             source_path = source_root / relative
             destination_path = temporary / relative
@@ -232,6 +236,7 @@ def export_pilot_bundle(
                     _PROVIDER_ENCRYPTED_REDACTION
                 ],
                 "generated_cache_artifacts_omitted": omitted_generated_cache_artifacts,
+                "worktree_vcs_artifacts_omitted": omitted_worktree_vcs_artifacts,
                 "credential_values_exported": False,
                 "private_raw_source_retained": True,
             },
@@ -325,10 +330,14 @@ def export_season_bundle(
     counts = {placeholder: 0 for _, placeholder in replacements}
     counts[_PROVIDER_ENCRYPTED_REDACTION] = 0
     omitted_generated_cache_artifacts = 0
+    omitted_worktree_vcs_artifacts = 0
     try:
         for relative in source_artifacts:
             if _is_generated_cache_artifact(relative):
                 omitted_generated_cache_artifacts += 1
+                continue
+            if _is_worktree_vcs_artifact(relative):
+                omitted_worktree_vcs_artifacts += 1
                 continue
             source_path = source_root / relative
             destination_path = temporary / relative
@@ -445,6 +454,7 @@ def export_season_bundle(
                     _PROVIDER_ENCRYPTED_REDACTION
                 ],
                 "generated_cache_artifacts_omitted": omitted_generated_cache_artifacts,
+                "worktree_vcs_artifacts_omitted": omitted_worktree_vcs_artifacts,
                 "credential_values_exported": False,
                 "private_raw_source_retained": True,
             },
@@ -920,6 +930,10 @@ def _is_generated_cache_artifact(relative: Path) -> bool:
         relative.suffix == ".pyc"
         or bool(_GENERATED_CACHE_PARTS.intersection(relative.parts))
     )
+
+
+def _is_worktree_vcs_artifact(relative: Path) -> bool:
+    return ".git" in relative.parts
 
 
 def _reject_secret_material(path: Path, raw: bytes) -> None:

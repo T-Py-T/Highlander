@@ -161,6 +161,12 @@ class HarnessBenchEvidenceTests(unittest.TestCase):
         )
         generated.parent.mkdir(parents=True)
         generated.write_bytes(b"compiled-path=" + str(Path.home()).encode("utf-8"))
+        worktree_git = (
+            self.source
+            / "trials/001-omp-attempt-001/workspace-final/.git/config"
+        )
+        worktree_git.parent.mkdir(parents=True)
+        worktree_git.write_text("[core]\nrepositoryformatversion = 0\n", encoding="utf-8")
         self._manifest(self.source / "trials/001-omp-attempt-001")
         self._manifest(self.source)
         output = self.root / "public" / "pilot-r1"
@@ -187,6 +193,12 @@ class HarnessBenchEvidenceTests(unittest.TestCase):
         )
         redaction = json.loads((output / "redaction-report.json").read_text())
         self.assertEqual(redaction["generated_cache_artifacts_omitted"], 1)
+        self.assertEqual(redaction["worktree_vcs_artifacts_omitted"], 1)
+        self.assertFalse(
+            (
+                output / "trials/001-omp-attempt-001/workspace-final/.git"
+            ).exists()
+        )
         self.assertTrue((output / "results.jsonl").is_file())
         leaderboard = json.loads((output / "leaderboard.json").read_text())
         self.assertFalse(leaderboard["ranking_permitted"])
