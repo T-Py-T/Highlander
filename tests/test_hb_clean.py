@@ -93,6 +93,12 @@ class CleanHarnessBenchTests(unittest.TestCase):
             self.assertEqual(len(protocol["trial_order"]), 18)
             self.assertEqual(protocol["tasks"][0]["oracle_sha256"], protocol["tasks"][0]["file_hashes"]["oracle_grade.py"])
             self.assertEqual(protocol["runtime"]["images"]["nanobot"], images["nanobot"]["image_id"])
+            self.assertTrue(
+                all(
+                    lane["expected_runtime_reasoning"] == "medium"
+                    for lane in protocol["harnesses"]
+                )
+            )
             self.assertTrue(output.with_suffix(".json.sha256").is_file())
 
 

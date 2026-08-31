@@ -125,6 +125,7 @@ def freeze_protocol(
                 "version": versions[harness_id],
                 **LANE_CONTROLS[harness_id],
                 "reasoning": "medium",
+                "expected_runtime_reasoning": "medium",
                 "wire_reasoning": "medium",
                 "seed_profile": f"{harness_id}-subscription",
                 "configuration_profile": "clean-core",
