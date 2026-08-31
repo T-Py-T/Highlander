@@ -8,14 +8,19 @@ scored model calls.
 - Runner implementation commit: `3b9bfc2aafcf40b0db03c9b4480c559dae62453f`
 - Pre-commit result: passed; 48 tests passed, 2 environment-dependent tests
   skipped, and both retained evidence manifests verified.
-- Doctor result: all six images and versions verified; OMP, OpenCode, Codex,
-  and Hermes seeds available; Atomic and NanoBot seeds unavailable.
+- Initial doctor result: all six images and versions verified; OMP, OpenCode,
+  Codex, and Hermes seeds available; Atomic and NanoBot unavailable.
+- Final auth doctor result: all six images and versions verified and all six
+  auth-only seeds available; `ready_for_qualification` is true.
 - Model calls: none.
 
 Artifacts:
 
 - `pre-commit-protocol.log` — complete verbose pre-commit output.
 - `season-doctor.log` — exact no-model route-readiness report.
+- `season-doctor-all-auth.log` — exact no-model report after Atomic and NanoBot
+  authorization completed.
 
-The unavailable lanes are not assigned zero scores. Qualification and scoring
-remain blocked until clean auth-only seeds exist for Atomic and NanoBot.
+The initially unavailable lanes were not assigned zero scores. Qualification
+and scoring remained blocked until clean auth-only seeds existed for Atomic
+and NanoBot.
