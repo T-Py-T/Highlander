@@ -162,13 +162,13 @@ python3 tools/hb-leaderboard.py \
 ```
 
 The next hard-first extension is frozen separately in
-`benchmark-packs/hb-devhard-hardcore-v1.json`. It runs nine unchanged official
+`benchmark-packs/hb-devhard-hardcore-v1-r2.json`. It runs nine unchanged official
 tasks three times each for OMP, OpenCode, Codex, Hermes, Atomic, and NanoBot.
 Generate its provisional per-task matrix before any paid run:
 
 ```text
 python3 tools/hb-leaderboard.py \
-  --manifest benchmark-packs/hb-devhard-hardcore-v1.json \
+  --manifest benchmark-packs/hb-devhard-hardcore-v1-r2.json \
   --results /dev/null
 ```
 

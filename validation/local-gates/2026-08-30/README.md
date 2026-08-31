@@ -12,7 +12,14 @@ scored model calls.
   Codex, and Hermes seeds available; Atomic and NanoBot unavailable.
 - Final auth doctor result: all six images and versions verified and all six
   auth-only seeds available; `ready_for_qualification` is true.
-- Model calls: none.
+- Model calls at these initial gates: none.
+- Invalid r1 qualification: six model calls were made; all six rows were
+  rejected by the controller because the frozen protocol omitted
+  `expected_runtime_reasoning`. No outcome score was produced.
+- Corrected protocol: `hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2`, SHA-256
+  `2a767f854595dfed6e1459daace57338628f8d48f3658adcb91b87f29a0c426c`.
+  It preserves the same tasks, harnesses, schedule, images, model, and reasoning
+  lane while adding the missing frozen control field.
 
 Artifacts:
 
@@ -20,6 +27,9 @@ Artifacts:
 - `season-doctor.log` — exact no-model route-readiness report.
 - `season-doctor-all-auth.log` — exact no-model report after Atomic and NanoBot
   authorization completed.
+- `season-doctor-r2.log` — exact no-model report for the corrected protocol.
+- `pre-commit-r2.log` — complete verbose local gate after the regression fix
+  and r2 freeze.
 
 The initially unavailable lanes were not assigned zero scores. Qualification
 and scoring remained blocked until clean auth-only seeds existed for Atomic

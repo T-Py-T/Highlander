@@ -6,7 +6,7 @@ Harness produces the strongest coding and DevOps results?
 
 ## Hard-first six-Harness season
 
-`benchmark-packs/hb-devhard-hardcore-v1.json` freezes nine unchanged official
+`benchmark-packs/hb-devhard-hardcore-v1-r2.json` freezes nine unchanged official
 HarnessBench coding and DevOps tasks. The field is OMP (the current control),
 OpenCode, Codex, Hermes, Atomic, and NanoBot. Each Harness receives three fixed
 attempt slots per task, for 27 scored slots per Harness and 162 total slots.
@@ -23,13 +23,15 @@ typical performance across the workload rather than selecting each Harness's
 best try. The per-task matrix is mandatory, so the aggregate can always be
 traced back to the tasks a Harness solved or missed.
 
-The season remains provisional until the clean-core Atomic route and the
-repaired NanoBot OAuth seed qualify. An unavailable lane is shown as
-unavailable, never as zero.
+The season remains provisional until every clean-core route qualifies under
+the corrected r2 protocol. An unavailable lane is shown as unavailable, never
+as zero. The six r1 route calls are retained as invalid infrastructure evidence:
+the protocol freezer omitted `expected_runtime_reasoning`, so the controller
+rejected every response before scoring.
 
 The executable protocol is
-`protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r1.json`, SHA-256
-`127cc0ce09bce562e7cad2ba86c967d179f31a26b4ed415952a605b797007d21`.
+`protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2.json`, SHA-256
+`2a767f854595dfed6e1459daace57338628f8d48f3658adcb91b87f29a0c426c`.
 It adds six unscored route-qualification calls before the 162 scored slots and
 uses the unchanged upstream renderer and deterministic oracles. Reproduction
 and redacted-export commands are in [SEASON-RUNBOOK.md](SEASON-RUNBOOK.md).
@@ -108,7 +110,7 @@ Build the empty, provisional hard-first matrix before running any paid Trial:
 
 ```text
 python3 tools/hb-leaderboard.py \
-  --manifest benchmark-packs/hb-devhard-hardcore-v1.json \
+  --manifest benchmark-packs/hb-devhard-hardcore-v1-r2.json \
   --results /dev/null \
   --format markdown
 ```
