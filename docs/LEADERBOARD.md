@@ -6,7 +6,7 @@ Harness produces the strongest coding and DevOps results?
 
 ## Hard-first six-Harness season
 
-`benchmark-packs/hb-devhard-hardcore-v1-r2.json` freezes nine unchanged official
+`benchmark-packs/hb-devhard-hardcore-v1-r3.json` freezes nine unchanged official
 HarnessBench coding and DevOps tasks. The field is OMP (the current control),
 OpenCode, Codex, Hermes, Atomic, and NanoBot. Each Harness receives three fixed
 attempt slots per task, for 27 scored slots per Harness and 162 total slots.
@@ -24,14 +24,17 @@ best try. The per-task matrix is mandatory, so the aggregate can always be
 traced back to the tasks a Harness solved or missed.
 
 The season remains provisional until every clean-core route qualifies under
-the corrected r2 protocol. An unavailable lane is shown as unavailable, never
+the corrected r3 protocol. An unavailable lane is shown as unavailable, never
 as zero. The six r1 route calls are retained as invalid infrastructure evidence:
 the protocol freezer omitted `expected_runtime_reasoning`, so the controller
-rejected every response before scoring.
+rejected every response before scoring. R2 then qualified OMP, Hermes, Atomic,
+and NanoBot but retained OpenCode and Codex as unavailable because Podman
+populated their home directories as root-owned. R3 moves all home/XDG state
+under a fresh writable tmpfs child without changing the benchmark matrix.
 
 The executable protocol is
-`protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2.json`, SHA-256
-`2a767f854595dfed6e1459daace57338628f8d48f3658adcb91b87f29a0c426c`.
+`protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3.json`, SHA-256
+`3c116fcecca9e63076df671b78be14703556b4bc66d11513001b11dd247df76b`.
 It adds six unscored route-qualification calls before the 162 scored slots and
 uses the unchanged upstream renderer and deterministic oracles. Reproduction
 and redacted-export commands are in [SEASON-RUNBOOK.md](SEASON-RUNBOOK.md).
@@ -110,7 +113,7 @@ Build the empty, provisional hard-first matrix before running any paid Trial:
 
 ```text
 python3 tools/hb-leaderboard.py \
-  --manifest benchmark-packs/hb-devhard-hardcore-v1-r2.json \
+  --manifest benchmark-packs/hb-devhard-hardcore-v1-r3.json \
   --results /dev/null \
   --format markdown
 ```

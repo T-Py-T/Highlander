@@ -20,6 +20,13 @@ scored model calls.
   `2a767f854595dfed6e1459daace57338628f8d48f3658adcb91b87f29a0c426c`.
   It preserves the same tasks, harnesses, schedule, images, model, and reasoning
   lane while adding the missing frozen control field.
+- R2 qualification: OMP, Hermes, Atomic, and NanoBot qualified; OpenCode and
+  Codex were unavailable after root-owned image paths blocked their isolated
+  auth copy. No scored call ran.
+- Current protocol: `hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3`, SHA-256
+  `3c116fcecca9e63076df671b78be14703556b4bc66d11513001b11dd247df76b`.
+  It preserves the complete r2 matrix and controls and scopes every home/XDG
+  path below a fresh writable tmpfs child.
 
 Artifacts:
 
@@ -30,6 +37,9 @@ Artifacts:
 - `season-doctor-r2.log` — exact no-model report for the corrected protocol.
 - `pre-commit-r2.log` — complete verbose local gate after the regression fix
   and r2 freeze.
+- `season-doctor-r3.log` — exact no-model report for the current protocol.
+- `pre-commit-r3.log` — complete verbose local gate after the writable-home
+  regression fix and r3 freeze.
 
 The initially unavailable lanes were not assigned zero scores. Qualification
 and scoring remained blocked until clean auth-only seeds existed for Atomic

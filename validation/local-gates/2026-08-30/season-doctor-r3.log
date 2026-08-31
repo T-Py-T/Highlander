@@ -1,0 +1,61 @@
+{
+  "lanes": [
+    {
+      "configured_model_id": "openai-codex/gpt-5.6-luna",
+      "harness_id": "omp",
+      "image_id": "sha256:aba65e6191222db45af222cd9a58603479038332201d832cbb52313092d14dee",
+      "image_verified": true,
+      "seed_available": true,
+      "seed_profile": "omp-subscription",
+      "version": "17.2.10"
+    },
+    {
+      "configured_model_id": "openai/gpt-5.6-luna",
+      "harness_id": "opencode",
+      "image_id": "sha256:78712636baea6b70bfda75ff365cc004dc9e9642d77043cd55002220efe2a8cf",
+      "image_verified": true,
+      "seed_available": true,
+      "seed_profile": "opencode-subscription",
+      "version": "1.18.15"
+    },
+    {
+      "configured_model_id": "gpt-5.6-luna",
+      "harness_id": "codex",
+      "image_id": "sha256:ae11c8dcd4c94cbca5d42be07ea677f4eff88398828a4e7c74b3f0e9d67c2703",
+      "image_verified": true,
+      "seed_available": true,
+      "seed_profile": "codex-subscription",
+      "version": "0.147.0"
+    },
+    {
+      "configured_model_id": "gpt-5.6-luna",
+      "harness_id": "hermes",
+      "image_id": "sha256:f1fd45a751bb2391000dc81241eda4548c56e30eea499c27d211058d6ef48c1f",
+      "image_verified": true,
+      "seed_available": true,
+      "seed_profile": "hermes-subscription",
+      "version": "0.20.0"
+    },
+    {
+      "configured_model_id": "gpt-5.6-luna",
+      "harness_id": "atomic",
+      "image_id": "sha256:b44417c1e8117981759fc3821f4b8d94927e59cc01ce9481366c58dc416b697a",
+      "image_verified": true,
+      "seed_available": true,
+      "seed_profile": "atomic-subscription",
+      "version": "0.9.15"
+    },
+    {
+      "configured_model_id": "openai-codex/gpt-5.6-luna",
+      "harness_id": "nanobot",
+      "image_id": "sha256:0f0ed84adaada7a70c624c6249b77dc3d0cd238822a416279a258e0d2276fc46",
+      "image_verified": true,
+      "seed_available": true,
+      "seed_profile": "nanobot-subscription",
+      "version": "0.1.5.post3"
+    }
+  ],
+  "protocol_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3",
+  "protocol_sha256": "3c116fcecca9e63076df671b78be14703556b4bc66d11513001b11dd247df76b",
+  "ready_for_qualification": true
+}

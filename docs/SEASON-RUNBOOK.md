@@ -7,16 +7,18 @@ the randomized schedule, disposable harness containers, evidence retention,
 aggregation, redaction, and publication checks.
 
 The frozen protocol is
-`protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2.json`, SHA-256
-`2a767f854595dfed6e1459daace57338628f8d48f3658adcb91b87f29a0c426c`.
+`protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3.json`, SHA-256
+`3c116fcecca9e63076df671b78be14703556b4bc66d11513001b11dd247df76b`.
 It schedules nine tasks, six harnesses, and three attempts per task: 162 scored
 calls. A separate one-call-per-harness route qualification adds six calls.
 Process and combined scores are not evaluated.
 
-Protocol r1 is retained but must not be used: its six qualification calls were
+Protocols r1 and r2 are retained but must not be used. R1's six qualification calls were
 invalidated when a missing `expected_runtime_reasoning` field caused a shared
-controller `KeyError`. The r2 revision preserves the task bytes, harness field,
-schedule, images, model lane, and limits while adding that omitted control.
+controller `KeyError`. R2 added that control, qualified four lanes, and retained
+OpenCode and Codex as unavailable after Podman populated root-owned home paths.
+R3 preserves the task bytes, harness field, schedule, images, model lane, and
+limits while moving every runtime home/XDG path into a fresh writable tmpfs child.
 
 ## 1. Pin the benchmark and build the images
 
@@ -60,8 +62,8 @@ zero score.
 
 ```text
 python3 tools/hb-season.py doctor \
-  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2.json \
-  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2.json.sha256 \
+  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3.json \
+  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3.json.sha256 \
   --upstream .highlander/upstream/harness-bench
 ```
 
@@ -79,8 +81,8 @@ proof.
 
 ```text
 python3 tools/hb-season.py qualify \
-  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2.json \
-  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2.json.sha256 \
+  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3.json \
+  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3.json.sha256 \
   --upstream .highlander/upstream/harness-bench
 ```
 
@@ -99,16 +101,16 @@ with the explicit `--retry-invalid` flag.
 
 ```text
 python3 tools/hb-season.py run \
-  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2.json \
-  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2.json.sha256 \
-  --manifest benchmark-packs/hb-devhard-hardcore-v1-r2.json \
+  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3.json \
+  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3.json.sha256 \
+  --manifest benchmark-packs/hb-devhard-hardcore-v1-r3.json \
   --upstream .highlander/upstream/harness-bench \
   --stage hardest-first
 
 python3 tools/hb-season.py run \
-  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2.json \
-  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2.json.sha256 \
-  --manifest benchmark-packs/hb-devhard-hardcore-v1-r2.json \
+  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3.json \
+  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3.json.sha256 \
+  --manifest benchmark-packs/hb-devhard-hardcore-v1-r3.json \
   --upstream .highlander/upstream/harness-bench \
   --stage cross-repository-and-diagnostic
 ```
@@ -128,11 +130,11 @@ rebuilds the leaderboard from `results.jsonl`, and seals the public copy.
 
 ```text
 python3 tools/hb-evidence.py export-season \
-  --source .highlander/runs/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2-raw \
-  --output results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2
+  --source .highlander/runs/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3-raw \
+  --output results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3
 
 python3 tools/hb-evidence.py verify-season \
-  results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2
+  results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3
 ```
 
 Before a pull request, run `pre-commit run --all-files --verbose` and
