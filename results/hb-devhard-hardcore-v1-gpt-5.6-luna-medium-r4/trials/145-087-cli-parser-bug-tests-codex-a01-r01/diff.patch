@@ -1,0 +1,44 @@
+--- a/in/csvtool/.pytest_cache/.gitignore
++++ b/in/csvtool/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/csvtool/.pytest_cache/CACHEDIR.TAG
++++ b/in/csvtool/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/csvtool/.pytest_cache/README.md
++++ b/in/csvtool/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/csvtool/.pytest_cache/v/cache/lastfailed
++++ b/in/csvtool/.pytest_cache/v/cache/lastfailed
+@@ -0,0 +1,5 @@
++{
++  "tests/test_cli_existing.py::test_filter_select_and_descending_sort": true,
++  "tests/test_cli_existing.py::test_quoted_commas_are_preserved_when_selected": true,
++  "tests/test_cli_existing.py::test_empty_result_keeps_header": true
++}--- a/in/csvtool/.pytest_cache/v/cache/nodeids
++++ b/in/csvtool/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,5 @@
++[
++  "tests/test_cli_existing.py::test_empty_result_keeps_header",
++  "tests/test_cli_existing.py::test_filter_select_and_descending_sort",
++  "tests/test_cli_existing.py::test_quoted_commas_are_preserved_when_selected"
++]--- a/in/csvtool/.pytest_cache/v/cache/stepwise
++++ b/in/csvtool/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]Binary files a/in/csvtool/csvtool/__pycache__/__init__.cpython-314.pyc and b/in/csvtool/csvtool/__pycache__/__init__.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 8fa253492d06e415e307b87c592c1f7cffb1f40a713849178db36c123d102ac5)
+Binary files a/in/csvtool/csvtool/__pycache__/cli.cpython-314.pyc and b/in/csvtool/csvtool/__pycache__/cli.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 588a11dfb65d6ec3a1ccd9baa5f7c93530d84006866f6bd81a7a011972f54799)
+Binary files a/in/csvtool/csvtool/__pycache__/filtering.cpython-314.pyc and b/in/csvtool/csvtool/__pycache__/filtering.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> a3f114c4fb5b496dbfab2c3a5b532841fc4f94550beb647c53b44ef988f7e145)
+Binary files a/in/csvtool/tests/__pycache__/test_cli_existing.cpython-314-pytest-7.4.3.pyc and b/in/csvtool/tests/__pycache__/test_cli_existing.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 5fdc075da5c1a6e85b87459bb6f0e1b6d77be028044edf88951770410487ae7a)

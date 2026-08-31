@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "omp",
+    "--print",
+    "--mode",
+    "json",
+    "--cwd",
+    "/workspace",
+    "--model",
+    "openai-codex/gpt-5.6-luna",
+    "--smol",
+    "openai-codex/gpt-5.6-luna",
+    "--slow",
+    "openai-codex/gpt-5.6-luna",
+    "--plan",
+    "openai-codex/gpt-5.6-luna",
+    "--thinking",
+    "medium",
+    "--no-prewalk",
+    "--no-title",
+    "--no-session",
+    "--no-extensions",
+    "--no-skills",
+    "--no-rules",
+    "--approval-mode",
+    "yolo",
+    "--max-time",
+    "1200s",
+    "<TASK_BYTES_UTF8>"
+  ],
+  "credential_binding": {
+    "seed_profile": "omp-subscription",
+    "value_retained": false
+  },
+  "cwd": "/workspace",
+  "harness_id": "omp",
+  "prompt_sha256": "f6044714e7796516a73a150db18c6a501696bbeb3cb40b22c958a3a0d3d6109a",
+  "schema_version": 1
+}

@@ -1,0 +1,1122 @@
+--- a/in/flakyqueue/.pytest_cache/.gitignore
++++ b/in/flakyqueue/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
++++ b/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/flakyqueue/.pytest_cache/README.md
++++ b/in/flakyqueue/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/flakyqueue/.pytest_cache/v/cache/nodeids
++++ b/in/flakyqueue/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,6 @@
++[
++  "tests/test_retry_order.py::test_retry_jitter_uses_injected_random_source",
++  "tests/test_retry_order.py::test_retry_task_is_not_ready_until_clock_reaches_run_at",
++  "tests/test_scheduler.py::test_add_uses_injected_clock",
++  "tests/test_scheduler.py::test_ready_order_is_stable_for_equal_priority"
++]--- a/in/flakyqueue/.pytest_cache/v/cache/stepwise
++++ b/in/flakyqueue/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]--- a/in/flakyqueue/.venv/.gitignore
++++ b/in/flakyqueue/.venv/.gitignore
+@@ -0,0 +1 @@
++*--- a/in/flakyqueue/.venv/CACHEDIR.TAG
++++ b/in/flakyqueue/.venv/CACHEDIR.TAG
+@@ -0,0 +1 @@
++Signature: 8a477f597d28d172789f06886806bc55--- a/in/flakyqueue/.venv/bin/activate
++++ b/in/flakyqueue/.venv/bin/activate
+@@ -0,0 +1,130 @@
++# Copyright (c) 2020-202x The virtualenv developers
++#
++# Permission is hereby granted, free of charge, to any person obtaining
++# a copy of this software and associated documentation files (the
++# "Software"), to deal in the Software without restriction, including
++# without limitation the rights to use, copy, modify, merge, publish,
++# distribute, sublicense, and/or sell copies of the Software, and to
++# permit persons to whom the Software is furnished to do so, subject to
++# the following conditions:
++#
++# The above copyright notice and this permission notice shall be
++# included in all copies or substantial portions of the Software.
++#
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++
++# This file must be used with "source bin/activate" *from bash*
++# you cannot run it directly
++
++if ! [ -z "${SCRIPT_PATH+_}" ] ; then
++    _OLD_SCRIPT_PATH="$SCRIPT_PATH"
++fi
++
++# Get script path (only used if environment is relocatable).
++if [ -n "${BASH_VERSION:+x}" ] ; then
++    SCRIPT_PATH="${BASH_SOURCE[0]}"
++    if [ "$SCRIPT_PATH" = "$0" ]; then
++        # Only bash has a reasonably robust check for source'dness.
++        echo "You must source this script: \$ source $0" >&2
++        exit 33
++    fi
++elif [ -n "${ZSH_VERSION:+x}" ] ; then
++    SCRIPT_PATH="${(%):-%x}"
++elif [ -n "${KSH_VERSION:+x}" ] ; then
++    SCRIPT_PATH="${.sh.file}"
++fi
++
++deactivate () {
++    unset -f pydoc >/dev/null 2>&1 || true
++
++    # reset old environment variables
++    # ! [ -z ${VAR+_} ] returns true if VAR is declared at all
++    if ! [ -z "${_OLD_VIRTUAL_PATH:+_}" ] ; then
++        PATH="$_OLD_VIRTUAL_PATH"
++        export PATH
++        unset _OLD_VIRTUAL_PATH
++    fi
++    if ! [ -z "${_OLD_VIRTUAL_PYTHONHOME+_}" ] ; then
++        PYTHONHOME="$_OLD_VIRTUAL_PYTHONHOME"
++        export PYTHONHOME
++        unset _OLD_VIRTUAL_PYTHONHOME
++    fi
++
++    # The hash command must be called to get it to forget past
++    # commands. Without forgetting past commands the $PATH changes
++    # we made may not be respected
++    hash -r 2>/dev/null
++
++    if ! [ -z "${_OLD_VIRTUAL_PS1+_}" ] ; then
++        PS1="$_OLD_VIRTUAL_PS1"
++        export PS1
++        unset _OLD_VIRTUAL_PS1
++    fi
++
++    unset VIRTUAL_ENV
++    unset VIRTUAL_ENV_PROMPT
++    if [ ! "${1-}" = "nondestructive" ] ; then
++    # Self destruct!
++        unset -f deactivate
++    fi
++}
++
++# unset irrelevant variables
++deactivate nondestructive
++
++VIRTUAL_ENV='/workspace/in/flakyqueue/.venv'
++if ([ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ]) && $(command -v cygpath &> /dev/null) ; then
++    VIRTUAL_ENV=$(cygpath -u "$VIRTUAL_ENV")
++fi
++export VIRTUAL_ENV
++
++# Unset the `SCRIPT_PATH` variable, now that the `VIRTUAL_ENV` variable
++# has been set. This is important for relocatable environments.
++if ! [ -z "${_OLD_SCRIPT_PATH+_}" ] ; then
++    SCRIPT_PATH="$_OLD_SCRIPT_PATH"
++    export SCRIPT_PATH
++    unset _OLD_SCRIPT_PATH
++else
++    unset SCRIPT_PATH
++fi
++
++_OLD_VIRTUAL_PATH="$PATH"
++PATH="$VIRTUAL_ENV/bin:$PATH"
++export PATH
++
++if [ "xflakyqueue" != x ] ; then
++    VIRTUAL_ENV_PROMPT="flakyqueue"
++else
++    VIRTUAL_ENV_PROMPT=$(basename "$VIRTUAL_ENV")
++fi
++export VIRTUAL_ENV_PROMPT
++
++# unset PYTHONHOME if set
++if ! [ -z "${PYTHONHOME+_}" ] ; then
++    _OLD_VIRTUAL_PYTHONHOME="$PYTHONHOME"
++    unset PYTHONHOME
++fi
++
++if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT-}" ] ; then
++    _OLD_VIRTUAL_PS1="${PS1-}"
++    PS1="(${VIRTUAL_ENV_PROMPT}) ${PS1-}"
++    export PS1
++fi
++
++# Make sure to unalias pydoc if it's already there
++alias pydoc 2>/dev/null >/dev/null && unalias pydoc || true
++
++pydoc () {
++    python -m pydoc "$@"
++}
++
++# The hash command must be called to get it to forget past
++# commands. Without forgetting past commands the $PATH changes
++# we made may not be respected
++hash -r 2>/dev/null || true
+--- a/in/flakyqueue/.venv/bin/activate.bat
++++ b/in/flakyqueue/.venv/bin/activate.bat
+@@ -0,0 +1,71 @@
++@REM Copyright (c) 2020-202x The virtualenv developers
++@REM
++@REM Permission is hereby granted, free of charge, to any person obtaining
++@REM a copy of this software and associated documentation files (the
++@REM "Software"), to deal in the Software without restriction, including
++@REM without limitation the rights to use, copy, modify, merge, publish,
++@REM distribute, sublicense, and/or sell copies of the Software, and to
++@REM permit persons to whom the Software is furnished to do so, subject to
++@REM the following conditions:
++@REM
++@REM The above copyright notice and this permission notice shall be
++@REM included in all copies or substantial portions of the Software.
++@REM
++@REM THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++@REM EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++@REM MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++@REM NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++@REM LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++@REM OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++@REM WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++
++@REM This file is UTF-8 encoded, so we need to update the current code page while executing it
++@for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do @set _OLD_CODEPAGE=%%a
++
++@if defined _OLD_CODEPAGE (
++    "%SystemRoot%\System32\chcp.com" 65001 > nul
++)
++
++@for %%i in ("/workspace/in/flakyqueue/.venv") do @set "VIRTUAL_ENV=%%~fi"
++
++@set "VIRTUAL_ENV_PROMPT=flakyqueue"
++@if NOT DEFINED VIRTUAL_ENV_PROMPT (
++    @for %%d in ("%VIRTUAL_ENV%") do @set "VIRTUAL_ENV_PROMPT=%%~nxd"
++)
++
++@if defined _OLD_VIRTUAL_PROMPT (
++    @set "PROMPT=%_OLD_VIRTUAL_PROMPT%"
++) else (
++    @if not defined PROMPT (
++        @set "PROMPT=$P$G"
++    )
++    @if not defined VIRTUAL_ENV_DISABLE_PROMPT (
++        @set "_OLD_VIRTUAL_PROMPT=%PROMPT%"
++    )
++)
++@if not defined VIRTUAL_ENV_DISABLE_PROMPT (
++    @set "PROMPT=(%VIRTUAL_ENV_PROMPT%) %PROMPT%"
++)
++
++@REM Don't use () to avoid problems with them in %PATH%
++@if defined _OLD_VIRTUAL_PYTHONHOME @goto ENDIFVHOME
++    @set "_OLD_VIRTUAL_PYTHONHOME=%PYTHONHOME%"
++:ENDIFVHOME
++
++@set PYTHONHOME=
++
++@REM if defined _OLD_VIRTUAL_PATH (
++@if not defined _OLD_VIRTUAL_PATH @goto ENDIFVPATH1
++    @set "PATH=%_OLD_VIRTUAL_PATH%"
++:ENDIFVPATH1
++@REM ) else (
++@if defined _OLD_VIRTUAL_PATH @goto ENDIFVPATH2
++    @set "_OLD_VIRTUAL_PATH=%PATH%"
++:ENDIFVPATH2
++
++@set "PATH=%VIRTUAL_ENV%\bin;%PATH%"
++
++@if defined _OLD_CODEPAGE (
++    "%SystemRoot%\System32\chcp.com" %_OLD_CODEPAGE% > nul
++    @set _OLD_CODEPAGE=
++)
+--- a/in/flakyqueue/.venv/bin/activate.csh
++++ b/in/flakyqueue/.venv/bin/activate.csh
+@@ -0,0 +1,76 @@
++# Copyright (c) 2020-202x The virtualenv developers
++#
++# Permission is hereby granted, free of charge, to any person obtaining
++# a copy of this software and associated documentation files (the
++# "Software"), to deal in the Software without restriction, including
++# without limitation the rights to use, copy, modify, merge, publish,
++# distribute, sublicense, and/or sell copies of the Software, and to
++# permit persons to whom the Software is furnished to do so, subject to
++# the following conditions:
++#
++# The above copyright notice and this permission notice shall be
++# included in all copies or substantial portions of the Software.
++#
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++
++# This file must be used with "source bin/activate.csh" *from csh*.
++# You cannot run it directly.
++# Created by Davide Di Blasi <davidedb@gmail.com>.
++
++set newline='\
++'
++
++alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PATH:q" && unset _OLD_VIRTUAL_PATH; rehash; test $?_OLD_VIRTUAL_PROMPT != 0 && set prompt="$_OLD_VIRTUAL_PROMPT:q" && unset _OLD_VIRTUAL_PROMPT; unsetenv VIRTUAL_ENV; unsetenv VIRTUAL_ENV_PROMPT; test "\!:*" != "nondestructive" && unalias deactivate && unalias pydoc'
++
++# Unset irrelevant variables.
++deactivate nondestructive
++
++setenv VIRTUAL_ENV '/workspace/in/flakyqueue/.venv'
++
++set _OLD_VIRTUAL_PATH="$PATH:q"
++setenv PATH "$VIRTUAL_ENV:q/bin:$PATH:q"
++
++
++
++if ('flakyqueue' != "") then
++    setenv VIRTUAL_ENV_PROMPT 'flakyqueue'
++else
++    setenv VIRTUAL_ENV_PROMPT "$VIRTUAL_ENV:t:q"
++endif
++
++if ( $?VIRTUAL_ENV_DISABLE_PROMPT ) then
++    if ( $VIRTUAL_ENV_DISABLE_PROMPT == "" ) then
++        set do_prompt = "1"
++    else
++        set do_prompt = "0"
++    endif
++else
++    set do_prompt = "1"
++endif
++
++if ( $do_prompt == "1" ) then
++    # Could be in a non-interactive environment,
++    # in which case, $prompt is undefined and we wouldn't
++    # care about the prompt anyway.
++    if ( $?prompt ) then
++        set _OLD_VIRTUAL_PROMPT="$prompt:q"
++        if ( "$prompt:q" =~ *"$newline:q"* ) then
++            :
++        else
++            set prompt = '('"$VIRTUAL_ENV_PROMPT:q"') '"$prompt:q"
++        endif
++    endif
++endif
++
++unset env_name
++unset do_prompt
++
++alias pydoc python -m pydoc
++
++rehash
+--- a/in/flakyqueue/.venv/bin/activate.fish
++++ b/in/flakyqueue/.venv/bin/activate.fish
+@@ -0,0 +1,127 @@
++# Copyright (c) 2020-202x The virtualenv developers
++#
++# Permission is hereby granted, free of charge, to any person obtaining
++# a copy of this software and associated documentation files (the
++# "Software"), to deal in the Software without restriction, including
++# without limitation the rights to use, copy, modify, merge, publish,
++# distribute, sublicense, and/or sell copies of the Software, and to
++# permit persons to whom the Software is furnished to do so, subject to
++# the following conditions:
++#
++# The above copyright notice and this permission notice shall be
++# included in all copies or substantial portions of the Software.
++#
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++
++# This file must be used using `source bin/activate.fish` *within a running fish ( http://fishshell.com ) session*.
++# Do not run it directly.
++
++function _bashify_path -d "Converts a fish path to something bash can recognize"
++    set fishy_path $argv
++    set bashy_path $fishy_path[1]
++    for path_part in $fishy_path[2..-1]
++        set bashy_path "$bashy_path:$path_part"
++    end
++    echo $bashy_path
++end
++
++function _fishify_path -d "Converts a bash path to something fish can recognize"
++    echo $argv | tr ':' '\n'
++end
++
++function deactivate -d 'Exit virtualenv mode and return to the normal environment.'
++    # reset old environment variables
++    if test -n "$_OLD_VIRTUAL_PATH"
++        # https://github.com/fish-shell/fish-shell/issues/436 altered PATH handling
++        if test (string sub -s 1 -l 1 $FISH_VERSION) -lt 3
++            set -gx PATH (_fishify_path "$_OLD_VIRTUAL_PATH")
++        else
++            set -gx PATH $_OLD_VIRTUAL_PATH
++        end
++        set -e _OLD_VIRTUAL_PATH
++    end
++
++    if test -n "$_OLD_VIRTUAL_PYTHONHOME"
++        set -gx PYTHONHOME "$_OLD_VIRTUAL_PYTHONHOME"
++        set -e _OLD_VIRTUAL_PYTHONHOME
++    end
++
++    if test -n "$_OLD_FISH_PROMPT_OVERRIDE"
++       and functions -q _old_fish_prompt
++        # Set an empty local `$fish_function_path` to allow the removal of `fish_prompt` using `functions -e`.
++        set -l fish_function_path
++
++        # Erase virtualenv's `fish_prompt` and restore the original.
++        functions -e fish_prompt
++        functions -c _old_fish_prompt fish_prompt
++        functions -e _old_fish_prompt
++        set -e _OLD_FISH_PROMPT_OVERRIDE
++    end
++
++    set -e VIRTUAL_ENV
++    set -e VIRTUAL_ENV_PROMPT
++
++    if test "$argv[1]" != 'nondestructive'
++        # Self-destruct!
++        functions -e pydoc
++        functions -e deactivate
++        functions -e _bashify_path
++        functions -e _fishify_path
++    end
++end
++
++# Unset irrelevant variables.
++deactivate nondestructive
++
++set -gx VIRTUAL_ENV '/workspace/in/flakyqueue/.venv'
++if string match -qr 'CYGWIN|MSYS|MINGW' (uname); and command -s cygpath >/dev/null
++    set -gx VIRTUAL_ENV (cygpath -u "$VIRTUAL_ENV")
++end
++
++# https://github.com/fish-shell/fish-shell/issues/436 altered PATH handling
++if test (string sub -s 1 -l 1 $FISH_VERSION) -lt 3
++    set -gx _OLD_VIRTUAL_PATH (_bashify_path $PATH)
++else
++    set -gx _OLD_VIRTUAL_PATH $PATH
++end
++set -gx PATH "$VIRTUAL_ENV"'/bin' $PATH
++
++# Prompt override provided?
++# If not, just use the environment name.
++if test -n 'flakyqueue'
++    set -gx VIRTUAL_ENV_PROMPT 'flakyqueue'
++else
++    set -gx VIRTUAL_ENV_PROMPT (basename "$VIRTUAL_ENV")
++end
++
++# Unset `$PYTHONHOME` if set.
++if set -q PYTHONHOME
++    set -gx _OLD_VIRTUAL_PYTHONHOME $PYTHONHOME
++    set -e PYTHONHOME
++end
++
++function pydoc
++    python -m pydoc $argv
++end
++
++if test -z "$VIRTUAL_ENV_DISABLE_PROMPT"
++    # Copy the current `fish_prompt` function as `_old_fish_prompt`.
++    functions -c fish_prompt _old_fish_prompt
++
++    function fish_prompt
++        # Run the user's prompt first; it might depend on (pipe)status.
++        set -l prompt (_old_fish_prompt)
++
++        printf '(%s) ' $VIRTUAL_ENV_PROMPT
++
++        string join -- \n $prompt # handle multi-line prompts
++    end
++
++    set -gx _OLD_FISH_PROMPT_OVERRIDE "$VIRTUAL_ENV"
++end
+--- a/in/flakyqueue/.venv/bin/activate.nu
++++ b/in/flakyqueue/.venv/bin/activate.nu
+@@ -0,0 +1,104 @@
++# Copyright (c) 2020-202x The virtualenv developers
++#
++# Permission is hereby granted, free of charge, to any person obtaining
++# a copy of this software and associated documentation files (the
++# "Software"), to deal in the Software without restriction, including
++# without limitation the rights to use, copy, modify, merge, publish,
++# distribute, sublicense, and/or sell copies of the Software, and to
++# permit persons to whom the Software is furnished to do so, subject to
++# the following conditions:
++#
++# The above copyright notice and this permission notice shall be
++# included in all copies or substantial portions of the Software.
++#
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++
++# virtualenv activation module:
++# - Activate with `overlay use activate.nu`
++# - Deactivate with `deactivate`, as usual
++#
++# To customize the overlay name, call `overlay use activate.nu as foo`, but then `deactivate` won't work -
++# you'd need to run `overlay hide foo` manually. Do not activate with `use activate.nu *`; that does not
++# create an overlay and deactivation will fail.
++
++module warning {
++    export-env {
++        const file = path self
++        error make -u {
++            msg: $"`($file | path basename)` is meant to be used with `overlay use`, not `source`"
++        }
++    }
++
++}
++
++use warning
++
++export-env {
++
++    let nu_ver = (version | get version | split row '.' | take 2 | each { into int })
++        if $nu_ver.0 == 0 and $nu_ver.1 < 106 {
++            error make {
++                msg: 'virtualenv Nushell activation requires Nushell 0.106 or greater.'
++            }
++    }
++
++    def is-string [x] {
++        ($x | describe) == 'string'
++    }
++
++    def has-env [...names] {
++        $names | each {|n| $n in $env } | all {|i| $i }
++    }
++
++    def is-env-true [name: string] {
++        if (has-env $name) {
++            let val = ($env | get --optional $name)
++            if ($val | describe) == 'bool' {
++                $val
++            } else {
++                not ($val | is-empty)
++            }
++        } else {
++            false
++        }
++    }
++
++    let virtual_env = '/workspace/in/flakyqueue/.venv'
++    let bin = 'bin'
++    let path_name = if (has-env 'Path') { 'Path' } else { 'PATH' }
++    let venv_path = ([$virtual_env $bin] | path join)
++    let new_path = ($env | get $path_name | prepend $venv_path)
++    let virtual_env_prompt = if ('flakyqueue' | is-empty) {
++        ($virtual_env | path basename)
++    } else {
++        'flakyqueue'
++    }
++    let new_env = { $path_name: $new_path VIRTUAL_ENV: $virtual_env VIRTUAL_ENV_PROMPT: $virtual_env_prompt }
++    let old_prompt_command = if (has-env 'PROMPT_COMMAND') { $env.PROMPT_COMMAND } else { '' }
++    let new_env = if (is-env-true 'VIRTUAL_ENV_DISABLE_PROMPT') {
++        $new_env
++    } else {
++        let virtual_prefix = $'(char lparen)($virtual_env_prompt)(char rparen) '
++        let new_prompt = if (has-env 'PROMPT_COMMAND') {
++            if ('closure' in ($old_prompt_command | describe)) {
++                {|| $'($virtual_prefix)(do $old_prompt_command)' }
++            } else {
++                {|| $'($virtual_prefix)($old_prompt_command)' }
++            }
++        } else {
++            {|| $'($virtual_prefix)' }
++        }
++        $new_env | merge { PROMPT_COMMAND: $new_prompt VIRTUAL_PREFIX: $virtual_prefix }
++    }
++    load-env $new_env
++}
++
++export alias pydoc = python -m pydoc
++# If deactivate errors "not an active overlay": activate with `overlay use activate.nu` not `use activate.nu *`; for custom names use `overlay hide NAME`
++export alias deactivate = overlay hide activate
+--- a/in/flakyqueue/.venv/bin/activate.ps1
++++ b/in/flakyqueue/.venv/bin/activate.ps1
+@@ -0,0 +1,82 @@
++# Copyright (c) 2020-202x The virtualenv developers
++#
++# Permission is hereby granted, free of charge, to any person obtaining
++# a copy of this software and associated documentation files (the
++# "Software"), to deal in the Software without restriction, including
++# without limitation the rights to use, copy, modify, merge, publish,
++# distribute, sublicense, and/or sell copies of the Software, and to
++# permit persons to whom the Software is furnished to do so, subject to
++# the following conditions:
++#
++# The above copyright notice and this permission notice shall be
++# included in all copies or substantial portions of the Software.
++#
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++
++$script:THIS_PATH = $myinvocation.mycommand.path
++$script:BASE_DIR = Split-Path (Resolve-Path "$THIS_PATH/..") -Parent
++
++function global:deactivate([switch] $NonDestructive) {
++    if (Test-Path variable:_OLD_VIRTUAL_PATH) {
++        $env:PATH = $variable:_OLD_VIRTUAL_PATH
++        Remove-Variable "_OLD_VIRTUAL_PATH" -Scope global
++    }
++
++    if (Test-Path function:_old_virtual_prompt) {
++        $function:prompt = $function:_old_virtual_prompt
++        Remove-Item function:\_old_virtual_prompt
++    }
++
++    if ($env:VIRTUAL_ENV) {
++        Remove-Item env:VIRTUAL_ENV -ErrorAction SilentlyContinue
++    }
++
++    if ($env:VIRTUAL_ENV_PROMPT) {
++        Remove-Item env:VIRTUAL_ENV_PROMPT -ErrorAction SilentlyContinue
++    }
++
++    if (!$NonDestructive) {
++        # Self destruct!
++        Remove-Item function:deactivate
++        Remove-Item function:pydoc
++    }
++}
++
++function global:pydoc {
++    & python -m pydoc $args
++}
++
++# unset irrelevant variables
++deactivate -nondestructive
++
++$VIRTUAL_ENV = $BASE_DIR
++$env:VIRTUAL_ENV = $VIRTUAL_ENV
++
++if ("flakyqueue" -ne "") {
++    $env:VIRTUAL_ENV_PROMPT = "flakyqueue"
++}
++else {
++    $env:VIRTUAL_ENV_PROMPT = $( Split-Path $env:VIRTUAL_ENV -Leaf )
++}
++
++New-Variable -Scope global -Name _OLD_VIRTUAL_PATH -Value $env:PATH
++
++$env:PATH = "$env:VIRTUAL_ENV/bin:" + $env:PATH
++if (!$env:VIRTUAL_ENV_DISABLE_PROMPT) {
++    function global:_old_virtual_prompt {
++        ""
++    }
++    $function:_old_virtual_prompt = $function:prompt
++
++    function global:prompt {
++        # Add the custom prefix to the existing prompt
++        $previous_prompt_value = & $function:_old_virtual_prompt
++        ("(" + $env:VIRTUAL_ENV_PROMPT + ") " + $previous_prompt_value)
++    }
++}
+--- a/in/flakyqueue/.venv/bin/activate.xsh
++++ b/in/flakyqueue/.venv/bin/activate.xsh
+@@ -0,0 +1,102 @@
++# Copyright (c) 2020-202x The virtualenv developers
++#
++# Permission is hereby granted, free of charge, to any person obtaining
++# a copy of this software and associated documentation files (the
++# "Software"), to deal in the Software without restriction, including
++# without limitation the rights to use, copy, modify, merge, publish,
++# distribute, sublicense, and/or sell copies of the Software, and to
++# permit persons to whom the Software is furnished to do so, subject to
++# the following conditions:
++#
++# The above copyright notice and this permission notice shall be
++# included in all copies or substantial portions of the Software.
++#
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++
++# This file must be used with "source bin/activate.xsh" *from xonsh*.
++# You cannot run it directly.
++
++
++class _VirtualEnvActivator:
++    """xonsh activation for virtualenv."""
++
++    # Stashed in _OLD_VIRTUAL_{name} when the variable was not set before
++    # activation. deactivate treats this as "unset" rather than "restore to
++    # this string".
++    _UNSET_SENTINEL = "__virtualenv_was_not_set__"
++
++    def __init__(self):
++        from os.path import dirname, realpath
++
++        self.env = __xonsh__.env
++        self.embedded_virtual_env = dirname(dirname(realpath(__file__)))
++        self.embedded_virtual_prompt = b"flakyqueue".decode("utf-8")
++        self.embedded_bin_name = __import__("os").fsdecode(b"bin")
++        self.managed_vars = ("PATH", "PYTHONHOME")
++
++    def _backup_name(self, name):
++        return f"_OLD_VIRTUAL_{name}"
++
++    def _save(self, name):
++        backup = self._backup_name(name)
++        self.env[backup] = self.env[name] if name in self.env else self._UNSET_SENTINEL
++
++    def _override(self, name, value):
++        self._save(name)
++        self.env[name] = value
++
++    def _drop(self, name):
++        self._save(name)
++        self.env.pop(name, None)
++
++    def register_pydoc(self):
++        aliases["pydoc"] = ["python", "-m", "pydoc"]
++
++    def unregister_pydoc(self):
++        aliases.pop("pydoc", None)
++
++    def activate(self):
++        from os.path import basename, join
++
++        aliases["deactivate"] = self.deactivate
++        self.deactivate(["nondestructive"]) # wipe any stale state from a prior activation
++
++        $VIRTUAL_ENV = self.embedded_virtual_env
++        $VIRTUAL_ENV_PROMPT = self.embedded_virtual_prompt or basename($VIRTUAL_ENV)
++
++        self._override("PATH", [join($VIRTUAL_ENV, self.embedded_bin_name), *$PATH])
++        self._drop("PYTHONHOME")
++        self.register_pydoc()
++
++    def deactivate(self, args=None):
++        for name in self.managed_vars:
++            backup = self._backup_name(name)
++            if backup not in self.env:
++                continue
++            previous = self.env[backup]
++            del self.env[backup]
++            if previous == self._UNSET_SENTINEL:
++                self.env.pop(name, None)
++            else:
++                self.env[name] = previous
++        for name in ("VIRTUAL_ENV", "VIRTUAL_ENV_PROMPT"):
++            self.env.pop(name, None)
++        self.unregister_pydoc()
++        if args is None or "nondestructive" not in args:
++            del aliases["deactivate"]
++            try:
++                del __xonsh__.xontrib.virtualenv
++            except AttributeError:
++                pass
++
++
++if not hasattr(__xonsh__, "xontrib"):
++    __xonsh__.xontrib = __xonsh__.imp.types.SimpleNamespace()
++__xonsh__.xontrib.virtualenv = _VirtualEnvActivator()
++__xonsh__.xontrib.virtualenv.activate()
+--- a/in/flakyqueue/.venv/bin/activate_this.py
++++ b/in/flakyqueue/.venv/bin/activate_this.py
+@@ -0,0 +1,59 @@
++# Copyright (c) 2020-202x The virtualenv developers
++#
++# Permission is hereby granted, free of charge, to any person obtaining
++# a copy of this software and associated documentation files (the
++# "Software"), to deal in the Software without restriction, including
++# without limitation the rights to use, copy, modify, merge, publish,
++# distribute, sublicense, and/or sell copies of the Software, and to
++# permit persons to whom the Software is furnished to do so, subject to
++# the following conditions:
++#
++# The above copyright notice and this permission notice shall be
++# included in all copies or substantial portions of the Software.
++#
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++
++"""
++Activate virtualenv for current interpreter:
++
++import runpy
++runpy.run_path(this_file)
++
++This can be used when you must use an existing Python interpreter, not the virtualenv bin/python.
++"""  # noqa: D415
++
++from __future__ import annotations
++
++import os
++import site
++import sys
++
++try:
++    abs_file = os.path.abspath(__file__)
++except NameError as exc:
++    msg = "You must use import runpy; runpy.run_path(this_file)"
++    raise AssertionError(msg) from exc
++
++bin_dir = os.path.dirname(abs_file)
++base = bin_dir[: -len("bin") - 1]  # strip away the bin part from the __file__, plus the path separator
++
++# prepend bin to PATH (this file is inside the bin directory)
++os.environ["PATH"] = os.pathsep.join([bin_dir, *os.environ.get("PATH", "").split(os.pathsep)])
++os.environ["VIRTUAL_ENV"] = base  # virtual env is right above bin directory
++os.environ["VIRTUAL_ENV_PROMPT"] = "flakyqueue" or os.path.basename(base)  # noqa: SIM222
++
++# add the virtual environments libraries to the host python import mechanism
++prev_length = len(sys.path)
++for lib in "../lib/python3.11/site-packages".split(os.pathsep):
++    path = os.path.realpath(os.path.join(bin_dir, lib))
++    site.addsitedir(path)
++sys.path[:] = sys.path[prev_length:] + sys.path[0:prev_length]
++
++sys.real_prefix = sys.prefix
++sys.prefix = base
+--- a/in/flakyqueue/.venv/bin/deactivate.bat
++++ b/in/flakyqueue/.venv/bin/deactivate.bat
+@@ -0,0 +1,39 @@
++@REM Copyright (c) 2020-202x The virtualenv developers
++@REM
++@REM Permission is hereby granted, free of charge, to any person obtaining
++@REM a copy of this software and associated documentation files (the
++@REM "Software"), to deal in the Software without restriction, including
++@REM without limitation the rights to use, copy, modify, merge, publish,
++@REM distribute, sublicense, and/or sell copies of the Software, and to
++@REM permit persons to whom the Software is furnished to do so, subject to
++@REM the following conditions:
++@REM
++@REM The above copyright notice and this permission notice shall be
++@REM included in all copies or substantial portions of the Software.
++@REM
++@REM THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++@REM EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++@REM MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++@REM NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++@REM LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++@REM OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++@REM WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++
++@set VIRTUAL_ENV=
++@set VIRTUAL_ENV_PROMPT=
++
++@REM Don't use () to avoid problems with them in %PATH%
++@if not defined _OLD_VIRTUAL_PROMPT @goto ENDIFVPROMPT
++    @set "PROMPT=%_OLD_VIRTUAL_PROMPT%"
++    @set _OLD_VIRTUAL_PROMPT=
++:ENDIFVPROMPT
++
++@if not defined _OLD_VIRTUAL_PYTHONHOME @goto ENDIFVHOME
++    @set "PYTHONHOME=%_OLD_VIRTUAL_PYTHONHOME%"
++    @set _OLD_VIRTUAL_PYTHONHOME=
++:ENDIFVHOME
++
++@if not defined _OLD_VIRTUAL_PATH @goto ENDIFVPATH
++    @set "PATH=%_OLD_VIRTUAL_PATH%"
++    @set _OLD_VIRTUAL_PATH=
++:ENDIFVPATH
+--- a/in/flakyqueue/.venv/bin/pydoc.bat
++++ b/in/flakyqueue/.venv/bin/pydoc.bat
+@@ -0,0 +1,22 @@
++@REM Copyright (c) 2020-202x The virtualenv developers
++@REM
++@REM Permission is hereby granted, free of charge, to any person obtaining
++@REM a copy of this software and associated documentation files (the
++@REM "Software"), to deal in the Software without restriction, including
++@REM without limitation the rights to use, copy, modify, merge, publish,
++@REM distribute, sublicense, and/or sell copies of the Software, and to
++@REM permit persons to whom the Software is furnished to do so, subject to
++@REM the following conditions:
++@REM
++@REM The above copyright notice and this permission notice shall be
++@REM included in all copies or substantial portions of the Software.
++@REM
++@REM THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++@REM EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++@REM MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++@REM NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++@REM LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++@REM OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++@REM WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++
++"python.exe" -m pydoc %*
+Binary files a/in/flakyqueue/.venv/bin/python and b/in/flakyqueue/.venv/bin/python differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9)
+Binary files a/in/flakyqueue/.venv/bin/python3 and b/in/flakyqueue/.venv/bin/python3 differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9)
+Binary files a/in/flakyqueue/.venv/bin/python3.11 and b/in/flakyqueue/.venv/bin/python3.11 differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9)
+Binary files a/in/flakyqueue/.venv/lib/python3.11/site-packages/__pycache__/_virtualenv.cpython-311.pyc and b/in/flakyqueue/.venv/lib/python3.11/site-packages/__pycache__/_virtualenv.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 18b99d6a8112c6b9475cddd2a324974611d307b15bb54603b6f40b9c737fb69b)
+--- a/in/flakyqueue/.venv/lib/python3.11/site-packages/_virtualenv.pth
++++ b/in/flakyqueue/.venv/lib/python3.11/site-packages/_virtualenv.pth
+@@ -0,0 +1 @@
++import _virtualenv--- a/in/flakyqueue/.venv/lib/python3.11/site-packages/_virtualenv.py
++++ b/in/flakyqueue/.venv/lib/python3.11/site-packages/_virtualenv.py
+@@ -0,0 +1,121 @@
++"""Patches that are applied at runtime to the virtual environment."""
++
++import contextlib
++import os
++import sys
++
++VIRTUALENV_PATCH_FILE = os.path.abspath(__file__)
++
++
++def patch_dist(dist):
++    """
++    Distutils allows user to configure some arguments via a configuration file:
++    https://docs.python.org/3.11/install/index.html#distutils-configuration-files.
++
++    Some of this arguments though don't make sense in context of the virtual environment files, let's fix them up.
++    """  # noqa: D205
++    # we cannot allow some install config as that would get packages installed outside of the virtual environment
++    old_parse_config_files = dist.Distribution.parse_config_files
++
++    def parse_config_files(self, *args, **kwargs):
++        result = old_parse_config_files(self, *args, **kwargs)
++        install = self.get_option_dict("install")
++
++        if "prefix" in install:  # the prefix governs where to install the libraries
++            install["prefix"] = VIRTUALENV_PATCH_FILE, os.path.abspath(sys.prefix)
++        for base in ("purelib", "platlib", "headers", "scripts", "data"):
++            key = f"install_{base}"
++            if key in install:  # do not allow global configs to hijack venv paths
++                install.pop(key, None)
++        return result
++
++    dist.Distribution.parse_config_files = parse_config_files
++
++
++# Import hook that patches some modules to ignore configuration values that break package installation in case
++# of virtual environments.
++_DISTUTILS_PATCH = "distutils.dist", "setuptools.dist"
++# https://docs.python.org/3/library/importlib.html#setting-up-an-importer
++
++
++class _Finder:
++    """A meta path finder that allows patching the imported distutils modules."""
++
++    fullname = None
++
++    # lock[0] is threading.Lock(), but initialized lazily to avoid importing threading very early at startup,
++    # because there are gevent-based applications that need to be first to import threading by themselves.
++    # See https://github.com/pypa/virtualenv/issues/1895 for details.
++    lock = []  # noqa: RUF012
++
++    def find_spec(self, fullname, path, target=None):  # noqa: ARG002
++        # Guard against race conditions during file rewrite by checking if _DISTUTILS_PATCH is defined.
++        # This can happen when the file is being overwritten while it's being imported by another process.
++        # See https://github.com/pypa/virtualenv/issues/2969 for details.
++        try:
++            distutils_patch = _DISTUTILS_PATCH
++        except NameError:
++            return None
++        if fullname in distutils_patch and self.fullname is None:
++            # initialize lock[0] lazily
++            if len(self.lock) == 0:
++                import threading
++
++                lock = threading.Lock()
++                # there is possibility that two threads T1 and T2 are simultaneously running into find_spec,
++                # observing .lock as empty, and further going into hereby initialization. However due to the GIL,
++                # list.append() operation is atomic and this way only one of the threads will "win" to put the lock
++                # - that every thread will use - into .lock[0].
++                # https://docs.python.org/3/faq/library.html#what-kinds-of-global-value-mutation-are-thread-safe
++                self.lock.append(lock)
++
++            from functools import partial
++            from importlib.util import find_spec
++
++            with self.lock[0]:
++                self.fullname = fullname
++                try:
++                    spec = find_spec(fullname, path)
++                    if spec is not None:
++                        # https://www.python.org/dev/peps/pep-0451/#how-loading-will-work
++                        is_new_api = hasattr(spec.loader, "exec_module")
++                        func_name = "exec_module" if is_new_api else "load_module"
++                        old = getattr(spec.loader, func_name)
++                        func = self.exec_module if is_new_api else self.load_module
++                        if old is not func:
++                            try:  # noqa: SIM105
++                                setattr(spec.loader, func_name, partial(func, old))
++                            except AttributeError:
++                                pass  # C-Extension loaders are r/o such as zipimporter with <3.7
++                        return spec
++                finally:
++                    self.fullname = None
++        return None
++
++    @staticmethod
++    def exec_module(old, module):
++        old(module)
++        try:
++            distutils_patch = _DISTUTILS_PATCH
++        except NameError:
++            return
++        if module.__name__ in distutils_patch:
++            # patch_dist or its dependencies may not be defined during file rewrite
++            with contextlib.suppress(NameError):
++                patch_dist(module)
++
++    @staticmethod
++    def load_module(old, name):
++        module = old(name)
++        try:
++            distutils_patch = _DISTUTILS_PATCH
++        except NameError:
++            return module
++        if module.__name__ in distutils_patch:
++            # patch_dist or its dependencies may not be defined during file rewrite
++            with contextlib.suppress(NameError):
++                patch_dist(module)
++        return module
++
++
++sys.meta_path.insert(0, _Finder())
+--- a/in/flakyqueue/.venv/pyvenv.cfg
++++ b/in/flakyqueue/.venv/pyvenv.cfg
+@@ -0,0 +1,6 @@
++home = /usr/bin
++implementation = CPython
++uv = 0.12.3
++version_info = 3.11.2
++include-system-site-packages = false
++prompt = flakyqueue
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> fc8b8f14bb7285970b45e1fac55fed2016fd525b4ac40d63de1f52e0bfff9672)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> aba6bcc4b5f26ccb108150ddb3a73706beb53e00a88f76d90c52404e2964b403)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 5766200b7f1e699baaac3e55388ef40b121497f562996ca148c79b95c90a8096)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> ab1b21d8eaeae67594f829c6997bfe8275aa5e6862ec94937773ea2f68cac8ad)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 1dfbd54b76d56a6f31a3224395684935f8428832d07a079733b04e8e39505f8f)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 35cca328023867a603fd6bfdbb802db14dd77e9447ce4b30291e46149b98362f)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/store.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/store.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> d43b415fa8098c68530bf8b8314e4cc728187806922da409d5a4f6f1be09d7a1)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/store.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/store.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b3088b4746c42bdf854b77d90ead377c64331ac41f9faf35545293baf903ec25)
+--- a/in/flakyqueue/flakyqueue/scheduler.py
++++ b/in/flakyqueue/flakyqueue/scheduler.py
+@@ -1,7 +1,6 @@
+ from __future__ import annotations
+ 
+ import random
+-import time
+ from dataclasses import dataclass, replace
+ 
+ from flakyqueue.clock import SystemClock
+@@ -24,18 +23,26 @@
+         self.random_source = random_source
+ 
+     def add(self, task_id: str, priority: int) -> Task:
+-        task = Task(id=task_id, priority=priority, created_at=time.time(), run_at=time.time())
++        now = self.clock.now()
++        task = Task(id=task_id, priority=priority, created_at=now, run_at=now)
+         self.store.save(task)
+         return task
+ 
+     def ready(self):
+-        now = time.time()
++        now = self.clock.now()
+         items = [task for task in self.store.all() if task.run_at <= now]
+-        random.shuffle(items)
+-        return sorted(items, key=lambda task: task.priority, reverse=True)
++        # Do not use insertion order (or an uncontrolled shuffle) as a tie
++        # breaker.  Besides making equal-priority tasks unpredictable, that
++        # made results depend on the store implementation and process state.
++        return sorted(items, key=lambda task: (-task.priority, task.created_at, task.id))
+ 
+     def schedule_retry(self, task: Task, base_delay: float = 5.0) -> Task:
+-        jitter = random.random()
+-        updated = replace(task, attempts=task.attempts + 1, run_at=time.time() + base_delay + jitter)
++        source = self.random_source if self.random_source is not None else random
++        jitter = source.random()
++        updated = replace(
++            task,
++            attempts=task.attempts + 1,
++            run_at=self.clock.now() + base_delay + jitter,
++        )
+         self.store.save(updated)
+         return updated
+Binary files a/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-311-pytest-9.1.1.pyc and b/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-311-pytest-9.1.1.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 5022725f89bfccc317e383c9e097f53f3fe9051c4ce02e357080145fd9b21e96)
+Binary files a/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-314-pytest-7.4.3.pyc and b/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 053a16f4d19e03b26db108a2ccf2fed93c0fb6792c3caa5cb00c30d44b6da47c)
+Binary files a/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-311-pytest-9.1.1.pyc and b/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-311-pytest-9.1.1.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 29ce833f2ba3fc571365837cbde7c3be550faaa87a052ac0ecf2792eae46475d)
+Binary files a/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-314-pytest-7.4.3.pyc and b/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> dd46bb6128bf47b4b809c9a39a1e6cef1f8683986ed8eb8f7397faffee8c1adc)
+--- a/in/flakyqueue/uv.lock
++++ b/in/flakyqueue/uv.lock
+@@ -0,0 +1,3 @@
++version = 1
++revision = 3
++requires-python = ">=3.11"
+--- a/out/root_cause.md
++++ b/out/root_cause.md
+@@ -0,0 +1,36 @@
++# FlakyQueue root cause
++
++## Flaky behavior
++
++The scheduler mixed injected test controls with process-global sources:
++
++- `add()` recorded `created_at` and `run_at` with `time.time()` instead of the injected clock.
++- `ready()` used `time.time()` for its readiness cutoff.
++- `ready()` called the process-global `random.shuffle()`, so equal-priority tasks could be returned in different orders. It also meant an injected fake random source did not control all scheduler behavior.
++- `schedule_retry()` used both the process-global `random.random()` and `time.time()`, so retry deadlines varied with wall-clock timing and global PRNG state.
++
++These were production nondeterminism issues, not test-order or assertion problems.
++
++## Root cause and fix
++
++`Scheduler` accepted `clock` and `random_source`, but only stored them; the implementation continued to read global time/random APIs. The fix is in `flakyqueue/scheduler.py`:
++
++- Read one `now = self.clock.now()` value in `add()` and use it for both timestamps.
++- Use `self.clock.now()` in `ready()` and `schedule_retry()`.
++- Use the injected source's `.random()` for retry jitter, falling back to the standard `random` module only when no source is injected.
++- Remove the uncontrolled shuffle and sort ready tasks deterministically by priority descending, creation time ascending, then task ID ascending. The task ID is a stable final tie-breaker even when injected clocks give multiple tasks the same timestamp.
++- Retry jitter remains present; it is now injectable rather than removed.
++
++No files under `tests` were modified and no dependencies were added.
++
++## Verification
++
++The requested macOS path was not mounted in this Linux execution environment. The corresponding workspace was available at `/workspace/in/flakyqueue`; the report was therefore written to `/workspace/out/root_cause.md`.
++
++Verification performed in the mapped workspace:
++
++- Initial canonical invocation `python3 -m pytest tests` could not start because pytest is not installed in the system interpreter (`No module named pytest`).
++- Equivalent dependency-isolated invocation: `uv run --with pytest python -m pytest tests` — **4 passed**.
++- Repeated the full suite five times with the same command — **all five runs passed**.
++- Ran an additional injected-clock/injected-random check covering equal timestamps, repeated `ready()` calls, retry jitter, and random-source call count — **passed**.
++- Ran `python3 -m py_compile flakyqueue/*.py` — **passed**.

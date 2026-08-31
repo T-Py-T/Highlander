@@ -1,0 +1,221 @@
+--- a/in/csvtool/.pytest_cache/.gitignore
++++ b/in/csvtool/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/csvtool/.pytest_cache/CACHEDIR.TAG
++++ b/in/csvtool/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/csvtool/.pytest_cache/README.md
++++ b/in/csvtool/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/csvtool/.pytest_cache/v/cache/nodeids
++++ b/in/csvtool/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,8 @@
++[
++  "tests/test_cli_existing.py::test_empty_result_keeps_header",
++  "tests/test_cli_existing.py::test_filter_select_and_descending_sort",
++  "tests/test_cli_existing.py::test_quoted_commas_are_preserved_when_selected",
++  "tests/test_cli_regression.py::test_invalid_where_and_missing_fields_are_reported",
++  "tests/test_cli_regression.py::test_repeated_where_clauses_use_and_semantics",
++  "tests/test_cli_regression.py::test_sort_numeric_values_descending"
++]--- a/in/csvtool/.pytest_cache/v/cache/stepwise
++++ b/in/csvtool/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]Binary files a/in/csvtool/csvtool/__pycache__/__init__.cpython-311.pyc and b/in/csvtool/csvtool/__pycache__/__init__.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> c71d2629d1b6c3d4885b800500e9d816dee82e363da08f0eda2047d0cac8dc64)
+Binary files a/in/csvtool/csvtool/__pycache__/__init__.cpython-314.pyc and b/in/csvtool/csvtool/__pycache__/__init__.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> dc84b5c5febaf53894b29d4bf81a9ec6bd877a7d226c7d2617daa177640eda1f)
+Binary files a/in/csvtool/csvtool/__pycache__/cli.cpython-311.pyc and b/in/csvtool/csvtool/__pycache__/cli.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 9a75c9fba1ec829d571a6bfc6ecb21b9a36f0e14ec1d682fe611b410a8147712)
+Binary files a/in/csvtool/csvtool/__pycache__/cli.cpython-314.pyc and b/in/csvtool/csvtool/__pycache__/cli.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> d0c95d80b833622afebd2d32da5f8072f673fcbc85ed433c22a578d7187ef2c6)
+Binary files a/in/csvtool/csvtool/__pycache__/filtering.cpython-311.pyc and b/in/csvtool/csvtool/__pycache__/filtering.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> ffae1e1ea51924844e6098d7fcbe2f9d25772270c3c2fe7cda539b8fca66ba9b)
+Binary files a/in/csvtool/csvtool/__pycache__/filtering.cpython-314.pyc and b/in/csvtool/csvtool/__pycache__/filtering.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> aff6680cbad79d1f2a18393494d6e58e92d5b4aa1bbaab5cc9ab60098f024794)
+--- a/in/csvtool/csvtool/cli.py
++++ b/in/csvtool/csvtool/cli.py
+@@ -1,41 +1,89 @@
+ from __future__ import annotations
+ 
+ import argparse
++import csv
++from decimal import Decimal, InvalidOperation
+ import sys
+ 
+ from csvtool.filtering import parse_where, select_fields
+ 
+ 
+ def read_rows(path):
+-    text = open(path, encoding="utf-8").read().strip()
+-    lines = text.splitlines()
+-    headers = lines[0].split(",")
+-    rows = []
+-    for line in lines[1:]:
+-        values = line.split(",")
+-        rows.append(dict(zip(headers, values)))
+-    return headers, rows
++    with open(path, newline="", encoding="utf-8") as csv_file:
++        reader = csv.reader(csv_file)
++        try:
++            headers = next(reader)
++        except StopIteration:
++            raise ValueError("CSV file is empty") from None
++        return headers, [dict(zip(headers, values)) for values in reader]
++
++
++def _numeric_or_text(value):
++    try:
++        return (0, Decimal(value))
++    except InvalidOperation:
++        return (1, value)
++
++
++def _field_error(field, headers):
++    if field not in headers:
++        raise ValueError(f"missing field: {field}")
+ 
+ 
+ def main(argv=None):
+     parser = argparse.ArgumentParser()
+     parser.add_argument("csv_file")
+-    parser.add_argument("--where")
++    parser.add_argument("--where", action="append")
+     parser.add_argument("--select")
+     parser.add_argument("--sort")
+-    args = parser.parse_args(argv)
++    if argv is None:
++        argv = sys.argv[1:]
++    normalized_argv = []
++    index = 0
++    while index < len(argv):
++        if (
++            argv[index] == "--sort"
++            and index + 1 < len(argv)
++            and not argv[index + 1].startswith("--")
++        ):
++            normalized_argv.extend(("--sort=" + argv[index + 1],))
++            index += 2
++        else:
++            normalized_argv.append(argv[index])
++            index += 1
++    args = parser.parse_args(normalized_argv)
+ 
+-    headers, rows = read_rows(args.csv_file)
+-    predicate = parse_where(args.where)
+-    rows = [row for row in rows if predicate(row)]
+-    if args.sort:
+-        rows.sort(key=lambda row: row.get(args.sort, ""))
+-    rows = select_fields(rows, args.select)
+-    if rows:
+-        headers = list(rows[0].keys())
+-    print(",".join(headers))
+-    for row in rows:
+-        print(",".join(str(row.get(header, "")) for header in headers))
++    try:
++        headers, rows = read_rows(args.csv_file)
++        predicates = []
++        for expr in args.where or []:
++            predicate = parse_where(expr)
++            field = expr.split("=", 1)[0].strip()
++            _field_error(field, headers)
++            predicates.append(predicate)
++
++        selected_headers = headers
++        if args.select:
++            selected_headers = [name.strip() for name in args.select.split(",")]
++            for field in selected_headers:
++                _field_error(field, headers)
++
++        if args.sort:
++            sort_field = args.sort[1:] if args.sort.startswith("-") else args.sort
++            _field_error(sort_field, headers)
++        rows = [row for row in rows if all(predicate(row) for predicate in predicates)]
++        if args.sort:
++            rows.sort(
++                key=lambda row: _numeric_or_text(row[sort_field]),
++                reverse=args.sort.startswith("-"),
++            )
++        rows = select_fields(rows, ",".join(selected_headers) if args.select else None)
++
++        writer = csv.writer(sys.stdout, lineterminator="\n")
++        writer.writerow(selected_headers)
++        writer.writerows([[row[field] for field in selected_headers] for row in rows])
++    except (OSError, ValueError, csv.Error) as error:
++        parser.error(str(error))
+     return 0
+ 
+ 
+--- a/in/csvtool/csvtool/filtering.py
++++ b/in/csvtool/csvtool/filtering.py
+@@ -4,8 +4,13 @@
+ def parse_where(expr: str | None):
+     if not expr:
+         return lambda row: True
+-    field, value = expr.split("=")
+-    return lambda row: row.get(field) == value
++    if "=" not in expr:
++        raise ValueError("invalid --where expression; expected field=value")
++    field, value = expr.split("=", 1)
++    field = field.strip()
++    if not field:
++        raise ValueError("invalid --where expression; field is required")
++    return lambda row: row[field] == value
+ 
+ 
+ def select_fields(rows, fields):
+Binary files a/in/csvtool/tests/__pycache__/test_cli_existing.cpython-311.pyc and b/in/csvtool/tests/__pycache__/test_cli_existing.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 50341315ca95609db4d56621551d43087af363aaadd9f4da195f8b2214305828)
+Binary files a/in/csvtool/tests/__pycache__/test_cli_existing.cpython-314-pytest-7.4.3.pyc and b/in/csvtool/tests/__pycache__/test_cli_existing.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 23de1b3aa0790e81dad78dcfe816b6e1671f1cb45c14d2be59db24f2305e4aea)
+Binary files a/in/csvtool/tests/__pycache__/test_cli_regression.cpython-311.pyc and b/in/csvtool/tests/__pycache__/test_cli_regression.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 7d7e5d08bb655472bff20a7e2f44e9b344295c4e5ab21bf7482fc508d5a0921b)
+Binary files a/in/csvtool/tests/__pycache__/test_cli_regression.cpython-314-pytest-7.4.3.pyc and b/in/csvtool/tests/__pycache__/test_cli_regression.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 54f62bdeb19ea07d30f576a8e48bb23217162df9a920844fb0caf72134783bb6)
+--- a/in/csvtool/tests/test_cli_regression.py
++++ b/in/csvtool/tests/test_cli_regression.py
+@@ -0,0 +1,41 @@
++import csv
++import subprocess
++import sys
++from pathlib import Path
++
++
++ROOT = Path(__file__).resolve().parents[1]
++
++
++def run_cli(*args):
++    return subprocess.run(
++        [sys.executable, "-m", "csvtool.cli", *args],
++        cwd=ROOT,
++        capture_output=True,
++        text=True,
++    )
++
++
++def test_repeated_where_clauses_use_and_semantics():
++    proc = run_cli("samples/orders.csv", "--where", "status=paid", "--where", "total=750")
++    assert proc.returncode == 0, proc.stderr
++    assert list(csv.DictReader(proc.stdout.splitlines())) == [
++        {"id": "o3", "status": "paid", "total": "750", "created_at": "2024-01-02", "customer": "Core, Labs"}
++    ]
++
++
++def test_sort_numeric_values_descending(tmp_path):
++    source = tmp_path / "values.csv"
++    source.write_text("id,total\na,9\nb,120\nc,75\n", encoding="utf-8")
++    proc = run_cli(str(source), "--select", "id,total", "--sort", "-total")
++    assert proc.returncode == 0, proc.stderr
++    assert [row["id"] for row in csv.DictReader(proc.stdout.splitlines())] == ["b", "c", "a"]
++
++
++def test_invalid_where_and_missing_fields_are_reported():
++    invalid_where = run_cli("samples/orders.csv", "--where", "status")
++    missing_field = run_cli("samples/orders.csv", "--select", "missing")
++    assert invalid_where.returncode != 0
++    assert "invalid --where expression" in invalid_where.stderr
++    assert missing_field.returncode != 0
++    assert "missing field: missing" in missing_field.stderr

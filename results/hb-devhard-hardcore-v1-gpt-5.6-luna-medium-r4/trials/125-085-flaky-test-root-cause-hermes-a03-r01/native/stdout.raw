@@ -1,0 +1,14 @@
+Direct `pytest` is unavailable in this environment:
+
+`pytest: command not found`
+
+Concrete blocker: pytest is not installed on `PATH`.
+
+Using the available equivalent runner:
+
+`uv run --with pytest pytest`
+
+Result:
+- 4 tests collected
+- 4 passed
+- 0 failures

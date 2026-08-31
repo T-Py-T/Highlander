@@ -1,0 +1,21 @@
+Completed the SQLite migration work in `/workspace/in/db/` (the provided `<HOME>/...` path is not mounted in this environment).
+
+Created/updated:
+
+- `/workspace/in/db/migration.sql`
+- `/workspace/in/db/preflight_report.md`
+- `/workspace/in/db/rollback.sql`
+- `/workspace/in/db/postcheck.sql`
+- `/workspace/in/db/migration_report.md`
+
+Verified offline with Python’s SQLite engine:
+
+- Migration preserves all 6 users.
+- Migration preserves all 4 orders and their `user_id` references.
+- Dirty emails are cleaned to the required deterministic values.
+- Historical `created_at` values are preserved.
+- Duplicate and null email inserts are rejected.
+- Status is non-null and defaults to `active`.
+- Running the migration twice succeeds without duplicating or losing data.
+- Rollback restores the old four-column users shape.
+- `PRAGMA foreign_key_check` returns no violations.

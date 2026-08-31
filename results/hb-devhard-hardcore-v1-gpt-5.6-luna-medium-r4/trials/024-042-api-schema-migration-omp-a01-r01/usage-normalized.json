@@ -1,0 +1,20 @@
+{
+  "api_calls": 42,
+  "available": true,
+  "cache_read_tokens": 999168,
+  "cache_write_tokens": 0,
+  "cost_status": "harness_estimate_not_subscription_comparable",
+  "cost_usd": 0.04266116,
+  "cross_harness_comparability": "not comparable; native accounting semantics differ",
+  "input_tokens": 60937,
+  "models": [
+    "gpt-5.6-luna"
+  ],
+  "output_tokens": 8742,
+  "providers": [
+    "openai-codex"
+  ],
+  "reasoning_tokens": 2580,
+  "source": "omp_assistant_message_end",
+  "total_tokens": 1068847
+}

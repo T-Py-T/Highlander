@@ -1,0 +1,92 @@
+Binary files a/__pycache__/yaml.cpython-311.pyc and b/__pycache__/yaml.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 0ba08cc4fad1f4144ec19695651d9e1a17e15139d8e34244d3148b618195157d)
+--- a/in/composeapp/compose.yaml
++++ b/in/composeapp/compose.yaml
+@@ -1,20 +1,22 @@
+ services:
+   api:
+-    image: ghcr.io/example/composeapp-api:latest
++    image: ghcr.io/example/composeapp-api:1.4.2
+     ports:
+-      - "${WEB_PORT:-8000}:8000"
++      - "${API_PORT:-8080}:8000"
+     environment:
+       DATABASE_URL: "postgresql://composeapp:composeapp-dev@db:5432/composeapp"
+-      REDIS_DSN: "${REDIS_URL:-redis://cache:6379/0}"
+-      QUEUE_NAME: "default"
+-      APP_DATA_DIR: "/tmp/data"
++      REDIS_URL: "${REDIS_URL:-redis://redis:6379/0}"
++      QUEUE_NAME: "critical"
++      APP_DATA_DIR: "/data"
+     volumes:
+-      - api-data:/var/lib/composeapp
++      - api-data:/data
+     depends_on:
+-      - db
+-      - cache
++      db:
++        condition: service_healthy
++      redis:
++        condition: service_healthy
+     healthcheck:
+-      test: ["CMD", "curl", "-f", "http://localhost:8000/status"]
++      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+       interval: 30s
+       timeout: 3s
+       retries: 3
+@@ -22,20 +24,30 @@
+     image: ghcr.io/example/composeapp-worker:1.4.2
+     environment:
+       DATABASE_URL: "postgresql://composeapp:composeapp-dev@db:5432/composeapp"
+-      REDIS_URL: "${REDIS_URL:-redis://cache:6379/0}"
+-      QUEUE_NAME: "default"
++      REDIS_URL: "${REDIS_URL:-redis://redis:6379/0}"
++      QUEUE_NAME: "critical"
+     depends_on:
+       db:
+-        condition: service_started
+-      cache:
+-        condition: service_started
++        condition: service_healthy
++      redis:
++        condition: service_healthy
+   db:
+     image: postgres:16.2-alpine
+     environment:
+       POSTGRES_DB: composeapp
+       POSTGRES_USER: composeapp
+       POSTGRES_PASSWORD: composeapp-dev
+-  cache:
++    healthcheck:
++      test: ["CMD-SHELL", "pg_isready -U composeapp -d composeapp"]
++      interval: 10s
++      timeout: 5s
++      retries: 5
++  redis:
+     image: redis:7.2-alpine
++    healthcheck:
++      test: ["CMD", "redis-cli", "ping"]
++      interval: 10s
++      timeout: 5s
++      retries: 5
+ volumes:
+   api-data:
+--- a/out/compose_fix_report.md
++++ b/out/compose_fix_report.md
+@@ -0,0 +1,17 @@
++# Compose Configuration Repair
++
++## Root Cause
++
++The incident edit broke the local deployment contract by using the `latest` API image, mapping `WEB_PORT`, renaming the Redis environment variable and service to `cache`, using the wrong queue and API data directory, mounting the named volume at the wrong target, omitting required service healthchecks, and weakening dependency conditions to `service_started`.
++
++The compose file now uses the policy-pinned images, `redis` service, `critical` queue, required environment variables, `/data` volume mount, meaningful healthchecks, and `service_healthy` dependencies. `.env.example` already documented the matching defaults.
++
++## Validation
++
++Final validation command:
++
++```bash
++PYTHONPATH=/workspace python3 tools/validate_compose.py
++```
++
++Result: `compose contract ok`

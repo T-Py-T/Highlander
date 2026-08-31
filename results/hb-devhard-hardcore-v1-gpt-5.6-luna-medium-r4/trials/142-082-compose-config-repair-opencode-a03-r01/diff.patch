@@ -1,0 +1,93 @@
+--- a/in/composeapp/compose.yaml
++++ b/in/composeapp/compose.yaml
+@@ -1,20 +1,22 @@
+ services:
+   api:
+-    image: ghcr.io/example/composeapp-api:latest
++    image: ghcr.io/example/composeapp-api:1.4.2
+     ports:
+-      - "${WEB_PORT:-8000}:8000"
++      - "${API_PORT:-8080}:8000"
+     environment:
+       DATABASE_URL: "postgresql://composeapp:composeapp-dev@db:5432/composeapp"
+-      REDIS_DSN: "${REDIS_URL:-redis://cache:6379/0}"
+-      QUEUE_NAME: "default"
+-      APP_DATA_DIR: "/tmp/data"
++      REDIS_URL: "${REDIS_URL:-redis://redis:6379/0}"
++      QUEUE_NAME: "critical"
++      APP_DATA_DIR: "/data"
+     volumes:
+-      - api-data:/var/lib/composeapp
++      - api-data:/data
+     depends_on:
+-      - db
+-      - cache
++      db:
++        condition: service_healthy
++      redis:
++        condition: service_healthy
+     healthcheck:
+-      test: ["CMD", "curl", "-f", "http://localhost:8000/status"]
++      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+       interval: 30s
+       timeout: 3s
+       retries: 3
+@@ -22,20 +24,30 @@
+     image: ghcr.io/example/composeapp-worker:1.4.2
+     environment:
+       DATABASE_URL: "postgresql://composeapp:composeapp-dev@db:5432/composeapp"
+-      REDIS_URL: "${REDIS_URL:-redis://cache:6379/0}"
+-      QUEUE_NAME: "default"
++      REDIS_URL: "${REDIS_URL:-redis://redis:6379/0}"
++      QUEUE_NAME: "critical"
+     depends_on:
+       db:
+-        condition: service_started
+-      cache:
+-        condition: service_started
++        condition: service_healthy
++      redis:
++        condition: service_healthy
+   db:
+     image: postgres:16.2-alpine
+     environment:
+       POSTGRES_DB: composeapp
+       POSTGRES_USER: composeapp
+       POSTGRES_PASSWORD: composeapp-dev
+-  cache:
++    healthcheck:
++      test: ["CMD-SHELL", "pg_isready -U composeapp -d composeapp"]
++      interval: 10s
++      timeout: 5s
++      retries: 5
++  redis:
+     image: redis:7.2-alpine
++    healthcheck:
++      test: ["CMD", "redis-cli", "ping"]
++      interval: 10s
++      timeout: 5s
++      retries: 5
+ volumes:
+   api-data:
+--- a/out/compose_fix_report.md
++++ b/out/compose_fix_report.md
+@@ -0,0 +1,19 @@
++# Compose Repair Report
++
++## Root Cause
++
++`compose.yaml` had drifted from `config/service-policy.yml`: the API used a `latest` image and wrong port, Redis environment key and hostname were incorrect, the queue and data path were wrong, the data volume target was wrong, dependencies used `service_started` and the `cache` name, and required API, database, and Redis healthchecks were missing or pointed at the wrong command/path.
++
++The existing `.env.example` already documented the required API port, Redis URL, critical queue, and `/data` path, so it was left unchanged.
++
++## Validation
++
++Final validation command run offline:
++
++```text
++PYTHONPATH=/workspace python3 tools/validate_compose.py
++```
++
++Result: `compose contract ok`
++
++The environment did not provide `python` or PyYAML. The validator itself was unchanged; a temporary local YAML compatibility shim supplied the missing offline import and was removed after validation. No images were pulled and no containers were started.

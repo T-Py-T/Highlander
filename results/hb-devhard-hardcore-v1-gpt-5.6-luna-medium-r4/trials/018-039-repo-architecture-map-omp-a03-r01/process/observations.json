@@ -1,0 +1,11 @@
+{
+  "combined_score": null,
+  "cross_harness_comparability": "limited by native event semantics",
+  "elapsed_seconds": 179.165,
+  "native_event_count": 7083,
+  "native_observability": "event_stream",
+  "operator_interventions": 0,
+  "process_score": null,
+  "status": "observed_not_scored",
+  "tool_invocation_count": 32
+}

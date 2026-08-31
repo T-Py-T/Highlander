@@ -1,0 +1,24 @@
+Repaired the billing migration package at:
+
+- /workspace/in/billingdb/migration.sql
+- /workspace/in/billingdb/preflight_report.md
+- /workspace/in/billingdb/rollback.sql
+- /workspace/in/billingdb/postcheck.sql
+- /workspace/in/billingdb/migration_report.md
+
+The requested `<HOME>/...` path is not mounted in this environment; `/workspace/in/billingdb` is the available corresponding package path.
+
+Verified with Python’s SQLite engine:
+
+- First migration succeeds.
+- Second migration is idempotent.
+- 3 invoices preserved.
+- 3 valid payments preserved.
+- Orphan `p4` preserved in `payment_orphans`.
+- Invoice timestamps preserved.
+- Invoice statuses default to `open`.
+- Custom status survives a second migration run.
+- Foreign-key violations: 0.
+- Foreign keys remain enabled.
+- Rollback restores the legacy invoice and payment table shapes.
+- Rollback restores all 4 payments, including `p4`.

@@ -1,0 +1,251 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 452,
+      "path": "control/app.json",
+      "sha256": "166994d540e5c8bcf5b97c32ccafc50f3f483a231dd6862fc51f5630a3cabed9"
+    },
+    {
+      "bytes": 720,
+      "path": "control/harness.json",
+      "sha256": "093cdc87596577a5ada6f442d0ecb14c8c2fc3526d7d3dd10fe16c3e18828075"
+    },
+    {
+      "bytes": 356,
+      "path": "control/trial.json",
+      "sha256": "0b930c628be6089cac3f7b3b272f47d6eed6968b682a5494e699453be0c71d7d"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2371,
+      "path": "controller.stdout.raw",
+      "sha256": "c2520e6feef7b33f695823ccc418efe7a72a1944e2ad20b6e09b20a3b117be7d"
+    },
+    {
+      "bytes": 17345,
+      "path": "diff.patch",
+      "sha256": "9f2e31ba372186067797f54aa5b7ad515dd66520eeb3cb674b6b1958175650e6"
+    },
+    {
+      "bytes": 2383,
+      "path": "native/container-plan.json",
+      "sha256": "4cb85b0e456a9c35c079e0bd491e036170c0ac5ceec5ed8c0378b799c34ccf2a"
+    },
+    {
+      "bytes": 659,
+      "path": "native/control-proof.json",
+      "sha256": "971e0bbe280505c71d3b8203b7ff817374728284f0c362f08e8b12f1d77e1d8d"
+    },
+    {
+      "bytes": 2199,
+      "path": "native/execution.json",
+      "sha256": "22e04c71829606ec925c4d457826b425bdee57354200c677c0b0b6fc66b35449"
+    },
+    {
+      "bytes": 757,
+      "path": "native/invocation.json",
+      "sha256": "c9e96576df4acc8d7fe4fc42e512a09bc229d767436f32b3a35f641c473d37b0"
+    },
+    {
+      "bytes": 48,
+      "path": "native/process-metrics.json",
+      "sha256": "bf225fbe16fbb7db40291698ce9a3771e4d4335cda5a095de5c20a1924c83313"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 4131,
+      "path": "native/stdout.raw",
+      "sha256": "db765eccb0980a1f065be5e25b72927aeb4fdeefc9f3e4ca7ea3c3c8ac957cc4"
+    },
+    {
+      "bytes": 0,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 318,
+      "path": "process/observations.json",
+      "sha256": "984816ec5242041a6d6804ba7eb39c8553e8811946c51436ecc8d894e463ad2e"
+    },
+    {
+      "bytes": 0,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2665,
+      "path": "result.json",
+      "sha256": "7030cddad589d5137423cf4b4a0ac3c55e591f224b8ee7ff1f96bb44d5851135"
+    },
+    {
+      "bytes": 9633,
+      "path": "upstream-result.json",
+      "sha256": "434d0594ae05c7027d75d1a56be9d9528660ea9616b8febb5ddad051d552f71f"
+    },
+    {
+      "bytes": 400,
+      "path": "usage-normalized.json",
+      "sha256": "8e9561685170d6f5cae767c269910a5f3d78deb47dc1ef6e96e0dcb2f7f93c98"
+    },
+    {
+      "bytes": 23,
+      "path": "workspace-final/.git/HEAD",
+      "sha256": "f6f2b945f6c411b02ba3da9c7ace88dcf71b6af65ba2e0d89aa82900042b5a10"
+    },
+    {
+      "bytes": 92,
+      "path": "workspace-final/.git/config",
+      "sha256": "cfe7ba1238c9a78be7535d7c63bcaf5a4d5011d46b07c9b45d3bbf7d6c312dfe"
+    },
+    {
+      "bytes": 18,
+      "path": "workspace-final/.git/description",
+      "sha256": "dff25157a84480762865d6884596b9d72e5e71aa4a922ebd34e52bd649f78cdf"
+    },
+    {
+      "bytes": 336,
+      "path": "workspace-final/.git/index",
+      "sha256": "7117cc8c97b85fb5b1986e573ad5b3cc3c05ad645000d5f5b1096ce9c3d0f877"
+    },
+    {
+      "bytes": 0,
+      "path": "workspace-final/.git/info/exclude",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 158,
+      "path": "workspace-final/.git/logs/HEAD",
+      "sha256": "c856d622907da30d11e9c802ab73e944d8c46492612483ab62429e5ff73728b5"
+    },
+    {
+      "bytes": 595,
+      "path": "workspace-final/.git/objects/27/b6097145cf669b6b4ae0be4bbf0cba9fc2a36f",
+      "sha256": "a2fc4b0f923cba607a3cc2ba9f513528da8ca8d4a2e21ce6b93f8375dbf02498"
+    },
+    {
+      "bytes": 64,
+      "path": "workspace-final/.git/objects/34/0868ba1c7a346c35a3491a2f7f3253301f4666",
+      "sha256": "43b04fb50963320eb592a3ffe55f149d9379d4ccb0f84c6063eade22157dc86b"
+    },
+    {
+      "bytes": 54,
+      "path": "workspace-final/.git/objects/63/d78c88a940f2afb4aea7d03e819d39c6fe50ef",
+      "sha256": "ece932b6ebdd6c5d8ee51c972e02ed8e0fee722a4143a2a401b41cb57b6aab7b"
+    },
+    {
+      "bytes": 497,
+      "path": "workspace-final/.git/objects/67/1ec49a110f8a0a5d65134c4c484d24497bc870",
+      "sha256": "951c377cf302fc15abaddb83943f30faf62b6a0b9e94d170866c75e0b2fddeff"
+    },
+    {
+      "bytes": 122,
+      "path": "workspace-final/.git/objects/af/48bd19fdf1107018434842e670a9b350250913",
+      "sha256": "afa1bb11715d5256ad9d548cc427eee1986c4785cb21a809b75504855df0f279"
+    },
+    {
+      "bytes": 148,
+      "path": "workspace-final/.git/objects/d0/d770e808ab9c2233de388bb2e5d7db7ca38461",
+      "sha256": "c19b171db1d01aebc693dc2e7dd7d9fcf7c03f655614bed3ee8f8e3b0ad5c2e3"
+    },
+    {
+      "bytes": 250,
+      "path": "workspace-final/.git/objects/fd/2ca96811ac7aae57f7c40ee17ae17cc80d224b",
+      "sha256": "ee3bfcd9dadb477546444fea1b10acc64539c5192aa5e77f73c621b21a0aa641"
+    },
+    {
+      "bytes": 41,
+      "path": "workspace-final/.git/refs/heads/master",
+      "sha256": "932170f24007ff11f2ace8d14b2f07d5646748a1e0538b808ef0caaad1a057bf"
+    },
+    {
+      "bytes": 60,
+      "path": "workspace-final/.gitignore",
+      "sha256": "0f6248e61837bf39a36406ecd83af36cef0f2a5ab89cd2aa19c826cfd7b851fe"
+    },
+    {
+      "bytes": 822,
+      "path": "workspace-final/AGENTS.md",
+      "sha256": "1b0aa1d81e4be6cf5e407743dae50e91bafe5e72511f883f58db289563a35246"
+    },
+    {
+      "bytes": 370,
+      "path": "workspace-final/HEARTBEAT.md",
+      "sha256": "a52adedddf94f2be8f692c785337aae7eaa1a19284b11d981706ebd36e65e6a8"
+    },
+    {
+      "bytes": 1008,
+      "path": "workspace-final/SOUL.md",
+      "sha256": "0c2d95c382ab74ba8897a81dcd53bd71952a30bc6ce3ac6a3cee817a1f9d250f"
+    },
+    {
+      "bytes": 1585,
+      "path": "workspace-final/TOOLS.md",
+      "sha256": "d7171f7347c7f3c4ee27dc415c6aacd3658eff4e0a98dd24bac2a80094d866ed"
+    },
+    {
+      "bytes": 842,
+      "path": "workspace-final/USER.md",
+      "sha256": "bfd7f7a5e129a86f1d392374669e5375986b830fce9d0d591de15c296845725e"
+    },
+    {
+      "bytes": 422,
+      "path": "workspace-final/in/logs/auth-gateway.log",
+      "sha256": "72e847f715cf8469ceb3dc6e8076c10eb3286eed9e6ec33de4126ab56a75f021"
+    },
+    {
+      "bytes": 314,
+      "path": "workspace-final/in/logs/checkout-web.log",
+      "sha256": "03861f5c8a0f05cd960c02dfeb71fa4247a19ce47e682988846a21b976ec7953"
+    },
+    {
+      "bytes": 230,
+      "path": "workspace-final/in/logs/orders-db.log",
+      "sha256": "1bd706da909c39842626c3f27cc95bee7d19c98a8b70b09657b326890715e8a8"
+    },
+    {
+      "bytes": 307,
+      "path": "workspace-final/in/logs/payment-api.log",
+      "sha256": "cc9e08849c62e13c3278f1c85f459df5b698799accfeebc30bc1d0ed84d8e498"
+    },
+    {
+      "bytes": 559,
+      "path": "workspace-final/in/metrics/service_metrics.csv",
+      "sha256": "e1db0be401760fd2b83e90c3e17e97d28844b45e327858b27ca0a0d2876f5f36"
+    },
+    {
+      "bytes": 753,
+      "path": "workspace-final/in/topology.json",
+      "sha256": "bf9acde251e643f96534abfb2f1f96d9a4799bd82a40d51d6a5530541528fc49"
+    },
+    {
+      "bytes": 408,
+      "path": "workspace-final/memory/MEMORY.md",
+      "sha256": "a0151a00f64bcf2e42219687341d28097ea669a9f117b0a6e65033897a207a8e"
+    },
+    {
+      "bytes": 0,
+      "path": "workspace-final/memory/history.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 8899,
+      "path": "workspace-final/sessions/highlander_direct.jsonl",
+      "sha256": "9859f53983ca707c4f677386c400d3297c08e9f48f8a5b8d497b2bd43fe3f935"
+    }
+  ],
+  "generated_at": "2026-08-31T13:01:37.331147Z",
+  "schema_version": 1
+}

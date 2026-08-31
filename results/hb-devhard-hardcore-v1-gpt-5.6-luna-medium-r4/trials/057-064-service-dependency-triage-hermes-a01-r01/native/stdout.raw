@@ -1,0 +1,18 @@
+Created and verified exactly these output files in the available workspace mapping:
+
+- /workspace/out/root_cause.json
+- /workspace/out/triage_notes.md
+
+Findings:
+- Root cause service: auth-gateway
+- Root cause change: AUTH-2026-0318
+- Confidence: high
+- Dependency path: checkout-web → payment-api → auth-gateway
+- Primary failure: partner-v2 issuer rejected after JWKS/issuer configuration change
+
+Validation confirmed:
+- JSON schema and required fields are present.
+- Evidence cites five fixture files.
+- Triage notes distinguish directly observed facts from inferences.
+- Immediate mitigation and verification steps are included.
+- No input files were modified.

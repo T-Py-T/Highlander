@@ -1,0 +1,13 @@
+{"event_type": "tool_execution_start", "line": 31, "tool_kind": "find"}
+{"event_type": "tool_execution_start", "line": 210, "tool_kind": "bash"}
+{"event_type": "tool_execution_start", "line": 250, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 251, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 252, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 253, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 254, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 255, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 256, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 257, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 258, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 430, "tool_kind": "bash"}
+{"event_type": "tool_execution_start", "line": 452, "tool_kind": "workflow"}

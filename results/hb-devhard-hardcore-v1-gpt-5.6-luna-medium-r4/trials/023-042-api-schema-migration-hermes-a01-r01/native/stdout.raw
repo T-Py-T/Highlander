@@ -1,0 +1,24 @@
+Implemented the migration in:
+
+/workspace/in/schema_migration/client.py
+
+Note: the user-provided `<HOME>/...` path is not mounted in this environment; the project is available at `/workspace/in/schema_migration`.
+
+Supported behavior includes:
+- Legacy v1, v1.1, and v1.2 payload mappings
+- Already-v2 payloads with idempotent line-item preservation
+- Nested customer, lines, shipTo, order_ref, and unit_price_cents
+- Alternate postal field names
+- Default `"standard"` shipping method for blank/null values
+- Unknown-field preservation under `metadata.unknownFields`
+- PII exclusion per `pii_policy.md`
+- Batch error aggregation with `index`, `path`, and `error`
+- Conversion audit generation at:
+  /workspace/in/schema_migration/conversion_audit.json
+- CLI support via `python -m client input.jsonl output.json`
+
+Verification:
+- `5 passed` with pytest
+- Manual sample conversion succeeded
+- Manual error aggregation and audit generation succeeded
+- CLI conversion succeeded and produced 4 records

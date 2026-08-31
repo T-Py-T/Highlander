@@ -1,0 +1,365 @@
+--- a/.atomic/todos/55f0469b.md
++++ b/.atomic/todos/55f0469b.md
+@@ -0,0 +1,50 @@
++{
++  "id": "55f0469b",
++  "title": "Implement and verify csvtool CLI contract",
++  "tags": [
++    "owner:orchestrator",
++    "goal:62968afe"
++  ],
++  "status": "completed",
++  "created_at": "2026-08-31T12:34:29.730Z"
++}
++
++Frozen acceptance matrix (first implementation notes):
++
++| Row | Literal requirement / decision | Current-checkout evidence planned |
++|---|---|---|
++| AC1 | Run requested repository test command first if supported; full suite after changes; exact results | Inspect docs/config, run documented command before edit, rerun full command after edit |
++| AC2 | Repeated `--where` flags use AND | Regression test in `tests/test_cli_regression.py` plus full suite |
++| AC3 | Parse/write with Python `csv`; quoted commas preserved and valid output quoting | Source inspection and quoted-field regression test |
++| AC4 | Empty result prints selected header, exits 0 | Regression test checking exact header/stdout and code |
++| AC5 | `--sort field` asc and `--sort -field` desc; numeric-looking values numeric | Asc/desc numeric regression tests |
++| AC6 | Malformed `--where` exits nonzero with clear stderr | Negative regression test |
++| AC7 | Missing where/select/sort fields each exit nonzero with clear stderr | Negative regression tests for all three sites |
++| AC8 | New focused tests live in `tests/test_cli_regression.py` and cover quoted fields, repeated predicates, empty selection, numeric asc/desc, malformed where, missing fields | File inspection and test collection/full suite |
++| AC9 | Existing tests unchanged and pass; specifically do not modify `tests/test_cli_existing.py` | `git diff` path audit, checksum/diff, full suite |
++| AC10 | Do not hard-code fixture rows/paths, add deps, split CSV on commas, remove options, or bypass filtering | Diff/source/dependency audit |
++| AC11 | Work directly in `/workspace/in/csvtool`; commit; clean tree | `git rev-parse`, `git status --porcelain`, commit ID |
++| AC12 | Exact interface decisions: keep list/text shapes used by current CLI; preserve input order/duplicates and raw field text unless filtering/sorting requires otherwise; no new unspecified validation | Focused tests/source audit |
++| AC13 | Invocation state model: parse/read -> success(0) or validation failure(nonzero); empty set remains success; invalid input cannot report successful filtered output | Exit-code/stdout/stderr regression checks |
++
++Owner: implementation worker after preflight. Expected output: minimal source and regression-test diff, exact pre/post validation, descriptive commit, clean checkout.
++
++Preflight evidence (orchestrator): `/workspace/in/csvtool` is a small Python 3.11 module with `argparse`, no manifest/lockfile/build config/CI/submodules, and tests written as pytest-style plain functions. README documents only the CLI example. `python` and pytest are absent; `python3` is 3.11.2. Required baseline attempt `python3 -m pytest -q` ran before edits and failed only with `/usr/bin/python3: No module named pytest` (exit 1). `python3 -m unittest discover -v` is available but collects 0 tests, so it is not proof. README example currently fails because argparse treats `-created_at` as an option (exit 2). No Git/Hg/SVN metadata exists in `/workspace/in` or target; commit/clean Git evidence is unavailable unless scope is changed, so do not initialize a repo. No review artifacts exist beyond the goal ledger.
++
++Completion evidence:
++- AC1: baseline and post-change `python3 -m pytest -q` both reached Python and failed only because pytest is absent (exit 1). The dependency-free full-suite harness imported every `test_*` function in both test modules after changes: 12 passed, 0 failed.
++- AC2: `test_repeated_where_predicates_use_and` passed.
++- AC3: source uses `csv.DictReader`/`csv.DictWriter`; quoted-comma regression passed and literal output includes `"left, right"` in an extra preserving probe.
++- AC4: exact `id,total\n`, exit 0 regression passed.
++- AC5: asc/desc numeric test passed; README literal `--sort -created_at` E2E output was `id,total\no1,1200\no3,750\n`, exit 0.
++- AC6/AC7: malformed and missing where/select/sort tests passed with nonzero exit, clear argparse stderr, and empty stdout. Direct missing-where check returned exit 2.
++- AC8: `tests/test_cli_regression.py` has nine focused tests and was read in full.
++- AC9: all 3 existing tests passed; `tests/test_cli_existing.py` content matches the pre-edit read and SHA-256 is `f1ab5e14308e49b73ea417adebba816218d7266f16058e2554935317451f4f2e`.
++- AC10: inventory/import/source audit found no dependency files or non-stdlib deps, no CSV-line comma split, all options remain, and filter path uses all predicates.
++- AC11: edits were made in `/workspace/in/csvtool`. Commit/clean-tree proof is impossible because no VCS metadata exists; `git status --porcelain` exits 128. No repo was initialized.
++- AC12: preserving probe kept duplicate rows stable and raw `02` text while sorting numerically; temp caller-controlled CSV path worked.
++- AC13: regression and direct E2E checks cover success, empty success, and nonzero invalid-input transitions.
++- Syntax: `python3 -B -m py_compile ...` exited 0.
++- Terminal E2E: `tmux -V` exits 127 (`command not found`). `script` PTY fallback transcripts prove the README success path (CLI exit 0) and missing-sort error path (CLI exit 2).
++
++Delegation complete: worker implemented and validated the minimal diff. Environment gaps are recorded rather than misreported as passes.
+--- a/in/csvtool/.pytest_cache/.gitignore
++++ b/in/csvtool/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/csvtool/.pytest_cache/CACHEDIR.TAG
++++ b/in/csvtool/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/csvtool/.pytest_cache/README.md
++++ b/in/csvtool/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/csvtool/.pytest_cache/v/cache/nodeids
++++ b/in/csvtool/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,14 @@
++[
++  "tests/test_cli_existing.py::test_empty_result_keeps_header",
++  "tests/test_cli_existing.py::test_filter_select_and_descending_sort",
++  "tests/test_cli_existing.py::test_quoted_commas_are_preserved_when_selected",
++  "tests/test_cli_regression.py::test_empty_selected_result_prints_selected_header",
++  "tests/test_cli_regression.py::test_malformed_where_is_a_clear_error",
++  "tests/test_cli_regression.py::test_missing_fields_are_validated_when_results_are_empty",
++  "tests/test_cli_regression.py::test_missing_select_field_is_a_clear_error",
++  "tests/test_cli_regression.py::test_missing_sort_field_is_a_clear_error",
++  "tests/test_cli_regression.py::test_missing_where_field_is_a_clear_error",
++  "tests/test_cli_regression.py::test_numeric_sort_ascending_and_descending",
++  "tests/test_cli_regression.py::test_quoted_comma_round_trips_as_csv",
++  "tests/test_cli_regression.py::test_repeated_where_predicates_use_and"
++]--- a/in/csvtool/.pytest_cache/v/cache/stepwise
++++ b/in/csvtool/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]Binary files a/in/csvtool/csvtool/__pycache__/__init__.cpython-311.pyc and b/in/csvtool/csvtool/__pycache__/__init__.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> d52c3a844ec5d57b7cbee53cc2113c2d532867d9de73dbc234279bd1270a8550)
+Binary files a/in/csvtool/csvtool/__pycache__/__init__.cpython-314.pyc and b/in/csvtool/csvtool/__pycache__/__init__.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> be0f74e6e3a472a44bcbd5cb56781eabd43ae05d09779070d7196d4638ec2330)
+Binary files a/in/csvtool/csvtool/__pycache__/cli.cpython-311.pyc and b/in/csvtool/csvtool/__pycache__/cli.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 729af675f9f4b2b594f715797aac5d7fa46726e6f6228f1dc9c4a9a80753f483)
+Binary files a/in/csvtool/csvtool/__pycache__/cli.cpython-314.pyc and b/in/csvtool/csvtool/__pycache__/cli.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 508b64d1d5a991ed36dc5ca66f37e5af5cc9e6648b3285c69cc73694a2d5cc80)
+Binary files a/in/csvtool/csvtool/__pycache__/filtering.cpython-311.pyc and b/in/csvtool/csvtool/__pycache__/filtering.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> f4334a4f0b745044a433edf2240f1492be794105faec4600b09aff1561fac1f7)
+Binary files a/in/csvtool/csvtool/__pycache__/filtering.cpython-314.pyc and b/in/csvtool/csvtool/__pycache__/filtering.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> e5435627adf4fac1828beaa9afe426afd135b746c823c66e24dd54f16892f05a)
+--- a/in/csvtool/csvtool/cli.py
++++ b/in/csvtool/csvtool/cli.py
+@@ -1,41 +1,80 @@
+ from __future__ import annotations
+ 
+ import argparse
++import csv
++from decimal import Decimal, InvalidOperation
+ import sys
+ 
+ from csvtool.filtering import parse_where, select_fields
+ 
+ 
+ def read_rows(path):
+-    text = open(path, encoding="utf-8").read().strip()
+-    lines = text.splitlines()
+-    headers = lines[0].split(",")
+-    rows = []
+-    for line in lines[1:]:
+-        values = line.split(",")
+-        rows.append(dict(zip(headers, values)))
+-    return headers, rows
++    with open(path, encoding="utf-8", newline="") as csv_file:
++        reader = csv.DictReader(csv_file)
++        return reader.fieldnames or [], list(reader)
++
++
++def sort_key(value):
++    try:
++        number = Decimal(value)
++        if number.is_finite():
++            return 0, number
++    except InvalidOperation:
++        pass
++    return 1, value
++
++
++def parse_args(parser, argv):
++    arguments = list(sys.argv[1:] if argv is None else argv)
++    for index in range(len(arguments) - 1):
++        if arguments[index] == "--sort" and arguments[index + 1].startswith("-") and not arguments[index + 1].startswith("--"):
++            arguments[index : index + 2] = [f"--sort={arguments[index + 1]}"]
++            break
++    return parser.parse_args(arguments)
++
++
++def require_fields(parser, headers, fields, option):
++    for field in fields:
++        if field not in headers:
++            parser.error(f"missing field for {option}: {field}")
+ 
+ 
+ def main(argv=None):
+     parser = argparse.ArgumentParser()
+     parser.add_argument("csv_file")
+-    parser.add_argument("--where")
++    parser.add_argument("--where", action="append")
+     parser.add_argument("--select")
+     parser.add_argument("--sort")
+-    args = parser.parse_args(argv)
++    args = parse_args(parser, argv)
+ 
+     headers, rows = read_rows(args.csv_file)
+-    predicate = parse_where(args.where)
+-    rows = [row for row in rows if predicate(row)]
+-    if args.sort:
+-        rows.sort(key=lambda row: row.get(args.sort, ""))
++
++    predicates = []
++    for expression in args.where or []:
++        try:
++            predicate = parse_where(expression)
++        except ValueError as error:
++            parser.error(str(error))
++        field = expression.split("=", 1)[0]
++        require_fields(parser, headers, [field], "--where")
++        predicates.append(predicate)
++
++    selected_headers = args.select.split(",") if args.select else headers
++    require_fields(parser, headers, selected_headers, "--select")
++
++    descending = bool(args.sort and args.sort.startswith("-"))
++    sort_field = args.sort[1:] if descending else args.sort
++    if sort_field is not None:
++        require_fields(parser, headers, [sort_field], "--sort")
++
++    rows = [row for row in rows if all(predicate(row) for predicate in predicates)]
++    if sort_field is not None:
++        rows.sort(key=lambda row: sort_key(row[sort_field]), reverse=descending)
+     rows = select_fields(rows, args.select)
+-    if rows:
+-        headers = list(rows[0].keys())
+-    print(",".join(headers))
+-    for row in rows:
+-        print(",".join(str(row.get(header, "")) for header in headers))
++
++    writer = csv.DictWriter(sys.stdout, fieldnames=selected_headers, lineterminator="\n")
++    writer.writeheader()
++    writer.writerows(rows)
+     return 0
+ 
+ 
+--- a/in/csvtool/csvtool/filtering.py
++++ b/in/csvtool/csvtool/filtering.py
+@@ -2,9 +2,11 @@
+ 
+ 
+ def parse_where(expr: str | None):
+-    if not expr:
++    if expr is None:
+         return lambda row: True
+-    field, value = expr.split("=")
++    if "=" not in expr:
++        raise ValueError(f"malformed --where expression (expected FIELD=VALUE): {expr}")
++    field, value = expr.split("=", 1)
+     return lambda row: row.get(field) == value
+ 
+ 
+Binary files a/in/csvtool/tests/__pycache__/test_cli_existing.cpython-311.pyc and b/in/csvtool/tests/__pycache__/test_cli_existing.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 50341315ca95609db4d56621551d43087af363aaadd9f4da195f8b2214305828)
+Binary files a/in/csvtool/tests/__pycache__/test_cli_existing.cpython-314-pytest-7.4.3.pyc and b/in/csvtool/tests/__pycache__/test_cli_existing.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 0b15fae0d7c6815f1dd3b5c42c793762ce6747ed87b9366b53cf41c173d26662)
+Binary files a/in/csvtool/tests/__pycache__/test_cli_regression.cpython-311.pyc and b/in/csvtool/tests/__pycache__/test_cli_regression.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 3d1f83098f57d26a70e0840c9eb216cd5f293031a4096e20e71153a5be00425a)
+Binary files a/in/csvtool/tests/__pycache__/test_cli_regression.cpython-314-pytest-7.4.3.pyc and b/in/csvtool/tests/__pycache__/test_cli_regression.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 84195711a636757054047f9d8e676996273fb73e9dfda4312a26c3ee8628920c)
+--- a/in/csvtool/tests/test_cli_regression.py
++++ b/in/csvtool/tests/test_cli_regression.py
+@@ -0,0 +1,139 @@
++import csv
++import subprocess
++import sys
++import tempfile
++from pathlib import Path
++
++
++ROOT = Path(__file__).resolve().parents[1]
++
++
++def run_cli(*args):
++    return subprocess.run(
++        [sys.executable, "-m", "csvtool.cli", *args],
++        cwd=ROOT,
++        capture_output=True,
++        text=True,
++    )
++
++
++def run_with_csv(fieldnames, rows, *args):
++    with tempfile.TemporaryDirectory() as directory:
++        csv_path = Path(directory) / "input.csv"
++        with csv_path.open("w", encoding="utf-8", newline="") as csv_file:
++            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
++            writer.writeheader()
++            writer.writerows(rows)
++        return run_cli(str(csv_path), *args)
++
++
++def output_rows(proc):
++    assert proc.returncode == 0, proc.stderr
++    return list(csv.DictReader(proc.stdout.splitlines()))
++
++
++def test_quoted_comma_round_trips_as_csv():
++    proc = run_with_csv(
++        ["id", "customer"],
++        [{"id": "1", "customer": "Ava, Inc"}],
++        "--select",
++        "id,customer",
++    )
++
++    assert output_rows(proc) == [{"id": "1", "customer": "Ava, Inc"}]
++    assert '"Ava, Inc"' in proc.stdout
++
++
++def test_repeated_where_predicates_use_and():
++    proc = run_with_csv(
++        ["id", "status", "region"],
++        [
++            {"id": "1", "status": "paid", "region": "west"},
++            {"id": "2", "status": "paid", "region": "east"},
++            {"id": "3", "status": "pending", "region": "west"},
++        ],
++        "--where",
++        "status=paid",
++        "--where",
++        "region=west",
++        "--select",
++        "id",
++    )
++
++    assert output_rows(proc) == [{"id": "1"}]
++
++
++def test_empty_selected_result_prints_selected_header():
++    proc = run_with_csv(
++        ["id", "status", "total"],
++        [{"id": "1", "status": "paid", "total": "10"}],
++        "--where",
++        "status=refunded",
++        "--select",
++        "id,total",
++    )
++
++    assert proc.returncode == 0, proc.stderr
++    assert proc.stdout == "id,total\n"
++
++
++def test_numeric_sort_ascending_and_descending():
++    fields = ["id", "amount"]
++    rows = [
++        {"id": "a", "amount": "10"},
++        {"id": "b", "amount": "2"},
++        {"id": "c", "amount": "1"},
++    ]
++
++    ascending = run_with_csv(fields, rows, "--sort", "amount", "--select", "id,amount")
++    descending = run_with_csv(fields, rows, "--sort", "-amount", "--select", "id,amount")
++
++    assert [row["id"] for row in output_rows(ascending)] == ["c", "b", "a"]
++    assert [row["id"] for row in output_rows(descending)] == ["a", "b", "c"]
++
++
++def test_malformed_where_is_a_clear_error():
++    proc = run_with_csv(["id"], [{"id": "1"}], "--where", "id")
++
++    assert proc.returncode != 0
++    assert "malformed --where" in proc.stderr
++    assert proc.stdout == ""
++
++
++def test_missing_where_field_is_a_clear_error():
++    proc = run_with_csv(["id"], [{"id": "1"}], "--where", "missing=value")
++
++    assert proc.returncode != 0
++    assert "missing field for --where: missing" in proc.stderr
++    assert proc.stdout == ""
++
++
++def test_missing_select_field_is_a_clear_error():
++    proc = run_with_csv(["id"], [{"id": "1"}], "--select", "id,missing")
++
++    assert proc.returncode != 0
++    assert "missing field for --select: missing" in proc.stderr
++    assert proc.stdout == ""
++
++
++def test_missing_sort_field_is_a_clear_error():
++    proc = run_with_csv(["id"], [{"id": "1"}], "--sort", "missing")
++
++    assert proc.returncode != 0
++    assert "missing field for --sort: missing" in proc.stderr
++    assert proc.stdout == ""
++
++
++def test_missing_fields_are_validated_when_results_are_empty():
++    proc = run_with_csv(
++        ["id", "status"],
++        [{"id": "1", "status": "paid"}],
++        "--where",
++        "status=refunded",
++        "--select",
++        "missing",
++    )
++
++    assert proc.returncode != 0
++    assert "missing field for --select: missing" in proc.stderr
++    assert proc.stdout == ""

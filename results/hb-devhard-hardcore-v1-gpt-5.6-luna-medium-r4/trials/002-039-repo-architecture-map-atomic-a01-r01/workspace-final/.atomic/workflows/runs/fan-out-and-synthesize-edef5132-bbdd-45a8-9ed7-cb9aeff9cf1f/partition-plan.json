@@ -1,0 +1,17 @@
+{
+  "task": "<keepContext>Inspect only /workspace/in/repo; do not modify it and do not use internet. Produce an evidence-backed repository architecture map for these required deliverables: module_map.json with modules, canonical entry_points including minisvc.cli:main and minisvc.api.routes:register_routes, dependency edges (imports/calls/instantiates/reads_config/persists_to), key functions, and CLI startup plus HTTP create-order runtime flows; architecture.md; doc_code_discrepancies.csv covering readonly enforcement, retry behavior, audit persistence; risk_register.csv covering storage durability, audit behavior, config/runtime environment, API validation; onboarding_plan.md. Cite concrete filenames/functions and distinguish package marker files (__init__.py) from active business logic. Compare README/design notes to actual code. Return structured, detailed findings for a synthesis writer.</keepContext>",
+  "partitions": [
+    {
+      "label": "Code architecture and runtime flows",
+      "objective": "Inspect only /workspace/in/repo without modification or internet. Map actual code modules, distinguishing __init__.py package markers from active business logic. Identify canonical entry points minisvc.cli:main and minisvc.api.routes:register_routes, key functions, dependency edges by imports/calls/instantiates/reads_config/persists_to, and CLI startup plus HTTP create-order runtime flows with concrete file/function evidence for module_map.json and architecture.md."
+    },
+    {
+      "label": "Docs versus code discrepancies",
+      "objective": "Inspect README and design notes in /workspace/in/repo and compare their claims to actual code. Produce evidence-backed discrepancies for readonly enforcement, retry behavior, and audit persistence, citing exact docs, code files, and functions for doc_code_discrepancies.csv."
+    },
+    {
+      "label": "Risks and onboarding synthesis inputs",
+      "objective": "Using only evidence from /workspace/in/repo, assess risks for storage durability, audit behavior, config/runtime environment, and API validation, citing concrete files/functions. Draft onboarding guidance grounded in the discovered module map, flows, risks, and doc/code gaps for risk_register.csv and onboarding_plan.md. Include a 'Contract amendments received' heading in the handoff artifact and restate any objective-relevant steering amendments verbatim if received."
+    }
+  ]
+}

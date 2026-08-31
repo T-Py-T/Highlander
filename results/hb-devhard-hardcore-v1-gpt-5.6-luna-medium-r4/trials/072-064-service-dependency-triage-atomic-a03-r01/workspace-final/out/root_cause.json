@@ -1,0 +1,53 @@
+{
+  "incident_id": "checkout-auth-2026-03-22",
+  "root_cause_service": "auth-gateway",
+  "root_cause_change_id": "AUTH-2026-0318",
+  "confidence": "high",
+  "affected_services": [
+    "checkout-web",
+    "payment-api",
+    "auth-gateway"
+  ],
+  "evidence": [
+    {
+      "source_file": "in/topology.json",
+      "observation": "The dependency path is checkout-web -> payment-api -> auth-gateway; AUTH-2026-0318 changed auth-gateway at 14:05Z."
+    },
+    {
+      "source_file": "in/metrics/service_metrics.csv",
+      "observation": "At 14:10Z checkout-web had an 18.7% HTTP 401 rate and 2400 ms p95, payment-api had a 21.2% HTTP 401 rate, and auth-gateway had a 28.4% HTTP 401 rate with notes citing invalid issuer and issuer mismatch."
+    },
+    {
+      "source_file": "in/logs/auth-gateway.log",
+      "observation": "After deployment of AUTH-2026-0318, auth-gateway used partner-v2 but allowed only partner-v1; validation failed with issuer_not_allowed."
+    },
+    {
+      "source_file": "in/logs/payment-api.log",
+      "observation": "Payment token validation failed upstream at auth-gateway with issuer_not_allowed, and the payment request was rejected as invalid_issuer."
+    },
+    {
+      "source_file": "in/logs/checkout-web.log",
+      "observation": "Checkout submit_order failed with 401 from payment-api, and the checkout session was reported auth_failed due to invalid issuer."
+    }
+  ],
+  "excluded_red_herrings": [
+    {
+      "signal": "orders-db CPU at 86%",
+      "why_not_primary": "The database reported normal 35 ms query latency and zero errors; no failing checkout transaction reached it before the auth gate."
+    },
+    {
+      "signal": "cdn-edge HTTP 5xx rate at 4.8%",
+      "why_not_primary": "The metric notes limit the issue to images, while checkout static assets served normally after retry; this does not explain payment authorization 401s."
+    },
+    {
+      "signal": "checkout-web and payment-api latency/5xx increases",
+      "why_not_primary": "These are downstream symptoms consistent with rejected authentication, not an initiating dependency failure."
+    }
+  ],
+  "recommended_next_steps": [
+    "Immediately restore partner-v2 in auth-gateway allowed_issuers or revert AUTH-2026-0318, following the rollback candidate in the auth log.",
+    "Verify JWKS cache namespace and issuer configuration agree across all auth-gateway instances, then retry token validation with a partner-v2 token.",
+    "Confirm auth-gateway issuer_not_allowed and HTTP 401 rates return to baseline, then verify payment-api create_payment and checkout-web submit_order succeed.",
+    "After recovery, review the change rollout and add a compatibility check for issuer and allowed_issuers before deployment."
+  ]
+}

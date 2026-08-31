@@ -1,0 +1,118 @@
+{
+  "task_id": "042-api-schema-migration",
+  "model_id": "codex",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/028-042-api-schema-migration-codex-a02-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005716-fd182f83",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/028-042-api-schema-migration-codex-a02-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005716-fd182f83/workspace",
+  "session_id": "highlander-codex-042-api-schema-migration-a2-042-api-schema-migration-2a4eb8eb",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/028-042-api-schema-migration-codex-a02-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005716-fd182f83/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "codex",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/028-042-api-schema-migration-codex-a02-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005716-fd182f83/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/028-042-api-schema-migration-codex-a02-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005716-fd182f83/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/028-042-api-schema-migration-codex-a02-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005716-fd182f83/highlander-native",
+      "--trial-id",
+      "028-042-api-schema-migration-codex-a02-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/028-042-api-schema-migration-codex-a02-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005716-fd182f83/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "codex",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/028-042-api-schema-migration-codex-a02-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005716-fd182f83/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/028-042-api-schema-migration-codex-a02-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005716-fd182f83/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/028-042-api-schema-migration-codex-a02-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005716-fd182f83/highlander-native",
+        "--trial-id",
+        "028-042-api-schema-migration-codex-a02-r01"
+      ],
+      "stdout": "Reading additional input from stdin...\n{\"type\":\"thread.started\",\"thread_id\":\"01a0562d-cfed-74e2-b64c-d19882b1599c\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_0\",\"type\":\"error\",\"message\":\"Code Mode is unavailable because failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: host executable was not found. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.\"}}\n{\"type\":\"turn.started\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_1\",\"type\":\"agent_message\",\"text\":\"I’ll inspect the three required migration inputs and the existing converter/tests first, then update only `client.py` and run the specified test suite.\"}}\n2026-08-31T04:57:26.569111Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_2\",\"type\":\"agent_message\",\"text\":\"The first filesystem command hit a host execution issue before running. I’m retrying with a simpler workspace check and will continue once the path is confirmed.\"}}\n2026-08-31T04:57:29.410155Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T04:57:33.697714Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T04:57:35.926509Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_3\",\"type\":\"agent_message\",\"text\":\"The execution backend is currently unavailable (`codex-code-mode-host` is missing), so no files have been read or changed. I’ll make one more direct attempt before reporting the environment blocker.\"}}\n2026-08-31T04:57:39.188578Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_4\",\"type\":\"agent_message\",\"text\":\"I couldn’t complete the update because the filesystem execution backend is unavailable: `codex-code-mode-host` is missing. No files were read or modified.\"}}\n{\"type\":\"turn.completed\",\"usage\":{\"input_tokens\":86811,\"cached_input_tokens\":78336,\"cache_write_input_tokens\":0,\"output_tokens\":748,\"reasoning_output_tokens\":205}}\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-codex-042-api-schema-migration-a2-042-api-schema-migration-2a4eb8eb"
+  },
+  "oracle_result": {
+    "task": "042-api-schema-migration",
+    "outcome_score": 0.15,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": false,
+        "weight": 0.25,
+        "detail": "odules/packages have valid Python names.\nTraceback:\n/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\ntests/test_client.py:1: in <module>\n    from client import convert_order, summarize_order, convert_many\nE   ImportError: cannot import name 'convert_many' from 'client' (<SOURCE_EVIDENCE_ROOT>/trials/028-042-api-schema-migration-codex-a02-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005716-fd182f83/workspace/in/schema_migration/client.py)\n=========================== short test summary info ============================\nERROR tests/test_client.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n=============================== 1 error in 0.04s ===============================\n"
+      },
+      {
+        "id": "direct_mapping",
+        "pass": false,
+        "weight": 0.6,
+        "detail": "'lineItems'"
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.15,
+    "oracle_outcome_score": 0.15,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.15,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 26.819
+}

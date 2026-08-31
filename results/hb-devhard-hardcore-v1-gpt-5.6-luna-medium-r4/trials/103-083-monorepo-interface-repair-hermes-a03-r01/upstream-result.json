@@ -1,0 +1,134 @@
+{
+  "task_id": "083-monorepo-interface-repair",
+  "model_id": "hermes",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/103-083-monorepo-interface-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-052111-d0670aa5",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/103-083-monorepo-interface-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-052111-d0670aa5/workspace",
+  "session_id": "highlander-hermes-083-monorepo-interface-repair-a3-083-monorepo-interface-repair-da382cad",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/103-083-monorepo-interface-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-052111-d0670aa5/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "hermes",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/103-083-monorepo-interface-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-052111-d0670aa5/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/103-083-monorepo-interface-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-052111-d0670aa5/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/103-083-monorepo-interface-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-052111-d0670aa5/highlander-native",
+      "--trial-id",
+      "103-083-monorepo-interface-repair-hermes-a03-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/103-083-monorepo-interface-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-052111-d0670aa5/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "hermes",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/103-083-monorepo-interface-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-052111-d0670aa5/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/103-083-monorepo-interface-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-052111-d0670aa5/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/103-083-monorepo-interface-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-052111-d0670aa5/highlander-native",
+        "--trial-id",
+        "103-083-monorepo-interface-repair-hermes-a03-r01"
+      ],
+      "stdout": "Fresh verification completed:\n\n`uv run --with pytest pytest tests`\n\nResult:\n- 5 tests passed\n- 0 failures\n- 0 errors\n\nThe system Python’s bare `pytest` remains unavailable (`No module named pytest`), so the test runner was invoked through `uv`.\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-hermes-083-monorepo-interface-repair-a3-083-monorepo-interface-repair-da382cad"
+  },
+  "oracle_result": {
+    "task": "083-monorepo-interface-repair",
+    "outcome_score": 1.0,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": true,
+        "weight": 0.3,
+        "detail": "orepo-interface-repair-gpt-5.6-luna-20260831-052111-d0670aa5/workspace/in/shopmono\nconfigfile: pyproject.toml\nplugins: anyio-4.12.0, cov-4.1.0, asyncio-0.21.1\nasyncio: mode=Mode.STRICT\ncollected 5 items\n\ntests/test_catalog_contract.py ..                                        [ 40%]\ntests/test_orders_report_integration.py ...                              [100%]\n\n=============================== warnings summary ===============================\n../../../../../../../../../../../../../../../../../opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: 155 warnings\n  /opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n    return asyncio.iscoroutinefunction(obj)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================= 5 passed, 155 warnings in 0.02s ========================\n"
+      },
+      {
+        "id": "hidden_interface_behavior",
+        "pass": true,
+        "weight": 0.4,
+        "detail": ""
+      },
+      {
+        "id": "test_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "implementation_quality",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "fix_report",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 1.0,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 111.908
+}

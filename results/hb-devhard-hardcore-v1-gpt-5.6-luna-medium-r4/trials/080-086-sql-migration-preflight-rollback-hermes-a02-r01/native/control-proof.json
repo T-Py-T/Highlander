@@ -1,0 +1,22 @@
+{
+  "configured_model_id": "gpt-5.6-luna",
+  "configured_provider_id": "openai-codex",
+  "configured_reasoning": "medium",
+  "configured_verified": true,
+  "fallback_policy": "forbidden",
+  "observed": {
+    "endpoint_or_deployment": null,
+    "model": null,
+    "provider": null,
+    "reasoning": null,
+    "region": null,
+    "upstream_id": null
+  },
+  "provider_wire_verified": false,
+  "qualification_boundary": "configured route retained; exact wire identity not exposed by native output",
+  "runtime_conflict": false,
+  "runtime_conflicts": {},
+  "runtime_observation_available": false,
+  "runtime_verified": false,
+  "schema_version": 2
+}

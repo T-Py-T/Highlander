@@ -1,0 +1,64 @@
+[harnessbench] run-task 042-api-schema-migration (harness=nanobot, mode=live) ...
+[harnessbench] run-task 042-api-schema-migration finished adapter_ok=True elapsed=7.736s
+{
+  "task_id": "042-api-schema-migration",
+  "elapsed_sec": 7.736,
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-nanobot-042-api-schema-migration-a1-042-api-schema-migration-1dc9d606"
+  },
+  "oracle_result": {
+    "task": "042-api-schema-migration",
+    "outcome_score": 0.15,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": false,
+        "weight": 0.25,
+        "detail": "es/packages have valid Python names.\nTraceback:\n/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\ntests/test_client.py:1: in <module>\n    from client import convert_order, summarize_order, convert_many\nE   ImportError: cannot import name 'convert_many' from 'client' (<SOURCE_EVIDENCE_ROOT>/trials/022-042-api-schema-migration-nanobot-a01-r01/hb-work/nanobot/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-002633-95fb0fbc/workspace/in/schema_migration/client.py)\n=========================== short test summary info ============================\nERROR tests/test_client.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n=============================== 1 error in 0.03s ===============================\n"
+      },
+      {
+        "id": "direct_mapping",
+        "pass": false,
+        "weight": 0.6,
+        "detail": "'lineItems'"
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.15,
+    "oracle_outcome_score": 0.15,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.15,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/022-042-api-schema-migration-nanobot-a01-r01/hb-work/nanobot/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-002633-95fb0fbc"
+}

@@ -1,0 +1,4 @@
+claim,doc_source,code_evidence,assessment,risk
+"MINISVC_READONLY=1 blocks all write paths","README.md:6","config.load_settings only stores readonly in Settings; cli.main and OrderRepository.save never inspect it","contradicted","A readonly deployment can still insert orders"
+"create_order retries failed SQLite writes twice","README.md:7","api.handlers.create_order calls repo.save once; storage.repo.OrderRepository.save has one sqlite execute and no retry loop","contradicted","Transient database failures become immediate API errors"
+"Audit events are stored in a durable audit table","README.md:8","audit.order_event only returns a dict; storage.repo.init_schema creates only orders and no audit write exists","contradicted","Events can be lost and cannot support durable audit queries"

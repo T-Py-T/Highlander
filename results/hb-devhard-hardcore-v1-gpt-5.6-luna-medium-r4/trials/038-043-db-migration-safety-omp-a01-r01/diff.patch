@@ -1,0 +1,174 @@
+--- a/in/db/migration.sql
++++ b/in/db/migration.sql
+@@ -1,9 +1,46 @@
+-DROP TABLE users;
++-- Transactional rebuild: normalize legacy emails before adding NOT NULL/UNIQUE.
++-- u4 duplicates the retained u1 address; u5/u6 receive deterministic sentinels.
++PRAGMA foreign_keys = ON;
++BEGIN TRANSACTION;
+ 
+-CREATE TABLE users (
++UPDATE users
++SET email = CASE id
++    WHEN 'u4' THEN 'ada+u4@example.com'
++    WHEN 'u5' THEN 'missing+u5@example.invalid'
++    WHEN 'u6' THEN 'missing+u6@example.invalid'
++    ELSE email
++END
++WHERE id IN ('u4', 'u5', 'u6');
++
++-- Rename first so SQLite's dependent FK is updated, then rebuild both tables.
++ALTER TABLE users RENAME TO users_before_status_migration;
++
++CREATE TABLE users_new (
+     id TEXT PRIMARY KEY,
+-    email TEXT UNIQUE,
++    email TEXT NOT NULL UNIQUE,
+     name TEXT NOT NULL,
+     status TEXT NOT NULL DEFAULT 'active',
+-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
++    created_at TEXT NOT NULL
+ );
++
++INSERT INTO users_new (id, email, name, status, created_at)
++SELECT id, email, name, 'active', created_at
++FROM users_before_status_migration;
++
++CREATE TABLE orders_new (
++    id TEXT PRIMARY KEY,
++    user_id TEXT NOT NULL REFERENCES users_new(id),
++    total_cents INTEGER NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO orders_new (id, user_id, total_cents, created_at)
++SELECT id, user_id, total_cents, created_at
++FROM orders;
++
++DROP TABLE orders;
++ALTER TABLE orders_new RENAME TO orders;
++DROP TABLE users_before_status_migration;
++ALTER TABLE users_new RENAME TO users;
++
++COMMIT;
+--- a/in/db/migration_report.md
++++ b/in/db/migration_report.md
+@@ -0,0 +1,21 @@
++# Migration Report
++
++## Strategy
++
++`migration.sql` runs in an explicit transaction. It first updates only the known dirty IDs, then rebuilds `users` with `email TEXT NOT NULL UNIQUE` and `status TEXT NOT NULL DEFAULT 'active'`. `created_at` is copied verbatim. SQLite's dependent-table rename behavior is used deliberately: `users` is renamed before rebuilding `orders`, and orders are copied with their original IDs, values, and `user_id` references before either old table is removed.
++
++## Dirty-data cleanup
++
++The retained first `ada@example.com` row (`u1`) is unchanged. Duplicate `u4` becomes `ada+u4@example.com`; null `u5` becomes `missing+u5@example.invalid`; blank `u6` becomes `missing+u6@example.invalid`. These deterministic values preserve all users while satisfying the new constraints.
++
++## Idempotency
++
++The migration does not insert by generated IDs or append rows. Every run deterministically updates the same three IDs and rebuilds each table from its complete current contents, so a second run preserves the same rows and references rather than duplicating them.
++
++## Rollback behavior and limitation
++
++Run `rollback.sql` after the migration. It rebuilds `users` to the old shape (`id`, `email`, `name`, `created_at`) and rebuilds `orders` to preserve its rows and foreign-key references. It intentionally retains the cleaned email values; rollback restores schema shape, not the unknowable pre-migration dirty values. Both rebuilds are transactional.
++
++## Postcheck
++
++Run `postcheck.sql` with SQLite after migration. It checks user/order counts, every expected dependent order reference, deterministic dirty-user emails, invalid email rows, duplicate email groups, null statuses, and the email/status constraints.
+--- a/in/db/postcheck.sql
++++ b/in/db/postcheck.sql
+@@ -0,0 +1,38 @@
++-- Execute after migration. Each SELECT should return the expected value below it.
++PRAGMA foreign_keys = ON;
++
++-- Expected: 6 users and 4 orders.
++SELECT 'user_count' AS check_name, COUNT(*) AS actual, 6 AS expected FROM users;
++SELECT 'order_count' AS check_name, COUNT(*) AS actual, 4 AS expected FROM orders;
++
++-- Expected: 0 means every order retained its original user reference.
++SELECT 'order_reference_mismatches' AS check_name, COUNT(*) AS actual, 0 AS expected
++FROM (
++    SELECT 'o1' AS order_id, 'u1' AS user_id UNION ALL
++    SELECT 'o2', 'u4' UNION ALL
++    SELECT 'o3', 'u5' UNION ALL
++    SELECT 'o4', 'u6'
++) AS expected_orders
++LEFT JOIN orders AS actual_orders
++    ON actual_orders.id = expected_orders.order_id
++   AND actual_orders.user_id = expected_orders.user_id
++WHERE actual_orders.id IS NULL;
++
++-- Expected: each query returns exactly one row with the specified email.
++SELECT id, email FROM users WHERE id IN ('u4', 'u5', 'u6') ORDER BY id;
++
++-- Expected: all rows have non-null/non-blank unique emails and active status.
++SELECT 'invalid_email_rows' AS check_name, COUNT(*) AS actual, 0 AS expected
++FROM users WHERE email IS NULL OR trim(email) = '';
++SELECT 'duplicate_email_groups' AS check_name, COUNT(*) AS actual, 0 AS expected
++FROM (SELECT email FROM users GROUP BY email HAVING COUNT(*) > 1);
++SELECT 'invalid_status_rows' AS check_name, COUNT(*) AS actual, 0 AS expected
++FROM users WHERE status IS NULL;
++
++-- Expected: 1 for each constraint/index.
++SELECT 'users_email_unique_index' AS check_name, COUNT(*) AS actual, 1 AS expected
++FROM pragma_index_list('users') WHERE name = 'sqlite_autoindex_users_1' AND [unique] = 1;
++SELECT 'users_email_not_null' AS check_name, COUNT(*) AS actual, 1 AS expected
++FROM pragma_table_info('users') WHERE name = 'email' AND "notnull" = 1;
++SELECT 'users_status_not_null' AS check_name, COUNT(*) AS actual, 1 AS expected
++FROM pragma_table_info('users') WHERE name = 'status' AND "notnull" = 1;
+--- a/in/db/preflight_report.md
++++ b/in/db/preflight_report.md
+@@ -0,0 +1,15 @@
++# Preflight Report
++
++## Findings before migration
++
++The legacy `users` table permits nullable and non-unique email values. The input data contains:
++
++- Duplicate `ada@example.com`: `u1` (the retained first row) and `u4`.
++- Null email: `u5`.
++- Blank email: `u6`.
++
++Dirty users have dependent orders that must remain attached to their original IDs: `u4` → `o2`, `u5` → `o3`, and `u6` → `o4` (as defined by the input schema).
++
++## Required cleanup
++
++The migration preserves every user and order. It keeps `u1` unchanged, changes `u4` to `ada+u4@example.com`, changes `u5` to `missing+u5@example.invalid`, and changes `u6` to `missing+u6@example.invalid`. IDs are not remapped, so dependent `orders.user_id` values remain unchanged.
+--- a/in/db/rollback.sql
++++ b/in/db/rollback.sql
+@@ -0,0 +1,35 @@
++-- Restore the pre-migration users shape while retaining migrated values and rows.
++PRAGMA foreign_keys = ON;
++BEGIN TRANSACTION;
++
++-- Rename first so SQLite updates the dependent FK before rebuilding users.
++ALTER TABLE users RENAME TO users_after_migration;
++
++CREATE TABLE users_old_shape (
++    id TEXT PRIMARY KEY,
++    email TEXT,
++    name TEXT NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO users_old_shape (id, email, name, created_at)
++SELECT id, email, name, created_at
++FROM users_after_migration;
++
++CREATE TABLE orders_old_shape (
++    id TEXT PRIMARY KEY,
++    user_id TEXT NOT NULL REFERENCES users_old_shape(id),
++    total_cents INTEGER NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO orders_old_shape (id, user_id, total_cents, created_at)
++SELECT id, user_id, total_cents, created_at
++FROM orders;
++
++DROP TABLE orders;
++ALTER TABLE orders_old_shape RENAME TO orders;
++DROP TABLE users_after_migration;
++ALTER TABLE users_old_shape RENAME TO users;
++
++COMMIT;

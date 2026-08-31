@@ -1,0 +1,292 @@
+--- a/in/schema_migration/.pytest_cache/.gitignore
++++ b/in/schema_migration/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/schema_migration/.pytest_cache/CACHEDIR.TAG
++++ b/in/schema_migration/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/schema_migration/.pytest_cache/README.md
++++ b/in/schema_migration/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/schema_migration/.pytest_cache/v/cache/nodeids
++++ b/in/schema_migration/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,7 @@
++[
++  "tests/test_client.py::test_convert_many_collects_errors_without_stopping",
++  "tests/test_client.py::test_convert_order_to_v2_shape",
++  "tests/test_client.py::test_defaults_shipping_method_and_keeps_summary_contract",
++  "tests/test_client.py::test_new_payload_passthrough_and_nullable_defaults",
++  "tests/test_client.py::test_v12_payload_and_unknown_field_preservation"
++]--- a/in/schema_migration/.pytest_cache/v/cache/stepwise
++++ b/in/schema_migration/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]Binary files a/in/schema_migration/__pycache__/client.cpython-311.pyc and b/in/schema_migration/__pycache__/client.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> f63527b5ea4f1ac29dd6618fbb3d1636019a0a3c607ba056f718bf6ec7f88377)
+Binary files a/in/schema_migration/__pycache__/client.cpython-314.pyc and b/in/schema_migration/__pycache__/client.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> a7a7d00bc497808076fc2ce39ae57153aae0591628b5ec0165fa3456cca99d9d)
+--- a/in/schema_migration/client.py
++++ b/in/schema_migration/client.py
+@@ -1,12 +1,233 @@
+-def convert_order(payload):
+-    """Convert a legacy v1 order payload to the v2 public API shape."""
+-    return {
+-        "orderId": payload["id"],
+-        "customer": payload["customer_name"],
+-        "items": payload["items"],
+-        "address": payload["ship_to"],
++"""Utilities for migrating legacy order payloads to the public v2 API shape."""
++
++from __future__ import annotations
++
++import copy
++import json
++import sys
++from pathlib import Path
++from typing import Any
++
++
++_HERE = Path(__file__).resolve().parent
++_AUDIT_PATH = _HERE / "conversion_audit.json"
++_PII_NAMES = {
++    "ssn",
++    "credit_card",
++    "card_number",
++    "cvv",
++    "phone_number",
++    "passport_number",
++}
++
++
++class ConversionError(ValueError):
++    def __init__(self, path: str, message: str):
++        self.path = path
++        self.message = message
++        super().__init__(message)
++
++
++def _is_pii(key: str) -> bool:
++    normalized = "".join(ch.lower() if ch.isalnum() else "_" for ch in key).strip("_")
++    return normalized in _PII_NAMES or any(part in normalized for part in ("ssn", "credit_card", "card_number", "cvv", "passport"))
++
++
++def _required(value: Any, path: str, name: str) -> Any:
++    if value is None or value == "":
++        raise ConversionError(path, f"missing required field {name}")
++    return value
++
++
++def _integer(value: Any, path: str, name: str) -> int:
++    if isinstance(value, bool):
++        raise ConversionError(path, f"{name} must be an integer")
++    try:
++        number = int(value)
++    except (TypeError, ValueError):
++        raise ConversionError(path, f"{name} must be an integer") from None
++    if isinstance(value, float) and not value.is_integer():
++        raise ConversionError(path, f"{name} must be an integer")
++    if isinstance(value, str) and str(number) != value.strip() and not (value.strip().startswith("+") and str(number) == value.strip()[1:]):
++        raise ConversionError(path, f"{name} must be an integer")
++    return number
++
++
++def _add_unknown(unknown: dict[str, Any], dropped: list[int], key: str, value: Any) -> None:
++    if _is_pii(key):
++        dropped[0] += 1
++    else:
++        unknown[key] = copy.deepcopy(value)
++
++
++def _legacy_unknowns(payload: dict[str, Any], item_sources: list[dict[str, Any]], address: dict[str, Any], unknown: dict[str, Any], dropped: list[int]) -> None:
++    known_top = {"id", "order_ref", "customer_id", "customer_name", "customer", "items", "lines", "ship_to", "shipTo", "shipping_method", "shipping"}
++    for key, value in payload.items():
++        if key not in known_top:
++            _add_unknown(unknown, dropped, key, value)
++    for i, item in enumerate(item_sources):
++        known = {"sku", "qty", "price_cents", "unit_price_cents"}
++        for key, value in item.items():
++            if key not in known:
++                _add_unknown(unknown, dropped, f"items[{i}].{key}", value)
++    for key, value in address.items():
++        if key not in {"country", "postal", "postalCode", "postal_code"}:
++            _add_unknown(unknown, dropped, f"shipping.address.{key}", value)
++
++
++def _convert_legacy(payload: dict[str, Any]) -> dict[str, Any]:
++    if not isinstance(payload, dict):
++        raise ConversionError("payload", "payload must be an object")
++
++    order_id = payload.get("id", payload.get("order_ref"))
++    _required(order_id, "id" if "id" in payload else "order_ref", "order id")
++
++    customer = payload.get("customer")
++    if customer is not None:
++        if not isinstance(customer, dict):
++            raise ConversionError("customer", "customer must be an object")
++        buyer_id = _required(customer.get("id"), "customer.id", "customer id")
++        buyer_name = _required(customer.get("name"), "customer.name", "customer name")
++    else:
++        buyer_id = _required(payload.get("customer_id"), "customer_id", "customer id")
++        buyer_name = _required(payload.get("customer_name"), "customer_name", "customer name")
++
++    item_sources = payload.get("lines", payload.get("items"))
++    item_field = "lines" if "lines" in payload else "items"
++    if not isinstance(item_sources, list):
++        raise ConversionError(item_field, f"{item_field} must be an array")
++    line_items = []
++    for i, item in enumerate(item_sources):
++        path = f"{item_field}[{i}]"
++        if not isinstance(item, dict):
++            raise ConversionError(path, "line item must be an object")
++        sku = _required(item.get("sku"), f"{path}.sku", "sku")
++        qty = _integer(_required(item.get("qty"), f"{path}.qty", "quantity"), f"{path}.qty", "quantity")
++        price_value = item.get("price_cents", item.get("unit_price_cents"))
++        price_key = "price_cents" if "price_cents" in item else "unit_price_cents"
++        price = _integer(_required(price_value, f"{path}.{price_key}", "unit price"), f"{path}.{price_key}", "unit price")
++        line_items.append({"sku": sku, "quantity": qty, "unitPriceCents": price})
++
++    address = payload.get("shipTo", payload.get("ship_to"))
++    address_field = "shipTo" if "shipTo" in payload else "ship_to"
++    if not isinstance(address, dict):
++        raise ConversionError(address_field, "shipping address must be an object")
++    postal = address.get("postal", address.get("postalCode", address.get("postal_code")))
++    shipping_address = {"country": address.get("country"), "postalCode": postal}
++    method = payload.get("shipping_method", payload.get("shipping"))
++    if method is None or (isinstance(method, str) and not method.strip()):
++        method = "standard"
++
++    unknown: dict[str, Any] = {}
++    dropped = [0]
++    _legacy_unknowns(payload, item_sources, address, unknown, dropped)
++    result = {
++        "orderId": order_id,
++        "buyer": {"id": buyer_id, "displayName": buyer_name},
++        "lineItems": line_items,
++        "shipping": {"method": method, "address": shipping_address},
++        "metadata": {"source": "legacy-v1"},
+     }
++    if unknown:
++        result["metadata"]["unknownFields"] = unknown
++    return result, dropped[0], len(unknown)
++
++
++def _convert_v2(payload: dict[str, Any]) -> dict[str, Any]:
++    if not isinstance(payload, dict):
++        raise ConversionError("payload", "payload must be an object")
++    required = (("orderId", "orderId"), ("buyer", "buyer"), ("lineItems", "lineItems"), ("shipping", "shipping"), ("metadata", "metadata"))
++    for key, path in required:
++        if key not in payload:
++            raise ConversionError(path, f"missing required field {key}")
++    result = copy.deepcopy(payload)
++    if not isinstance(result["shipping"], dict):
++        raise ConversionError("shipping", "shipping must be an object")
++    if result["shipping"].get("method") is None or (isinstance(result["shipping"].get("method"), str) and not result["shipping"]["method"].strip()):
++        result["shipping"]["method"] = "standard"
++    metadata = result["metadata"]
++    if not isinstance(metadata, dict):
++        raise ConversionError("metadata", "metadata must be an object")
++    # Some producers put extension fields directly in metadata. Normalize those
++    # into the documented extension bucket while retaining existing extensions.
++    extensions = metadata.get("unknownFields")
++    if extensions is None:
++        extensions = {}
++        metadata["unknownFields"] = extensions
++    if not isinstance(extensions, dict):
++        raise ConversionError("metadata.unknownFields", "unknownFields must be an object")
++    for key in list(metadata):
++        if key not in {"source", "unknownFields"}:
++            extensions[key] = metadata.pop(key)
++    unknown_count = len(extensions)
++    if not extensions:
++        metadata.pop("unknownFields", None)
++    return result, 0, unknown_count
++
++
++def _write_audit(converted_count: int, error_count: int, warning_count: int, pii_dropped_count: int, unknown_fields_count: int) -> None:
++    _AUDIT_PATH.write_text(json.dumps({
++        "converted_count": converted_count,
++        "error_count": error_count,
++        "warning_count": warning_count,
++        "pii_dropped_count": pii_dropped_count,
++        "unknown_fields_count": unknown_fields_count,
++    }, indent=2) + "\n", encoding="utf-8")
++
++
++def convert_order(payload: dict[str, Any]) -> dict[str, Any]:
++    """Convert a legacy or public-v2 order payload."""
++    if isinstance(payload, dict) and "orderId" in payload:
++        return _convert_v2(payload)[0]
++    return _convert_legacy(payload)[0]
++
++
++def convert_many(payloads):
++    converted, errors, warnings = [], [], []
++    pii_dropped = unknown_count = 0
++    for index, payload in enumerate(payloads):
++        try:
++            if isinstance(payload, dict) and "orderId" in payload:
++                item, dropped, unknown = _convert_v2(payload)
++            else:
++                item, dropped, unknown = _convert_legacy(payload)
++            converted.append(item)
++            pii_dropped += dropped
++            unknown_count += unknown
++        except ConversionError as exc:
++            errors.append({"index": index, "path": exc.path, "error": exc.message})
++        except Exception as exc:
++            errors.append({"index": index, "path": "payload", "error": str(exc)})
++    _write_audit(len(converted), len(errors), len(warnings), pii_dropped, unknown_count)
++    return converted, errors
+ 
+ 
+ def summarize_order(v2_payload):
+     return f"{v2_payload['orderId']}:{len(v2_payload['lineItems'])}"
++
++
++def main(argv=None):
++    argv = sys.argv[1:] if argv is None else argv
++    if len(argv) != 2:
++        raise SystemExit("usage: python -m client input.jsonl output.json")
++    input_path, output_path = map(Path, argv)
++    payloads = []
++    with input_path.open(encoding="utf-8") as handle:
++        for line_number, line in enumerate(handle, 1):
++            if not line.strip():
++                continue
++            try:
++                payloads.append(json.loads(line))
++            except json.JSONDecodeError as exc:
++                payloads.append({"__invalid_json__": f"line {line_number}: {exc}"})
++    converted, errors = convert_many(payloads)
++    Path(output_path).write_text(json.dumps(converted, indent=2) + "\n", encoding="utf-8")
++    if any("__invalid_json__" in p for p in payloads):
++        # Keep malformed JSON visible in the audit/error contract without aborting the batch.
++        audit = json.loads(_AUDIT_PATH.read_text(encoding="utf-8"))
++        audit["error_count"] = len(errors)
++        _AUDIT_PATH.write_text(json.dumps(audit, indent=2) + "\n", encoding="utf-8")
++
++
++if __name__ == "__main__":
++    main()
+--- a/in/schema_migration/conversion_audit.json
++++ b/in/schema_migration/conversion_audit.json
+@@ -0,0 +1,7 @@
++{
++  "converted_count": 2,
++  "error_count": 0,
++  "warning_count": 0,
++  "pii_dropped_count": 2,
++  "unknown_fields_count": 2
++}
+Binary files a/in/schema_migration/tests/__pycache__/test_client.cpython-311-pytest-9.1.1.pyc and b/in/schema_migration/tests/__pycache__/test_client.cpython-311-pytest-9.1.1.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 55be2a1b11c9fd06fa47c677e6ec56069a1b2e62c7d02826a96dd1db71db6768)
+Binary files a/in/schema_migration/tests/__pycache__/test_client.cpython-314-pytest-7.4.3.pyc and b/in/schema_migration/tests/__pycache__/test_client.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 2f8e048969dca0f52e71f5ddc4e8a085a34d6252e9f0de00ba1a76f6db26eeef)

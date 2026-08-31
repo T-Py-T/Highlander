@@ -1,0 +1,20 @@
+Repaired the billing migration package in `/workspace/in/billingdb`:
+
+- `/workspace/in/billingdb/migration.sql`
+- `/workspace/in/billingdb/preflight_report.md`
+- `/workspace/in/billingdb/rollback.sql`
+- `/workspace/in/billingdb/postcheck.sql`
+- `/workspace/in/billingdb/migration_report.md`
+
+Verification completed against the supplied schema:
+
+- Preserved 3 invoices and valid payments.
+- Moved orphan payment `p4` unchanged to `payment_orphans`.
+- Added `status TEXT NOT NULL DEFAULT 'open'`.
+- Preserved invoice `created_at` values.
+- Installed and enabled the `payments.invoice_id → invoices.id` foreign key.
+- Confirmed invalid future payment references are rejected.
+- Ran the migration twice without duplicates or data corruption.
+- Ran rollback and restored the original four-column shapes for both tables, including `p4`.
+- `PRAGMA foreign_key_check` returned no violations.
+- `schema.sql` and `migration_policy.md` were not modified.

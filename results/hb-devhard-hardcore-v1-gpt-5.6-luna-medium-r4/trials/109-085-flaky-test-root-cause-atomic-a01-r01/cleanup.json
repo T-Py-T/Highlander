@@ -1,0 +1,8 @@
+{
+  "auth_seed_exported": false,
+  "auth_seed_mounted_read_only": true,
+  "final_workspace_retained": false,
+  "sandbox_removed": true,
+  "temporary_data_removed": true,
+  "temporary_results_removed": true
+}

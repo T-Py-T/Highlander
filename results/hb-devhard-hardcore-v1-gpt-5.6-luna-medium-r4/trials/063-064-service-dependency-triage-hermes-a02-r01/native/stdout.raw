@@ -1,0 +1,8 @@
+Created and verified exactly two output files:
+
+- `/workspace/out/root_cause.json`
+- `/workspace/out/triage_notes.md`
+
+The supplied `<HOME>/...` paths were unavailable in this Linux environment; the fixtures were present under `/workspace/in`, so outputs were written to the corresponding `/workspace/out` directory.
+
+Root cause identified: `auth-gateway`, change `AUTH-2026-0318`, caused an issuer/allowed-issuer mismatch for `partner-v2`, blocking payment authorization and checkout submissions. JSON validation passed, and `/workspace/out` contains only the two requested files.

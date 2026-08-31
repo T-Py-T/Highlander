@@ -1,0 +1,85 @@
+--- a/out/root_cause.json
++++ b/out/root_cause.json
+@@ -0,0 +1,53 @@
++{
++  "incident_id": "req-8812",
++  "root_cause_service": "auth-gateway",
++  "root_cause_change_id": "AUTH-2026-0318",
++  "confidence": "high",
++  "affected_services": [
++    "checkout-web",
++    "payment-api",
++    "auth-gateway"
++  ],
++  "evidence": [
++    {
++      "source_file": "/workspace/in/topology.json",
++      "observation": "The dependency path is checkout-web -> payment-api -> auth-gateway; AUTH-2026-0318 changed auth-gateway issuer and JWKS cache settings at 14:05Z."
++    },
++    {
++      "source_file": "/workspace/in/metrics/service_metrics.csv",
++      "observation": "At 14:10Z, checkout-web had an 18.7% HTTP 401 rate and 2400 ms p95, payment-api had a 21.2% HTTP 401 rate with notes citing an invalid issuer, and auth-gateway had a 28.4% HTTP 401 rate with issuer mismatch."
++    },
++    {
++      "source_file": "/workspace/in/logs/auth-gateway.log",
++      "observation": "After deployment of AUTH-2026-0318, auth-gateway used partner-v2 but allowed_issuers remained partner-v1; validation failed with issuer_not_allowed. The log names restoring partner-v2 or reverting the change as rollback candidates."
++    },
++    {
++      "source_file": "/workspace/in/logs/payment-api.log",
++      "observation": "payment-api rejected the request after auth-gateway returned issuer_not_allowed/invalid_issuer."
++    },
++    {
++      "source_file": "/workspace/in/logs/checkout-web.log",
++      "observation": "checkout-web submit_order failed with status 401 from payment-api, and the user checkout flow remained blocked while static assets recovered."
++    }
++  ],
++  "excluded_red_herrings": [
++    {
++      "signal": "orders-db CPU at 86% during vacuum",
++      "why_not_primary": "Query p95 was 35 ms with zero errors, and no failing checkout transaction reached orders-db."
++    },
++    {
++      "signal": "cdn-edge HTTP 5xx rate of 4.8%",
++      "why_not_primary": "The errors were isolated to images; static assets served normally after retry, while checkout submits still failed on payment authentication."
++    },
++    {
++      "signal": "checkout-web and payment-api latency/5xx increases",
++      "why_not_primary": "These are downstream effects of repeated authentication rejection, not evidence of a database or frontend availability cause."
++    }
++  ],
++  "recommended_next_steps": [
++    "Immediately roll back AUTH-2026-0318 or correct auth-gateway allowed_issuers to include partner-v2, following change control.",
++    "Refresh or invalidate the affected JWKS cache namespace and confirm partner-v2 keys and issuer configuration agree.",
++    "Verify a partner-token validation succeeds at auth-gateway, then a create_payment request succeeds at payment-api, then an end-to-end checkout submit succeeds at checkout-web.",
++    "Monitor HTTP 401/5xx rates and p95 latency for checkout-web, payment-api, and auth-gateway; confirm no new issuer mismatch events."
++  ]
++}
+--- a/out/triage_notes.md
++++ b/out/triage_notes.md
+@@ -0,0 +1,26 @@
++# Checkout incident triage
++
++## Finding
++
++**Directly observed facts:** The checkout request `req-8812` failed with HTTP 401 at `checkout-web`, which received the failure from `payment-api` (`/workspace/in/logs/checkout-web.log`). `payment-api` recorded `issuer_not_allowed` from `auth-gateway` and rejected payment creation (`/workspace/in/logs/payment-api.log`). `auth-gateway` deployed `AUTH-2026-0318` at 14:05Z, selected issuer `partner-v2`, then rejected it because only `partner-v1` was allowed (`/workspace/in/logs/auth-gateway.log`).
++
++**Inferred root cause:** `AUTH-2026-0318` left the auth gateway's allowed-issuer configuration inconsistent with its new `partner-v2` issuer/JWKS namespace. This is the primary cause with high confidence because the failure starts after that change and the logs identify the exact mismatch.
++
++## Dependency path
++
++The topology defines `checkout-web -> payment-api -> auth-gateway` (`/workspace/in/topology.json`). A checkout submit calls payment creation; payment authentication calls the auth gateway; the issuer mismatch causes auth rejection, payment rejection, and then user-visible checkout failure. Metrics support this path: at 14:10Z, HTTP 401 rates were 18.7% for checkout-web, 21.2% for payment-api, and 28.4% for auth-gateway (`/workspace/in/metrics/service_metrics.csv`).
++
++Orders-db was not on the failing request path after the auth gate. Its 86% CPU signal occurred during vacuum, but query p95 was 35 ms with no errors and the request did not reach it (`/workspace/in/logs/orders-db.log`). CDN image 5xx errors were isolated; assets recovered while checkout remained blocked (`/workspace/in/logs/checkout-web.log`). These are **directly observed facts**; the conclusion that they are red herrings is an **inference** from those facts and the dependency graph.
++
++## Immediate mitigation
++
++1. Under change control, revert `AUTH-2026-0318`, or update `allowed_issuers` to accept the intended `partner-v2` issuer as the auth log recommends.
++2. Refresh/invalidate the affected JWKS cache and confirm the `partner-v2` keys match the issuer configuration.
++3. Avoid disabling authentication or bypassing the payment auth gate.
++
++## Verification
++
++- Confirm a known-good partner token validates at `auth-gateway` with no `issuer_not_allowed` events.
++- Submit a payment through `payment-api`, then run an end-to-end checkout submit through `checkout-web`.
++- Check that 401/5xx rates and p95 latency return toward baseline for all three services, and that no new issuer mismatch events occur.
++- Confirm orders-db and CDN signals separately; neither should be used as the success criterion for the auth fix.

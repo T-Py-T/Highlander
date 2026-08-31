@@ -1,0 +1,141 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 440,
+      "path": "control/app.json",
+      "sha256": "e12cd338f6ea832ca0b5c63373662fac80fbc1df78d226682bfcd28ff175f51e"
+    },
+    {
+      "bytes": 708,
+      "path": "control/harness.json",
+      "sha256": "5e5b803a43d80ab99c6d64c62a938ad5edb7db6365150d8e6acb44366e16b055"
+    },
+    {
+      "bytes": 341,
+      "path": "control/trial.json",
+      "sha256": "6361152029502de07a54087c8feb80d951a0f069c4c773b7fa84d8e4090810e7"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3711,
+      "path": "controller.stdout.raw",
+      "sha256": "63529ac1e15bbaf0416a048564ef9f41fe75b1c76f9ee794d9ae86ff5968a737"
+    },
+    {
+      "bytes": 10025,
+      "path": "diff.patch",
+      "sha256": "6704ba769a8cec6dd740725486477a493f7bdf7b4dd0bca453186a16b52d99f3"
+    },
+    {
+      "bytes": 2042,
+      "path": "native/container-plan.json",
+      "sha256": "dc0a02edf4e9e99dcb71b94709ad6ec6a484fe3d72dfddb2aa549cb36b6f62af"
+    },
+    {
+      "bytes": 647,
+      "path": "native/control-proof.json",
+      "sha256": "7b328af3401e8b99931b15115a02ea1161922ef018bad4e2d5e0c52cad55f6f4"
+    },
+    {
+      "bytes": 1929,
+      "path": "native/execution.json",
+      "sha256": "5f6f4fe839c44c2e5ebc4d4e562fa68079c2470b7aa3bc0e005aacc8dc50c545"
+    },
+    {
+      "bytes": 496,
+      "path": "native/invocation.json",
+      "sha256": "1f7a341bde53068022f5c040f9217ab325777c47348404816e85f4f46a581ef6"
+    },
+    {
+      "bytes": 50,
+      "path": "native/process-metrics.json",
+      "sha256": "ed960a3d2a51ce586929cd5da3306f4dffe57877d68e3d9cf6dcdc2e6e6faa39"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 116368,
+      "path": "native/stdout.raw",
+      "sha256": "1a57421ca5ca49a119eb175dac6864c4787e709d65d74d612b31b0a86a163e26"
+    },
+    {
+      "bytes": 2718,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "dfca669720c9c666079a4e01e6b71a71c4b67fa40ec22ac904e4cecb208b5315"
+    },
+    {
+      "bytes": 321,
+      "path": "process/observations.json",
+      "sha256": "c8d55031dcaa64752417109a3d017f2fa274445ddafc73e074bee6dad9e94e81"
+    },
+    {
+      "bytes": 2439,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "0c0083832e6fa4dd58006634a43d6d2804ab00040a5d38bdb825933da5d436ae"
+    },
+    {
+      "bytes": 2676,
+      "path": "result.json",
+      "sha256": "a7e97b508fb005284885357b8eb7a0c70b048211606a98c5594d2f932fc66cfe"
+    },
+    {
+      "bytes": 133252,
+      "path": "upstream-result.json",
+      "sha256": "7f7fdf32b75b1350c9634ccd8856e0875dfd859815d091b70fe14e55e2b3378a"
+    },
+    {
+      "bytes": 443,
+      "path": "usage-normalized.json",
+      "sha256": "c791b04689cb0f1e1323101fe012ea5e11444f8f51245c74a2b2c20c048f4eb8"
+    },
+    {
+      "bytes": 132,
+      "path": "workspace-final/in/csvtool/README.md",
+      "sha256": "6160fd37a2c360a0c238e3bb71b57b571ec7dc45c3d8b555193e744ccddb5336"
+    },
+    {
+      "bytes": 22,
+      "path": "workspace-final/in/csvtool/csvtool/__init__.py",
+      "sha256": "91447944015cec709e8aa7655f7e9d64e1e4508e7023a57fe3746911c0fc6fed"
+    },
+    {
+      "bytes": 2716,
+      "path": "workspace-final/in/csvtool/csvtool/cli.py",
+      "sha256": "7d3238bf88b501056b3aac22ab03adf78641858560acde6e9d07759b767412d1"
+    },
+    {
+      "bytes": 500,
+      "path": "workspace-final/in/csvtool/csvtool/filtering.py",
+      "sha256": "c9d7a7ad740410160f743cd4faec6ab887edb1c326a667077af5c2d7e15c8cb5"
+    },
+    {
+      "bytes": 144,
+      "path": "workspace-final/in/csvtool/samples/orders.csv",
+      "sha256": "a224f35f16a714e422d403675bb48e3d6e85327e02e48120a6511f612646433e"
+    },
+    {
+      "bytes": 1124,
+      "path": "workspace-final/in/csvtool/tests/test_cli_existing.py",
+      "sha256": "f1ab5e14308e49b73ea417adebba816218d7266f16058e2554935317451f4f2e"
+    },
+    {
+      "bytes": 1306,
+      "path": "workspace-final/in/csvtool/tests/test_cli_regression.py",
+      "sha256": "67280530c9076e0ff68545306599fc78292630ce675c5b31c549132b31dd54ab"
+    }
+  ],
+  "generated_at": "2026-08-31T13:01:37.697882Z",
+  "schema_version": 1
+}

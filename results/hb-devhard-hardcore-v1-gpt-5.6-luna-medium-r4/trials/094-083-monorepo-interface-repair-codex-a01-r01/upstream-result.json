@@ -1,0 +1,134 @@
+{
+  "task_id": "083-monorepo-interface-repair",
+  "model_id": "codex",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/094-083-monorepo-interface-repair-codex-a01-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042638-f730186c",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/094-083-monorepo-interface-repair-codex-a01-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042638-f730186c/workspace",
+  "session_id": "highlander-codex-083-monorepo-interface-repair-a1-083-monorepo-interface-repair-cdd5d823",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/094-083-monorepo-interface-repair-codex-a01-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042638-f730186c/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "codex",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/094-083-monorepo-interface-repair-codex-a01-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042638-f730186c/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/094-083-monorepo-interface-repair-codex-a01-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042638-f730186c/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/094-083-monorepo-interface-repair-codex-a01-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042638-f730186c/highlander-native",
+      "--trial-id",
+      "094-083-monorepo-interface-repair-codex-a01-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/094-083-monorepo-interface-repair-codex-a01-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042638-f730186c/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "codex",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/094-083-monorepo-interface-repair-codex-a01-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042638-f730186c/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/094-083-monorepo-interface-repair-codex-a01-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042638-f730186c/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/094-083-monorepo-interface-repair-codex-a01-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042638-f730186c/highlander-native",
+        "--trial-id",
+        "094-083-monorepo-interface-repair-codex-a01-r01"
+      ],
+      "stdout": "Reading additional input from stdin...\n{\"type\":\"thread.started\",\"thread_id\":\"01a056ed-7f05-74d1-911f-d14942fafb73\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_0\",\"type\":\"error\",\"message\":\"Code Mode is unavailable because failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: host executable was not found. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.\"}}\n{\"type\":\"turn.started\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_1\",\"type\":\"agent_message\",\"text\":\"I’ll run the existing test suite first, trace the `Money`/legacy price boundary across packages, then patch only implementation files and write the requested report.\"}}\n2026-08-31T08:26:48.583570Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_2\",\"type\":\"agent_message\",\"text\":\"The first test invocation hit a host-launch error before pytest started, so no test result was produced. I’m retrying from the same repository with the shell explicitly selected, then I’ll inspect the package layout if the environment path differs.\"}}\n2026-08-31T08:26:52.599700Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T08:26:55.103153Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T08:26:57.465533Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T08:27:00.539477Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T08:27:03.068972Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_3\",\"type\":\"agent_message\",\"text\":\"The execution/editing host is unavailable in this session (`/usr/local/bin/codex-code-mode-host` is missing), and every shell and patch operation fails before touching the repository. I can’t safely inspect or modify the code, run pytest, or create the report until that host is restored.\"}}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_4\",\"type\":\"agent_message\",\"text\":\"I’m blocked by the execution environment: the required code-mode host is missing, so shell commands and file edits fail before execution.\\n\\nNo repository files or tests were modified.\"}}\n{\"type\":\"turn.completed\",\"usage\":{\"input_tokens\":101739,\"cached_input_tokens\":91392,\"cache_write_input_tokens\":0,\"output_tokens\":966,\"reasoning_output_tokens\":300}}\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-codex-083-monorepo-interface-repair-a1-083-monorepo-interface-repair-cdd5d823"
+  },
+  "oracle_result": {
+    "task": "083-monorepo-interface-repair",
+    "outcome_score": 0.23,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": false,
+        "weight": 0.3,
+        "detail": "==============================\n../../../../../../../../../../../../../../../../../opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: 155 warnings\n  /opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n    return asyncio.iscoroutinefunction(obj)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_catalog_contract.py::test_new_money_product_contract - Attr...\nFAILED tests/test_orders_report_integration.py::test_order_prices_catalog_money_objects\nFAILED tests/test_orders_report_integration.py::test_reports_group_by_currency\nFAILED tests/test_orders_report_integration.py::test_mixed_currency_order_is_rejected\n================== 4 failed, 1 passed, 155 warnings in 0.03s ===================\n"
+      },
+      {
+        "id": "hidden_interface_behavior",
+        "pass": false,
+        "weight": 0.4,
+        "detail": "^\n  File \"<SOURCE_EVIDENCE_ROOT>/trials/094-083-monorepo-interface-repair-codex-a01-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042638-f730186c/workspace/in/shopmono/packages/orders/orders/adapter.py\", line 11, in price_cents\n    return int(product.price_cents)\n               ^^^^^^^^^^^^^^^^^^^\nAttributeError: 'Product' object has no attribute 'price_cents'\n"
+      },
+      {
+        "id": "test_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "implementation_quality",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "score": 0.8
+        }
+      },
+      {
+        "id": "fix_report",
+        "pass": false,
+        "weight": 0.05,
+        "detail": {
+          "score": 0.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.23,
+    "oracle_outcome_score": 0.23,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.23,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 31.285
+}

@@ -1,0 +1,21 @@
+Repaired the compose stack and verified it offline.
+
+Modified:
+- `/workspace/in/composeapp/compose.yaml`
+- `/workspace/out/compose_fix_report.md`
+
+`.env.example` was already consistent and did not require changes.
+
+Final validation command:
+
+```sh
+PYTHONPATH=/opt/hermes-venv/lib/python3.11/site-packages python3 tools/validate_compose.py
+```
+
+Result:
+
+```text
+compose contract ok
+```
+
+No images were pulled and no containers were started.

@@ -1,0 +1,30 @@
+Repaired the compose stack and verified the contract.
+
+Changed:
+- Restored pinned API image tag `1.4.2`
+- Renamed `cache` service to `redis`
+- Corrected API port mapping to `${API_PORT:-8080}:8000`
+- Restored required `REDIS_URL`, queue, and data environment settings
+- Set queue name to `critical`
+- Mounted `api-data:/data`
+- Restored health-gated dependencies
+- Added meaningful healthchecks:
+  - API: `/healthz`
+  - DB: `pg_isready`
+  - Redis: `redis-cli ping`
+- Kept the worker service and avoided image pulls/container startup
+- `.env.example` was already consistent and required no changes
+
+Validation succeeded:
+
+`PYTHONPATH=/tmp python3 tools/validate_compose.py`
+
+Output:
+
+`compose contract ok`
+
+Report written to:
+
+`/workspace/out/compose_fix_report.md`
+
+The supplied `<HOME>/...` paths are mounted here as `/workspace/in/...` and `/workspace/out/...`.

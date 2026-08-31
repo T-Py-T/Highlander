@@ -1,0 +1,11 @@
+{
+  "combined_score": null,
+  "cross_harness_comparability": "not available",
+  "elapsed_seconds": 1200.433,
+  "native_event_count": null,
+  "native_observability": "no_native_execution",
+  "operator_interventions": 0,
+  "process_score": null,
+  "status": "unavailable",
+  "tool_invocation_count": null
+}

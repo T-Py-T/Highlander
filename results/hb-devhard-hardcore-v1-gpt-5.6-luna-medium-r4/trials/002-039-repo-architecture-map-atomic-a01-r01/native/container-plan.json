@@ -1,0 +1,69 @@
+{
+  "adapter": "atomic",
+  "clean_room": {
+    "adapter": "oci",
+    "architecture": "arm64",
+    "capabilities": "all-dropped",
+    "container_name": "highlander-002-039-repo-architecture-map-atomic-a01-r01-atomic-a1",
+    "digest_verified": true,
+    "host_home_mounted": false,
+    "image_id": "sha256:b44417c1e8117981759fc3821f4b8d94927e59cc01ce9481366c58dc416b697a",
+    "image_reference": "sha256:b44417c1e8117981759fc3821f4b8d94927e59cc01ce9481366c58dc416b697a",
+    "labels": {
+      "io.buildah.version": "1.43.2",
+      "io.highlander.harness": "atomic",
+      "io.highlander.profile": "clean-core",
+      "io.highlander.version": "0.9.15"
+    },
+    "network": "bridge",
+    "no_new_privileges": true,
+    "os": "linux",
+    "profile": "clean-core",
+    "publication_credentials_available": false,
+    "reference": "sha256:b44417c1e8117981759fc3821f4b8d94927e59cc01ce9481366c58dc416b697a",
+    "repo_digests": [
+      "localhost/highlander/atomic@sha256:d7ce99c8a6cd4a590d278135b7e66c3601a9e5c7a00988fb7a6e26eed375b903"
+    ],
+    "resources": {
+      "cpus": 2.0,
+      "memory_mb": 4096,
+      "pids_limit": 512,
+      "tmpfs_mb": 1024
+    },
+    "root_filesystem": "read-only",
+    "runtime": "podman",
+    "seed": {
+      "available": true,
+      "imported_file": "auth.json",
+      "profile": "atomic-subscription",
+      "required": true
+    },
+    "seed_profile": "atomic-subscription"
+  },
+  "invocation": {
+    "argv": [
+      "atomic",
+      "--mode",
+      "json",
+      "--print",
+      "--provider",
+      "openai-codex",
+      "--model",
+      "gpt-5.6-luna",
+      "--thinking",
+      "medium",
+      "--no-session",
+      "--no-skills",
+      "--no-prompt-templates",
+      "--no-themes",
+      "--no-context-files",
+      "--no-approve",
+      "--offline",
+      "--"
+    ],
+    "credential_values_recorded": false,
+    "cwd": "/workspace",
+    "prompt_transport": "exact rendered HarnessBench prompt appended as one argv element"
+  },
+  "worktree": "<SOURCE_EVIDENCE_ROOT>/trials/002-039-repo-architecture-map-atomic-a01-r01/hb-work/atomic/gpt-5.6-luna/oc-bench-v2-039-repo-architecture-map-gpt-5.6-luna-20260830-233209-38bd9572/workspace"
+}

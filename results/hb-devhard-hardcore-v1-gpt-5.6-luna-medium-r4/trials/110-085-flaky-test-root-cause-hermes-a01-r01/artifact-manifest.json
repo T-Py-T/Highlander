@@ -1,0 +1,241 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 437,
+      "path": "control/app.json",
+      "sha256": "bcacfc231639ae0e53ae0ee90577b7171eb14ddca6f448fb7acacdb76fd520cf"
+    },
+    {
+      "bytes": 695,
+      "path": "control/harness.json",
+      "sha256": "506b17d5d497270ff9487d46a3cbb3affdf34fbf860c4038cedc17ba397be552"
+    },
+    {
+      "bytes": 339,
+      "path": "control/trial.json",
+      "sha256": "39e6d176930491f3031b0bb015eae881b3254b53670f729b0a0bc611bde18a42"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2504,
+      "path": "controller.stdout.raw",
+      "sha256": "92834fb6ca7cd3ffb9d81126e6cfe13962d1b281dffd2ff10880e9ec1a071e96"
+    },
+    {
+      "bytes": 48170,
+      "path": "diff.patch",
+      "sha256": "f64519192ef63cfd179405d4c5643b66cc96fce0c5b88d8eec5b8f576cf7afb4"
+    },
+    {
+      "bytes": 2242,
+      "path": "native/container-plan.json",
+      "sha256": "685d100215b065f2b958f427caf979c11af6cc281a7a28d86016e59190af251e"
+    },
+    {
+      "bytes": 646,
+      "path": "native/control-proof.json",
+      "sha256": "df5123ee4895a63b5607b356f18513f80ce172010b640da2ea8049cddf8b1130"
+    },
+    {
+      "bytes": 1962,
+      "path": "native/execution.json",
+      "sha256": "90eac9a2a9ce23d77d21392cb0f5c596468fa410893122a0e26339979df1df49"
+    },
+    {
+      "bytes": 536,
+      "path": "native/invocation.json",
+      "sha256": "29b3297e56baa7092c35f500b490073274aa7f369ac3fa1d0b94ae5741513693"
+    },
+    {
+      "bytes": 48,
+      "path": "native/process-metrics.json",
+      "sha256": "bf225fbe16fbb7db40291698ce9a3771e4d4335cda5a095de5c20a1924c83313"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 159,
+      "path": "native/stdout.raw",
+      "sha256": "8b163ad36fa286cd256d938ab39506b03769411f39befdd521a399fa0f4b8c8e"
+    },
+    {
+      "bytes": 0,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 429,
+      "path": "native/usage.json",
+      "sha256": "c8f2f8901a03525d704c1f175c758d5ee99a73c8dee9df5e4a81a895e145fb72"
+    },
+    {
+      "bytes": 332,
+      "path": "process/observations.json",
+      "sha256": "d93b030bc861e462fd18b73ff275ecd871854f5fff482e0433b173b6b45206b8"
+    },
+    {
+      "bytes": 0,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2724,
+      "path": "result.json",
+      "sha256": "767a7a3931191509bbecdc01cbe5a949a01695e64733062744c68dea186b5f7b"
+    },
+    {
+      "bytes": 5643,
+      "path": "upstream-result.json",
+      "sha256": "c30d26f5c75d3c8ae2c093c335eed17c3939b0ad218569269a279e85bc111cf9"
+    },
+    {
+      "bytes": 483,
+      "path": "usage-normalized.json",
+      "sha256": "5576a60ca09a02d6e0b64b39b21aa3019daabd9aec078e4c7ec64ca7a4302228"
+    },
+    {
+      "bytes": 1,
+      "path": "workspace-final/in/flakyqueue/.venv/.gitignore",
+      "sha256": "684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1"
+    },
+    {
+      "bytes": 0,
+      "path": "workspace-final/in/flakyqueue/.venv/.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 43,
+      "path": "workspace-final/in/flakyqueue/.venv/CACHEDIR.TAG",
+      "sha256": "5953156d7e0c564a427251316eaf26f8870e6483ae2197f916b630e4f93e31ae"
+    },
+    {
+      "bytes": 4103,
+      "path": "workspace-final/in/flakyqueue/.venv/bin/activate",
+      "sha256": "7d450bf882c53c11663acf6bdf3751eca11416d0452143a0f1f07ec41a001b2f"
+    },
+    {
+      "bytes": 2673,
+      "path": "workspace-final/in/flakyqueue/.venv/bin/activate.bat",
+      "sha256": "9ac5830c3d0d0c6ddb181417b42bcf8155f6f647786c341ccdc278fc57cc9038"
+    },
+    {
+      "bytes": 2633,
+      "path": "workspace-final/in/flakyqueue/.venv/bin/activate.csh",
+      "sha256": "f7f1449a878c4308c01d3419444d0da4720f008adbff941fc90be5383b15fb8f"
+    },
+    {
+      "bytes": 4344,
+      "path": "workspace-final/in/flakyqueue/.venv/bin/activate.fish",
+      "sha256": "9c30d7231ed7e8e62a9bf8a599971489e394b8b8f85fe9defc5e7957f6622586"
+    },
+    {
+      "bytes": 3959,
+      "path": "workspace-final/in/flakyqueue/.venv/bin/activate.nu",
+      "sha256": "92e7ee83d5899fd9be02d4401875066d6b5024e50c4c6314f96de512cc95fefe"
+    },
+    {
+      "bytes": 2784,
+      "path": "workspace-final/in/flakyqueue/.venv/bin/activate.ps1",
+      "sha256": "ee1f35b0e6c45b7feb431213d020c4fb3d753733bf0031ea7d7dccb66bfde4ee"
+    },
+    {
+      "bytes": 3877,
+      "path": "workspace-final/in/flakyqueue/.venv/bin/activate.xsh",
+      "sha256": "6d92aec10cbe0351d44a552cb22fb0ac367beac371e846ae427faaee27680dd0"
+    },
+    {
+      "bytes": 2393,
+      "path": "workspace-final/in/flakyqueue/.venv/bin/activate_this.py",
+      "sha256": "9ec0a3416158395459db7db447299a0f5c27a6cfa4079bae6bd948e14d62bdb7"
+    },
+    {
+      "bytes": 1730,
+      "path": "workspace-final/in/flakyqueue/.venv/bin/deactivate.bat",
+      "sha256": "13ea86073a9ee43a66e3549312599dd47ff315758b4ca5a0406faf041fb82300"
+    },
+    {
+      "bytes": 1219,
+      "path": "workspace-final/in/flakyqueue/.venv/bin/pydoc.bat",
+      "sha256": "09f9608d478fa48a9e49af8f413cfeaab47773effd185433088b7688ce75890e"
+    },
+    {
+      "bytes": 18,
+      "path": "workspace-final/in/flakyqueue/.venv/lib/python3.11/site-packages/_virtualenv.pth",
+      "sha256": "69ac3d8f27e679c81b94ab30b3b56e9cd138219b1ba94a1fa3606d5a76a1433d"
+    },
+    {
+      "bytes": 5246,
+      "path": "workspace-final/in/flakyqueue/.venv/lib/python3.11/site-packages/_virtualenv.py",
+      "sha256": "cfb3db86aaa53bb62b5ff764970bec2d71c9228590a0ebec57f6ec926cc0bf1a"
+    },
+    {
+      "bytes": 132,
+      "path": "workspace-final/in/flakyqueue/.venv/pyvenv.cfg",
+      "sha256": "36eba59dbeb23ff4d036c5ac2be9e2b53c201006bc5b67b42534bc3cc5e9babb"
+    },
+    {
+      "bytes": 95,
+      "path": "workspace-final/in/flakyqueue/README.md",
+      "sha256": "4f8a73e68267c470c2c1dd20414f1d545163291a020826c9ae4355a62ed32abc"
+    },
+    {
+      "bytes": 72,
+      "path": "workspace-final/in/flakyqueue/flakyqueue/__init__.py",
+      "sha256": "3cb5fb98aef7db5cd5d2532c8b04133691a0d4123ec66f574d3d3918a64daf11"
+    },
+    {
+      "bytes": 124,
+      "path": "workspace-final/in/flakyqueue/flakyqueue/clock.py",
+      "sha256": "d3fc00708564f8d3bbfd7adf93ac4172c112b9f6d4b32ec0bdeb953f94dfb9eb"
+    },
+    {
+      "bytes": 1601,
+      "path": "workspace-final/in/flakyqueue/flakyqueue/scheduler.py",
+      "sha256": "ff6a25f4285057285d2c38e5aa18f8fc60d91ffff5d792a2a1366ab30ce5bc65"
+    },
+    {
+      "bytes": 246,
+      "path": "workspace-final/in/flakyqueue/flakyqueue/store.py",
+      "sha256": "bbafab06eff2d2290dd73bf7305efdfcdd31a841b2dbffe4e20585b9d4d76105"
+    },
+    {
+      "bytes": 67,
+      "path": "workspace-final/in/flakyqueue/pyproject.toml",
+      "sha256": "e8c4628ed8f1f109ed9455dff39a67374c0711c7e24e6a5114517abe41fb61db"
+    },
+    {
+      "bytes": 1018,
+      "path": "workspace-final/in/flakyqueue/tests/test_retry_order.py",
+      "sha256": "e4bc10389202a863dbb4b58c071dc4ae3a1b1835146cf2a468bf8aec8a5c4cae"
+    },
+    {
+      "bytes": 996,
+      "path": "workspace-final/in/flakyqueue/tests/test_scheduler.py",
+      "sha256": "1b356f1a048f9b5449b4ad24a18989f8923b1312d5ca7735891dbde9e38f7b3e"
+    },
+    {
+      "bytes": 52,
+      "path": "workspace-final/in/flakyqueue/uv.lock",
+      "sha256": "50e8bd1f687fc71872a80b9921fb9e4cab9906a892b5251b7945dd1305735656"
+    },
+    {
+      "bytes": 2474,
+      "path": "workspace-final/out/root_cause.md",
+      "sha256": "e591b5a152b6716e9c863949ccf3f9f719689711b5ad89d26182d828a34c76cb"
+    }
+  ],
+  "generated_at": "2026-08-31T13:01:37.492101Z",
+  "schema_version": 1
+}

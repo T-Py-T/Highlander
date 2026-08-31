@@ -1,0 +1,263 @@
+--- a/in/billingdb/migration.sql
++++ b/in/billingdb/migration.sql
+@@ -1,4 +1,57 @@
+--- Unsafe draft: loses orphan payments and is not idempotent.
++-- Billing schema migration: add invoice status and enforce future payment references.
++-- SQLite only. The transaction is intentionally explicit.
++-- Foreign keys remain enabled; payments are rebuilt before invoices are replaced.
++
++PRAGMA foreign_keys = ON;
++BEGIN IMMEDIATE;
++
++-- Keep orphan rows outside payments before the new FK is installed.  The
++-- uniqueness guard makes reruns harmless.
++CREATE TABLE IF NOT EXISTS payment_orphans (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL,
++  reason TEXT NOT NULL
++);
++
++INSERT OR IGNORE INTO payment_orphans (id, invoice_id, amount_cents, created_at, reason)
++SELECT p.id, p.invoice_id, p.amount_cents, p.created_at,
++       'invoice_id does not reference an existing invoice'
++FROM payments AS p
++WHERE NOT EXISTS (SELECT 1 FROM invoices AS i WHERE i.id = p.invoice_id);
++
++-- This small durable mapping lets a second execution rebuild the table while
++-- retaining any status values that may have been assigned after migration.
++-- It is removed by rollback.sql.
++CREATE TABLE IF NOT EXISTS invoice_status (
++  invoice_id TEXT PRIMARY KEY,
++  status TEXT NOT NULL DEFAULT 'open'
++);
++
++INSERT OR IGNORE INTO invoice_status (invoice_id, status)
++SELECT id, 'open' FROM invoices;
++
++-- Stage valid payments without a foreign key. The old child is then removed,
++-- allowing the parent table to be replaced while FK enforcement stays enabled.
++DROP TABLE IF EXISTS payments_stage;
++CREATE TABLE payments_stage (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL
++);
++
++INSERT INTO payments_stage (id, invoice_id, amount_cents, created_at)
++SELECT p.id, p.invoice_id, p.amount_cents, p.created_at
++FROM payments AS p
++WHERE EXISTS (SELECT 1 FROM invoices AS i WHERE i.id = p.invoice_id);
++
++DROP TABLE payments;
++
++-- Rebuild invoices from the common legacy columns and the durable status map.
++-- The DEFAULT supplies open for every newly discovered invoice.
++DROP TABLE IF EXISTS invoices_new;
+ CREATE TABLE invoices_new (
+   id TEXT PRIMARY KEY,
+   customer_id TEXT NOT NULL,
+@@ -7,11 +60,39 @@
+   status TEXT NOT NULL DEFAULT 'open'
+ );
+ 
+-INSERT INTO invoices_new(id, customer_id, total_cents, created_at)
+-SELECT id, customer_id, total_cents, created_at FROM invoices;
++INSERT INTO invoices_new (id, customer_id, total_cents, created_at, status)
++SELECT i.id, i.customer_id, i.total_cents, i.created_at,
++       COALESCE(s.status, 'open')
++FROM invoices AS i
++LEFT JOIN invoice_status AS s ON s.invoice_id = i.id;
+ 
+ DROP TABLE invoices;
+ ALTER TABLE invoices_new RENAME TO invoices;
+ 
+-DELETE FROM payments
+-WHERE invoice_id NOT IN (SELECT id FROM invoices);
++-- Install the child FK only after the new parent exists.
++DROP TABLE IF EXISTS payments_new;
++CREATE TABLE payments_new (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL,
++  FOREIGN KEY (invoice_id) REFERENCES invoices(id)
++);
++
++INSERT INTO payments_new (id, invoice_id, amount_cents, created_at)
++SELECT id, invoice_id, amount_cents, created_at FROM payments_stage;
++
++DROP TABLE payments_stage;
++ALTER TABLE payments_new RENAME TO payments;
++
++-- Keep the idempotence map synchronized if an application changes a status
++-- between migration runs.
++CREATE TRIGGER IF NOT EXISTS invoices_status_sync
++AFTER UPDATE OF status ON invoices
++BEGIN
++  INSERT INTO invoice_status (invoice_id, status) VALUES (NEW.id, NEW.status)
++  ON CONFLICT(invoice_id) DO UPDATE SET status = excluded.status;
++END;
++
++COMMIT;
++PRAGMA foreign_keys = ON;
+--- a/in/billingdb/migration_report.md
++++ b/in/billingdb/migration_report.md
+@@ -0,0 +1,34 @@
++# Billing migration report
++
++## Changes made
++
++- Added `invoices.status TEXT NOT NULL DEFAULT 'open'`.
++- Copied all invoice legacy fields, including historical `created_at`.
++- Copied valid payments unchanged.
++- Moved orphan payments to `payment_orphans` before installing the payment FK.
++- Rebuilt `payments` with `FOREIGN KEY (invoice_id) REFERENCES invoices(id)`.
++- Kept foreign-key enforcement enabled and wrapped all migration changes in an
++  explicit `BEGIN IMMEDIATE`/`COMMIT` transaction.
++
++## Idempotence
++
++The migration uses `IF NOT EXISTS`, `INSERT OR IGNORE`, and deterministic table
++rebuilds. On a second run, existing invoice statuses are read from
++`invoice_status`; a synchronization trigger preserves status changes made
++between runs. Existing orphan rows are not duplicated, and payments are not
++reinserted or deleted unexpectedly.
++
++## Rollback
++
++`rollback.sql` runs in its own explicit transaction, rebuilds `invoices` as
++`(id, customer_id, total_cents, created_at)`, rebuilds `payments` as
++`(id, invoice_id, amount_cents, created_at)` without a foreign key, restores
++orphan rows from `payment_orphans`, and removes the migration's status map.
++The `payment_orphans` audit table is intentionally retained.
++
++## Verification
++
++Run `postcheck.sql` after migration. With the supplied `schema.sql`, expected
++results are 3 invoices, 3 valid payments, one preserved orphan (`p4`), zero
++status nulls, zero changed invoice timestamps, zero FK violations, and
++`foreign_keys_enabled = 1`.
+--- a/in/billingdb/postcheck.sql
++++ b/in/billingdb/postcheck.sql
+@@ -0,0 +1,33 @@
++-- Executable post-migration checks. Every result should be zero except the
++-- row-count queries and the orphan-preservation query, which are informational.
++
++PRAGMA foreign_keys = ON;
++
++SELECT 'invoices_row_count' AS check_name, COUNT(*) AS value FROM invoices;
++SELECT 'payments_row_count' AS check_name, COUNT(*) AS value FROM payments;
++SELECT 'payment_orphans_row_count' AS check_name, COUNT(*) AS value FROM payment_orphans;
++
++SELECT 'orphan_p4_preserved' AS check_name,
++       CASE WHEN EXISTS (
++         SELECT 1 FROM payment_orphans
++         WHERE id = 'p4'
++           AND invoice_id = 'missing-invoice'
++           AND amount_cents = 700
++           AND created_at = '2024-01-07T10:00:00Z'
++       ) THEN 1 ELSE 0 END AS value;
++
++SELECT 'invoice_status_nulls' AS check_name,
++       COUNT(*) AS value FROM invoices WHERE status IS NULL;
++SELECT 'invoice_status_not_open' AS check_name,
++       COUNT(*) AS value FROM invoices WHERE status <> 'open';
++SELECT 'invoice_created_at_changed' AS check_name,
++       COUNT(*) AS value
++FROM invoices
++WHERE (id = 'inv1' AND created_at <> '2024-01-03T10:00:00Z')
++   OR (id = 'inv2' AND created_at <> '2024-01-04T10:00:00Z')
++   OR (id = 'inv3' AND created_at <> '2024-01-05T10:00:00Z');
++
++SELECT 'foreign_key_violations' AS check_name,
++       COUNT(*) AS value FROM pragma_foreign_key_check;
++SELECT 'foreign_keys_enabled' AS check_name, foreign_keys AS value
++FROM pragma_foreign_keys;
+--- a/in/billingdb/preflight_report.md
++++ b/in/billingdb/preflight_report.md
+@@ -0,0 +1,37 @@
++# Billing migration preflight report
++
++## Scope
++
++Input: `schema.sql`; migration target: `migration.sql`.
++
++## Source inventory
++
++The supplied seed schema contains:
++
++- `invoices`: 3 rows (`inv1`, `inv2`, `inv3`)
++- `payments`: 4 rows (`p1`, `p2`, `p3`, `p4`)
++- orphan payments: 1 row, `p4`, referencing `missing-invoice`
++
++The three invoice timestamps are historical data and must be copied unchanged.
++
++## Planned safety checks
++
++Before enforcing the payment foreign key, the migration copies every payment whose
++`invoice_id` is absent from `invoices` into `payment_orphans`, preserving `id`,
++`invoice_id`, `amount_cents`, and `created_at`, with a reason. It then rebuilds
++`payments` with a foreign key to `invoices(id)` and copies only valid payments.
++
++Invoices are rebuilt with `status TEXT NOT NULL DEFAULT 'open'`; all legacy invoice
++columns, including `created_at`, are copied. A durable status map makes rerunning
++the migration idempotent without duplicating rows or resetting assigned statuses.
++
++Expected post-migration counts:
++
++- `invoices`: 3
++- `payments`: 3
++- `payment_orphans`: 1 (`p4`)
++- `invoices.status IS NULL`: 0
++- foreign-key violations: 0
++
++The migration uses `BEGIN IMMEDIATE`/`COMMIT`, and leaves `PRAGMA foreign_keys`
++enabled. See `postcheck.sql` for executable checks.
+--- a/in/billingdb/rollback.sql
++++ b/in/billingdb/rollback.sql
+@@ -0,0 +1,42 @@
++-- Roll back the billing migration to the legacy table shapes.
++-- Orphans are restored to payments; payment_orphans is retained as an audit
++-- copy and can be used to verify that no orphan was lost.
++
++PRAGMA foreign_keys = ON;
++BEGIN IMMEDIATE;
++
++DROP TABLE IF EXISTS payments_old;
++CREATE TABLE payments_old (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL
++);
++
++INSERT OR IGNORE INTO payments_old (id, invoice_id, amount_cents, created_at)
++SELECT id, invoice_id, amount_cents, created_at FROM payments;
++
++INSERT OR IGNORE INTO payments_old (id, invoice_id, amount_cents, created_at)
++SELECT id, invoice_id, amount_cents, created_at FROM payment_orphans;
++
++DROP TABLE payments;
++ALTER TABLE payments_old RENAME TO payments;
++
++DROP TABLE IF EXISTS invoices_old;
++CREATE TABLE invoices_old (
++  id TEXT PRIMARY KEY,
++  customer_id TEXT NOT NULL,
++  total_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL
++);
++
++INSERT INTO invoices_old (id, customer_id, total_cents, created_at)
++SELECT id, customer_id, total_cents, created_at FROM invoices;
++
++DROP TABLE invoices;
++ALTER TABLE invoices_old RENAME TO invoices;
++
++DROP TABLE IF EXISTS invoice_status;
++
++COMMIT;
++PRAGMA foreign_keys = ON;

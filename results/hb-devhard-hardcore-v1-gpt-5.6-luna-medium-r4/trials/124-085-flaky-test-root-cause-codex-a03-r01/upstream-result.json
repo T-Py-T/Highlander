@@ -1,0 +1,139 @@
+{
+  "task_id": "085-flaky-test-root-cause",
+  "model_id": "codex",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/124-085-flaky-test-root-cause-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064254-4b65490a",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/124-085-flaky-test-root-cause-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064254-4b65490a/workspace",
+  "session_id": "highlander-codex-085-flaky-test-root-cause-a3-085-flaky-test-root-cause-11f764af",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/124-085-flaky-test-root-cause-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064254-4b65490a/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "codex",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/124-085-flaky-test-root-cause-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064254-4b65490a/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/124-085-flaky-test-root-cause-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064254-4b65490a/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/124-085-flaky-test-root-cause-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064254-4b65490a/highlander-native",
+      "--trial-id",
+      "124-085-flaky-test-root-cause-codex-a03-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/124-085-flaky-test-root-cause-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064254-4b65490a/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "codex",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/124-085-flaky-test-root-cause-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064254-4b65490a/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/124-085-flaky-test-root-cause-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064254-4b65490a/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/124-085-flaky-test-root-cause-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064254-4b65490a/highlander-native",
+        "--trial-id",
+        "124-085-flaky-test-root-cause-codex-a03-r01"
+      ],
+      "stdout": "Reading additional input from stdin...\n{\"type\":\"thread.started\",\"thread_id\":\"01a0576a-3cbf-7122-8c17-9ccb73a3763c\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_0\",\"type\":\"error\",\"message\":\"Code Mode is unavailable because failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: host executable was not found. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.\"}}\n{\"type\":\"turn.started\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_1\",\"type\":\"agent_message\",\"text\":\"I’ll reproduce the failures first, then trace the ordering and retry-delay code paths, patch only implementation files, and rerun the full suite plus focused repeat runs. I’ll also write the requested root-cause report in the specified output path.\"}}\n2026-08-31T10:43:03.435188Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T10:43:08.041909Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_2\",\"type\":\"agent_message\",\"text\":\"The command runner is currently unavailable in this session (`codex-code-mode-host` cannot be spawned), so I can’t yet inspect or modify the repository. I’ll retry the workspace access once before treating this as an execution blocker.\"}}\n2026-08-31T10:43:11.041542Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T10:43:13.566947Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_3\",\"type\":\"agent_message\",\"text\":\"I’m blocked: the execution host is unavailable (`/usr/local/bin/codex-code-mode-host` is missing), so I couldn’t run pytest, inspect the implementation, apply the fix, or write `root_cause.md`.\\n\\nPlease restart the coding workspace/session and resend the request.\"}}\n{\"type\":\"turn.completed\",\"usage\":{\"input_tokens\":68469,\"cached_input_tokens\":60160,\"cache_write_input_tokens\":0,\"output_tokens\":753,\"reasoning_output_tokens\":135}}\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-codex-085-flaky-test-root-cause-a3-085-flaky-test-root-cause-11f764af"
+  },
+  "oracle_result": {
+    "task": "085-flaky-test-root-cause",
+    "outcome_score": 0.1837,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "repeated_pytest_stable",
+        "pass": false,
+        "weight": 0.35,
+        "detail": {
+          "returncodes": [
+            1
+          ],
+          "last_output": "14/site-packages/pytest_asyncio/plugin.py:156: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n    return asyncio.iscoroutinefunction(obj)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_retry_order.py::test_retry_jitter_uses_injected_random_source\nFAILED tests/test_retry_order.py::test_retry_task_is_not_ready_until_clock_reaches_run_at\nFAILED tests/test_scheduler.py::test_ready_order_is_stable_for_equal_priority\nFAILED tests/test_scheduler.py::test_add_uses_injected_clock - AssertionError...\n======================= 4 failed, 124 warnings in 0.02s ========================\n"
+        }
+      },
+      {
+        "id": "hidden_determinism",
+        "pass": false,
+        "weight": 0.35,
+        "detail": "Traceback (most recent call last):\n  File \"<string>\", line 18, in <module>\n    assert t.run_at == 13.75\n           ^^^^^^^^^^^^^^^^^\nAssertionError\n"
+      },
+      {
+        "id": "test_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "implementation_quality",
+        "pass": false,
+        "weight": 0.1,
+        "detail": {
+          "score": 0.3375
+        }
+      },
+      {
+        "id": "root_cause_report",
+        "pass": false,
+        "weight": 0.05,
+        "detail": {
+          "score": 0.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.1837,
+    "oracle_outcome_score": 0.1837,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.1837,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 22.75
+}

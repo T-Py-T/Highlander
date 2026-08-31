@@ -1,0 +1,235 @@
+--- a/out/architecture.md
++++ b/out/architecture.md
+@@ -0,0 +1,50 @@
++# minisvc architecture
++
++## Scope
++
++`minisvc` is a small Python service that exposes order operations through an application adapter and provides a CLI bootstrap command. The fixture's code is authoritative over the older design notes in `README.md`.
++
++## Modules
++
++- `minisvc.config` (`config.py`): immutable `Settings` plus `load_settings(env)`. Reads `MINISVC_DB` (default `orders.sqlite`) and `MINISVC_READONLY` (true only when equal to `1`). The readonly value is currently loaded but not enforced anywhere.
++- `minisvc.models` (`models.py`): the `Order` dataclass (`order_id`, `customer`, `total_cents`).
++- `minisvc.storage.repo` (`storage/repo.py`): `OrderRepository`, a thin SQLite data-access layer. It creates the `orders` table, inserts orders, and fetches one order by ID.
++- `minisvc.audit` (`audit.py`): `order_event` creates a dictionary describing an order action. It does not persist an audit record.
++- `minisvc.api.handlers` (`api/handlers.py`): create and read handlers. `create_order` builds an `Order`, saves it, and formats a response. `get_order` reads and formats either a missing or successful response.
++- `minisvc.api.routes` (`api/routes.py`): `register_routes(app, repo)` binds `POST /orders` and `GET /orders/<order_id>` to handler callbacks.
++- `minisvc.cli` (`cli.py`): `main(argv=None)` loads environment settings, constructs a repository, initializes the schema, and reports readiness.
++
++`minisvc/__init__.py`, `minisvc/api/__init__.py`, and `minisvc/storage/__init__.py` are package marker files. They contain no business logic and should not be treated as architecture modules beyond package structure.
++
++## Entry points
++
++The `pyproject.toml` script entry maps `minisvc` to `minisvc.cli:main`. The API integration entry point is `minisvc.api.routes:register_routes`; it expects an external `app` object with `post` and `get` methods and a repository supplied by the caller. Its registered endpoints are:
++
++- `POST /orders` → `minisvc.api.handlers:create_order`
++- `GET /orders/<order_id>` → `minisvc.api.handlers:get_order`
++
++## Data flow
++
++### CLI startup
++
++`main` → `load_settings(os.environ)` → `OrderRepository(settings.database_path)` → `init_schema()` → readiness print. `Settings.readonly` is not passed to the repository or checked by any write path.
++
++### HTTP create order
++
++`POST /orders` callback → `create_order(payload, repo)` → required payload indexing and `int(total_cents)` → `Order` construction → `repo.save(order)` → `order_event(order, "created")` → response `{status, order_id, event}`. The event is response data only. SQLite writes use parameterized SQL and a context-managed connection.
++
++The read path is similar: `GET /orders/<order_id>` → `repo.get` → either a `missing` response or an `ok` response containing `order.__dict__` and an in-memory `read` event.
++
++## Storage
++
++SQLite is the only persistence mechanism. `OrderRepository` opens a fresh connection for each schema, save, or get operation. The database path is configurable through `MINISVC_DB`; absent configuration uses a relative `orders.sqlite`, so the effective location depends on the process working directory. The schema has one `orders` table with a primary key on `order_id` and non-null `customer` and `total_cents` columns. There is no audit table, migration layer, explicit durability policy, or repository retry loop in this code.
++
++## Risks and extension points
++
++- **Readonly gap:** `load_settings` records readonly but `create_order` and `OrderRepository.save` never receive or enforce it. A caller expecting the README contract can still write.
++- **Failure handling:** malformed/missing payload fields, invalid integer conversion, SQLite errors, and duplicate IDs propagate from the handler; there is no HTTP error translation or retry behavior.
++- **Audit gap:** `order_event` is ephemeral and returned to clients. There is no durable audit trail or transaction tying an audit record to an order write.
++- **Runtime configuration:** relative database paths and direct `os.environ` access make deployment context significant. `main` also ignores `argv`.
++- **API boundary:** `create_order` performs only basic key access and integer coercion. Add explicit validation and adapter-level error mapping before exposing it to untrusted clients.
++
++Natural extension points are the repository boundary for transactions/migrations and the handler boundary for validation and response error policy. Readonly enforcement should be designed into that boundary rather than inferred from configuration alone; durable auditing should share the order-write transaction if audit completeness is required.
+--- a/out/doc_code_discrepancies.csv
++++ b/out/doc_code_discrepancies.csv
+@@ -0,0 +1,5 @@
++claim,doc_source,code_evidence,assessment,risk
++"MINISVC_READONLY=1 blocks all write paths.","README.md:6","minisvc/config.py:10-14 loads Settings.readonly, but minisvc/cli.py:9-10 does not pass it onward; minisvc/api/handlers.py:6-13 calls OrderRepository.save unconditionally and storage/repo.py:17-22 always inserts.",contradicted,"Writes remain possible while readonly is configured, causing policy and data-integrity violations."
++"create_order retries failed SQLite writes twice before returning an error response.","README.md:7","minisvc/api/handlers.py:6-13 calls repo.save exactly once; minisvc/storage/repo.py:17-22 has one sqlite3 connection and insert with no retry or error response conversion.",contradicted,"Transient database failures propagate and clients receive no defined retry/error behavior."
++"Audit events are stored in a durable audit table.","README.md:8","minisvc/audit.py:4-10 only returns a dict; handlers.py:13 and :20 place order_event output in the response, while storage/repo.py:11-15 creates only the orders table.","contradicted","Audit history is lost after the request and cannot support durable compliance or forensic review."
++"The service accepts orders through a small HTTP adapter and a CLI bootstrap command.","README.md:3","pyproject.toml:6-7 exposes minisvc.cli:main; api/routes.py:4-6 registers POST /orders and GET /orders/<order_id>.",confirmed,"The documented high-level shape is accurate, subject to the adapter being supplied externally."
+--- a/out/module_map.json
++++ b/out/module_map.json
+@@ -0,0 +1,118 @@
++{
++  "modules": [
++    {
++      "name": "minisvc.config",
++      "path": "minisvc/config.py",
++      "purpose": "Defines immutable Settings and loads database/read-only configuration from an environment mapping."
++    },
++    {
++      "name": "minisvc.models",
++      "path": "minisvc/models.py",
++      "purpose": "Defines the Order data model containing order_id, customer, and total_cents."
++    },
++    {
++      "name": "minisvc.storage.repo",
++      "path": "minisvc/storage/repo.py",
++      "purpose": "SQLite persistence for the orders table, including schema initialization, insert, and lookup."
++    },
++    {
++      "name": "minisvc.audit",
++      "path": "minisvc/audit.py",
++      "purpose": "Builds in-memory order event dictionaries for create and read responses; it has no storage side effects."
++    },
++    {
++      "name": "minisvc.api.handlers",
++      "path": "minisvc/api/handlers.py",
++      "purpose": "Translates API payloads into Orders, invokes repository operations, and formats create/get responses."
++    },
++    {
++      "name": "minisvc.api.routes",
++      "path": "minisvc/api/routes.py",
++      "purpose": "Registers POST /orders and GET /orders/<order_id> callbacks on an application adapter."
++    },
++    {
++      "name": "minisvc.cli",
++      "path": "minisvc/cli.py",
++      "purpose": "CLI bootstrap: loads environment settings, constructs the repository, initializes SQLite schema, and prints readiness."
++    },
++    {
++      "name": "minisvc, minisvc.api, minisvc.storage",
++      "path": "minisvc/__init__.py; minisvc/api/__init__.py; minisvc/storage/__init__.py",
++      "purpose": "Package marker files only; no business logic or runtime flow."
++    }
++  ],
++  "entry_points": [
++    {
++      "identifier": "minisvc.cli:main",
++      "kind": "CLI",
++      "evidence": "pyproject.toml project.scripts minisvc = minisvc.cli:main"
++    },
++    {
++      "identifier": "minisvc.api.routes:register_routes",
++      "kind": "API registration",
++      "evidence": "Registers POST /orders and GET /orders/<order_id> callbacks"
++    },
++    {
++      "identifier": "minisvc.api.handlers:create_order",
++      "kind": "HTTP callback target",
++      "evidence": "Called by the POST /orders lambda registered in register_routes"
++    },
++    {
++      "identifier": "minisvc.api.handlers:get_order",
++      "kind": "HTTP callback target",
++      "evidence": "Called by the GET /orders/<order_id> lambda registered in register_routes"
++    }
++  ],
++  "dependency_edges": [
++    {"from": "minisvc.cli:main", "to": "minisvc.config:load_settings", "type": "calls"},
++    {"from": "minisvc.cli:main", "to": "os.environ", "type": "reads_config"},
++    {"from": "minisvc.cli:main", "to": "minisvc.storage.repo:OrderRepository", "type": "instantiates"},
++    {"from": "minisvc.cli:main", "to": "minisvc.storage.repo:OrderRepository.init_schema", "type": "calls"},
++    {"from": "minisvc.api.routes:register_routes", "to": "minisvc.api.handlers:create_order", "type": "calls"},
++    {"from": "minisvc.api.routes:register_routes", "to": "minisvc.api.handlers:get_order", "type": "calls"},
++    {"from": "minisvc.api.handlers:create_order", "to": "minisvc.models:Order", "type": "instantiates"},
++    {"from": "minisvc.api.handlers:create_order", "to": "minisvc.storage.repo:OrderRepository.save", "type": "calls"},
++    {"from": "minisvc.api.handlers:create_order", "to": "minisvc.audit:order_event", "type": "calls"},
++    {"from": "minisvc.api.handlers:get_order", "to": "minisvc.storage.repo:OrderRepository.get", "type": "calls"},
++    {"from": "minisvc.api.handlers:get_order", "to": "minisvc.audit:order_event", "type": "calls"},
++    {"from": "minisvc.storage.repo:OrderRepository", "to": "sqlite3", "type": "persists_to"},
++    {"from": "minisvc.storage.repo:OrderRepository", "to": "minisvc.models:Order", "type": "instantiates"},
++    {"from": "minisvc.config:load_settings", "to": "MINISVC_DB and MINISVC_READONLY", "type": "reads_config"}
++  ],
++  "key_functions": [
++    {"identifier": "minisvc.config:load_settings", "description": "Maps MINISVC_DB to database_path (default orders.sqlite) and MINISVC_READONLY == 1 to readonly; returns frozen Settings."},
++    {"identifier": "minisvc.cli:main", "description": "Bootstraps the service repository and schema, then prints readiness and returns 0; argv is unused."},
++    {"identifier": "minisvc.storage.repo:OrderRepository.__init__", "description": "Stores the configured database path as a pathlib.Path."},
++    {"identifier": "minisvc.storage.repo:OrderRepository.init_schema", "description": "Creates orders(order_id primary key, customer, total_cents) if absent using a SQLite transaction."},
++    {"identifier": "minisvc.storage.repo:OrderRepository.save", "description": "Inserts an Order into SQLite; duplicate IDs and other SQLite errors propagate; no retry is implemented."},
++    {"identifier": "minisvc.storage.repo:OrderRepository.get", "description": "Queries by order_id and reconstructs an Order or returns None."},
++    {"identifier": "minisvc.api.routes:register_routes", "description": "Binds application adapter routes to create_order and get_order lambdas."},
++    {"identifier": "minisvc.api.handlers:create_order", "description": "Indexes required payload keys, converts total_cents with int(), saves the order, and returns a created response with an in-memory event."},
++    {"identifier": "minisvc.api.handlers:get_order", "description": "Reads an order and returns either missing or serialized order data plus an in-memory read event."},
++    {"identifier": "minisvc.audit:order_event", "description": "Constructs a dictionary event; does not write to a durable audit table."}
++  ],
++  "runtime_flows": [
++    {
++      "name": "CLI startup",
++      "steps": [
++        "Executable minisvc resolves to minisvc.cli:main via pyproject.toml.",
++        "main reads os.environ and calls minisvc.config.load_settings.",
++        "load_settings selects MINISVC_DB or orders.sqlite and records MINISVC_READONLY.",
++        "main instantiates OrderRepository with settings.database_path.",
++        "main calls repo.init_schema, which creates the SQLite orders table if needed.",
++        "main prints minisvc ready at <database path> and returns 0."
++      ]
++    },
++    {
++      "name": "HTTP create-order",
++      "steps": [
++        "register_routes binds POST /orders to a lambda invoking create_order(payload, repo).",
++        "create_order reads order_id, customer, and total_cents from the payload.",
++        "total_cents is converted with int() and an Order is instantiated.",
++        "repo.save inserts the Order into SQLite in its own connection context.",
++        "order_event constructs an in-memory created event.",
++        "The handler returns status created, order_id, and event; no audit persistence or retry occurs."
++      ]
++    }
++  ]
++}
+--- a/out/onboarding_plan.md
++++ b/out/onboarding_plan.md
+@@ -0,0 +1,41 @@
++# minisvc onboarding plan
++
++## Recommended read order
++
++1. `README.md` and `pyproject.toml` — stated intent and the `minisvc.cli:main` executable mapping. Treat the README design notes as claims to verify, not as behavior.
++2. `minisvc/config.py` — runtime settings and defaults.
++3. `minisvc/models.py` — the small `Order` data shape.
++4. `minisvc/storage/repo.py` — actual SQLite schema and persistence semantics.
++5. `minisvc/api/routes.py`, then `minisvc/api/handlers.py` — route wiring and request-to-storage flow.
++6. `minisvc/audit.py` — response-only event construction and its limits.
++7. `minisvc/cli.py` — how configuration and schema initialization are assembled at startup.
++
++The three `__init__.py` files are package markers only: they are active for package discovery/import structure but contain no business logic. Focus debugging and changes on the modules above.
++
++## Local run and test commands
++
++From the repository root:
++
++```bash
++python -m minisvc.cli
++```
++
++The module currently defines `main` but does not invoke it under an `if __name__ == "__main__"` guard, so the installed script is the reliable CLI path:
++
++```bash
++python -m pip install -e .
++MINISVC_DB=/tmp/minisvc-orders.sqlite minisvc
++```
++
++There is no test suite or test configuration in this fixture. For a smoke check after installation, verify the command prints `minisvc ready at ...` and creates the SQLite database/table. API behavior requires an external adapter object implementing `post` and `get`; call `register_routes(app, repo)` with a temporary database to exercise route registration and handlers.
++
++## First debugging breakpoint / trace point
++
++Set the first breakpoint at `minisvc.api.handlers.create_order`, line 6, for a `POST /orders` request. Inspect the payload before `Order` construction, then step into `OrderRepository.save` (line 17) and `order_event` (line 4). This covers validation, persistence, and the documented-but-not-durable audit behavior in one trace. For startup-only issues, use `minisvc.cli.main`, line 8, and inspect `settings.database_path` and `settings.readonly`.
++
++## Safe first changes
++
++1. Add focused input validation and stable client-facing error mapping around `create_order`; preserve the existing repository interface and avoid changing schema behavior in the same change.
++2. Add an explicit readonly policy test and enforcement at the write boundary (`OrderRepository.save` or a clearly owned service policy), using `Settings.readonly` rather than adding a second configuration convention.
++
++Both changes should be accompanied by tests once a test harness is introduced. Do not begin by editing package marker files; they are not runtime business logic.
+--- a/out/risk_register.csv
++++ b/out/risk_register.csv
+@@ -0,0 +1,6 @@
++risk_id,area,evidence,impact,mitigation,owner_hint
++R-001,storage/data durability,"minisvc/storage/repo.py OrderRepository.save opens a fresh SQLite connection and inserts into only the orders table; no backup, migration, durability policy, or retry is present.","Data loss or failed writes may be unrecoverable; schema evolution is unmanaged.","Define backup and migration strategy, configure SQLite durability expectations, and add bounded retry/transaction policy at the repository boundary.",storage/platform
++R-002,audit behavior,"minisvc/audit.py:4-10 order_event returns a dict only; handlers.py:13 and :20 return it in API responses; repo.py:11-15 creates no audit table.","Creates and reads have no durable audit history, weakening compliance and incident investigation.","Persist audit records in the same transaction as order mutations and define retention/query semantics.",backend/security
++R-003,configuration/runtime environment,"minisvc/config.py:10-14 defaults database_path to relative orders.sqlite and parses readonly; cli.py:8-10 reads settings but never enforces Settings.readonly.","Working-directory changes select different databases, and configured readonly mode does not prevent writes.","Require/resolve an explicit database location in deployment and enforce readonly in the repository or service write policy.",platform/backend
++R-004,API input validation,"minisvc/api/handlers.py:create_order indexes payload['order_id'] and ['customer'] and applies int(payload['total_cents']) without schema, range, or semantic validation.","Malformed requests raise KeyError/ValueError and invalid or nonsensical orders can reach storage without consistent API errors.","Add request schema validation, constraints for IDs/customer/amount, and adapter-level 4xx error mapping.",API/backend
++R-005,error handling and idempotency,"minisvc/storage/repo.py:17-22 propagates SQLite errors and enforces a primary key; handlers.py:6-13 has no duplicate handling or retry despite README.md:7.","Duplicate or transient requests can fail as uncategorized errors and clients cannot safely determine retry behavior.","Define duplicate/idempotency semantics, classify SQLite failures, and return stable API error responses with bounded retries where safe.",API/storage

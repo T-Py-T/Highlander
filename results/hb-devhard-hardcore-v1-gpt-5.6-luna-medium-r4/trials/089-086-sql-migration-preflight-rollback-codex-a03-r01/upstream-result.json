@@ -1,0 +1,146 @@
+{
+  "task_id": "086-sql-migration-preflight-rollback",
+  "model_id": "codex",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/089-086-sql-migration-preflight-rollback-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-041643-30b75386",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/089-086-sql-migration-preflight-rollback-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-041643-30b75386/workspace",
+  "session_id": "highlander-codex-086-sql-migration-preflight-rollback-a3-086-sql-migration-preflight-rollback-25e39357",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/089-086-sql-migration-preflight-rollback-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-041643-30b75386/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "codex",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/089-086-sql-migration-preflight-rollback-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-041643-30b75386/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/089-086-sql-migration-preflight-rollback-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-041643-30b75386/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/089-086-sql-migration-preflight-rollback-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-041643-30b75386/highlander-native",
+      "--trial-id",
+      "089-086-sql-migration-preflight-rollback-codex-a03-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/089-086-sql-migration-preflight-rollback-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-041643-30b75386/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "codex",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/089-086-sql-migration-preflight-rollback-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-041643-30b75386/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/089-086-sql-migration-preflight-rollback-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-041643-30b75386/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/089-086-sql-migration-preflight-rollback-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-041643-30b75386/highlander-native",
+        "--trial-id",
+        "089-086-sql-migration-preflight-rollback-codex-a03-r01"
+      ],
+      "stdout": "Reading additional input from stdin...\n{\"type\":\"thread.started\",\"thread_id\":\"01a056e4-6a37-7d90-91d5-8aa4eb0da9ab\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_0\",\"type\":\"error\",\"message\":\"Code Mode is unavailable because failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: host executable was not found. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.\"}}\n{\"type\":\"turn.started\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_1\",\"type\":\"agent_message\",\"text\":\"I’ll inspect the policy, schema, and current migration package, then patch the SQL and add the required preflight, postcheck, rollback, and report artifacts. I’ll also run SQLite checks to verify preservation, idempotence, FK behavior, and rollback shape.\"}}\n2026-08-31T08:17:00.530712Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_2\",\"type\":\"agent_message\",\"text\":\"The supplied macOS path is not mounted under that exact location in this execution environment, so I’m locating the corresponding workspace copy before editing.\"}}\n2026-08-31T08:17:04.156954Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T08:17:06.502295Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T08:17:09.555591Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T08:17:13.185422Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_3\",\"type\":\"agent_message\",\"text\":\"I’m blocked by the execution environment: filesystem and shell tools fail to start because `/usr/local/bin/codex-code-mode-host` is unavailable. I couldn’t read or modify the requested files.\"}}\n{\"type\":\"turn.completed\",\"usage\":{\"input_tokens\":89896,\"cached_input_tokens\":79360,\"cache_write_input_tokens\":0,\"output_tokens\":1134,\"reasoning_output_tokens\":182}}\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-codex-086-sql-migration-preflight-rollback-a3-086-sql-migration-preflight-rollback-25e39357"
+  },
+  "oracle_result": {
+    "task": "086-sql-migration-preflight-rollback",
+    "outcome_score": 0.1928,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "migration_executes",
+        "pass": true,
+        "weight": 0.15,
+        "detail": null
+      },
+      {
+        "id": "migration_executes",
+        "pass": false,
+        "weight": 0.15,
+        "detail": "no such table: payment_orphans"
+      },
+      {
+        "id": "sql_quality",
+        "pass": false,
+        "weight": 0.08,
+        "detail": {
+          "score": 0.16
+        }
+      },
+      {
+        "id": "rollback_executes",
+        "pass": false,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "postcheck_sql",
+        "pass": false,
+        "weight": 0.06,
+        "detail": {
+          "score": 0.0
+        }
+      },
+      {
+        "id": "documentation",
+        "pass": false,
+        "weight": 0.05,
+        "detail": {
+          "score": 0.0
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.1928,
+    "oracle_outcome_score": 0.1928,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.1928,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 33.077
+}

@@ -1,0 +1,93 @@
+--- a/out/root_cause.json
++++ b/out/root_cause.json
+@@ -0,0 +1,53 @@
++{
++  "incident_id": "checkout-auth-failure-2026-03-22T14:10Z",
++  "root_cause_service": "auth-gateway",
++  "root_cause_change_id": "AUTH-2026-0318",
++  "confidence": "high",
++  "affected_services": [
++    "checkout-web",
++    "payment-api",
++    "auth-gateway"
++  ],
++  "evidence": [
++    {
++      "source_file": "/workspace/in/topology.json",
++      "observation": "The dependency path from checkout-web to payment-api to auth-gateway places auth-gateway upstream of the failed checkout payment authorization; the file records AUTH-2026-0318 on auth-gateway at 2026-03-22T14:05:00Z."
++    },
++    {
++      "source_file": "/workspace/in/logs/auth-gateway.log",
++      "observation": "After AUTH-2026-0318 deployed at 14:05:12Z, auth-gateway reported a partner-v2 JWKS cache miss, then rejected partner-v2 tokens because only partner-v1 was allowed."
++    },
++    {
++      "source_file": "/workspace/in/logs/payment-api.log",
++      "observation": "At 14:08:59Z payment-api reported auth-gateway issuer_not_allowed for issuer partner-v2, and at 14:09:04Z rejected the payment with auth_result=invalid_issuer."
++    },
++    {
++      "source_file": "/workspace/in/logs/checkout-web.log",
++      "observation": "checkout-web recorded a 401 from payment-api at 14:09:41Z and then reported invalid issuer while the checkout flow remained blocked."
++    },
++    {
++      "source_file": "/workspace/in/metrics/service_metrics.csv",
++      "observation": "At 14:10Z checkout-web and payment-api had elevated 401 rates of 18.7% and 21.2%, while auth-gateway had a 28.4% 401 rate and notes identifying JWKS cache miss and issuer mismatch."
++    }
++  ],
++  "excluded_red_herrings": [
++    {
++      "signal": "orders-db CPU at 86%",
++      "why_not_primary": "Query p95 was normal at 35 ms with zero errors, and no failed checkout transaction reached orders-db before the auth gate."
++    },
++    {
++      "signal": "cdn-edge 4.8% 5xx rate",
++      "why_not_primary": "The metric notes scope the errors to static images; checkout-web reported static assets served normally, while the checkout submission failed with an upstream payment 401."
++    },
++    {
++      "signal": "orders-db vacuum tuning change DB-2026-0144",
++      "why_not_primary": "The topology describes it as vacuum-only with no schema or credential change, and the database log shows normal query latency and no errors."
++    }
++  ],
++  "recommended_next_steps": [
++    "Immediately roll back AUTH-2026-0318 or correct auth-gateway allowed_issuers to include the intended partner-v2 issuer, preserving the matching JWKS namespace configuration.",
++    "Verify auth-gateway accepts a representative partner-v2 token and that JWKS lookup succeeds without fallback to partner-v1.",
++    "Verify payment-api create_payment succeeds, then run an end-to-end checkout and confirm checkout-web 401s and auth failure rates return to baseline.",
++    "Review the change validation and add a deployment check that issuer configuration, allowed issuers, and JWKS namespace agree before rollout."
++  ]
++}
+--- a/out/triage_notes.md
++++ b/out/triage_notes.md
+@@ -0,0 +1,34 @@
++# Checkout Incident Triage
++
++## Impact and Dependency Path
++
++**Directly observed:** `checkout-web` returned a 401 from `payment-api` and reported that checkout submissions were blocked (`/workspace/in/logs/checkout-web.log`).
++
++**Directly observed:** The topology defines the relevant path as `checkout-web -> payment-api -> auth-gateway` (`/workspace/in/topology.json`). Payment authorization therefore depends on the auth gateway before the order reaches the database.
++
++**Directly observed:** `payment-api` received `issuer_not_allowed` from `auth-gateway` for issuer `partner-v2` and rejected `create_payment` with `invalid_issuer` (`/workspace/in/logs/payment-api.log`).
++
++**Directly observed:** `auth-gateway` deployed `AUTH-2026-0318` at 14:05:12Z, configured `partner-v2`, then fell back from a partner-v2 JWKS cache miss to partner-v1 and rejected partner-v2 because `allowed_issuers=partner-v1` (`/workspace/in/logs/auth-gateway.log`).
++
++**Inference:** `AUTH-2026-0318` introduced an inconsistent issuer/JWKS and allowed-issuer configuration. That mismatch is the primary root cause, propagating auth failures through payment-api to checkout-web.
++
++## Corroboration and Exclusions
++
++**Directly observed:** At 14:10Z, 401 rates were 18.7% for checkout-web, 21.2% for payment-api, and 28.4% for auth-gateway; the auth metric explicitly notes a JWKS cache miss and issuer mismatch (`/workspace/in/metrics/service_metrics.csv`).
++
++**Directly observed:** orders-db had 86% CPU but 35 ms query p95 and zero errors, and no failed checkout transaction reached it (`/workspace/in/logs/orders-db.log`). This is not the primary cause.
++
++**Directly observed:** CDN errors were isolated to images, while checkout assets recovered and the flow remained blocked (`/workspace/in/metrics/service_metrics.csv`, `/workspace/in/logs/checkout-web.log`). CDN is not the primary cause.
++
++## Immediate Mitigation
++
++1. Roll back `AUTH-2026-0318`, or make the intended configuration internally consistent by allowing `partner-v2` and ensuring its JWKS namespace/key set is available. Use the rollback candidate recorded in `/workspace/in/logs/auth-gateway.log`.
++2. Pause further auth-related rollout and preserve relevant request, issuer, and configuration evidence.
++3. Avoid changing orders-db or CDN as a checkout remediation; their observed signals do not explain the auth-gated failure.
++
++## Verification
++
++1. Confirm auth-gateway has the intended allowed issuer and JWKS namespace, with a successful cache lookup and no partner-v1 fallback.
++2. Validate a representative partner-v2 token directly through auth-gateway.
++3. Submit a test payment through payment-api and complete an end-to-end checkout through checkout-web.
++4. Confirm checkout-web/payment-api/auth-gateway 401 and 5xx rates, latency, and checkout success return to baseline; confirm no new `invalid_issuer` or `issuer_not_allowed` events.

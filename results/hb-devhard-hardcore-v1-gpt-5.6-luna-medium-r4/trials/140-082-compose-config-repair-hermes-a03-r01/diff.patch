@@ -1,0 +1,112 @@
+--- a/in/composeapp/compose.yaml
++++ b/in/composeapp/compose.yaml
+@@ -1,41 +1,53 @@
+ services:
+   api:
+-    image: ghcr.io/example/composeapp-api:latest
++    image: ghcr.io/example/composeapp-api:1.4.2
+     ports:
+-      - "${WEB_PORT:-8000}:8000"
++      - "${API_PORT:-8080}:8000"
+     environment:
+-      DATABASE_URL: "postgresql://composeapp:composeapp-dev@db:5432/composeapp"
+-      REDIS_DSN: "${REDIS_URL:-redis://cache:6379/0}"
+-      QUEUE_NAME: "default"
+-      APP_DATA_DIR: "/tmp/data"
++      DATABASE_URL: "postgresql://${POSTGRES_USER:-composeapp}:${POSTGRES_PASSWORD:-composeapp-dev}@db:5432/${POSTGRES_DB:-composeapp}"
++      REDIS_URL: "${REDIS_URL:-redis://redis:6379/0}"
++      QUEUE_NAME: "critical"
++      APP_DATA_DIR: "/data"
+     volumes:
+-      - api-data:/var/lib/composeapp
++      - api-data:/data
+     depends_on:
+-      - db
+-      - cache
++      db:
++        condition: service_healthy
++      redis:
++        condition: service_healthy
+     healthcheck:
+-      test: ["CMD", "curl", "-f", "http://localhost:8000/status"]
++      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+       interval: 30s
+       timeout: 3s
+       retries: 3
+   worker:
+     image: ghcr.io/example/composeapp-worker:1.4.2
+     environment:
+-      DATABASE_URL: "postgresql://composeapp:composeapp-dev@db:5432/composeapp"
+-      REDIS_URL: "${REDIS_URL:-redis://cache:6379/0}"
+-      QUEUE_NAME: "default"
++      DATABASE_URL: "postgresql://${POSTGRES_USER:-composeapp}:${POSTGRES_PASSWORD:-composeapp-dev}@db:5432/${POSTGRES_DB:-composeapp}"
++      REDIS_URL: "${REDIS_URL:-redis://redis:6379/0}"
++      QUEUE_NAME: "critical"
+     depends_on:
+       db:
+-        condition: service_started
+-      cache:
+-        condition: service_started
++        condition: service_healthy
++      redis:
++        condition: service_healthy
+   db:
+     image: postgres:16.2-alpine
+     environment:
+-      POSTGRES_DB: composeapp
+-      POSTGRES_USER: composeapp
+-      POSTGRES_PASSWORD: composeapp-dev
+-  cache:
++      POSTGRES_DB: "${POSTGRES_DB:-composeapp}"
++      POSTGRES_USER: "${POSTGRES_USER:-composeapp}"
++      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-composeapp-dev}"
++    healthcheck:
++      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-composeapp} -d ${POSTGRES_DB:-composeapp}"]
++      interval: 10s
++      timeout: 5s
++      retries: 5
++  redis:
+     image: redis:7.2-alpine
++    healthcheck:
++      test: ["CMD", "redis-cli", "ping"]
++      interval: 10s
++      timeout: 3s
++      retries: 5
+ volumes:
+   api-data:
+--- a/out/compose_fix_report.md
++++ b/out/compose_fix_report.md
+@@ -0,0 +1,33 @@
++# Compose configuration repair report
++
++## Root cause
++
++`compose.yaml` had several incident-introduced contract violations:
++
++- The API image used the forbidden `latest` tag instead of the policy-pinned `1.4.2` tag.
++- The API port mapping used `WEB_PORT` rather than the required `API_PORT` defaulting to `8080`.
++- The API exposed `REDIS_DSN` and pointed at the `cache` service; the contract requires `REDIS_URL` pointing at `redis`.
++- The API data directory and volume target were incorrect (`/tmp/data` and `/var/lib/composeapp`); the named `api-data` volume must be mounted at `/data`.
++- The API healthcheck called `/status` rather than `/healthz`.
++- The dependency graph referenced `cache`, omitted health conditions, and did not use `service_healthy` for `db` and `redis`.
++- The worker queue was `default` rather than the required `critical` queue.
++- The `redis` service was renamed to `cache` and had no healthcheck.
++- The database had no `pg_isready` healthcheck.
++
++The compose file was repaired to restore the policy-pinned images, required environment variables, service names, healthchecks, health-conditioned dependencies, queue, port mapping, and `/data` volume mount. `.env.example` was already consistent with the repaired defaults (`API_PORT=8080`, `REDIS_URL=redis://redis:6379/0`, `QUEUE_NAME=critical`, and `APP_DATA_DIR=/data`), so it was not changed.
++
++## Validation
++
++The final offline validation command was:
++
++```text
++PYTHONPATH=/tmp python3 tools/validate_compose.py
++```
++
++Result:
++
++```text
++compose contract ok
++```
++
++The environment did not provide a bare `python` command or an installed PyYAML module. The validator itself and contract files were not modified; `PYTHONPATH=/tmp` supplied a temporary local YAML compatibility module solely to execute the existing validator offline. No images were pulled and no containers were started.

@@ -1,0 +1,80 @@
+{
+  "artifact_path": "trials/150-087-cli-parser-bug-tests-omp-a01-r01",
+  "artifacts": {
+    "diff": "trials/150-087-cli-parser-bug-tests-omp-a01-r01/diff.patch",
+    "native": "trials/150-087-cli-parser-bug-tests-omp-a01-r01/native",
+    "upstream_result": "trials/150-087-cli-parser-bug-tests-omp-a01-r01/upstream-result.json",
+    "workspace": "trials/150-087-cli-parser-bug-tests-omp-a01-r01/workspace-final"
+  },
+  "attempt": 1,
+  "combined_score": null,
+  "control_proof": {
+    "configured_model_id": "openai-codex/gpt-5.6-luna",
+    "configured_provider_id": "openai-codex",
+    "configured_reasoning": "medium",
+    "configured_verified": true,
+    "fallback_policy": "forbidden",
+    "observed": {
+      "endpoint_or_deployment": null,
+      "model": "gpt-5.6-luna",
+      "provider": "openai-codex",
+      "reasoning": null,
+      "region": null,
+      "upstream_id": null
+    },
+    "provider_wire_verified": false,
+    "qualification_boundary": "configured route retained; exact wire identity not exposed by native output",
+    "runtime_conflict": false,
+    "runtime_conflicts": {},
+    "runtime_observation_available": true,
+    "runtime_verified": false,
+    "schema_version": 2
+  },
+  "elapsed_seconds": 168.577,
+  "harness_id": "omp",
+  "intervention_count": 0,
+  "invalid_reason": null,
+  "outcome_score": 0.8964,
+  "outer_elapsed_seconds": 170.158,
+  "process_observations": {
+    "combined_score": null,
+    "cross_harness_comparability": "limited by native event semantics",
+    "elapsed_seconds": 168.577,
+    "native_event_count": 4408,
+    "native_observability": "event_stream",
+    "operator_interventions": 0,
+    "process_score": null,
+    "status": "observed_not_scored",
+    "tool_invocation_count": 42
+  },
+  "process_score": null,
+  "process_status": "not_evaluated",
+  "protocol_sha256": "c0033d61cc3bdc1c30716c3edf6cf8d815f5b96fe17229491c74b1f178fe37df",
+  "qualification": "valid",
+  "retry": 1,
+  "run_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4-087-cli-parser-bug-tests-omp-a01-r01",
+  "schema_version": 1,
+  "season_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4",
+  "sequence": 150,
+  "task_id": "087-cli-parser-bug-tests",
+  "usage_normalized": {
+    "api_calls": 43,
+    "available": true,
+    "cache_read_tokens": 931072,
+    "cache_write_tokens": 0,
+    "cost_status": "harness_estimate_not_subscription_comparable",
+    "cost_usd": 0.03468644,
+    "cross_harness_comparability": "not comparable; native accounting semantics differ",
+    "input_tokens": 41883,
+    "models": [
+      "gpt-5.6-luna"
+    ],
+    "output_tokens": 6407,
+    "providers": [
+      "openai-codex"
+    ],
+    "reasoning_tokens": 1937,
+    "source": "omp_assistant_message_end",
+    "total_tokens": 979362
+  }
+}

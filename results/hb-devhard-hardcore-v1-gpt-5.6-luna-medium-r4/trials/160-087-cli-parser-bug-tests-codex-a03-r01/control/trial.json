@@ -1,0 +1,12 @@
+{
+  "attempt": 3,
+  "configured_model_id": "gpt-5.6-luna",
+  "harness_id": "codex",
+  "operator_interventions": 0,
+  "protocol_sha256": "c0033d61cc3bdc1c30716c3edf6cf8d815f5b96fe17229491c74b1f178fe37df",
+  "provider_id": "openai-codex",
+  "reasoning": "medium",
+  "retry": 1,
+  "sequence": 160,
+  "task_id": "087-cli-parser-bug-tests"
+}

@@ -1,0 +1,7 @@
+Fresh verification completed:
+
+`uv run --with pytest pytest`
+
+Result: `5 passed in 0.01s`
+
+All catalog contract, order integration, reporting, legacy dictionary, and mixed-currency tests passed.

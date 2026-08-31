@@ -1,0 +1,191 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 443,
+      "path": "control/app.json",
+      "sha256": "a2ae84ff320eb24adca9425a9c57f09c24f3dd8dabecc689e9ef35528d1b378c"
+    },
+    {
+      "bytes": 710,
+      "path": "control/harness.json",
+      "sha256": "f9294896935f218e5d5cf5f2280fed1e72519e273fd9e78801d698236de258eb"
+    },
+    {
+      "bytes": 340,
+      "path": "control/trial.json",
+      "sha256": "726d67bb828fa02354187b8481d2c052261718fa8ec933f3dbe0d76890aebf74"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2823,
+      "path": "controller.stdout.raw",
+      "sha256": "e3242cf763506dfa9d6492f2aff671640e9406b3044f2de53d68bb77d5aedd4a"
+    },
+    {
+      "bytes": 14848,
+      "path": "diff.patch",
+      "sha256": "f2867be46f5a1cf608d8fd75922f63dd530b6bd376ca120e005f317ba64cf8da"
+    },
+    {
+      "bytes": 2045,
+      "path": "native/container-plan.json",
+      "sha256": "c19b285c65ff3255748f7763ad58c355109de3bb7dd36a63a3316d4be4f05eb9"
+    },
+    {
+      "bytes": 647,
+      "path": "native/control-proof.json",
+      "sha256": "7b328af3401e8b99931b15115a02ea1161922ef018bad4e2d5e0c52cad55f6f4"
+    },
+    {
+      "bytes": 1932,
+      "path": "native/execution.json",
+      "sha256": "7ef6745423a1f0c30a7fd94681e66c1895c10908e5eec01c1c391277b5748a06"
+    },
+    {
+      "bytes": 496,
+      "path": "native/invocation.json",
+      "sha256": "1157403b998dbbda87a3f4d0fc6d77906ce9ad5ce08a4c9afa12670c342ae234"
+    },
+    {
+      "bytes": 50,
+      "path": "native/process-metrics.json",
+      "sha256": "440b265822bd95606a435c8fd2182fd5c2077bb4ded2298a922ea45f1f97caf5"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 101890,
+      "path": "native/stdout.raw",
+      "sha256": "531126459344c9e23c9ca6709b937d5a03693a00ce786d7edc9cea8a4fb18032"
+    },
+    {
+      "bytes": 1697,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "b6e50581a5c03b37e521d57f0176680032c606f6c03c671704659eff50595e28"
+    },
+    {
+      "bytes": 321,
+      "path": "process/observations.json",
+      "sha256": "0d2d2b12b3fd65c2ed567f2c3b833571fb5b72fae5f8475af9eb78aa1d2724d9"
+    },
+    {
+      "bytes": 1519,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "7fc6f6e728606684cd84c8c519bb794a4538cc118590506e083924939da34841"
+    },
+    {
+      "bytes": 2680,
+      "path": "result.json",
+      "sha256": "c97137e0bbae68a4147145b98b9954c7b06f895cb1d23a64d2e029ed3367fcde"
+    },
+    {
+      "bytes": 117498,
+      "path": "upstream-result.json",
+      "sha256": "c2ec6e02317ae42e408d34ccbb1cc5d1d778662b01292e90b6e9ff8f3e70e890"
+    },
+    {
+      "bytes": 442,
+      "path": "usage-normalized.json",
+      "sha256": "7363c8d571bd97c5b401b41ee75be607d06d6c37b6ae0b58367b0d4215dcdfde"
+    },
+    {
+      "bytes": 419,
+      "path": "workspace-final/in/repo/README.md",
+      "sha256": "c2ddf127e0e33127473de46be65564f8d6a10e6fb1558fb0560aed38507af589"
+    },
+    {
+      "bytes": 31,
+      "path": "workspace-final/in/repo/minisvc/__init__.py",
+      "sha256": "8ed9f6fd0e84c7b8f4f5cd80fa253a07f025a8884a0f35432c0543e542bca16e"
+    },
+    {
+      "bytes": 1,
+      "path": "workspace-final/in/repo/minisvc/api/__init__.py",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "bytes": 723,
+      "path": "workspace-final/in/repo/minisvc/api/handlers.py",
+      "sha256": "c4744d2b4c851cc8c0e8054cc52d48251c6a07f083ec63157b73f53e38c78b08"
+    },
+    {
+      "bytes": 238,
+      "path": "workspace-final/in/repo/minisvc/api/routes.py",
+      "sha256": "015c44c2d4680272431732dbed40a1aaa922b6b4a970247e8b37b695821fc8a7"
+    },
+    {
+      "bytes": 235,
+      "path": "workspace-final/in/repo/minisvc/audit.py",
+      "sha256": "65bde32b34b584a1a522ff6ce5c2894e3a97dbacb248e99c9a1057ba34aba117"
+    },
+    {
+      "bytes": 315,
+      "path": "workspace-final/in/repo/minisvc/cli.py",
+      "sha256": "155d80b578265cfe0c367ded17f84b67f7d3ee3f125cb22757ed4d041e33457b"
+    },
+    {
+      "bytes": 327,
+      "path": "workspace-final/in/repo/minisvc/config.py",
+      "sha256": "7423a5062adad0ad1d193a66c3d86ea1c6fd46ab8243d093952fd6f8a88a3192"
+    },
+    {
+      "bytes": 117,
+      "path": "workspace-final/in/repo/minisvc/models.py",
+      "sha256": "70e9a26f757c9dd9d0b8ce27be86a30fdd301300c7f8120f3f914ad5c51654b8"
+    },
+    {
+      "bytes": 1,
+      "path": "workspace-final/in/repo/minisvc/storage/__init__.py",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "bytes": 1086,
+      "path": "workspace-final/in/repo/minisvc/storage/repo.py",
+      "sha256": "d62236a546e0d979950192ad56b329a7141eb3ae1a047d15b9b85728a8da0664"
+    },
+    {
+      "bytes": 111,
+      "path": "workspace-final/in/repo/pyproject.toml",
+      "sha256": "caf6c48e47366379ba86852cfb977208d1d6e4b883d08ec4284bab7ce6cc57a2"
+    },
+    {
+      "bytes": 3115,
+      "path": "workspace-final/out/architecture.md",
+      "sha256": "f10a2235fdd5d92b1f9206642f73504454cb314bd904332eeda89ad2718bfe7f"
+    },
+    {
+      "bytes": 1318,
+      "path": "workspace-final/out/doc_code_discrepancies.csv",
+      "sha256": "7863be50c09cba282f856410ad80f0115e3911fc7740e9fde71fed6147511e0b"
+    },
+    {
+      "bytes": 5998,
+      "path": "workspace-final/out/module_map.json",
+      "sha256": "c53e90349552ed94289341f9b7881235d56e7d7340e7b76f9464c86e2a70838a"
+    },
+    {
+      "bytes": 1788,
+      "path": "workspace-final/out/onboarding_plan.md",
+      "sha256": "0e473fc59e62302a1f972bbbef063162308aad5bcaa63f8aaa84c84068288c45"
+    },
+    {
+      "bytes": 2054,
+      "path": "workspace-final/out/risk_register.csv",
+      "sha256": "6db0bb540f7ac1b598221bd7878cbcb855e80bfd71655d34137635d45da09203"
+    }
+  ],
+  "generated_at": "2026-08-31T13:01:36.971033Z",
+  "schema_version": 1
+}

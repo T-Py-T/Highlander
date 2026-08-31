@@ -1,0 +1,29 @@
+Implemented the schema migration in:
+
+/workspace/in/schema_migration/client.py
+
+Changes include:
+- Legacy v1, v1.1, and v1.2 payload support
+- Already-v2 idempotent handling
+- Nested customer, lines, shipTo, order_ref, and unit_price_cents mappings
+- Multiple line items with integer coercion
+- Shipping method defaulting to standard
+- Unknown-field preservation under metadata.unknownFields
+- PII filtering for the specified sensitive keys
+- Error aggregation via convert_many with index/path/error
+- Backward-compatible two-value convert_many return when no warnings exist
+- conversion_audit.json generation
+- CLI support via `python -m client input.jsonl output.json`
+
+Verification completed:
+- All 5 provided tests pass
+- Sample JSONL CLI conversion verified
+- Audit generated with:
+  - converted_count: 4
+  - error_count: 0
+  - warning_count: 0
+  - pii_dropped_count: 5
+  - unknown_fields_count: 5
+- Error-path verification confirmed paths such as `items[0].qty`
+
+The environment exposes the requested project under `/workspace/in/schema_migration`; the supplied `/Users/...` path was not mounted.

@@ -1,0 +1,30 @@
+{
+  "artifact_path": "trials/qualification-03-codex",
+  "control_proof": {
+    "configured_model_id": "gpt-5.6-luna",
+    "configured_provider_id": "openai-codex",
+    "configured_reasoning": "medium",
+    "configured_verified": true,
+    "fallback_policy": "forbidden",
+    "observed": {
+      "endpoint_or_deployment": null,
+      "model": null,
+      "provider": null,
+      "reasoning": null,
+      "region": null,
+      "upstream_id": null
+    },
+    "provider_wire_verified": false,
+    "qualification_boundary": "configured route retained; exact wire identity not exposed by native output",
+    "runtime_conflict": false,
+    "runtime_conflicts": {},
+    "runtime_observation_available": false,
+    "runtime_verified": false,
+    "schema_version": 2
+  },
+  "harness_id": "codex",
+  "protocol_sha256": "c0033d61cc3bdc1c30716c3edf6cf8d815f5b96fe17229491c74b1f178fe37df",
+  "reason": null,
+  "sequence": 3,
+  "status": "qualified"
+}

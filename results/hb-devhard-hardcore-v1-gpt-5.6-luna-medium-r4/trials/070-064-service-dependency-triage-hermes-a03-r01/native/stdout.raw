@@ -1,0 +1,6 @@
+Created and verified exactly the requested output artifacts in the mounted workspace:
+
+- `/workspace/out/root_cause.json`
+- `/workspace/out/triage_notes.md`
+
+The source paths under `<HOME>/...` were unavailable in this environment; their offline fixtures were present under `/workspace/in/`. JSON validation passed, and the output directory contains only the two requested files.

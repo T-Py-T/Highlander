@@ -1,0 +1,17 @@
+{
+  "normalization": {
+    "combined_score": null,
+    "process_score": null,
+    "tool_counts": "native invocation starts where observable",
+    "usage": "native reports; accounting is not cross-harness comparable"
+  },
+  "protocol_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4",
+  "protocol_sha256": "c0033d61cc3bdc1c30716c3edf6cf8d815f5b96fe17229491c74b1f178fe37df",
+  "runner": {
+    "commit": "19ac454c159519e8ba1acc7e9668ac9e79c79b01",
+    "repository": "<RUNNER_ROOT>",
+    "worktree_clean": true
+  },
+  "schema_version": 1,
+  "source_artifact_manifest_sha256": "f6ef1733b52e355aabc1d2dd89b94741d3c9a53781f2b7b1445b6eb91bac92f8"
+}

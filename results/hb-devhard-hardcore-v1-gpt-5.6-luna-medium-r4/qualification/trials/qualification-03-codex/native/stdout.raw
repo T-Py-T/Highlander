@@ -1,0 +1,6 @@
+Reading additional input from stdin...
+{"type":"thread.started","thread_id":"01a055de-d101-7a62-9ee7-db4301295bae"}
+{"type":"item.completed","item":{"id":"item_0","type":"error","message":"Code Mode is unavailable because failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: host executable was not found. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`."}}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_1","type":"agent_message","text":"HIGHLANDER_ROUTE_OK"}}
+{"type":"turn.completed","usage":{"input_tokens":13078,"cached_input_tokens":8960,"cache_write_input_tokens":0,"output_tokens":10,"reasoning_output_tokens":0}}
