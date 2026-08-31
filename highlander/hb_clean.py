@@ -246,7 +246,7 @@ def execute_clean_adapter(
     }
     observed, _ = extract_control_proof(output_path, expected)
     proof = {
-        "schema_version": 1,
+        "schema_version": 2,
         "configured_model_id": lane["configured_model_id"],
         "configured_provider_id": lane["provider_id"],
         "configured_reasoning": lane["reasoning"],
@@ -257,11 +257,15 @@ def execute_clean_adapter(
             observed["observed"].get(key) is not None
             for key in ("model", "provider", "reasoning")
         ),
+        "runtime_conflict": observed["runtime_conflict"],
+        "runtime_conflicts": observed["runtime_conflicts"],
         "runtime_verified": observed["runtime_verified"],
         "provider_wire_verified": observed["provider_verified"],
         "qualification_boundary": (
-            "native runtime identity observed"
+            "native runtime identity observed and matched"
             if observed["runtime_verified"]
+            else "native runtime identity conflict observed"
+            if observed["runtime_conflict"]
             else "configured route retained; exact wire identity not exposed by native output"
         ),
     }

@@ -4,11 +4,105 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from highlander.cleanroom import extract_control_proof
 from highlander.hb_clean import SUPPORTED_HARNESSES, build_container_command
 from highlander.hb_season_run import SOURCE_FILES, freeze_protocol
 
 
 class CleanHarnessBenchTests(unittest.TestCase):
+    def test_token_usage_reasoning_counter_is_not_runtime_reasoning(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "native.jsonl"
+            output.write_text(
+                json.dumps(
+                    {
+                        "type": "step-finish",
+                        "tokens": {"input": 282, "output": 10, "reasoning": 0},
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            proof, _ = extract_control_proof(
+                output,
+                {
+                    "model": "gpt-5.6-luna",
+                    "provider": "openai",
+                    "reasoning": "medium",
+                    "upstream_id": None,
+                    "endpoint_or_deployment": None,
+                    "region": None,
+                },
+            )
+
+            self.assertIsNone(proof["observed"]["reasoning"])
+            self.assertFalse(proof["runtime_conflict"])
+
+    def test_partial_matching_identity_is_not_a_control_conflict(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "native.jsonl"
+            output.write_text(
+                json.dumps(
+                    {
+                        "model": "gpt-5.6-luna",
+                        "provider": "openai-codex",
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            proof, _ = extract_control_proof(
+                output,
+                {
+                    "model": "gpt-5.6-luna",
+                    "provider": "openai-codex",
+                    "reasoning": "medium",
+                    "upstream_id": None,
+                    "endpoint_or_deployment": None,
+                    "region": None,
+                },
+            )
+
+            self.assertFalse(proof["runtime_verified"])
+            self.assertFalse(proof["runtime_conflict"])
+            self.assertEqual(proof["runtime_conflicts"], {})
+
+    def test_observed_string_identity_mismatch_is_a_control_conflict(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "native.jsonl"
+            output.write_text(
+                json.dumps(
+                    {
+                        "model": "gpt-5.4",
+                        "provider": "openai-codex",
+                        "reasoning": "medium",
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            proof, _ = extract_control_proof(
+                output,
+                {
+                    "model": "gpt-5.6-luna",
+                    "provider": "openai-codex",
+                    "reasoning": "medium",
+                    "upstream_id": None,
+                    "endpoint_or_deployment": None,
+                    "region": None,
+                },
+            )
+
+            self.assertFalse(proof["runtime_verified"])
+            self.assertTrue(proof["runtime_conflict"])
+            self.assertEqual(
+                proof["runtime_conflicts"]["model"],
+                {"expected": "gpt-5.6-luna", "observed": "gpt-5.4"},
+            )
+
     def test_every_command_uses_container_workspace_and_frozen_model(self):
         for harness_id in SUPPORTED_HARNESSES:
             lane = {

@@ -521,14 +521,25 @@ def extract_control_proof(
         records.append(value)
         _collect_text(value, text_parts)
     observed = {
-        "model": _find_value(records, {"model", "modelID", "model_id"}),
-        "provider": _find_value(records, {"provider", "providerID", "provider_id"}),
-        "reasoning": _find_value(records, {"reasoning", "variant", "effort"}),
-        "upstream_id": _find_value(records, {"upstream_id", "upstreamID"}),
-        "endpoint_or_deployment": _find_value(
+        "model": _find_identity_value(records, {"model", "modelID", "model_id"}),
+        "provider": _find_identity_value(
+            records, {"provider", "providerID", "provider_id"}
+        ),
+        "reasoning": _find_identity_value(
+            records, {"reasoning", "variant", "effort"}
+        ),
+        "upstream_id": _find_identity_value(
+            records, {"upstream_id", "upstreamID"}
+        ),
+        "endpoint_or_deployment": _find_identity_value(
             records, {"endpoint_or_deployment", "endpoint", "deployment"}
         ),
-        "region": _find_value(records, {"region"}),
+        "region": _find_identity_value(records, {"region"}),
+    }
+    runtime_conflicts = {
+        field: {"expected": expected[field], "observed": observed[field]}
+        for field in ("model", "provider", "reasoning")
+        if observed[field] is not None and observed[field] != expected[field]
     }
     runtime_verified = all(
         observed[field] == expected[field] for field in ("model", "provider", "reasoning")
@@ -540,6 +551,8 @@ def extract_control_proof(
     proof = {
         "observed": observed,
         "records_examined": len(records),
+        "runtime_conflict": bool(runtime_conflicts),
+        "runtime_conflicts": runtime_conflicts,
         "runtime_verified": runtime_verified,
         "provider_verified": provider_verified,
     }
@@ -575,18 +588,20 @@ def _container_name(match_id: str, suffix: str) -> str:
     return value[:120]
 
 
-def _find_value(value: Any, names: set[str]) -> Any:
+def _find_identity_value(value: Any, names: set[str]) -> str | None:
     if isinstance(value, dict):
         for key, child in value.items():
-            if key in names and isinstance(child, (str, int, float, bool)):
+            # Model controls are symbolic identities. Numeric fields such as
+            # token usage `reasoning: 0` are counters, not reasoning levels.
+            if key in names and isinstance(child, str):
                 return child
         for child in value.values():
-            found = _find_value(child, names)
+            found = _find_identity_value(child, names)
             if found is not None:
                 return found
     elif isinstance(value, list):
         for child in value:
-            found = _find_value(child, names)
+            found = _find_identity_value(child, names)
             if found is not None:
                 return found
     return None

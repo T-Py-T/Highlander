@@ -334,8 +334,18 @@ def qualify(
                 )
                 output = (native / "stdout.raw").read_text(encoding="utf-8", errors="replace")
                 proof = _load_json(native / "control-proof.json")
-                qualified = returncode == 0 and "HIGHLANDER_ROUTE_OK" in output
-                reason = None if qualified else ("nonzero_exit" if returncode else "expected_reply_missing")
+                replied = "HIGHLANDER_ROUTE_OK" in output
+                conflict = bool(proof.get("runtime_conflict"))
+                qualified = returncode == 0 and replied and not conflict
+                reason = (
+                    None
+                    if qualified
+                    else "nonzero_exit"
+                    if returncode
+                    else "expected_reply_missing"
+                    if not replied
+                    else "observed_model_control_conflict"
+                )
             except Exception as exc:
                 qualified = False
                 reason = f"qualification_infrastructure_error:{type(exc).__name__}"
@@ -571,8 +581,7 @@ def _execute_trial(
     if (
         classification["qualification"] == "valid"
         and isinstance(proof, dict)
-        and proof.get("runtime_observation_available")
-        and not proof.get("runtime_verified")
+        and proof.get("runtime_conflict")
     ):
         classification = {
             "qualification": "invalid",
