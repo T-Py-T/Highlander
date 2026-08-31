@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "opencode",
+    "run",
+    "--format",
+    "json",
+    "--dir",
+    "/workspace",
+    "--model",
+    "openai/gpt-5.4",
+    "--variant",
+    "medium",
+    "--auto",
+    "--pure",
+    "<TASK_BYTES_UTF8>"
+  ],
+  "credential_binding": {
+    "seed_profile": "opencode-subscription",
+    "value_retained": false
+  },
+  "cwd": "/workspace",
+  "harness_id": "opencode",
+  "prompt_sha256": "bc9b3ef4f361cbb668c8eadccd6f8c8995510cda104646220ad8256bd2cb6cfc",
+  "schema_version": 1
+}

@@ -1,0 +1,41 @@
+[Highlander checks/tests] ⭐ Run Set up job
+[Highlander checks/tests] 🚀  Start image=docker.io/catthehacker/ubuntu:act-latest
+[Highlander checks/tests]   🐳  docker pull image=docker.io/catthehacker/ubuntu:act-latest platform=linux/amd64 username= forcePull=false
+[Highlander checks/tests] image found but platform does not match: linux/arm64 (image) != linux/amd64 (platform)
+[Highlander checks/tests]   🐳  docker create image=docker.io/catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="none"
+[Highlander checks/tests]   🐳  docker run image=docker.io/catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="none"
+[Highlander checks/tests]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[Highlander checks/tests]   ✅  Success - Set up job
+[Highlander checks/tests]   ☁  git clone 'https://github.com/actions/setup-python' # ref=a26af69be951a213d495a4c3e4e4022e16d87065
+[Highlander checks/tests] ⭐ Run Main Check out repository
+[Highlander checks/tests]   🐳  docker cp src=<RUNNER_ROOT>/. dst=<RUNNER_ROOT>
+[Highlander checks/tests]   ✅  Success - Main Check out repository [5.071838084s]
+[Highlander checks/tests] ⭐ Run Main Confirm local act Python
+[Highlander checks/tests]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[Highlander checks/tests]   | Python 3.12.3
+[Highlander checks/tests]   ✅  Success - Main Confirm local act Python [575.012333ms]
+[Highlander checks/tests] ⭐ Run Main Run Highlander unit tests
+[Highlander checks/tests]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/3] user= workdir=
+[Highlander checks/tests]   | .........sComplete the subscription login inside the disposable container, then exit.
+[Highlander checks/tests]   | E..................................s.........
+[Highlander checks/tests]   | ======================================================================
+[Highlander checks/tests]   | ERROR: test_omp_seed_uses_engine_volume_and_exports_only_agent_db (test_clean_room_tool.CleanRoomSeedToolTests.test_omp_seed_uses_engine_volume_and_exports_only_agent_db)
+[Highlander checks/tests]   | ----------------------------------------------------------------------
+[Highlander checks/tests]   | Traceback (most recent call last):
+[Highlander checks/tests]   |   File "<RUNNER_ROOT>/tests/test_clean_room_tool.py", line 51, in test_omp_seed_uses_engine_volume_and_exports_only_agent_db
+[Highlander checks/tests]   |     CLEAN_ROOM_TOOL.seed(
+[Highlander checks/tests]   |   File "<RUNNER_ROOT>/tools/clean-room.py", line 557, in seed
+[Highlander checks/tests]   |     strip_container_file_metadata(expected)
+[Highlander checks/tests]   |   File "<RUNNER_ROOT>/tools/clean-room.py", line 106, in strip_container_file_metadata
+[Highlander checks/tests]   |     os.removexattr(path, name)
+[Highlander checks/tests]   | PermissionError: [Errno 13] Permission denied: '/tmp/tmps7yy5h_a/seeds/omp-fresh/agent.db'
+[Highlander checks/tests]   |
+[Highlander checks/tests]   | ----------------------------------------------------------------------
+[Highlander checks/tests]   | Ran 55 tests in 42.580s
+[Highlander checks/tests]   |
+[Highlander checks/tests]   | FAILED (errors=1, skipped=2)
+[Highlander checks/tests]   ❌  Failure - Main Run Highlander unit tests [44.415695458s]
+[Highlander checks/tests] exitcode '1': failure
+[Highlander checks/tests] ⭐ Run Complete job
+[Highlander checks/tests]   ✅  Success - Complete job
+[Highlander checks/tests] 🏁  Job failed

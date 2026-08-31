@@ -1,0 +1,30 @@
+{
+  "artifact_path": "trials/qualification-05-atomic",
+  "control_proof": {
+    "configured_model_id": "gpt-5.4",
+    "configured_provider_id": "openai-codex",
+    "configured_reasoning": "medium",
+    "configured_verified": true,
+    "fallback_policy": "forbidden",
+    "observed": {
+      "endpoint_or_deployment": null,
+      "model": "gpt-5.4",
+      "provider": "openai-codex",
+      "reasoning": null,
+      "region": null,
+      "upstream_id": null
+    },
+    "provider_wire_verified": false,
+    "qualification_boundary": "configured route retained; exact wire identity not exposed by native output",
+    "runtime_conflict": false,
+    "runtime_conflicts": {},
+    "runtime_observation_available": true,
+    "runtime_verified": false,
+    "schema_version": 2
+  },
+  "harness_id": "atomic",
+  "protocol_sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac",
+  "reason": null,
+  "sequence": 5,
+  "status": "qualified"
+}

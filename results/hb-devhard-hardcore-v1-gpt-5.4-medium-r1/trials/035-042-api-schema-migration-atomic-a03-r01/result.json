@@ -1,0 +1,44 @@
+{
+  "artifact_path": "trials/035-042-api-schema-migration-atomic-a03-r01",
+  "artifacts": {
+    "diff": null,
+    "native": null,
+    "upstream_result": null,
+    "workspace": null
+  },
+  "attempt": 3,
+  "combined_score": null,
+  "control_proof": null,
+  "elapsed_seconds": 1200.417,
+  "harness_id": "atomic",
+  "intervention_count": 0,
+  "invalid_reason": "harness_nonzero_exit",
+  "outcome_score": null,
+  "outer_elapsed_seconds": 1200.417,
+  "process_observations": {
+    "combined_score": null,
+    "cross_harness_comparability": "not available",
+    "elapsed_seconds": 1200.417,
+    "native_event_count": null,
+    "native_observability": "no_native_execution",
+    "operator_interventions": 0,
+    "process_score": null,
+    "status": "unavailable",
+    "tool_invocation_count": null
+  },
+  "process_score": null,
+  "process_status": "not_evaluated",
+  "protocol_sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac",
+  "qualification": "invalid",
+  "retry": 1,
+  "run_id": "hb-devhard-hardcore-v1-gpt-5.4-medium-r1-042-api-schema-migration-atomic-a03-r01",
+  "schema_version": 1,
+  "season_id": "hb-devhard-hardcore-v1-gpt-5.4-medium-r1",
+  "sequence": 35,
+  "task_id": "042-api-schema-migration",
+  "usage_normalized": {
+    "available": false,
+    "cross_harness_comparability": "not available",
+    "source": null
+  }
+}

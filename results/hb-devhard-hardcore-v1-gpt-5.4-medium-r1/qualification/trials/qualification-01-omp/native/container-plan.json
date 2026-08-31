@@ -1,0 +1,77 @@
+{
+  "adapter": "omp",
+  "clean_room": {
+    "adapter": "oci",
+    "architecture": "arm64",
+    "capabilities": "all-dropped",
+    "container_name": "highlander-qualification-01-omp-omp-a1",
+    "digest_verified": true,
+    "host_home_mounted": false,
+    "image_id": "sha256:aba65e6191222db45af222cd9a58603479038332201d832cbb52313092d14dee",
+    "image_reference": "sha256:aba65e6191222db45af222cd9a58603479038332201d832cbb52313092d14dee",
+    "labels": {
+      "io.buildah.version": "1.43.2",
+      "io.highlander.harness": "omp",
+      "io.highlander.profile": "clean-core",
+      "io.highlander.version": "17.2.10"
+    },
+    "network": "bridge",
+    "no_new_privileges": true,
+    "os": "linux",
+    "profile": "clean-core",
+    "publication_credentials_available": false,
+    "reference": "sha256:aba65e6191222db45af222cd9a58603479038332201d832cbb52313092d14dee",
+    "repo_digests": [
+      "localhost/highlander/omp@sha256:11917c1a7f6e5db8a6a3094b61e34b499ed9d4441faad5860be285110b837c97"
+    ],
+    "resources": {
+      "cpus": 2.0,
+      "memory_mb": 4096,
+      "pids_limit": 512,
+      "tmpfs_mb": 1024
+    },
+    "root_filesystem": "read-only",
+    "runtime": "podman",
+    "seed": {
+      "available": true,
+      "imported_file": "agent.db",
+      "profile": "omp-subscription",
+      "required": true
+    },
+    "seed_profile": "omp-subscription"
+  },
+  "invocation": {
+    "argv": [
+      "omp",
+      "--print",
+      "--mode",
+      "json",
+      "--cwd",
+      "/workspace",
+      "--model",
+      "openai-codex/gpt-5.4",
+      "--smol",
+      "openai-codex/gpt-5.4",
+      "--slow",
+      "openai-codex/gpt-5.4",
+      "--plan",
+      "openai-codex/gpt-5.4",
+      "--thinking",
+      "medium",
+      "--no-prewalk",
+      "--no-title",
+      "--no-session",
+      "--no-extensions",
+      "--no-skills",
+      "--no-rules",
+      "--approval-mode",
+      "yolo",
+      "--max-time",
+      "1200s"
+    ],
+    "credential_values_recorded": false,
+    "cwd": "/workspace",
+    "prompt_transport": "exact rendered HarnessBench prompt appended as one argv element"
+  },
+  "worktree": "/private/var/folders/56/9gldf4zd5l526h1c7r293fzr0000gn/T/highlander-omp-nbgh9j5y/workspace"
+}

@@ -1,0 +1,131 @@
+--- a/in/flakyqueue/.pytest_cache/.gitignore
++++ b/in/flakyqueue/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
++++ b/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/flakyqueue/.pytest_cache/README.md
++++ b/in/flakyqueue/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/flakyqueue/.pytest_cache/v/cache/nodeids
++++ b/in/flakyqueue/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,6 @@
++[
++  "tests/test_retry_order.py::test_retry_jitter_uses_injected_random_source",
++  "tests/test_retry_order.py::test_retry_task_is_not_ready_until_clock_reaches_run_at",
++  "tests/test_scheduler.py::test_add_uses_injected_clock",
++  "tests/test_scheduler.py::test_ready_order_is_stable_for_equal_priority"
++]--- a/in/flakyqueue/.pytest_cache/v/cache/stepwise
++++ b/in/flakyqueue/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]Binary files a/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 292a40669ea9d7a8a8c336e7bcfd754c34bcd56b9ae379d710f41ebd146ccbb0)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> c2bd832b7f06aaa3e21a46cda97bd14705d88cc30cc36de342543abc8af170b5)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 5766200b7f1e699baaac3e55388ef40b121497f562996ca148c79b95c90a8096)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> dea8a2af605c54abccd5c862ab2793af0acd8d662593a36c4b623e4f953f9607)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 081c9b1e590cd11e40313b61f66d68e2696eb2256d7c64a2c0f3f0bb2753fe38)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 52c976cc61247beb455b2ecab8665732ecc07037ba4f90fcbb98ac63ba41a17d)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/store.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/store.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> d43b415fa8098c68530bf8b8314e4cc728187806922da409d5a4f6f1be09d7a1)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/store.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/store.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 5d1076cb435d4c688d54ab9393f40f643244e0f65738d58eefac6364c33afa8e)
+--- a/in/flakyqueue/flakyqueue/scheduler.py
++++ b/in/flakyqueue/flakyqueue/scheduler.py
+@@ -1,7 +1,6 @@
+ from __future__ import annotations
+ 
+ import random
+-import time
+ from dataclasses import dataclass, replace
+ 
+ from flakyqueue.clock import SystemClock
+@@ -19,23 +18,27 @@
+ 
+ class Scheduler:
+     def __init__(self, clock=None, store=None, random_source=None) -> None:
+-        self.clock = clock or SystemClock()
+-        self.store = store or MemoryStore()
+-        self.random_source = random_source
++        self.clock = clock if clock is not None else SystemClock()
++        self.store = store if store is not None else MemoryStore()
++        self.random_source = random_source if random_source is not None else random
+ 
+     def add(self, task_id: str, priority: int) -> Task:
+-        task = Task(id=task_id, priority=priority, created_at=time.time(), run_at=time.time())
++        now = self.clock.now()
++        task = Task(id=task_id, priority=priority, created_at=now, run_at=now)
+         self.store.save(task)
+         return task
+ 
+     def ready(self):
+-        now = time.time()
++        now = self.clock.now()
+         items = [task for task in self.store.all() if task.run_at <= now]
+-        random.shuffle(items)
+-        return sorted(items, key=lambda task: task.priority, reverse=True)
++        return sorted(items, key=lambda task: (-task.priority, task.created_at, task.id))
+ 
+     def schedule_retry(self, task: Task, base_delay: float = 5.0) -> Task:
+-        jitter = random.random()
+-        updated = replace(task, attempts=task.attempts + 1, run_at=time.time() + base_delay + jitter)
++        jitter = self.random_source.random()
++        updated = replace(
++            task,
++            attempts=task.attempts + 1,
++            run_at=self.clock.now() + base_delay + jitter,
++        )
+         self.store.save(updated)
+         return updated
+Binary files a/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-311.pyc and b/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 6309b707dc31ef970693546bf4922dbcfd1be1ca8c4b50765514aac1a9a8f54a)
+Binary files a/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-314-pytest-7.4.3.pyc and b/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 936626022269d314f2db4f7adaa890933edfa969da2b048e0895aa79684b7793)
+Binary files a/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-311.pyc and b/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 373e8483b43dbcf7658dbe057410b90dda42a0a7d44fd95412de5113b0e56d82)
+Binary files a/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-314-pytest-7.4.3.pyc and b/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> dc4c051c038f806f7825d9bd9449600a1c2f28074a56741276bef2e303a438d1)
+--- a/out/root_cause.md
++++ b/out/root_cause.md
+@@ -0,0 +1,35 @@
++# Flaky Test Root Cause
++
++## Behavior
++
++Ready tasks could appear in different orders because the scheduler shuffled the
++ready list with the process-global random generator before sorting only by
++priority. Retry times also varied because retry jitter came from the global
++random generator and scheduling used wall-clock time instead of the injected
++clock.
++
++## Root Cause
++
++`Scheduler` accepted `clock` and `random_source`, but `add`, `ready`, and
++`schedule_retry` bypassed those dependencies. `add` made two independent
++wall-clock calls, and `ready` introduced an unseeded shuffle. Consequently,
++tests using fake dependencies could not control timestamps, jitter, or tie
++ordering.
++
++## Fix
++
++The scheduler now reads the injected clock, using one timestamp for task
++creation and the injected random source for retry jitter. Ready tasks are
++ordered explicitly by descending priority, ascending creation time, and task
++ID, with no random shuffle. The default behavior still uses system time and
++the standard random module, so retry jitter remains present.
++
++## Verification
++
++- The requested `python -m pytest tests` command could not start because this
++  environment has no `python` executable.
++- `python3 -m pytest tests` could not start because `pytest` is not installed
++  and `python3` has no `pip` module.
++- `python3 -m compileall flakyqueue tests` passed.
++- A direct Python assertion harness covering injected timestamps, stable
++  priority/tie ordering, injected jitter, and retry readiness passed.

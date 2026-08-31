@@ -1,0 +1,53 @@
+{
+  "incident_id": "checkout-service-dependency-2026-03-22",
+  "root_cause_service": "auth-gateway",
+  "root_cause_change_id": "AUTH-2026-0318",
+  "confidence": "high",
+  "affected_services": [
+    "checkout-web",
+    "payment-api",
+    "auth-gateway"
+  ],
+  "evidence": [
+    {
+      "source_file": "in/topology.json",
+      "observation": "The checkout-web dependency path includes payment-api, which depends on auth-gateway; AUTH-2026-0318 is the recent auth-gateway change and rotated the issuer and JWKS cache namespace."
+    },
+    {
+      "source_file": "in/metrics/service_metrics.csv",
+      "observation": "At 14:10Z, checkout-web had an 18.7% HTTP 401 rate and 2400 ms p95 with checkout submits rejected after payment auth; payment-api had a 21.2% 401 rate and notes an invalid issuer; auth-gateway had a 28.4% 401 rate and issuer mismatch."
+    },
+    {
+      "source_file": "in/logs/auth-gateway.log",
+      "observation": "AUTH-2026-0318 deployed at 14:05Z; auth-gateway then logged a JWKS cache miss and rejected token issuer partner-v2 because only partner-v1 was allowed. The log explicitly identifies restoring partner-v2 or reverting AUTH-2026-0318 as rollback candidates."
+    },
+    {
+      "source_file": "in/logs/payment-api.log",
+      "observation": "Payment token validation failed upstream at auth-gateway with issuer_not_allowed for partner-v2, and request req-8812 was rejected as invalid_issuer before the order-db dependency was used."
+    },
+    {
+      "source_file": "in/logs/checkout-web.log",
+      "observation": "Checkout submit req-8812 failed with a 401 from payment-api; checkout-web recorded payment-api auth_failed with invalid issuer while static assets recovered normally."
+    }
+  ],
+  "excluded_red_herrings": [
+    {
+      "signal": "orders-db CPU at 86%",
+      "why_not_primary": "The database reported normal 35 ms query latency and zero errors; no failed checkout transaction reached it because requests stopped at the auth gate."
+    },
+    {
+      "signal": "cdn-edge HTTP 5xx rate of 4.8%",
+      "why_not_primary": "The metric notes the errors were isolated to images, and checkout-web confirmed static assets served normally after retry while checkout remained blocked. CDN is not on the payment authorization dependency path."
+    },
+    {
+      "signal": "checkout-web elevated latency",
+      "why_not_primary": "This is a downstream symptom of rejected/failed payment authorization, not evidence of an independent checkout-web fault."
+    }
+  ],
+  "recommended_next_steps": [
+    "Immediately halt or roll back AUTH-2026-0318, or restore partner-v2 in auth-gateway allowed_issuers using the approved change process.",
+    "Repair and invalidate/rebuild the JWKS cache under the intended partner-v2 namespace, then confirm token validation succeeds.",
+    "Run a controlled checkout payment authorization and verify a successful payment-api response and downstream order creation.",
+    "Monitor HTTP 401 rates and p95 latency for auth-gateway, payment-api, and checkout-web until they return to baseline; separately track CDN image errors and orders-db CPU."
+  ]
+}

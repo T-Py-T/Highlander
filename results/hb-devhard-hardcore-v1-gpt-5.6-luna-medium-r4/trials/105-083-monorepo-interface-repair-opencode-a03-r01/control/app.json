@@ -1,0 +1,8 @@
+{
+  "data_dir": "<SOURCE_EVIDENCE_ROOT>/trials/105-083-monorepo-interface-repair-opencode-a03-r01/hb-data",
+  "default_rounds": 1,
+  "default_timeout_sec": 1200,
+  "results_dir": "<SOURCE_EVIDENCE_ROOT>/trials/105-083-monorepo-interface-repair-opencode-a03-r01/hb-results",
+  "tasks_dir": "<HOME>/Documents/HomeLife/Highlander/.highlander/upstream/harness-bench/tasks",
+  "work_root": "<SOURCE_EVIDENCE_ROOT>/trials/105-083-monorepo-interface-repair-opencode-a03-r01/hb-work"
+}

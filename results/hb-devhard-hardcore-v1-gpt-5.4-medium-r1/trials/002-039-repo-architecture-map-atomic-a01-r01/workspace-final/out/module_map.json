@@ -1,0 +1,176 @@
+{
+  "modules": [
+    {
+      "name": "minisvc.cli",
+      "path": "minisvc/cli.py",
+      "purpose": "CLI bootstrap that loads settings, opens the repository, initializes the SQLite schema, and reports readiness."
+    },
+    {
+      "name": "minisvc.config",
+      "path": "minisvc/config.py",
+      "purpose": "Configuration loader for database path and readonly flag from environment variables."
+    },
+    {
+      "name": "minisvc.models",
+      "path": "minisvc/models.py",
+      "purpose": "Domain model definitions, currently a single Order dataclass."
+    },
+    {
+      "name": "minisvc.audit",
+      "path": "minisvc/audit.py",
+      "purpose": "Builds in-memory audit event payloads for order actions; does not persist them."
+    },
+    {
+      "name": "minisvc.api.handlers",
+      "path": "minisvc/api/handlers.py",
+      "purpose": "Request handlers that turn payloads into Order objects, call storage, and shape response bodies."
+    },
+    {
+      "name": "minisvc.api.routes",
+      "path": "minisvc/api/routes.py",
+      "purpose": "Registers HTTP-style routes against a caller-supplied app object."
+    },
+    {
+      "name": "minisvc.storage.repo",
+      "path": "minisvc/storage/repo.py",
+      "purpose": "SQLite-backed repository for schema setup, order inserts, and order reads."
+    }
+  ],
+  "entry_points": [
+    {
+      "identifier": "minisvc.cli:main",
+      "kind": "cli",
+      "exposed_as": "project.scripts minisvc",
+      "purpose": "Initializes storage schema and prints the configured database path."
+    },
+    {
+      "identifier": "minisvc.api.routes:register_routes",
+      "kind": "http_registration",
+      "purpose": "Attaches POST /orders and GET /orders/<order_id> handlers to an app object."
+    },
+    {
+      "identifier": "minisvc.api.handlers:create_order",
+      "kind": "route_handler",
+      "route": "POST /orders",
+      "purpose": "Creates an Order from request payload data and saves it."
+    },
+    {
+      "identifier": "minisvc.api.handlers:get_order",
+      "kind": "route_handler",
+      "route": "GET /orders/<order_id>",
+      "purpose": "Fetches an order and returns either missing or order data plus an audit event payload."
+    }
+  ],
+  "dependency_edges": [
+    {"from": "minisvc.cli", "to": "minisvc.config", "type": "imports"},
+    {"from": "minisvc.cli", "to": "minisvc.storage.repo", "type": "imports"},
+    {"from": "minisvc.cli:main", "to": "minisvc.config:load_settings", "type": "calls"},
+    {"from": "minisvc.cli:main", "to": "minisvc.storage.repo:OrderRepository", "type": "instantiates"},
+    {"from": "minisvc.cli:main", "to": "environment:MINISVC_DB", "type": "reads_config"},
+    {"from": "minisvc.cli:main", "to": "environment:MINISVC_READONLY", "type": "reads_config"},
+    {"from": "minisvc.api.handlers", "to": "minisvc.audit", "type": "imports"},
+    {"from": "minisvc.api.handlers", "to": "minisvc.models", "type": "imports"},
+    {"from": "minisvc.api.handlers", "to": "minisvc.storage.repo", "type": "imports"},
+    {"from": "minisvc.api.handlers:create_order", "to": "minisvc.models:Order", "type": "instantiates"},
+    {"from": "minisvc.api.handlers:create_order", "to": "minisvc.storage.repo:OrderRepository.save", "type": "calls"},
+    {"from": "minisvc.api.handlers:create_order", "to": "minisvc.audit:order_event", "type": "calls"},
+    {"from": "minisvc.api.handlers:get_order", "to": "minisvc.storage.repo:OrderRepository.get", "type": "calls"},
+    {"from": "minisvc.api.handlers:get_order", "to": "minisvc.audit:order_event", "type": "calls"},
+    {"from": "minisvc.api.routes", "to": "minisvc.api.handlers", "type": "imports"},
+    {"from": "minisvc.api.routes:register_routes", "to": "minisvc.api.handlers:create_order", "type": "calls"},
+    {"from": "minisvc.api.routes:register_routes", "to": "minisvc.api.handlers:get_order", "type": "calls"},
+    {"from": "minisvc.audit", "to": "minisvc.models", "type": "imports"},
+    {"from": "minisvc.storage.repo", "to": "minisvc.models", "type": "imports"},
+    {"from": "minisvc.storage.repo:OrderRepository.save", "to": "sqlite:orders", "type": "persists_to"},
+    {"from": "minisvc.storage.repo:OrderRepository.get", "to": "sqlite:orders", "type": "calls"},
+    {"from": "minisvc.storage.repo:OrderRepository.init_schema", "to": "sqlite:orders", "type": "persists_to"}
+  ],
+  "key_functions": [
+    {
+      "identifier": "minisvc.cli:main",
+      "path": "minisvc/cli.py",
+      "summary": "Loads environment-backed settings, creates the repository, initializes the orders table, and prints a ready message.",
+      "notes": [
+        "Only this path initializes the schema.",
+        "Loads readonly config but does not enforce it."
+      ]
+    },
+    {
+      "identifier": "minisvc.config:load_settings",
+      "path": "minisvc/config.py",
+      "summary": "Reads MINISVC_DB and MINISVC_READONLY from an env mapping and returns an immutable Settings object."
+    },
+    {
+      "identifier": "minisvc.api.handlers:create_order",
+      "path": "minisvc/api/handlers.py",
+      "summary": "Builds an Order from payload keys, coerces total_cents to int, saves it, and returns a created response with an audit event payload.",
+      "notes": [
+        "Direct key access raises KeyError when fields are missing.",
+        "No retry loop or readonly guard is present."
+      ]
+    },
+    {
+      "identifier": "minisvc.api.handlers:get_order",
+      "path": "minisvc/api/handlers.py",
+      "summary": "Reads one order by id and returns either a missing response or the order payload with a read audit event payload."
+    },
+    {
+      "identifier": "minisvc.api.routes:register_routes",
+      "path": "minisvc/api/routes.py",
+      "summary": "Connects route paths to lambdas that capture the repository instance and call handlers."
+    },
+    {
+      "identifier": "minisvc.audit:order_event",
+      "path": "minisvc/audit.py",
+      "summary": "Creates an event dict for created and read actions.",
+      "notes": [
+        "Returns an in-memory dict only.",
+        "No storage side effect exists in this module."
+      ]
+    },
+    {
+      "identifier": "minisvc.storage.repo:OrderRepository.__init__",
+      "path": "minisvc/storage/repo.py",
+      "summary": "Stores the database path as a pathlib.Path."
+    },
+    {
+      "identifier": "minisvc.storage.repo:OrderRepository.init_schema",
+      "path": "minisvc/storage/repo.py",
+      "summary": "Creates the orders table if it does not yet exist."
+    },
+    {
+      "identifier": "minisvc.storage.repo:OrderRepository.save",
+      "path": "minisvc/storage/repo.py",
+      "summary": "Opens a new SQLite connection and inserts one row into orders."
+    },
+    {
+      "identifier": "minisvc.storage.repo:OrderRepository.get",
+      "path": "minisvc/storage/repo.py",
+      "summary": "Opens a new SQLite connection, fetches one row by order_id, and returns an Order or None."
+    }
+  ],
+  "runtime_flows": [
+    {
+      "name": "CLI startup flow",
+      "steps": [
+        "The minisvc console script resolves to minisvc.cli:main via pyproject.toml.",
+        "minisvc.cli:main calls minisvc.config:load_settings with os.environ.",
+        "load_settings reads MINISVC_DB and MINISVC_READONLY and returns Settings.",
+        "main instantiates minisvc.storage.repo:OrderRepository with settings.database_path.",
+        "main calls OrderRepository.init_schema to create the orders table if needed.",
+        "main prints a ready message with the configured database path and exits with status 0."
+      ]
+    },
+    {
+      "name": "HTTP create-order flow",
+      "steps": [
+        "The embedding HTTP app calls minisvc.api.routes:register_routes(app, repo).",
+        "register_routes binds POST /orders to a lambda that calls minisvc.api.handlers:create_order(payload, repo).",
+        "create_order reads order_id, customer, and total_cents from the payload and builds minisvc.models:Order.",
+        "create_order calls OrderRepository.save, which opens SQLite and inserts a row into the orders table.",
+        "create_order calls minisvc.audit:order_event(order, 'created') to build an event dict.",
+        "create_order returns a response dict with status, order_id, and the event payload."
+      ]
+    }
+  ]
+}

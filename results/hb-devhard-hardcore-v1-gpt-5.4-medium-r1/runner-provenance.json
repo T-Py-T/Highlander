@@ -1,0 +1,17 @@
+{
+  "normalization": {
+    "combined_score": null,
+    "process_score": null,
+    "tool_counts": "native invocation starts where observable",
+    "usage": "native reports; accounting is not cross-harness comparable"
+  },
+  "protocol_id": "hb-devhard-hardcore-v1-gpt-5.4-medium-r1",
+  "protocol_sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac",
+  "runner": {
+    "commit": "0d439cb2a03c007e7d0b57c744ab1e1c63ac63d2",
+    "repository": "<RUNNER_ROOT>",
+    "worktree_clean": true
+  },
+  "schema_version": 1,
+  "source_artifact_manifest_sha256": "83075b7c88dfb981d29ae96f3caf0cea674a03130e64020876a7a4b89a4f3c7f"
+}

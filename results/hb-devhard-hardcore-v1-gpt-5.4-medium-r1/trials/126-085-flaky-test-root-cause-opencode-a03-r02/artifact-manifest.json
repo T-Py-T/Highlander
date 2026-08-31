@@ -1,0 +1,156 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 443,
+      "path": "control/app.json",
+      "sha256": "0610694e2169f219bc81a301955e782be95cb13eb73a67c9bff6766ace9be57d"
+    },
+    {
+      "bytes": 705,
+      "path": "control/harness.json",
+      "sha256": "837cd9f3e47e6c5f6fc7ac8d42d4acd32f394f4ffd1e722428d05fa97ef28f01"
+    },
+    {
+      "bytes": 337,
+      "path": "control/trial.json",
+      "sha256": "a01a699f7bc01f7da242018b6973b3c2dc97ff84820050c15d9f4340d0249738"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2502,
+      "path": "controller.stdout.raw",
+      "sha256": "ccb873cd3d9330f4ddb91486c6c3e569d9c6176e54cf08e8a2b65a394f9f2226"
+    },
+    {
+      "bytes": 8407,
+      "path": "diff.patch",
+      "sha256": "e21ed2599792a8e222a881166ce08e7e7fc6661ac3e100b7bf6891464326a14b"
+    },
+    {
+      "bytes": 2030,
+      "path": "native/container-plan.json",
+      "sha256": "8de2c32ca004077f20b8434f617cf8c137f43ab436341abb4a10d8733d237219"
+    },
+    {
+      "bytes": 642,
+      "path": "native/control-proof.json",
+      "sha256": "2672ec8a819baa379609ad1f324beb72c92c3c228f797ef88894c089017b974b"
+    },
+    {
+      "bytes": 1917,
+      "path": "native/execution.json",
+      "sha256": "6438d7254fa7bb6de56c29966818bb9282e66c860026b4e38e80549ae116a10f"
+    },
+    {
+      "bytes": 491,
+      "path": "native/invocation.json",
+      "sha256": "4711b11950d5cf9c9568f475e3f3300b54edd7eb282fd992c7e36996fe502a66"
+    },
+    {
+      "bytes": 51,
+      "path": "native/process-metrics.json",
+      "sha256": "d897d08266dbdd9213dfb0928a2769b751b1d96d70d18c860451916949dfbe23"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 93609,
+      "path": "native/stdout.raw",
+      "sha256": "934d38acb8f68749836301cc62d2c5ac0dfcdffb3610d5dd2c5863f5acd8b3f0"
+    },
+    {
+      "bytes": 2651,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "aa5befed93386138e05c90069b7dbe1b27e52bdab7f5b737b4e2b0ad1529471d"
+    },
+    {
+      "bytes": 322,
+      "path": "process/observations.json",
+      "sha256": "3a143346b59ba247b5cfee1676b64fb03beeee752fc75065928ed0afe5c1b374"
+    },
+    {
+      "bytes": 2373,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "7494fcc6e1d45cf319e033d446de11fa0095fa92c1a0606d95c0d2c0ed4a95fa"
+    },
+    {
+      "bytes": 2666,
+      "path": "result.json",
+      "sha256": "1b9d49639d5e76ad190963569051cce264b19f5ac3a6ece8445a83ee3d93944d"
+    },
+    {
+      "bytes": 107428,
+      "path": "upstream-result.json",
+      "sha256": "ff7d348f35a7027507b9a80ab879bcc3a4c38ef232f44f9991c1e3f61a0680c9"
+    },
+    {
+      "bytes": 443,
+      "path": "usage-normalized.json",
+      "sha256": "37ecc30cf36b032935a560075ec100148b4157d8961b03e53ac7559cdadc62a5"
+    },
+    {
+      "bytes": 95,
+      "path": "workspace-final/in/flakyqueue/README.md",
+      "sha256": "4f8a73e68267c470c2c1dd20414f1d545163291a020826c9ae4355a62ed32abc"
+    },
+    {
+      "bytes": 72,
+      "path": "workspace-final/in/flakyqueue/flakyqueue/__init__.py",
+      "sha256": "3cb5fb98aef7db5cd5d2532c8b04133691a0d4123ec66f574d3d3918a64daf11"
+    },
+    {
+      "bytes": 124,
+      "path": "workspace-final/in/flakyqueue/flakyqueue/clock.py",
+      "sha256": "d3fc00708564f8d3bbfd7adf93ac4172c112b9f6d4b32ec0bdeb953f94dfb9eb"
+    },
+    {
+      "bytes": 1406,
+      "path": "workspace-final/in/flakyqueue/flakyqueue/scheduler.py",
+      "sha256": "5a71a932bfdec3e370452084a2a35122ff4fbb9d9c89463b65b0f82a2d816c24"
+    },
+    {
+      "bytes": 246,
+      "path": "workspace-final/in/flakyqueue/flakyqueue/store.py",
+      "sha256": "bbafab06eff2d2290dd73bf7305efdfcdd31a841b2dbffe4e20585b9d4d76105"
+    },
+    {
+      "bytes": 67,
+      "path": "workspace-final/in/flakyqueue/pyproject.toml",
+      "sha256": "e8c4628ed8f1f109ed9455dff39a67374c0711c7e24e6a5114517abe41fb61db"
+    },
+    {
+      "bytes": 1018,
+      "path": "workspace-final/in/flakyqueue/tests/test_retry_order.py",
+      "sha256": "e4bc10389202a863dbb4b58c071dc4ae3a1b1835146cf2a468bf8aec8a5c4cae"
+    },
+    {
+      "bytes": 996,
+      "path": "workspace-final/in/flakyqueue/tests/test_scheduler.py",
+      "sha256": "1b356f1a048f9b5449b4ad24a18989f8923b1312d5ca7735891dbde9e38f7b3e"
+    },
+    {
+      "bytes": 169,
+      "path": "workspace-final/out/flakyqueue-venv/pyvenv.cfg",
+      "sha256": "b2e8231de6c392c4692a0fb02cb15ffdfa142a2603fb668e1085678b293fb5e1"
+    },
+    {
+      "bytes": 2633,
+      "path": "workspace-final/out/root_cause.md",
+      "sha256": "3528cb1fa93ade5e2262164a1fcde1053fafe50b919ed4a0c7d5de7e782bb852"
+    }
+  ],
+  "generated_at": "2026-08-31T23:30:57.046707Z",
+  "schema_version": 1
+}

@@ -1,0 +1,80 @@
+[harnessbench] run-task 083-monorepo-interface-repair (harness=opencode, mode=live) ...
+[harnessbench] run-task 083-monorepo-interface-repair finished adapter_ok=True elapsed=161.569s
+{
+  "task_id": "083-monorepo-interface-repair",
+  "elapsed_sec": 161.569,
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-opencode-083-monorepo-interface-repair-a3-083-monorepo-interface-repair-3d01db91"
+  },
+  "oracle_result": {
+    "task": "083-monorepo-interface-repair",
+    "outcome_score": 1.0,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": true,
+        "weight": 0.3,
+        "detail": "3-monorepo-interface-repair-gpt-5.4-20260831-134616-c0e68f98/workspace/in/shopmono\nconfigfile: pyproject.toml\nplugins: anyio-4.12.0, cov-4.1.0, asyncio-0.21.1\nasyncio: mode=Mode.STRICT\ncollected 5 items\n\ntests/test_catalog_contract.py ..                                        [ 40%]\ntests/test_orders_report_integration.py ...                              [100%]\n\n=============================== warnings summary ===============================\n../../../../../../../../../../../../../../../../../opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: 155 warnings\n  /opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n    return asyncio.iscoroutinefunction(obj)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================= 5 passed, 155 warnings in 0.02s ========================\n"
+      },
+      {
+        "id": "hidden_interface_behavior",
+        "pass": true,
+        "weight": 0.4,
+        "detail": ""
+      },
+      {
+        "id": "test_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "implementation_quality",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "fix_report",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 1.0,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/105-083-monorepo-interface-repair-opencode-a03-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-083-monorepo-interface-repair-gpt-5.4-20260831-134616-c0e68f98"
+}

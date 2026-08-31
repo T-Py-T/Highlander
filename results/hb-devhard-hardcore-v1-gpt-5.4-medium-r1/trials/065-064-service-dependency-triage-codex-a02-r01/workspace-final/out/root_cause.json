@@ -1,0 +1,53 @@
+{
+  "incident_id": "oc-bench-v2-064-service-dependency-triage",
+  "root_cause_service": "auth-gateway",
+  "root_cause_change_id": "AUTH-2026-0318",
+  "confidence": "high",
+  "affected_services": [
+    "checkout-web",
+    "payment-api",
+    "auth-gateway"
+  ],
+  "evidence": [
+    {
+      "source_file": "/workspace/in/topology.json",
+      "observation": "The checkout dependency path is checkout-web -> payment-api -> auth-gateway, which places auth-gateway directly on the failing checkout request path."
+    },
+    {
+      "source_file": "/workspace/in/topology.json",
+      "observation": "Recent change AUTH-2026-0318 was deployed to auth-gateway at 2026-03-22T14:05:00Z and changed issuer/JWKS cache namespace for partner-token validation."
+    },
+    {
+      "source_file": "/workspace/in/metrics/service_metrics.csv",
+      "observation": "At 2026-03-22T14:10:00Z, checkout-web 401 rate rose to 18.7%, payment-api 401 rate rose to 21.2%, and auth-gateway 401 rate rose to 28.4%, while auth-gateway notes mention JWKS cache miss and issuer mismatch."
+    },
+    {
+      "source_file": "/workspace/in/logs/auth-gateway.log",
+      "observation": "auth-gateway logged deployment of change_id=AUTH-2026-0318, then a JWKS cache lookup miss for namespace partner-v2 with fallback partner-v1, followed by validation failure because token_issuer=partner-v2 but allowed_issuers=partner-v1."
+    },
+    {
+      "source_file": "/workspace/in/logs/payment-api.log",
+      "observation": "payment-api rejected payment creation because auth-gateway returned issuer_not_allowed / invalid_issuer for failing request req-8812."
+    },
+    {
+      "source_file": "/workspace/in/logs/checkout-web.log",
+      "observation": "checkout-web failed submit_order with status=401 from upstream payment-api and logged auth_failed invalid issuer during checkout session cko-17."
+    }
+  ],
+  "excluded_red_herrings": [
+    {
+      "signal": "orders-db CPU spike / DB-2026-0144",
+      "why_not_primary": "orders-db metrics show normal p95 latency and zero errors, the recent DB change states vacuum tuning only, and both payment-api and orders-db logs say failing checkout requests did not reach orders-db before auth rejection."
+    },
+    {
+      "signal": "cdn-edge 5xx increase / CDN-2026-0091",
+      "why_not_primary": "cdn-edge errors were isolated to static images, and checkout-web explicitly states static assets recovered after retry while the user checkout flow remained blocked by payment auth failures."
+    }
+  ],
+  "recommended_next_steps": [
+    "Mitigate immediately by reverting AUTH-2026-0318 or restoring allowed_issuers and JWKS cache configuration to accept partner-v2 tokens consistently.",
+    "Verify auth-gateway accepts token_issuer=partner-v2 without fallback to partner-v1 and that JWKS cache hits the correct namespace.",
+    "Retest end-to-end checkout through checkout-web and payment-api, confirming 401 rates return to baseline and request IDs progress beyond auth into order processing.",
+    "Add a deployment guardrail that validates issuer and JWKS namespace compatibility before auth-gateway rollout."
+  ]
+}

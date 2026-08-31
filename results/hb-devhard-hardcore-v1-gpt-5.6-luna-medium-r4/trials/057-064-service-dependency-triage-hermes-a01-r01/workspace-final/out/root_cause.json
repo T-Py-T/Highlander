@@ -1,0 +1,53 @@
+{
+  "incident_id": "oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-023506-26f842bc",
+  "root_cause_service": "auth-gateway",
+  "root_cause_change_id": "AUTH-2026-0318",
+  "confidence": "high",
+  "affected_services": [
+    "checkout-web",
+    "payment-api",
+    "auth-gateway"
+  ],
+  "evidence": [
+    {
+      "source_file": "/workspace/in/topology.json",
+      "observation": "The dependency path from checkout-web to payment-api to auth-gateway is explicit; AUTH-2026-0318 is the recent auth-gateway change and rotated the issuer/JWKS cache namespace for partner-token validation."
+    },
+    {
+      "source_file": "/workspace/in/metrics/service_metrics.csv",
+      "observation": "At 14:10Z, checkout-web had an 18.7% HTTP 401 rate and 2400 ms p95, payment-api had a 21.2% HTTP 401 rate with the note 'auth dependency returning invalid issuer', and auth-gateway had a 28.4% HTTP 401 rate with issuer mismatch/JWKS cache-miss symptoms."
+    },
+    {
+      "source_file": "/workspace/in/logs/checkout-web.log",
+      "observation": "Checkout submission failed with status 401 from payment-api, and the log states that static assets were served normally while the checkout flow remained blocked."
+    },
+    {
+      "source_file": "/workspace/in/logs/payment-api.log",
+      "observation": "The payment API recorded token validation failure from auth-gateway because issuer partner-v2 was not allowed, then rejected create_payment with auth_result=invalid_issuer."
+    },
+    {
+      "source_file": "/workspace/in/logs/auth-gateway.log",
+      "observation": "After deploying AUTH-2026-0318 at 14:05:12Z, auth-gateway logged a partner-v2 JWKS cache miss, fell back to partner-v1, and rejected partner-v2 because only partner-v1 was allowed; it identified reverting the change or restoring partner-v2 as rollback candidates."
+    }
+  ],
+  "excluded_red_herrings": [
+    {
+      "signal": "orders-db CPU at 86%",
+      "why_not_primary": "orders-db query p95 was normal at 35 ms with zero errors, and its log says no failed checkout transaction reached the database because requests failed at the auth gate."
+    },
+    {
+      "signal": "cdn-edge HTTP 5xx rate of 4.8%",
+      "why_not_primary": "The metric note limits the failure to static images, while checkout-web reports static assets served normally after retry and the user-facing failure is payment authorization (HTTP 401)."
+    },
+    {
+      "signal": "orders-db vacuum tuning change DB-2026-0144",
+      "why_not_primary": "Topology describes it as vacuum tuning only with no schema or credential change, and the database showed normal query latency and no errors."
+    }
+  ],
+  "recommended_next_steps": [
+    "Immediately stop or roll back AUTH-2026-0318, or restore partner-v2 in auth-gateway allowed_issuers and the intended JWKS cache namespace configuration.",
+    "Invalidate/rebuild the affected JWKS cache and confirm partner-v2 tokens validate successfully before reopening checkout traffic.",
+    "Verify auth-gateway HTTP 401 rate returns to baseline, then verify payment-api and checkout-web 401 rates and p95 latency recover; exercise a complete checkout with a partner-v2 token.",
+    "Monitor orders-db and cdn-edge independently so their unrelated signals do not obscure recovery validation."
+  ]
+}

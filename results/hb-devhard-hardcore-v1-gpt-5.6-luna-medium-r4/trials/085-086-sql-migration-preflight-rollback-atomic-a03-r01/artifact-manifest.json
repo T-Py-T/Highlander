@@ -1,0 +1,56 @@
+{
+  "artifacts": [
+    {
+      "bytes": 208,
+      "path": "cleanup.json",
+      "sha256": "5b3736000964be257bbd6bd81624eb5eeb6125dff9299b80a929a6ce88e33ccd"
+    },
+    {
+      "bytes": 493,
+      "path": "control/app.json",
+      "sha256": "82c6e4ded410b7376097e399c9e15a7ad37e2d924b0de09e7441a2ee509a26cb"
+    },
+    {
+      "bytes": 740,
+      "path": "control/harness.json",
+      "sha256": "f29543839b332ee6fb631e8a2e41cc659d80aaa4458cd4c3f4d3f4c570c9be34"
+    },
+    {
+      "bytes": 349,
+      "path": "control/trial.json",
+      "sha256": "6df687ec6a9a5c665cb6f7b655d933665ee8c38cd99808dcee607b6c00cfad4a"
+    },
+    {
+      "bytes": 3089,
+      "path": "controller.stderr.raw",
+      "sha256": "bbac9f437ab2b3775a72c8a54d5e212c0d37c3ffea650535e00e84ee26e70137"
+    },
+    {
+      "bytes": 93,
+      "path": "controller.stdout.raw",
+      "sha256": "97c5bd16a6308c89c0040078e21fd7e2c73e24508c874106167a1a64145c8986"
+    },
+    {
+      "bytes": 305,
+      "path": "process/observations.json",
+      "sha256": "e5f7428877234e3b8698f0493a9f5f0b65389a61d587fea9f195071a0a5cb6a3"
+    },
+    {
+      "bytes": 0,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1398,
+      "path": "result.json",
+      "sha256": "0dd72898ebcffc996bf0e7fedd33599d4fea8aa27ceebc376db5085e3d1b0071"
+    },
+    {
+      "bytes": 93,
+      "path": "usage-normalized.json",
+      "sha256": "2999f47063b6964799572b69bdb6766b6cc827d9a76dda0ba9e011e99fab2000"
+    }
+  ],
+  "generated_at": "2026-08-31T13:03:40.135607Z",
+  "schema_version": 1
+}

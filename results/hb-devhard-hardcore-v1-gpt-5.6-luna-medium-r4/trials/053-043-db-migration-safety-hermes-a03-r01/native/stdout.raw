@@ -1,0 +1,25 @@
+Completed using the available mapped workspace paths under `/workspace/in/db/` because the supplied `<HOME>/...` paths are not mounted here.
+
+Created/updated:
+
+- `/workspace/in/db/migration.sql`
+  - Explicit transaction with `BEGIN IMMEDIATE`
+  - Preserves all users, orders, IDs, references, and `created_at`
+  - Cleans dirty emails deterministically
+  - Adds `status TEXT NOT NULL DEFAULT 'active'`
+  - Enforces `email TEXT NOT NULL UNIQUE`
+  - Safe on repeated execution
+
+- `/workspace/in/db/preflight_report.md`
+- `/workspace/in/db/rollback.sql`
+- `/workspace/in/db/postcheck.sql`
+- `/workspace/in/db/migration_report.md`
+
+Verification performed against the supplied schema:
+
+- Migration succeeded
+- Second migration run preserved exactly 6 users and 4 orders
+- Duplicate and NULL email inserts were rejected
+- All dirty-user email values matched the required values
+- Postcheck queries all returned passed = 1
+- Rollback restored the original users column shape and preserved all orders and references

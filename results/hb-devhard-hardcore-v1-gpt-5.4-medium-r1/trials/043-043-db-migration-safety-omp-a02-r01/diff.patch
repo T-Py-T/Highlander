@@ -1,0 +1,279 @@
+--- a/in/db/migration.sql
++++ b/in/db/migration.sql
+@@ -1,9 +1,59 @@
+-DROP TABLE users;
++BEGIN IMMEDIATE;
+ 
+-CREATE TABLE users (
++PRAGMA foreign_keys = OFF;
++
++CREATE TABLE IF NOT EXISTS _migration_users_v1_source (
+     id TEXT PRIMARY KEY,
+-    email TEXT UNIQUE,
++    email TEXT,
++    name TEXT NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO _migration_users_v1_source (id, email, name, created_at)
++SELECT users.id, users.email, users.name, users.created_at
++FROM users
++WHERE NOT EXISTS (
++    SELECT 1
++    FROM _migration_users_v1_source
++);
++
++DROP TABLE IF EXISTS users__migrated;
++
++CREATE TABLE users__migrated (
++    id TEXT PRIMARY KEY,
++    email TEXT NOT NULL UNIQUE,
+     name TEXT NOT NULL,
+     status TEXT NOT NULL DEFAULT 'active',
+-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
++    created_at TEXT NOT NULL
+ );
++
++INSERT INTO users__migrated (id, email, name, status, created_at)
++SELECT
++    src.id,
++    CASE
++        WHEN src.id = 'u4' THEN 'ada+u4@example.com'
++        WHEN src.id = 'u5' THEN 'missing+u5@example.invalid'
++        WHEN src.id = 'u6' THEN 'missing+u6@example.invalid'
++        ELSE TRIM(src.email)
++    END AS migrated_email,
++    src.name,
++    'active' AS status,
++    src.created_at
++FROM _migration_users_v1_source AS src;
++
++DROP TABLE users;
++ALTER TABLE users__migrated RENAME TO users;
++
++CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email);
++
++CREATE TABLE IF NOT EXISTS _migration_meta (
++    name TEXT PRIMARY KEY,
++    applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
++);
++
++INSERT OR IGNORE INTO _migration_meta (name)
++VALUES ('users_status_email_v1');
++
++PRAGMA foreign_keys = ON;
++
++COMMIT;
+--- a/in/db/migration_report.md
++++ b/in/db/migration_report.md
+@@ -0,0 +1,51 @@
++# Migration Report
++
++## Strategy
++
++The migration rebuilds `users` inside `BEGIN IMMEDIATE ... COMMIT` with `PRAGMA foreign_keys = OFF` during the table swap and `PRAGMA foreign_keys = ON` before commit. It snapshots the original pre-migration `users` rows into `_migration_users_v1_source`, creates a constrained replacement table, copies all users with deterministic email cleanup, then renames the rebuilt table back to `users`.
++
++This preserves:
++
++- all six existing user ids
++- all historical `created_at` values
++- all four `orders` rows and their existing `user_id` references
++
++## Dirty-data cleanup
++
++The migration rewrites only the known invalid legacy emails:
++
++- `u4`: `ada@example.com` -> `ada+u4@example.com`
++- `u5`: `NULL` -> `missing+u5@example.invalid`
++- `u6`: `''` -> `missing+u6@example.invalid`
++
++`u1` keeps the original `ada@example.com` value.
++
++## Idempotency approach
++
++The migration is rerunnable because it stores a one-time source snapshot in `_migration_users_v1_source` and always rebuilds `users` from that snapshot. A second execution replays the same deterministic cleanup and table swap without creating duplicate users or duplicate orders.
++
++## Rollback behavior and limitation
++
++`rollback.sql` restores the old `users` table shape to `id, email, name, created_at` after the migration and keeps the same user ids and order references intact. It also removes the migration helper objects `_migration_meta` and `_migration_users_v1_source`.
++
++Limitation: rollback restores the old schema shape, not the original dirty email values. The migrated cleaned emails remain in place because the migration requirement is data preservation, not reintroduction of invalid legacy email states.
++
++## Postcheck queries
++
++Run after migration:
++
++```sql
++.read in/db/postcheck.sql
++```
++
++The checks cover:
++
++- user row count
++- order row count
++- dependent order preservation for `u4`, `u5`, and `u6`
++- deterministic cleaned email values for dirty users
++- absence of null or blank emails
++- email uniqueness
++- non-null active status values
++- presence of `status` and non-null `email` schema constraints
++- presence of the unique email index
+--- a/in/db/postcheck.sql
++++ b/in/db/postcheck.sql
+@@ -0,0 +1,92 @@
++SELECT 'user_row_count' AS check_name,
++       CASE WHEN (SELECT COUNT(*) FROM users) = 6 THEN 'PASS' ELSE 'FAIL' END AS result,
++       (SELECT COUNT(*) FROM users) AS actual_count,
++       6 AS expected_count;
++
++SELECT 'order_row_count' AS check_name,
++       CASE WHEN (SELECT COUNT(*) FROM orders) = 4 THEN 'PASS' ELSE 'FAIL' END AS result,
++       (SELECT COUNT(*) FROM orders) AS actual_count,
++       4 AS expected_count;
++
++SELECT 'dirty_user_orders_preserved' AS check_name,
++       CASE
++           WHEN EXISTS (SELECT 1 FROM orders WHERE id = 'o2' AND user_id = 'u4')
++            AND EXISTS (SELECT 1 FROM orders WHERE id = 'o3' AND user_id = 'u5')
++            AND EXISTS (SELECT 1 FROM orders WHERE id = 'o4' AND user_id = 'u6')
++           THEN 'PASS'
++           ELSE 'FAIL'
++       END AS result;
++
++SELECT 'cleaned_dirty_emails' AS check_name,
++       CASE
++           WHEN EXISTS (SELECT 1 FROM users WHERE id = 'u4' AND email = 'ada+u4@example.com')
++            AND EXISTS (SELECT 1 FROM users WHERE id = 'u5' AND email = 'missing+u5@example.invalid')
++            AND EXISTS (SELECT 1 FROM users WHERE id = 'u6' AND email = 'missing+u6@example.invalid')
++           THEN 'PASS'
++           ELSE 'FAIL'
++       END AS result;
++
++SELECT 'email_not_null_or_blank' AS check_name,
++       CASE
++           WHEN EXISTS (SELECT 1 FROM users WHERE email IS NULL OR TRIM(email) = '')
++           THEN 'FAIL'
++           ELSE 'PASS'
++       END AS result;
++
++SELECT 'email_unique' AS check_name,
++       CASE
++           WHEN EXISTS (
++               SELECT email
++               FROM users
++               GROUP BY email
++               HAVING COUNT(*) > 1
++           )
++           THEN 'FAIL'
++           ELSE 'PASS'
++       END AS result;
++
++SELECT 'status_all_active_and_non_null' AS check_name,
++       CASE
++           WHEN EXISTS (SELECT 1 FROM users WHERE status IS NULL OR status <> 'active')
++           THEN 'FAIL'
++           ELSE 'PASS'
++       END AS result;
++
++SELECT 'users_schema_has_status_not_null_default' AS check_name,
++       CASE
++           WHEN EXISTS (
++               SELECT 1
++               FROM pragma_table_info('users')
++               WHERE name = 'status'
++                 AND type = 'TEXT'
++                 AND "notnull" = 1
++                 AND dflt_value = '''active'''
++           )
++           THEN 'PASS'
++           ELSE 'FAIL'
++       END AS result;
++
++SELECT 'users_schema_has_email_not_null' AS check_name,
++       CASE
++           WHEN EXISTS (
++               SELECT 1
++               FROM pragma_table_info('users')
++               WHERE name = 'email'
++                 AND type = 'TEXT'
++                 AND "notnull" = 1
++           )
++           THEN 'PASS'
++           ELSE 'FAIL'
++       END AS result;
++
++SELECT 'users_has_unique_email_index' AS check_name,
++       CASE
++           WHEN EXISTS (
++               SELECT 1
++               FROM pragma_index_list('users')
++               WHERE name = 'idx_users_email'
++                 AND "unique" = 1
++           )
++           THEN 'PASS'
++           ELSE 'FAIL'
++       END AS result;
+--- a/in/db/preflight_report.md
++++ b/in/db/preflight_report.md
+@@ -0,0 +1,31 @@
++# Preflight Report
++
++## Dirty email rows before migration
++
++Source data in `schema.sql` contains three email integrity violations in `users`:
++
++- Duplicate email: `u4` repeats `ada@example.com`, which is already used by `u1`.
++- Null email: `u5` has `email = NULL`.
++- Blank email: `u6` has `email = ''`.
++
++These rows cannot satisfy a future `NOT NULL` plus unique email constraint without cleanup.
++
++## Required deterministic cleanup
++
++The migration must preserve the rows and rewrite only the invalid email values to these deterministic values:
++
++- `u4` -> `ada+u4@example.com`
++- `u5` -> `missing+u5@example.invalid`
++- `u6` -> `missing+u6@example.invalid`
++
++`u1` keeps `ada@example.com` unchanged as the first valid holder of that address.
++
++## Dependent orders that must remain attached
++
++Dirty users have dependent orders that must keep the same `user_id` values after migration:
++
++- `u4` -> order `o2`
++- `u5` -> order `o3`
++- `u6` -> order `o4`
++
++The migration therefore must preserve user ids and rebuild `users` without deleting or rekeying those rows.
+--- a/in/db/rollback.sql
++++ b/in/db/rollback.sql
+@@ -0,0 +1,27 @@
++BEGIN IMMEDIATE;
++
++PRAGMA foreign_keys = OFF;
++
++DROP TABLE IF EXISTS users__rollback;
++
++CREATE TABLE users__rollback (
++    id TEXT PRIMARY KEY,
++    email TEXT,
++    name TEXT NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO users__rollback (id, email, name, created_at)
++SELECT id, email, name, created_at
++FROM users;
++
++DROP TABLE users;
++ALTER TABLE users__rollback RENAME TO users;
++
++DROP INDEX IF EXISTS idx_users_email;
++DROP TABLE IF EXISTS _migration_meta;
++DROP TABLE IF EXISTS _migration_users_v1_source;
++
++PRAGMA foreign_keys = ON;
++
++COMMIT;

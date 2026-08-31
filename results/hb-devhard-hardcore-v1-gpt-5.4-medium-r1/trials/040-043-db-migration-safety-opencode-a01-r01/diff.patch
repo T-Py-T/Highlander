@@ -1,0 +1,221 @@
+--- a/in/db/migration.sql
++++ b/in/db/migration.sql
+@@ -1,9 +1,40 @@
++PRAGMA foreign_keys = OFF;
++
++BEGIN IMMEDIATE TRANSACTION;
++
++DROP TABLE IF EXISTS users__migration_source;
++
++CREATE TABLE users__migration_source AS
++SELECT id, email, name, created_at
++FROM users;
++
+ DROP TABLE users;
+ 
+ CREATE TABLE users (
+     id TEXT PRIMARY KEY,
+-    email TEXT UNIQUE,
++    email TEXT NOT NULL UNIQUE CHECK (trim(email) <> ''),
+     name TEXT NOT NULL,
+     status TEXT NOT NULL DEFAULT 'active',
+-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
++    created_at TEXT NOT NULL
+ );
++
++-- Preserve every user row while deterministically fixing known dirty emails.
++INSERT INTO users (id, email, name, status, created_at)
++SELECT
++    id,
++    CASE
++        WHEN id = 'u4' THEN 'ada+u4@example.com'
++        WHEN id = 'u5' THEN 'missing+u5@example.invalid'
++        WHEN id = 'u6' THEN 'missing+u6@example.invalid'
++        ELSE email
++    END AS email,
++    name,
++    'active' AS status,
++    created_at
++FROM users__migration_source;
++
++DROP TABLE users__migration_source;
++
++COMMIT;
++
++PRAGMA foreign_keys = ON;
+--- a/in/db/migration_report.md
++++ b/in/db/migration_report.md
+@@ -0,0 +1,60 @@
++# Migration Report
++
++## Strategy
++
++The migration rebuilds `users` inside an explicit transaction after temporarily disabling foreign key enforcement. It snapshots the original user rows into `users__migration_source`, drops and recreates `users` under the same table name with the new `status` column and stricter email constraints, copies all rows back with deterministic email cleanup, and then drops the temporary source table before commit.
++
++This preserves:
++
++- all existing user ids
++- all existing order rows
++- all `orders.user_id` references
++- all historical `created_at` values
++
++## Dirty-Data Cleanup
++
++The migration preserves every user row and applies the required deterministic replacements:
++
++- `u4`: `ada@example.com` -> `ada+u4@example.com`
++- `u5`: `NULL` -> `missing+u5@example.invalid`
++- `u6`: `''` -> `missing+u6@example.invalid`
++
++`u1` keeps `ada@example.com` unchanged.
++
++## Constraint Outcome
++
++After the rebuild, `users` enforces:
++
++- `email TEXT NOT NULL`
++- `UNIQUE(email)`
++- `CHECK (trim(email) <> '')`
++- `status TEXT NOT NULL DEFAULT 'active'`
++
++This rejects future duplicate, null, and blank email writes.
++
++## Idempotency Approach
++
++The script is deterministic: each run rebuilds `users` from the current rows using the same fixed cleanup mapping and reuses the same user ids and `created_at` values. Running it a second time does not duplicate rows or change the cleaned email outputs.
++
++## Rollback Behavior And Limitation
++
++`rollback.sql` restores the pre-migration `users` schema shape:
++
++- `id`
++- `email`
++- `name`
++- `created_at`
++
++Rollback preserves the same user rows and order rows, but it only restores the old schema shape. It does not recreate the original dirty email values because the migrated email values are retained when copying data back into the old four-column table.
++
++## Postcheck Queries
++
++Run `postcheck.sql` after the migration to verify:
++
++- user and order row counts
++- preserved orders for `u4`, `u5`, and `u6`
++- cleaned emails for `u4`, `u5`, and `u6`
++- absence of null, blank, and duplicate emails
++- presence of non-null `status`
++- table shape via `PRAGMA table_info(users)`
++- valid foreign keys via `PRAGMA foreign_key_check`
+--- a/in/db/postcheck.sql
++++ b/in/db/postcheck.sql
+@@ -0,0 +1,49 @@
++-- Row counts should remain unchanged.
++SELECT COUNT(*) AS user_count FROM users;
++SELECT COUNT(*) AS order_count FROM orders;
++
++-- Dependent orders for dirty users must still point to the same user ids.
++SELECT id, user_id, total_cents, created_at
++FROM orders
++WHERE user_id IN ('u4', 'u5', 'u6')
++ORDER BY id;
++
++SELECT user_id, COUNT(*) AS order_count
++FROM orders
++WHERE user_id IN ('u4', 'u5', 'u6')
++GROUP BY user_id
++ORDER BY user_id;
++
++-- Cleaned emails and preserved timestamps for the dirty users.
++SELECT id, email, status, created_at
++FROM users
++WHERE id IN ('u4', 'u5', 'u6')
++ORDER BY id;
++
++SELECT COUNT(*) AS cleaned_dirty_user_email_match_count
++FROM users
++WHERE (id = 'u4' AND email = 'ada+u4@example.com')
++   OR (id = 'u5' AND email = 'missing+u5@example.invalid')
++   OR (id = 'u6' AND email = 'missing+u6@example.invalid');
++
++-- No null or blank emails should remain.
++SELECT COUNT(*) AS null_or_blank_email_count
++FROM users
++WHERE email IS NULL OR trim(email) = '';
++
++-- No duplicate emails should remain.
++SELECT email, COUNT(*) AS duplicate_count
++FROM users
++GROUP BY email
++HAVING COUNT(*) > 1;
++
++-- Status must be present for every row.
++SELECT COUNT(*) AS null_or_blank_status_count
++FROM users
++WHERE status IS NULL OR trim(status) = '';
++
++-- Schema check for the migrated users table.
++PRAGMA table_info(users);
++
++-- Foreign key references should still be valid after the rebuild.
++PRAGMA foreign_key_check;
+--- a/in/db/preflight_report.md
++++ b/in/db/preflight_report.md
+@@ -0,0 +1,27 @@
++# Preflight Report
++
++## Dirty Email Findings Before Migration
++
++- Duplicate email: `ada@example.com` is used by `u1` and `u4`.
++- Null email: `u5` has `email = NULL`.
++- Blank email: `u6` has `email = ''`.
++
++## Required Deterministic Cleanup
++
++- Keep `u1` unchanged as `ada@example.com`.
++- Update `u4` to `ada+u4@example.com`.
++- Update `u5` to `missing+u5@example.invalid`.
++- Update `u6` to `missing+u6@example.invalid`.
++
++## Dependent Orders That Must Be Preserved
++
++- `u4` has dependent order `o2`.
++- `u5` has dependent order `o3`.
++- `u6` has dependent order `o4`.
++
++## Preservation Requirements
++
++- Preserve all 6 existing user rows.
++- Preserve all 4 existing order rows.
++- Preserve `orders.user_id` references to `u4`, `u5`, and `u6`.
++- Preserve each user's historical `created_at` value.
+--- a/in/db/rollback.sql
++++ b/in/db/rollback.sql
+@@ -0,0 +1,28 @@
++PRAGMA foreign_keys = OFF;
++
++BEGIN IMMEDIATE TRANSACTION;
++
++DROP TABLE IF EXISTS users__rollback_source;
++
++CREATE TABLE users__rollback_source AS
++SELECT id, email, name, created_at
++FROM users;
++
++DROP TABLE users;
++
++CREATE TABLE users (
++    id TEXT PRIMARY KEY,
++    email TEXT,
++    name TEXT NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO users (id, email, name, created_at)
++SELECT id, email, name, created_at
++FROM users__rollback_source;
++
++DROP TABLE users__rollback_source;
++
++COMMIT;
++
++PRAGMA foreign_keys = ON;

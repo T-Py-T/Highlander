@@ -1,0 +1,411 @@
+import json
+import sys
+from copy import deepcopy
+from dataclasses import dataclass
+from pathlib import Path
+
+
+AUDIT_PATH = Path(__file__).with_name("conversion_audit.json")
+PII_KEYS = {
+    "ssn",
+    "credit_card",
+    "card_number",
+    "cvv",
+    "phone_number",
+    "passport_number",
+}
+LEGACY_TOP_LEVEL_KEYS = {
+    "id",
+    "customer_id",
+    "customer_name",
+    "items",
+    "ship_to",
+    "shipping_method",
+    "shipping",
+    "order_ref",
+    "customer",
+    "lines",
+    "shipTo",
+}
+V2_TOP_LEVEL_KEYS = {"orderId", "buyer", "lineItems", "shipping", "metadata"}
+
+
+class ConversionError(ValueError):
+    def __init__(self, path, message):
+        super().__init__(message)
+        self.path = path
+
+
+@dataclass
+class ConversionStats:
+    pii_dropped_count: int = 0
+    unknown_fields_count: int = 0
+
+
+class ConversionResult:
+    def __init__(self, converted, errors, warnings):
+        self.converted = converted
+        self.errors = errors
+        self.warnings = warnings
+
+    def __iter__(self):
+        yield self.converted
+        yield self.errors
+
+    def __getitem__(self, index):
+        if index == 0:
+            return self.converted
+        if index == 1:
+            return self.errors
+        if index == 2:
+            return self.warnings
+        raise IndexError(index)
+
+    def __len__(self):
+        return 3
+
+
+def _fail(path, message):
+    raise ConversionError(path, message)
+
+
+def _require_mapping(mapping, key, path):
+    value = mapping.get(key) if isinstance(mapping, dict) else None
+    if value is None or value == "":
+        _fail(path, f"missing required field: {path}")
+    return value
+
+
+def _coerce_int(value, path):
+    if isinstance(value, bool):
+        _fail(path, f"invalid integer value at {path}")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str) and value.strip():
+        try:
+            return int(value)
+        except ValueError as exc:
+            raise ConversionError(path, f"invalid integer value at {path}") from exc
+    _fail(path, f"missing required field: {path}")
+
+
+def _normalize_shipping_method(value):
+    if value is None:
+        return "standard"
+    if isinstance(value, str) and value.strip() == "":
+        return "standard"
+    return value
+
+
+def _is_pii_key(key):
+    lowered = str(key).lower()
+    return lowered in PII_KEYS or "credit" in lowered or lowered.endswith("_ssn")
+
+
+def _record_unknown_field(container, key, value, stats):
+    if _is_pii_key(key):
+        stats.pii_dropped_count += 1
+        return False
+    container[key] = deepcopy(value)
+    stats.unknown_fields_count += 1
+    return True
+
+
+def _is_v2_payload(payload):
+    if not isinstance(payload, dict):
+        return False
+    if "orderId" in payload:
+        return True
+    legacy_markers = {
+        "id",
+        "order_ref",
+        "customer_id",
+        "customer_name",
+        "customer",
+        "items",
+        "lines",
+        "ship_to",
+        "shipTo",
+    }
+    if legacy_markers.intersection(payload.keys()):
+        return False
+    return {"buyer", "lineItems"}.issubset(payload.keys())
+
+
+def _line_items_from_legacy(items, path):
+    if not isinstance(items, list) or not items:
+        _fail(path, f"missing or empty field: {path}")
+
+    converted = []
+    for index, item in enumerate(items):
+        if not isinstance(item, dict):
+            _fail(f"{path}[{index}]", f"invalid line item at {path}[{index}]")
+        sku = _require_mapping(item, "sku", f"{path}[{index}].sku")
+        qty = _coerce_int(item.get("qty"), f"{path}[{index}].qty")
+        price_key = "price_cents" if "price_cents" in item else "unit_price_cents"
+        unit_price = _coerce_int(item.get(price_key), f"{path}[{index}].{price_key}")
+        converted.append(
+            {
+                "sku": sku,
+                "quantity": qty,
+                "unitPriceCents": unit_price,
+            }
+        )
+    return converted
+
+
+def _normalize_v2_line_items(items):
+    if not isinstance(items, list) or not items:
+        _fail("lineItems", "missing or empty field: lineItems")
+
+    normalized = []
+    for index, item in enumerate(items):
+        if not isinstance(item, dict):
+            _fail(f"lineItems[{index}]", f"invalid line item at lineItems[{index}]")
+        sku = _require_mapping(item, "sku", f"lineItems[{index}].sku")
+        quantity = _coerce_int(item.get("quantity"), f"lineItems[{index}].quantity")
+        unit_price = _coerce_int(item.get("unitPriceCents"), f"lineItems[{index}].unitPriceCents")
+        normalized_item = deepcopy(item)
+        normalized_item["sku"] = sku
+        normalized_item["quantity"] = quantity
+        normalized_item["unitPriceCents"] = unit_price
+        normalized.append(normalized_item)
+    return normalized
+
+
+def _shipping_from_legacy(payload):
+    if "shipTo" in payload:
+        ship = payload.get("shipTo")
+        postal_value = None
+        if isinstance(ship, dict):
+            postal_value = ship.get("postal_code")
+            if postal_value in (None, ""):
+                postal_value = ship.get("postalCode")
+            if postal_value in (None, ""):
+                postal_value = ship.get("postal")
+    else:
+        ship = payload.get("ship_to")
+        postal_value = None
+        if isinstance(ship, dict):
+            postal_value = ship.get("postal")
+            if postal_value in (None, ""):
+                postal_value = ship.get("postalCode")
+            if postal_value in (None, ""):
+                postal_value = ship.get("postal_code")
+
+    if not isinstance(ship, dict):
+        _fail("ship_to", "missing required field: ship_to")
+
+    country = _require_mapping(ship, "country", "ship_to.country")
+    if postal_value in (None, ""):
+        _fail("ship_to.postal", "missing required field: ship_to.postal")
+
+    method = payload.get("shipping_method", payload.get("shipping"))
+    return {
+        "method": _normalize_shipping_method(method),
+        "address": {
+            "country": country,
+            "postalCode": postal_value,
+        },
+    }
+
+
+def _merge_metadata_unknown_fields(metadata, stats):
+    unknown = {}
+    warnings = []
+    if not isinstance(metadata, dict):
+        return unknown, warnings
+
+    existing_unknown = metadata.get("unknownFields")
+    if isinstance(existing_unknown, dict):
+        for key, value in existing_unknown.items():
+            unknown[key] = deepcopy(value)
+            stats.unknown_fields_count += 1
+
+    for key, value in metadata.items():
+        if key in {"source", "unknownFields"}:
+            continue
+        kept = _record_unknown_field(unknown, key, value, stats)
+        if not kept:
+            warnings.append({"path": f"metadata.{key}", "warning": f"dropped PII field: {key}"})
+    return unknown, warnings
+
+
+def _convert_v2(payload, stats):
+    order_id = _require_mapping(payload, "orderId", "orderId")
+    buyer = payload.get("buyer")
+    if not isinstance(buyer, dict):
+        _fail("buyer", "missing required field: buyer")
+    shipping = payload.get("shipping")
+    if not isinstance(shipping, dict):
+        _fail("shipping", "missing required field: shipping")
+    address = shipping.get("address")
+    if not isinstance(address, dict):
+        _fail("shipping.address", "missing required field: shipping.address")
+
+    payload_metadata = payload.get("metadata")
+    unknown_fields, warnings = _merge_metadata_unknown_fields(payload_metadata, stats)
+    source = payload_metadata.get("source") if isinstance(payload_metadata, dict) else None
+    metadata = {"source": source or "public-v2"}
+    if unknown_fields:
+        metadata["unknownFields"] = unknown_fields
+
+    converted = {
+        "orderId": order_id,
+        "buyer": {
+            "id": _require_mapping(buyer, "id", "buyer.id"),
+            "displayName": _require_mapping(buyer, "displayName", "buyer.displayName"),
+        },
+        "lineItems": _normalize_v2_line_items(payload.get("lineItems")),
+        "shipping": {
+            "method": _normalize_shipping_method(shipping.get("method")),
+            "address": {
+                "country": _require_mapping(address, "country", "shipping.address.country"),
+                "postalCode": _require_mapping(address, "postalCode", "shipping.address.postalCode"),
+            },
+        },
+        "metadata": metadata,
+    }
+    return converted, warnings
+
+
+def _convert_legacy(payload, stats):
+    is_v12 = "order_ref" in payload or "customer" in payload or "lines" in payload or "shipTo" in payload
+    is_v11 = not is_v12 and (
+        "shipping" in payload
+        or (
+            isinstance(payload.get("ship_to"), dict)
+            and "postalCode" in payload.get("ship_to", {})
+        )
+    )
+    order_id = payload.get("order_ref") if is_v12 else payload.get("id")
+    if order_id in (None, ""):
+        _fail("order_ref" if is_v12 else "id", "missing required field: order id")
+
+    customer = payload.get("customer") if is_v12 else None
+    customer_id = customer.get("id") if isinstance(customer, dict) else payload.get("customer_id")
+    customer_name = customer.get("name") if isinstance(customer, dict) else payload.get("customer_name")
+    if customer_id in (None, ""):
+        _fail("customer.id" if is_v12 else "customer_id", "missing required field: customer_id")
+    if customer_name in (None, ""):
+        _fail("customer.name" if is_v12 else "customer_name", "missing required field: customer_name")
+
+    line_source = payload.get("lines") if is_v12 and "lines" in payload else payload.get("items")
+    line_path = "lines" if is_v12 and "lines" in payload else "items"
+    line_items = _line_items_from_legacy(line_source, line_path)
+    shipping = _shipping_from_legacy(payload)
+
+    metadata = {"source": "legacy-v1.2" if is_v12 else "legacy-v1.1" if is_v11 else "legacy-v1"}
+    unknown_fields = {}
+    warnings = []
+    for key, value in payload.items():
+        if key in LEGACY_TOP_LEVEL_KEYS:
+            continue
+        kept = _record_unknown_field(unknown_fields, key, value, stats)
+        if not kept:
+            warnings.append({"path": key, "warning": f"dropped PII field: {key}"})
+    if unknown_fields:
+        metadata["unknownFields"] = unknown_fields
+
+    converted = {
+        "orderId": order_id,
+        "buyer": {"id": customer_id, "displayName": customer_name},
+        "lineItems": line_items,
+        "shipping": shipping,
+        "metadata": metadata,
+    }
+    return converted, warnings
+
+
+def convert_order(payload):
+    """Convert a supported legacy or v2 order payload to the v2 public API shape."""
+    if not isinstance(payload, dict):
+        _fail("payload", "payload must be an object")
+
+    stats = ConversionStats()
+    if _is_v2_payload(payload):
+        converted, _warnings = _convert_v2(payload, stats)
+    else:
+        converted, _warnings = _convert_legacy(payload, stats)
+    return converted
+
+
+def summarize_order(v2_payload):
+    return f"{v2_payload['orderId']}:{len(v2_payload['lineItems'])}"
+
+
+def _write_audit(converted_count, error_count, warning_count, pii_dropped_count, unknown_fields_count):
+    AUDIT_PATH.write_text(
+        json.dumps(
+            {
+                "converted_count": converted_count,
+                "error_count": error_count,
+                "warning_count": warning_count,
+                "pii_dropped_count": pii_dropped_count,
+                "unknown_fields_count": unknown_fields_count,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    )
+
+
+def convert_many(payloads):
+    converted = []
+    errors = []
+    warnings = []
+    stats = ConversionStats()
+
+    for index, payload in enumerate(payloads):
+        try:
+            if not isinstance(payload, dict):
+                _fail("payload", "payload must be an object")
+            if _is_v2_payload(payload):
+                result, item_warnings = _convert_v2(payload, stats)
+            else:
+                result, item_warnings = _convert_legacy(payload, stats)
+            converted.append(result)
+            for warning in item_warnings:
+                warnings.append({"index": index, **warning})
+        except ConversionError as exc:
+            errors.append({"index": index, "path": exc.path, "error": str(exc)})
+
+    _write_audit(
+        converted_count=len(converted),
+        error_count=len(errors),
+        warning_count=len(warnings),
+        pii_dropped_count=stats.pii_dropped_count,
+        unknown_fields_count=stats.unknown_fields_count,
+    )
+    return ConversionResult(converted, errors, warnings)
+
+
+def _read_jsonl(path):
+    payloads = []
+    with open(path, "r", encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            stripped = line.strip()
+            if not stripped:
+                continue
+            try:
+                payloads.append(json.loads(stripped))
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"invalid JSON on line {line_number}") from exc
+    return payloads
+
+
+def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if len(argv) != 2:
+        raise SystemExit("usage: python -m client input.jsonl output.json")
+
+    payloads = _read_jsonl(argv[0])
+    result = convert_many(payloads)
+    with open(argv[1], "w", encoding="utf-8") as handle:
+        json.dump(result.converted, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+
+
+if __name__ == "__main__":
+    main()

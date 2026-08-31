@@ -1,0 +1,16 @@
+{
+  "api_calls": 1,
+  "available": true,
+  "cache_read_tokens": null,
+  "cache_write_tokens": null,
+  "cost_status": "native_report_says_no_cost_source",
+  "cost_usd": null,
+  "cross_harness_comparability": "not comparable; native accounting semantics differ",
+  "input_tokens": null,
+  "models": [],
+  "output_tokens": null,
+  "providers": [],
+  "reasoning_tokens": null,
+  "source": "hermes_native_usage_file",
+  "total_tokens": null
+}

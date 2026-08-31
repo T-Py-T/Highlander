@@ -1,0 +1,80 @@
+{
+  "artifact_path": "trials/012-039-repo-architecture-map-atomic-a02-r01",
+  "artifacts": {
+    "diff": "trials/012-039-repo-architecture-map-atomic-a02-r01/diff.patch",
+    "native": "trials/012-039-repo-architecture-map-atomic-a02-r01/native",
+    "upstream_result": "trials/012-039-repo-architecture-map-atomic-a02-r01/upstream-result.json",
+    "workspace": "trials/012-039-repo-architecture-map-atomic-a02-r01/workspace-final"
+  },
+  "attempt": 2,
+  "combined_score": null,
+  "control_proof": {
+    "configured_model_id": "gpt-5.6-luna",
+    "configured_provider_id": "openai-codex",
+    "configured_reasoning": "medium",
+    "configured_verified": true,
+    "fallback_policy": "forbidden",
+    "observed": {
+      "endpoint_or_deployment": null,
+      "model": "gpt-5.6-luna",
+      "provider": "openai-codex",
+      "reasoning": null,
+      "region": null,
+      "upstream_id": null
+    },
+    "provider_wire_verified": false,
+    "qualification_boundary": "configured route retained; exact wire identity not exposed by native output",
+    "runtime_conflict": false,
+    "runtime_conflicts": {},
+    "runtime_observation_available": true,
+    "runtime_verified": false,
+    "schema_version": 2
+  },
+  "elapsed_seconds": 37.663,
+  "harness_id": "atomic",
+  "intervention_count": 0,
+  "invalid_reason": null,
+  "outcome_score": 0.12,
+  "outer_elapsed_seconds": 38.202,
+  "process_observations": {
+    "combined_score": null,
+    "cross_harness_comparability": "limited by native event semantics",
+    "elapsed_seconds": 37.663,
+    "native_event_count": 484,
+    "native_observability": "event_stream",
+    "operator_interventions": 0,
+    "process_score": null,
+    "status": "observed_not_scored",
+    "tool_invocation_count": 13
+  },
+  "process_score": null,
+  "process_status": "not_evaluated",
+  "protocol_sha256": "c0033d61cc3bdc1c30716c3edf6cf8d815f5b96fe17229491c74b1f178fe37df",
+  "qualification": "valid",
+  "retry": 1,
+  "run_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4-039-repo-architecture-map-atomic-a02-r01",
+  "schema_version": 1,
+  "season_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4",
+  "sequence": 12,
+  "task_id": "039-repo-architecture-map",
+  "usage_normalized": {
+    "api_calls": 6,
+    "available": true,
+    "cache_read_tokens": 73216,
+    "cache_write_tokens": 0,
+    "cost_status": "harness_estimate_not_subscription_comparable",
+    "cost_usd": 0.00659392,
+    "cross_harness_comparability": "not comparable; native accounting semantics differ",
+    "input_tokens": 20086,
+    "models": [
+      "gpt-5.6-luna"
+    ],
+    "output_tokens": 927,
+    "providers": [
+      "openai-codex"
+    ],
+    "reasoning_tokens": 0,
+    "source": "omp_assistant_message_end",
+    "total_tokens": 94229
+  }
+}

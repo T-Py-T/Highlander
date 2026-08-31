@@ -1,0 +1,36 @@
+Done.
+
+Updated:
+- /workspace/in/schema_migration/client.py
+
+What changed:
+- Added full legacy v1/v1.1/v1.2 -> v2 conversion
+- Added v2 passthrough/idempotent handling
+- Normalized blank/null shipping methods to "standard"
+- Supported:
+  - customer_id / customer_name
+  - nested customer.id / customer.name
+  - items and lines
+  - ship_to.postal, ship_to.postalCode, shipTo.postal_code
+  - price_cents and unit_price_cents
+- Preserved unknown fields under metadata.unknownFields
+- Dropped obvious PII keys from unknown field preservation
+- Added convert_many(payloads) with aggregated errors and warnings
+- Added conversion_audit.json writing next to client.py
+- Added CLI support: python -m client input.jsonl output.json
+
+Verification:
+- Tests passed with:
+  - uv run --with pytest python -m pytest /workspace/in/schema_migration/tests
+- Result:
+  - 5 passed in 0.01s
+
+CLI verified:
+- Ran:
+  - python3 -m client /workspace/in/schema_migration/sample_payloads.jsonl /workspace/in/schema_migration/output_module.json
+- Confirmed both were written:
+  - /workspace/in/schema_migration/output_module.json
+  - /workspace/in/schema_migration/conversion_audit.json
+
+Note:
+- The Mac-style source path you gave was not directly accessible in this Linux runtime, so I worked on the corresponding mounted project at /workspace/in/schema_migration.

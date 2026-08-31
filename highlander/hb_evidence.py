@@ -13,6 +13,8 @@ import subprocess
 from pathlib import Path
 from typing import Any, Iterable
 
+from .season import aggregate_season, leaderboard_markdown
+
 
 class PilotEvidenceError(RuntimeError):
     """Pilot evidence cannot be exported without weakening its claims."""
@@ -27,6 +29,17 @@ _SECRET_PATTERNS = {
         rb'"(?:access_token|refresh_token|id_token)"\s*:\s*"[^"\\]{8,}"',
         re.I,
     ),
+}
+_PROVIDER_ENCRYPTED_FIELD = re.compile(
+    r'(?P<prefix>\\*"(?:encrypted_content|encryptedContent)\\*"\s*:\s*\\*")'
+    r'(?P<value>[^"\\]+)(?P<suffix>\\*")'
+)
+_PROVIDER_ENCRYPTED_REDACTION = "<PROVIDER_ENCRYPTED_PAYLOAD_REDACTED>"
+_GENERATED_CACHE_PARTS = {
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
 }
 
 
@@ -68,8 +81,17 @@ def export_pilot_bundle(
         raise PilotEvidenceError(f"stale temporary export exists: {temporary}")
     temporary.mkdir(parents=True)
     counts = {placeholder: 0 for _, placeholder in replacements}
+    counts[_PROVIDER_ENCRYPTED_REDACTION] = 0
+    omitted_generated_cache_artifacts = 0
+    omitted_worktree_vcs_artifacts = 0
     try:
         for relative in source_artifacts:
+            if _is_generated_cache_artifact(relative):
+                omitted_generated_cache_artifacts += 1
+                continue
+            if _is_worktree_vcs_artifact(relative):
+                omitted_worktree_vcs_artifacts += 1
+                continue
             source_path = source_root / relative
             destination_path = temporary / relative
             destination_path.parent.mkdir(parents=True, exist_ok=True)
@@ -210,6 +232,11 @@ def export_pilot_bundle(
                 ],
                 "secret_patterns_checked": sorted(_SECRET_PATTERNS),
                 "native_transcripts_exported": True,
+                "provider_encrypted_payloads_redacted": counts[
+                    _PROVIDER_ENCRYPTED_REDACTION
+                ],
+                "generated_cache_artifacts_omitted": omitted_generated_cache_artifacts,
+                "worktree_vcs_artifacts_omitted": omitted_worktree_vcs_artifacts,
                 "credential_values_exported": False,
                 "private_raw_source_retained": True,
             },
@@ -264,6 +291,234 @@ def verify_pilot_bundle(bundle: str | Path) -> dict[str, Any]:
     }
 
 
+def export_season_bundle(
+    source: str | Path,
+    destination: str | Path,
+    runner_repository: str | Path,
+) -> dict[str, Any]:
+    """Create an immutable, path-redacted public copy of a scored season."""
+
+    source_supplied = Path(source).expanduser().absolute()
+    source_root = source_supplied.resolve()
+    destination_root = Path(destination).expanduser().resolve()
+    runner_supplied = Path(runner_repository).expanduser().absolute()
+    runner_root = runner_supplied.resolve()
+    if not source_root.is_dir():
+        raise PilotEvidenceError(f"source season does not exist: {source_root}")
+    if destination_root.exists():
+        raise PilotEvidenceError(
+            f"destination already exists; season exports are immutable: {destination_root}"
+        )
+    if destination_root == source_root or source_root in destination_root.parents:
+        raise PilotEvidenceError("destination cannot be inside the private source")
+
+    source_manifest_path = source_root / "artifact-manifest.json"
+    source_artifacts = _verify_private_manifest(
+        source_root, _load_json(source_manifest_path, "source manifest")
+    )
+    protocol = _load_json(source_root / "protocol.json", "season protocol")
+    manifest = _load_json(source_root / "season-manifest.json", "season manifest")
+    first_summary = _load_json(source_root / "summary.json", "first-pass summary")
+    runner = _runner_provenance(runner_root)
+    replacements = _redaction_roots(
+        source_supplied, source_root, runner_supplied, runner_root
+    )
+    temporary = destination_root.with_name(destination_root.name + ".exporting")
+    if temporary.exists():
+        raise PilotEvidenceError(f"stale temporary export exists: {temporary}")
+    temporary.mkdir(parents=True)
+    counts = {placeholder: 0 for _, placeholder in replacements}
+    counts[_PROVIDER_ENCRYPTED_REDACTION] = 0
+    omitted_generated_cache_artifacts = 0
+    omitted_worktree_vcs_artifacts = 0
+    try:
+        for relative in source_artifacts:
+            if _is_generated_cache_artifact(relative):
+                omitted_generated_cache_artifacts += 1
+                continue
+            if _is_worktree_vcs_artifact(relative):
+                omitted_worktree_vcs_artifacts += 1
+                continue
+            source_path = source_root / relative
+            destination_path = temporary / relative
+            destination_path.parent.mkdir(parents=True, exist_ok=True)
+            sanitized, observed = _sanitize_bytes(source_path.read_bytes(), replacements)
+            _reject_secret_material(relative, sanitized)
+            destination_path.write_bytes(sanitized)
+            for placeholder, count in observed.items():
+                counts[placeholder] += count
+
+        shutil.copy2(temporary / "summary.json", temporary / "summary.runner-first-pass.json")
+        if (temporary / "leaderboard.md").is_file():
+            shutil.copy2(
+                temporary / "leaderboard.md",
+                temporary / "leaderboard.runner-first-pass.md",
+            )
+        rows: list[dict[str, Any]] = []
+        for result_path in sorted((temporary / "trials").glob("*/result.json")):
+            row = _load_json(result_path, "season trial result")
+            native_dir = result_path.parent / "native"
+            if (
+                (native_dir / "stdout.raw").is_file()
+                and (native_dir / "execution.json").is_file()
+            ):
+                process, ledger = _normalize_process(row["harness_id"], native_dir)
+                usage = _normalize_usage(row["harness_id"], native_dir)
+            else:
+                process = {
+                    "status": "unavailable",
+                    "native_observability": "no_native_execution",
+                    "native_event_count": None,
+                    "tool_invocation_count": None,
+                    "elapsed_seconds": row.get("elapsed_seconds"),
+                    "operator_interventions": row.get("intervention_count", 0),
+                    "process_score": None,
+                    "combined_score": None,
+                    "cross_harness_comparability": "not available",
+                }
+                usage = {
+                    "available": False,
+                    "source": None,
+                    "cross_harness_comparability": "not available",
+                }
+                ledger = []
+            row["process_observations"] = process
+            row["usage_normalized"] = usage
+            row["process_score"] = None
+            row["combined_score"] = None
+            _write_json(result_path, row)
+            process_dir = result_path.parent / "process"
+            process_dir.mkdir(exist_ok=True)
+            _write_json(process_dir / "observations.json", process)
+            with (process_dir / "tool-invocations.jsonl").open(
+                "w", encoding="utf-8"
+            ) as handle:
+                for event in ledger:
+                    handle.write(json.dumps(event, sort_keys=True) + "\n")
+            _write_json(result_path.parent / "usage-normalized.json", usage)
+            _write_public_manifest(result_path.parent)
+            rows.append(row)
+
+        summary = aggregate_season(manifest, rows)
+        summary.update(
+            {
+                "protocol_id": protocol["protocol_id"],
+                "protocol_sha256": first_summary.get("protocol_sha256"),
+                "completed_at": first_summary.get("updated_at"),
+                "exported_at": _utc_now(),
+                "claim_boundary": protocol["claim_boundary"],
+                "process_score": None,
+                "combined_score": None,
+                "trial_rows": rows,
+            }
+        )
+        _write_json(temporary / "summary.json", summary)
+        with (temporary / "results.jsonl").open("w", encoding="utf-8") as handle:
+            for row in sorted(rows, key=lambda item: (int(item["sequence"]), int(item.get("retry", 1)))):
+                handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+        leaderboard = {key: value for key, value in summary.items() if key != "trial_rows"}
+        _write_json(temporary / "leaderboard.json", leaderboard)
+        (temporary / "leaderboard.md").write_text(
+            leaderboard_markdown(summary), encoding="utf-8"
+        )
+        _write_json(
+            temporary / "runner-provenance.json",
+            {
+                "schema_version": 1,
+                "runner": runner,
+                "protocol_id": protocol["protocol_id"],
+                "protocol_sha256": first_summary.get("protocol_sha256"),
+                "source_artifact_manifest_sha256": _sha256(
+                    source_manifest_path.read_bytes()
+                ),
+                "normalization": {
+                    "process_score": None,
+                    "combined_score": None,
+                    "tool_counts": "native invocation starts where observable",
+                    "usage": "native reports; accounting is not cross-harness comparable",
+                },
+            },
+        )
+        _write_json(
+            temporary / "redaction-report.json",
+            {
+                "schema_version": 1,
+                "method": "exact-root replacement plus high-confidence secret scan",
+                "replacements": [
+                    {"placeholder": placeholder, "occurrences": counts[placeholder]}
+                    for _, placeholder in replacements
+                ],
+                "secret_patterns_checked": sorted(_SECRET_PATTERNS),
+                "native_transcripts_exported": True,
+                "provider_encrypted_payloads_redacted": counts[
+                    _PROVIDER_ENCRYPTED_REDACTION
+                ],
+                "generated_cache_artifacts_omitted": omitted_generated_cache_artifacts,
+                "worktree_vcs_artifacts_omitted": omitted_worktree_vcs_artifacts,
+                "credential_values_exported": False,
+                "private_raw_source_retained": True,
+            },
+        )
+        for path in _files_below(temporary):
+            raw = path.read_bytes()
+            _reject_secret_material(path.relative_to(temporary), raw)
+            for root_value, _ in replacements:
+                if root_value.encode("utf-8") in raw:
+                    raise PilotEvidenceError(
+                        f"redaction root remains in {path.relative_to(temporary)}"
+                    )
+        _write_public_manifest(temporary)
+        destination_root.parent.mkdir(parents=True, exist_ok=True)
+        os.replace(temporary, destination_root)
+    except BaseException:
+        shutil.rmtree(temporary, ignore_errors=True)
+        raise
+    return verify_season_bundle(destination_root)
+
+
+def verify_season_bundle(bundle: str | Path) -> dict[str, Any]:
+    """Verify membership, hashes, deterministic aggregation, and score boundaries."""
+
+    root = Path(bundle).expanduser().resolve()
+    artifacts = _verify_public_manifest(
+        root, _load_json(root / "artifact-manifest.json", "public manifest")
+    )
+    actual = {
+        path.relative_to(root).as_posix()
+        for path in _files_below(root)
+        if path.name != "artifact-manifest.json"
+    }
+    expected = {path.as_posix() for path in artifacts}
+    if actual != expected:
+        raise PilotEvidenceError(
+            f"public membership mismatch: extra={sorted(actual - expected)}, "
+            f"missing={sorted(expected - actual)}"
+        )
+    for nested in (root / "trials").glob("*/artifact-manifest.json"):
+        _verify_public_manifest(nested.parent, _load_json(nested, "trial manifest"))
+    manifest = _load_json(root / "season-manifest.json", "season manifest")
+    rows = [
+        json.loads(line)
+        for line in (root / "results.jsonl").read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    for row in rows:
+        if row.get("process_score") is not None or row.get("combined_score") is not None:
+            raise PilotEvidenceError("unevaluated process and combined scores must be null")
+    observed = aggregate_season(manifest, rows)
+    published = _load_json(root / "leaderboard.json", "season leaderboard")
+    for key in ("season_id", "pack_id", "status", "ranking_contract", "contenders"):
+        if published.get(key) != observed.get(key):
+            raise PilotEvidenceError(f"published leaderboard drifted at {key}")
+    return {
+        "status": "verified",
+        "bundle": str(root),
+        "artifact_count": len(artifacts),
+        "manifest_sha256": _sha256((root / "artifact-manifest.json").read_bytes()),
+        "season_status": observed["status"],
+    }
+
+
 def _normalize_process(
     harness_id: str, native_dir: Path
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
@@ -306,7 +561,7 @@ def _tool_invocation(
 ) -> dict[str, Any] | None:
     event_type = str(row.get("type", ""))
     tool_kind: Any = None
-    if harness_id == "omp" and event_type == "tool_execution_start":
+    if harness_id in {"omp", "atomic"} and event_type == "tool_execution_start":
         tool_kind = row.get("toolName") or row.get("tool_name") or "tool"
     elif harness_id == "opencode" and event_type == "tool_use":
         part = row.get("part")
@@ -424,6 +679,8 @@ def _normalize_usage(harness_id: str, native_dir: Path) -> dict[str, Any]:
             "cost_usd": round(sum(costs), 8) if costs else None,
             "cost_status": "native_value_not_subscription_comparable",
         }
+    if harness_id not in {"omp", "atomic"}:
+        return base
     usage_rows = []
     models: set[str] = set()
     providers: set[str] = set()
@@ -656,7 +913,27 @@ def _sanitize_bytes(
         if count:
             text = text.replace(value, placeholder)
         counts[placeholder] = count
+    text, encrypted_count = _PROVIDER_ENCRYPTED_FIELD.subn(
+        lambda match: (
+            match.group("prefix")
+            + _PROVIDER_ENCRYPTED_REDACTION
+            + match.group("suffix")
+        ),
+        text,
+    )
+    counts[_PROVIDER_ENCRYPTED_REDACTION] = encrypted_count
     return text.encode("utf-8"), counts
+
+
+def _is_generated_cache_artifact(relative: Path) -> bool:
+    return (
+        relative.suffix == ".pyc"
+        or bool(_GENERATED_CACHE_PARTS.intersection(relative.parts))
+    )
+
+
+def _is_worktree_vcs_artifact(relative: Path) -> bool:
+    return ".git" in relative.parts
 
 
 def _reject_secret_material(path: Path, raw: bytes) -> None:

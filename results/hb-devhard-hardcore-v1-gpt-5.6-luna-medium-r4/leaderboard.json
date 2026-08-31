@@ -1,0 +1,532 @@
+{
+  "claim_boundary": "HarnessBench outcome comparison under frozen configured subscription routes. Native runtime and wire identity are reported when exposed; absence of wire proof is not represented as proof. NanoBot is a version-pinned temporal proxy.",
+  "combined_score": null,
+  "completed_at": "2026-08-31T12:53:44.218954Z",
+  "contenders": [
+    {
+      "complete": true,
+      "expected_valid_result_count": 27,
+      "harness_id": "omp",
+      "invalid_attempt_count": 0,
+      "metrics": {
+        "attempt_score_stddev": 0.103073,
+        "best_outcome": 0.929444,
+        "full_credit_rate": 0.222222,
+        "intervention_count": 0,
+        "mean_outcome": 0.902626,
+        "mean_within_task_range": 0.047289,
+        "median_elapsed_seconds": 128.15,
+        "median_outcome": 0.9452,
+        "overall_outcome": 0.902626,
+        "per_task_worst_outcome": 0.882156,
+        "zero_score_rate": 0.0
+      },
+      "missing_valid_slots": [],
+      "per_task": {
+        "039-repo-architecture-map": {
+          "best": 0.9588,
+          "mean": 0.9321,
+          "valid_attempts": 3,
+          "worst": 0.8923
+        },
+        "042-api-schema-migration": {
+          "best": 0.74,
+          "mean": 0.7399999999999999,
+          "valid_attempts": 3,
+          "worst": 0.74
+        },
+        "043-db-migration-safety": {
+          "best": 0.987,
+          "mean": 0.967,
+          "valid_attempts": 3,
+          "worst": 0.927
+        },
+        "064-service-dependency-triage": {
+          "best": 0.8222,
+          "mean": 0.8222,
+          "valid_attempts": 3,
+          "worst": 0.8222
+        },
+        "082-compose-config-repair": {
+          "best": 0.99,
+          "mean": 0.9899999999999999,
+          "valid_attempts": 3,
+          "worst": 0.99
+        },
+        "083-monorepo-interface-repair": {
+          "best": 1.0,
+          "mean": 1.0,
+          "valid_attempts": 3,
+          "worst": 1.0
+        },
+        "085-flaky-test-root-cause": {
+          "best": 1.0,
+          "mean": 1.0,
+          "valid_attempts": 3,
+          "worst": 1.0
+        },
+        "086-sql-migration-preflight-rollback": {
+          "best": 0.9706,
+          "mean": 0.7902,
+          "valid_attempts": 3,
+          "worst": 0.7
+        },
+        "087-cli-parser-bug-tests": {
+          "best": 0.8964,
+          "mean": 0.8821333333333333,
+          "valid_attempts": 3,
+          "worst": 0.8679
+        }
+      },
+      "rank": 1,
+      "ranking_eligible": true,
+      "valid_result_count": 27
+    },
+    {
+      "complete": true,
+      "expected_valid_result_count": 27,
+      "harness_id": "hermes",
+      "invalid_attempt_count": 0,
+      "metrics": {
+        "attempt_score_stddev": 0.108384,
+        "best_outcome": 0.902467,
+        "full_credit_rate": 0.222222,
+        "intervention_count": 0,
+        "mean_outcome": 0.895978,
+        "mean_within_task_range": 0.014678,
+        "median_elapsed_seconds": 128.112,
+        "median_outcome": 0.9288,
+        "overall_outcome": 0.895978,
+        "per_task_worst_outcome": 0.887789,
+        "zero_score_rate": 0.0
+      },
+      "missing_valid_slots": [],
+      "per_task": {
+        "039-repo-architecture-map": {
+          "best": 0.9573,
+          "mean": 0.9429666666666666,
+          "valid_attempts": 3,
+          "worst": 0.9288
+        },
+        "042-api-schema-migration": {
+          "best": 0.74,
+          "mean": 0.7399999999999999,
+          "valid_attempts": 3,
+          "worst": 0.74
+        },
+        "043-db-migration-safety": {
+          "best": 0.987,
+          "mean": 0.967,
+          "valid_attempts": 3,
+          "worst": 0.927
+        },
+        "064-service-dependency-triage": {
+          "best": 0.8372,
+          "mean": 0.8321999999999999,
+          "valid_attempts": 3,
+          "worst": 0.8222
+        },
+        "082-compose-config-repair": {
+          "best": 0.99,
+          "mean": 0.9899999999999999,
+          "valid_attempts": 3,
+          "worst": 0.99
+        },
+        "083-monorepo-interface-repair": {
+          "best": 1.0,
+          "mean": 1.0,
+          "valid_attempts": 3,
+          "worst": 1.0
+        },
+        "085-flaky-test-root-cause": {
+          "best": 1.0,
+          "mean": 1.0,
+          "valid_attempts": 3,
+          "worst": 1.0
+        },
+        "086-sql-migration-preflight-rollback": {
+          "best": 0.7,
+          "mean": 0.6999999999999998,
+          "valid_attempts": 3,
+          "worst": 0.7
+        },
+        "087-cli-parser-bug-tests": {
+          "best": 0.9107,
+          "mean": 0.8916333333333334,
+          "valid_attempts": 3,
+          "worst": 0.8821
+        }
+      },
+      "rank": 2,
+      "ranking_eligible": true,
+      "valid_result_count": 27
+    },
+    {
+      "complete": true,
+      "expected_valid_result_count": 27,
+      "harness_id": "opencode",
+      "invalid_attempt_count": 0,
+      "metrics": {
+        "attempt_score_stddev": 0.110472,
+        "best_outcome": 0.896333,
+        "full_credit_rate": 0.222222,
+        "intervention_count": 0,
+        "mean_outcome": 0.894148,
+        "mean_within_task_range": 0.004656,
+        "median_elapsed_seconds": 138.252,
+        "median_outcome": 0.9428,
+        "overall_outcome": 0.894148,
+        "per_task_worst_outcome": 0.891678,
+        "zero_score_rate": 0.0
+      },
+      "missing_valid_slots": [],
+      "per_task": {
+        "039-repo-architecture-map": {
+          "best": 0.9457,
+          "mean": 0.9402666666666667,
+          "valid_attempts": 3,
+          "worst": 0.9323
+        },
+        "042-api-schema-migration": {
+          "best": 0.74,
+          "mean": 0.7399999999999999,
+          "valid_attempts": 3,
+          "worst": 0.74
+        },
+        "043-db-migration-safety": {
+          "best": 0.987,
+          "mean": 0.987,
+          "valid_attempts": 3,
+          "worst": 0.987
+        },
+        "064-service-dependency-triage": {
+          "best": 0.8222,
+          "mean": 0.8222,
+          "valid_attempts": 3,
+          "worst": 0.8222
+        },
+        "082-compose-config-repair": {
+          "best": 0.99,
+          "mean": 0.9899999999999999,
+          "valid_attempts": 3,
+          "worst": 0.99
+        },
+        "083-monorepo-interface-repair": {
+          "best": 1.0,
+          "mean": 1.0,
+          "valid_attempts": 3,
+          "worst": 1.0
+        },
+        "085-flaky-test-root-cause": {
+          "best": 1.0,
+          "mean": 1.0,
+          "valid_attempts": 3,
+          "worst": 1.0
+        },
+        "086-sql-migration-preflight-rollback": {
+          "best": 0.7,
+          "mean": 0.6999999999999998,
+          "valid_attempts": 3,
+          "worst": 0.7
+        },
+        "087-cli-parser-bug-tests": {
+          "best": 0.8821,
+          "mean": 0.8678666666666667,
+          "valid_attempts": 3,
+          "worst": 0.8536
+        }
+      },
+      "rank": 3,
+      "ranking_eligible": true,
+      "valid_result_count": 27
+    },
+    {
+      "complete": true,
+      "expected_valid_result_count": 27,
+      "harness_id": "nanobot",
+      "invalid_attempt_count": 0,
+      "metrics": {
+        "attempt_score_stddev": 0.237512,
+        "best_outcome": 0.271878,
+        "full_credit_rate": 0.0,
+        "intervention_count": 0,
+        "mean_outcome": 0.267304,
+        "mean_within_task_range": 0.007489,
+        "median_elapsed_seconds": 12.14,
+        "median_outcome": 0.1928,
+        "overall_outcome": 0.267304,
+        "per_task_worst_outcome": 0.264389,
+        "zero_score_rate": 0.0
+      },
+      "missing_valid_slots": [],
+      "per_task": {
+        "039-repo-architecture-map": {
+          "best": 0.9457,
+          "mean": 0.9045333333333333,
+          "valid_attempts": 3,
+          "worst": 0.8783
+        },
+        "042-api-schema-migration": {
+          "best": 0.15,
+          "mean": 0.15,
+          "valid_attempts": 3,
+          "worst": 0.15
+        },
+        "043-db-migration-safety": {
+          "best": 0.098,
+          "mean": 0.09800000000000002,
+          "valid_attempts": 3,
+          "worst": 0.098
+        },
+        "064-service-dependency-triage": {
+          "best": 0.06,
+          "mean": 0.06,
+          "valid_attempts": 3,
+          "worst": 0.06
+        },
+        "082-compose-config-repair": {
+          "best": 0.3,
+          "mean": 0.3,
+          "valid_attempts": 3,
+          "worst": 0.3
+        },
+        "083-monorepo-interface-repair": {
+          "best": 0.23,
+          "mean": 0.23,
+          "valid_attempts": 3,
+          "worst": 0.23
+        },
+        "085-flaky-test-root-cause": {
+          "best": 0.1837,
+          "mean": 0.1837,
+          "valid_attempts": 3,
+          "worst": 0.1837
+        },
+        "086-sql-migration-preflight-rollback": {
+          "best": 0.1928,
+          "mean": 0.1928,
+          "valid_attempts": 3,
+          "worst": 0.1928
+        },
+        "087-cli-parser-bug-tests": {
+          "best": 0.2867,
+          "mean": 0.2867,
+          "valid_attempts": 3,
+          "worst": 0.2867
+        }
+      },
+      "rank": 4,
+      "ranking_eligible": true,
+      "valid_result_count": 27
+    },
+    {
+      "complete": true,
+      "expected_valid_result_count": 27,
+      "harness_id": "codex",
+      "invalid_attempt_count": 0,
+      "metrics": {
+        "attempt_score_stddev": 0.077522,
+        "best_outcome": 0.180133,
+        "full_credit_rate": 0.0,
+        "intervention_count": 0,
+        "mean_outcome": 0.180133,
+        "mean_within_task_range": 0.0,
+        "median_elapsed_seconds": 24.85,
+        "median_outcome": 0.1837,
+        "overall_outcome": 0.180133,
+        "per_task_worst_outcome": 0.180133,
+        "zero_score_rate": 0.0
+      },
+      "missing_valid_slots": [],
+      "per_task": {
+        "039-repo-architecture-map": {
+          "best": 0.12,
+          "mean": 0.12,
+          "valid_attempts": 3,
+          "worst": 0.12
+        },
+        "042-api-schema-migration": {
+          "best": 0.15,
+          "mean": 0.15,
+          "valid_attempts": 3,
+          "worst": 0.15
+        },
+        "043-db-migration-safety": {
+          "best": 0.098,
+          "mean": 0.09800000000000002,
+          "valid_attempts": 3,
+          "worst": 0.098
+        },
+        "064-service-dependency-triage": {
+          "best": 0.06,
+          "mean": 0.06,
+          "valid_attempts": 3,
+          "worst": 0.06
+        },
+        "082-compose-config-repair": {
+          "best": 0.3,
+          "mean": 0.3,
+          "valid_attempts": 3,
+          "worst": 0.3
+        },
+        "083-monorepo-interface-repair": {
+          "best": 0.23,
+          "mean": 0.23,
+          "valid_attempts": 3,
+          "worst": 0.23
+        },
+        "085-flaky-test-root-cause": {
+          "best": 0.1837,
+          "mean": 0.1837,
+          "valid_attempts": 3,
+          "worst": 0.1837
+        },
+        "086-sql-migration-preflight-rollback": {
+          "best": 0.1928,
+          "mean": 0.1928,
+          "valid_attempts": 3,
+          "worst": 0.1928
+        },
+        "087-cli-parser-bug-tests": {
+          "best": 0.2867,
+          "mean": 0.2867,
+          "valid_attempts": 3,
+          "worst": 0.2867
+        }
+      },
+      "rank": 5,
+      "ranking_eligible": true,
+      "valid_result_count": 27
+    },
+    {
+      "complete": false,
+      "expected_valid_result_count": 27,
+      "harness_id": "atomic",
+      "invalid_attempt_count": 14,
+      "metrics": {
+        "attempt_score_stddev": 0.220086,
+        "best_outcome": 0.902843,
+        "full_credit_rate": 0.076923,
+        "intervention_count": 0,
+        "mean_outcome": 0.832269,
+        "mean_within_task_range": 0.111329,
+        "median_elapsed_seconds": 114.731,
+        "median_outcome": 0.8843,
+        "overall_outcome": 0.8649,
+        "per_task_worst_outcome": 0.791514,
+        "zero_score_rate": 0.0
+      },
+      "missing_valid_slots": [
+        "042-api-schema-migration/attempt-2",
+        "042-api-schema-migration/attempt-3",
+        "043-db-migration-safety/attempt-1",
+        "086-sql-migration-preflight-rollback/attempt-1",
+        "086-sql-migration-preflight-rollback/attempt-2",
+        "086-sql-migration-preflight-rollback/attempt-3",
+        "083-monorepo-interface-repair/attempt-1",
+        "083-monorepo-interface-repair/attempt-2",
+        "083-monorepo-interface-repair/attempt-3",
+        "085-flaky-test-root-cause/attempt-1",
+        "085-flaky-test-root-cause/attempt-2",
+        "082-compose-config-repair/attempt-1",
+        "082-compose-config-repair/attempt-3",
+        "087-cli-parser-bug-tests/attempt-1"
+      ],
+      "per_task": {
+        "039-repo-architecture-map": {
+          "best": 0.8843,
+          "mean": 0.6237,
+          "valid_attempts": 3,
+          "worst": 0.12
+        },
+        "042-api-schema-migration": {
+          "best": 0.74,
+          "mean": 0.74,
+          "valid_attempts": 1,
+          "worst": 0.74
+        },
+        "043-db-migration-safety": {
+          "best": 0.987,
+          "mean": 0.987,
+          "valid_attempts": 2,
+          "worst": 0.987
+        },
+        "064-service-dependency-triage": {
+          "best": 0.8222,
+          "mean": 0.8172,
+          "valid_attempts": 3,
+          "worst": 0.8072
+        },
+        "082-compose-config-repair": {
+          "best": 0.99,
+          "mean": 0.99,
+          "valid_attempts": 1,
+          "worst": 0.99
+        },
+        "083-monorepo-interface-repair": {
+          "best": null,
+          "mean": null,
+          "valid_attempts": 0,
+          "worst": null
+        },
+        "085-flaky-test-root-cause": {
+          "best": 1.0,
+          "mean": 1.0,
+          "valid_attempts": 1,
+          "worst": 1.0
+        },
+        "086-sql-migration-preflight-rollback": {
+          "best": null,
+          "mean": null,
+          "valid_attempts": 0,
+          "worst": null
+        },
+        "087-cli-parser-bug-tests": {
+          "best": 0.8964,
+          "mean": 0.8964,
+          "valid_attempts": 2,
+          "worst": 0.8964
+        }
+      },
+      "rank": null,
+      "ranking_eligible": false,
+      "valid_result_count": 13
+    }
+  ],
+  "exported_at": "2026-08-31T13:03:40.472441Z",
+  "pack_id": "hb-devhard-hardcore-v1",
+  "process_score": null,
+  "protocol_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4",
+  "protocol_sha256": "c0033d61cc3bdc1c30716c3edf6cf8d815f5b96fe17229491c74b1f178fe37df",
+  "ranking_contract": {
+    "legacy_weighted_scorecard": "forbidden",
+    "outcome_scale": [
+      0.0,
+      1.0
+    ],
+    "primary": "mean_of_per_task_mean_valid_outcome",
+    "primary_label": "overall typical outcome",
+    "process_score": "optional_separate_frozen_judge_lane",
+    "required_views": [
+      "per_task_mean_and_range",
+      "overall_typical_outcome",
+      "best_capability",
+      "median",
+      "per_task_worst",
+      "full_credit_rate",
+      "zero_score_rate",
+      "attempt_dispersion",
+      "invalid_attempts",
+      "elapsed_time",
+      "operator_interventions"
+    ],
+    "tie_breakers": [
+      "mean_of_per_task_best_valid_outcome_desc",
+      "zero_score_rate_asc",
+      "median_elapsed_seconds_asc_when_comparable"
+    ]
+  },
+  "schema_version": 1,
+  "season_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4",
+  "status": "provisional"
+}

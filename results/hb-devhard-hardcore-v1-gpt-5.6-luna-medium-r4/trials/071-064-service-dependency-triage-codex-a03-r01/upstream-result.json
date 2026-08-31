@@ -1,0 +1,120 @@
+{
+  "task_id": "064-service-dependency-triage",
+  "model_id": "codex",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-024926-43ad3153",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-024926-43ad3153/workspace",
+  "session_id": "highlander-codex-064-service-dependency-triage-a3-064-service-dependency-triage-a9f93d18",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-024926-43ad3153/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "codex",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-024926-43ad3153/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-024926-43ad3153/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-024926-43ad3153/highlander-native",
+      "--trial-id",
+      "071-064-service-dependency-triage-codex-a03-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-024926-43ad3153/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "codex",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-024926-43ad3153/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-024926-43ad3153/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-024926-43ad3153/highlander-native",
+        "--trial-id",
+        "071-064-service-dependency-triage-codex-a03-r01"
+      ],
+      "stdout": "Reading additional input from stdin...\n{\"type\":\"thread.started\",\"thread_id\":\"01a05694-8132-74d2-b11c-8e1e21ab91ab\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_0\",\"type\":\"error\",\"message\":\"Code Mode is unavailable because failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: host executable was not found. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.\"}}\n{\"type\":\"turn.started\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_1\",\"type\":\"agent_message\",\"text\":\"I’ll inspect the supplied offline fixtures, reconstruct the dependency path, then write only the two requested output files and validate the JSON/Markdown contents.\"}}\n2026-08-31T06:49:38.914397Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_2\",\"type\":\"agent_message\",\"text\":\"The first filesystem probe hit a local tool-host startup error, so I’m retrying with a simpler read-only probe.\"}}\n2026-08-31T06:49:42.520622Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T06:49:45.319817Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T06:49:48.036614Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T06:49:49.887781Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T06:49:53.079313Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_3\",\"type\":\"agent_message\",\"text\":\"I couldn’t complete the files because the local execution tool is unavailable: its host binary `/usr/local/bin/codex-code-mode-host` is missing. No input files were modified, and no output files were created.\"}}\n{\"type\":\"turn.completed\",\"usage\":{\"input_tokens\":102739,\"cached_input_tokens\":92416,\"cache_write_input_tokens\":0,\"output_tokens\":820,\"reasoning_output_tokens\":287}}\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-codex-064-service-dependency-triage-a3-064-service-dependency-triage-a9f93d18"
+  },
+  "oracle_result": {
+    "task": "064-service-dependency-triage",
+    "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-gpt-5.6-luna-20260831-024926-43ad3153/workspace",
+    "outcome_score": 0.06,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "root_cause_missing",
+        "label": "root_cause.json exists",
+        "pass": false,
+        "weight": 0.74,
+        "detail": "missing"
+      },
+      {
+        "id": "triage_notes_missing",
+        "label": "triage_notes.md exists",
+        "pass": false,
+        "weight": 0.2,
+        "detail": "missing"
+      },
+      {
+        "id": "source_unchanged",
+        "label": "fixtures are not modified",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.06,
+    "oracle_outcome_score": 0.06,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.06,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 29.561
+}

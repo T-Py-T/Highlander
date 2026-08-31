@@ -1,0 +1,166 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 457,
+      "path": "control/app.json",
+      "sha256": "2a9f7be9cc51e1714b35c0357c1dcde35258fb44b759b17285fccef4383f860e"
+    },
+    {
+      "bytes": 714,
+      "path": "control/harness.json",
+      "sha256": "e6ffad5a114d68f279be0e9363a0de693e02340022ed51e6ecffefacbe9fe6b4"
+    },
+    {
+      "bytes": 337,
+      "path": "control/trial.json",
+      "sha256": "1d5aeda592eed20592dbaedb22beb7d5f7dd72ac08fb71e67a0e7fcc06df3cec"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2412,
+      "path": "controller.stdout.raw",
+      "sha256": "8f3ee1eaabc5413c8cd7626d6b7cf2b5b7c448dc272aaae06eb434414d41d348"
+    },
+    {
+      "bytes": 0,
+      "path": "diff.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2176,
+      "path": "native/container-plan.json",
+      "sha256": "391e7759b38ded7ee4cdafaeecf1f798da327fba94861f955dfd73e8ad8e7d15"
+    },
+    {
+      "bytes": 646,
+      "path": "native/control-proof.json",
+      "sha256": "df5123ee4895a63b5607b356f18513f80ce172010b640da2ea8049cddf8b1130"
+    },
+    {
+      "bytes": 2061,
+      "path": "native/execution.json",
+      "sha256": "8fc4b4aa1c8170ec24f32769ac7b7c118db8c7d9dab9a97304dc342f0e1132b8"
+    },
+    {
+      "bytes": 642,
+      "path": "native/invocation.json",
+      "sha256": "c6f4143980a2e1b0c548a52e834dd95ec792021b6c479bf7d99f68d614a8aa7a"
+    },
+    {
+      "bytes": 48,
+      "path": "native/process-metrics.json",
+      "sha256": "b90cd9476b566edc5520aa7c4a8e4aa425594eee985c168909d4c1c439e95a99"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 2222,
+      "path": "native/stdout.raw",
+      "sha256": "46c5e395104fb5eb667a8ba65d5f09044c1a9dd1faed3bbfdc3f7c45e39ff456"
+    },
+    {
+      "bytes": 0,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 317,
+      "path": "process/observations.json",
+      "sha256": "e0f0c7192c708fbff50a8d059e6303654dc34594628fc2a15f6aba193ce5b63e"
+    },
+    {
+      "bytes": 0,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2623,
+      "path": "result.json",
+      "sha256": "0ff57fa8b28914c7a77dd2941cc30cffe2c3e0cfb434c853a59ae6934536d67d"
+    },
+    {
+      "bytes": 7744,
+      "path": "upstream-result.json",
+      "sha256": "29277a8abf49e31ad605392362e4f5c2be7085e3436d7148c649559cd8474302"
+    },
+    {
+      "bytes": 415,
+      "path": "usage-normalized.json",
+      "sha256": "3ccd342484fb00ba8d886687ec0d3902056a3353e5289d64774a54a9725baf0d"
+    },
+    {
+      "bytes": 419,
+      "path": "workspace-final/in/repo/README.md",
+      "sha256": "c2ddf127e0e33127473de46be65564f8d6a10e6fb1558fb0560aed38507af589"
+    },
+    {
+      "bytes": 31,
+      "path": "workspace-final/in/repo/minisvc/__init__.py",
+      "sha256": "8ed9f6fd0e84c7b8f4f5cd80fa253a07f025a8884a0f35432c0543e542bca16e"
+    },
+    {
+      "bytes": 1,
+      "path": "workspace-final/in/repo/minisvc/api/__init__.py",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "bytes": 723,
+      "path": "workspace-final/in/repo/minisvc/api/handlers.py",
+      "sha256": "c4744d2b4c851cc8c0e8054cc52d48251c6a07f083ec63157b73f53e38c78b08"
+    },
+    {
+      "bytes": 238,
+      "path": "workspace-final/in/repo/minisvc/api/routes.py",
+      "sha256": "015c44c2d4680272431732dbed40a1aaa922b6b4a970247e8b37b695821fc8a7"
+    },
+    {
+      "bytes": 235,
+      "path": "workspace-final/in/repo/minisvc/audit.py",
+      "sha256": "65bde32b34b584a1a522ff6ce5c2894e3a97dbacb248e99c9a1057ba34aba117"
+    },
+    {
+      "bytes": 315,
+      "path": "workspace-final/in/repo/minisvc/cli.py",
+      "sha256": "155d80b578265cfe0c367ded17f84b67f7d3ee3f125cb22757ed4d041e33457b"
+    },
+    {
+      "bytes": 327,
+      "path": "workspace-final/in/repo/minisvc/config.py",
+      "sha256": "7423a5062adad0ad1d193a66c3d86ea1c6fd46ab8243d093952fd6f8a88a3192"
+    },
+    {
+      "bytes": 117,
+      "path": "workspace-final/in/repo/minisvc/models.py",
+      "sha256": "70e9a26f757c9dd9d0b8ce27be86a30fdd301300c7f8120f3f914ad5c51654b8"
+    },
+    {
+      "bytes": 1,
+      "path": "workspace-final/in/repo/minisvc/storage/__init__.py",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "bytes": 1086,
+      "path": "workspace-final/in/repo/minisvc/storage/repo.py",
+      "sha256": "d62236a546e0d979950192ad56b329a7141eb3ae1a047d15b9b85728a8da0664"
+    },
+    {
+      "bytes": 111,
+      "path": "workspace-final/in/repo/pyproject.toml",
+      "sha256": "caf6c48e47366379ba86852cfb977208d1d6e4b883d08ec4284bab7ce6cc57a2"
+    }
+  ],
+  "generated_at": "2026-08-31T13:03:39.781216Z",
+  "schema_version": 1
+}

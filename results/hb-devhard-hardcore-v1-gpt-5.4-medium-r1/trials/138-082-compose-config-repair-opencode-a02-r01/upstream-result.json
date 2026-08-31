@@ -1,0 +1,132 @@
+{
+  "task_id": "082-compose-config-repair",
+  "model_id": "opencode",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/138-082-compose-config-repair-opencode-a02-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-082-compose-config-repair-gpt-5.4-20260831-143756-6dcfd310",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/138-082-compose-config-repair-opencode-a02-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-082-compose-config-repair-gpt-5.4-20260831-143756-6dcfd310/workspace",
+  "session_id": "highlander-opencode-082-compose-config-repair-a2-082-compose-config-repair-97495d51",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/138-082-compose-config-repair-opencode-a02-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-082-compose-config-repair-gpt-5.4-20260831-143756-6dcfd310/prompt-round1.txt",
+  "adapter_result": {
+    "ok": false,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "opencode",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/138-082-compose-config-repair-opencode-a02-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-082-compose-config-repair-gpt-5.4-20260831-143756-6dcfd310/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/138-082-compose-config-repair-opencode-a02-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-082-compose-config-repair-gpt-5.4-20260831-143756-6dcfd310/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/138-082-compose-config-repair-opencode-a02-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-082-compose-config-repair-gpt-5.4-20260831-143756-6dcfd310/highlander-native",
+      "--trial-id",
+      "138-082-compose-config-repair-opencode-a02-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/138-082-compose-config-repair-opencode-a02-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-082-compose-config-repair-gpt-5.4-20260831-143756-6dcfd310/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 1
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": false,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "opencode",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/138-082-compose-config-repair-opencode-a02-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-082-compose-config-repair-gpt-5.4-20260831-143756-6dcfd310/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/138-082-compose-config-repair-opencode-a02-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-082-compose-config-repair-gpt-5.4-20260831-143756-6dcfd310/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/138-082-compose-config-repair-opencode-a02-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-082-compose-config-repair-gpt-5.4-20260831-143756-6dcfd310/highlander-native",
+        "--trial-id",
+        "138-082-compose-config-repair-opencode-a02-r01"
+      ],
+      "stdout": "{\"type\":\"error\",\"timestamp\":1788201478034,\"sessionID\":\"ses_fa6e2daacffeRcBZc71R2EK4Rl\",\"error\":{\"name\":\"UnknownError\",\"data\":{\"message\":\"Token refresh failed: 401\"}}}\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 1
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-opencode-082-compose-config-repair-a2-082-compose-config-repair-97495d51"
+  },
+  "oracle_result": {
+    "task": "082-compose-config-repair",
+    "outcome_score": 0.3,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "compose_parse",
+        "pass": false,
+        "weight": 0.15,
+        "detail": "'list' object has no attribute 'get'"
+      },
+      {
+        "id": "local_validator",
+        "pass": false,
+        "weight": 0.2,
+        "detail": "Traceback (most recent call last):\n  File \"<SOURCE_EVIDENCE_ROOT>/trials/138-082-compose-config-repair-opencode-a02-r01/hb-work/opencode/gpt-5.4/oc-bench-v2-082-compose-config-repair-gpt-5.4-20260831-143756-6dcfd310/workspace/in/composeapp/tools/validate_compose.py\", line 15, in <module>\n    assert not missing, f\"missing services: {sorted(missing)}\"\n           ^^^^^^^^^^^\nAssertionError: missing services: ['redis']\n"
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "env_example",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "fix_report",
+        "pass": false,
+        "weight": 0.05,
+        "detail": {
+          "score": 0.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.3,
+    "oracle_outcome_score": 0.3,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.3,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 2.073
+}

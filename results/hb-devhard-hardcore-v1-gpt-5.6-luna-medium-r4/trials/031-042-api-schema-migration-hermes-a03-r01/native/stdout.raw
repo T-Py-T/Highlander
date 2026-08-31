@@ -1,0 +1,33 @@
+Implemented the schema migration converter.
+
+Changes:
+- Updated `client.py` with:
+  - Legacy v1, v1.1, and v1.2 support
+  - Nested customer/order/line/shipping field mappings
+  - Integer conversion for quantities and prices
+  - Default `"standard"` shipping method for blank/null values
+  - Idempotent v2 handling
+  - Preservation of v2 metadata and `metadata.unknownFields`
+  - Legacy unknown-field preservation
+  - Recursive PII filtering
+  - `convert_many(payloads)` error aggregation
+  - `conversion_audit.json` generation
+  - JSONL CLI support via `python -m client input.jsonl output.json`
+
+Verification:
+- `5 passed` with pytest
+- CLI conversion successfully processed all 4 sample records
+- Generated audit summary with:
+  - `converted_count: 4`
+  - `error_count: 0`
+  - `warning_count: 0`
+  - `pii_dropped_count: 5`
+  - `unknown_fields_count: 5`
+
+The environment maps the requested project directory to:
+
+`/workspace/in/schema_migration/client.py`
+
+Audit file:
+
+`/workspace/in/schema_migration/conversion_audit.json`

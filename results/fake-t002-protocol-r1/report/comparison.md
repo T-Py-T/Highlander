@@ -7,7 +7,7 @@
 | fake-success | fake | qualified | protocol_success | — |
 | fake-harness-failure | fake | qualified | protocol_harness_failure | — |
 
-## Verified behavior
+## What this proves
 
 - one immutable task hash and arena commit were shared by every Trial;
 - prompt release used the all-ready start gate;

@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "atomic",
+    "--mode",
+    "json",
+    "--print",
+    "--provider",
+    "openai-codex",
+    "--model",
+    "gpt-5.4",
+    "--thinking",
+    "medium",
+    "--no-session",
+    "--no-skills",
+    "--no-prompt-templates",
+    "--no-themes",
+    "--no-context-files",
+    "--no-approve",
+    "--offline",
+    "--",
+    "<TASK_BYTES_UTF8>"
+  ],
+  "credential_binding": {
+    "seed_profile": "atomic-subscription",
+    "value_retained": false
+  },
+  "cwd": "/workspace",
+  "harness_id": "atomic",
+  "prompt_sha256": "6f2ff220b0ac30b4ccfdedfb55cbe9c6b176fb1dc203f73ea996e3153c469504",
+  "schema_version": 1
+}

@@ -1,0 +1,63 @@
+{
+  "adapter": "opencode",
+  "clean_room": {
+    "adapter": "oci",
+    "architecture": "arm64",
+    "capabilities": "all-dropped",
+    "container_name": "highlander-092-083-monorepo-interface-repair-opencode-a01-r01-opencode-a1",
+    "digest_verified": true,
+    "host_home_mounted": false,
+    "image_id": "sha256:78712636baea6b70bfda75ff365cc004dc9e9642d77043cd55002220efe2a8cf",
+    "image_reference": "sha256:78712636baea6b70bfda75ff365cc004dc9e9642d77043cd55002220efe2a8cf",
+    "labels": {
+      "io.buildah.version": "1.43.2",
+      "io.highlander.harness": "opencode",
+      "io.highlander.profile": "clean-core",
+      "io.highlander.version": "1.18.15"
+    },
+    "network": "bridge",
+    "no_new_privileges": true,
+    "os": "linux",
+    "profile": "clean-core",
+    "publication_credentials_available": false,
+    "reference": "sha256:78712636baea6b70bfda75ff365cc004dc9e9642d77043cd55002220efe2a8cf",
+    "repo_digests": [
+      "localhost/highlander/opencode@sha256:b27e55c1ba449721b6046ab8ccf2a204cdfe0eef43d3b1f5d0e43d2b3597bdd4"
+    ],
+    "resources": {
+      "cpus": 2.0,
+      "memory_mb": 4096,
+      "pids_limit": 512,
+      "tmpfs_mb": 1024
+    },
+    "root_filesystem": "read-only",
+    "runtime": "podman",
+    "seed": {
+      "available": true,
+      "imported_file": "auth.json",
+      "profile": "opencode-subscription",
+      "required": true
+    },
+    "seed_profile": "opencode-subscription"
+  },
+  "invocation": {
+    "argv": [
+      "opencode",
+      "run",
+      "--format",
+      "json",
+      "--dir",
+      "/workspace",
+      "--model",
+      "openai/gpt-5.6-luna",
+      "--variant",
+      "medium",
+      "--auto",
+      "--pure"
+    ],
+    "credential_values_recorded": false,
+    "cwd": "/workspace",
+    "prompt_transport": "exact rendered HarnessBench prompt appended as one argv element"
+  },
+  "worktree": "<SOURCE_EVIDENCE_ROOT>/trials/092-083-monorepo-interface-repair-opencode-a01-r01/hb-work/opencode/gpt-5.6-luna/oc-bench-v2-083-monorepo-interface-repair-gpt-5.6-luna-20260831-042319-ed0ac635/workspace"
+}

@@ -1,0 +1,53 @@
+{
+  "incident_id": "checkout-auth-2026-03-22",
+  "root_cause_service": "auth-gateway",
+  "root_cause_change_id": "AUTH-2026-0318",
+  "confidence": "high",
+  "affected_services": [
+    "checkout-web",
+    "payment-api",
+    "auth-gateway"
+  ],
+  "evidence": [
+    {
+      "source_file": "/workspace/in/topology.json",
+      "observation": "The checkout dependency path is checkout-web -> payment-api -> auth-gateway; AUTH-2026-0318 changed auth-gateway at 2026-03-22T14:05:00Z."
+    },
+    {
+      "source_file": "/workspace/in/logs/auth-gateway.log",
+      "observation": "After deployment, auth-gateway configured issuer partner-v2 but validation allowed only partner-v1, producing issuer_not_allowed errors; rollback or restoring partner-v2 is explicitly identified as a candidate."
+    },
+    {
+      "source_file": "/workspace/in/logs/payment-api.log",
+      "observation": "payment-api rejected create_payment with auth_result=invalid_issuer after token validation failed upstream at auth-gateway."
+    },
+    {
+      "source_file": "/workspace/in/logs/checkout-web.log",
+      "observation": "checkout-web received a 401 from payment-api for request req-8812 and reported invalid issuer while the checkout flow remained blocked."
+    },
+    {
+      "source_file": "/workspace/in/metrics/service_metrics.csv",
+      "observation": "At 14:10 UTC, checkout-web and payment-api had elevated 401 rates and latency, while auth-gateway had a 28.4% 401 rate and issuer-mismatch notes."
+    }
+  ],
+  "excluded_red_herrings": [
+    {
+      "signal": "orders-db CPU at 86%",
+      "why_not_primary": "Query p95 remained 35 ms with zero errors, and no failed checkout transaction reached the database; the payment auth gate failed first."
+    },
+    {
+      "signal": "cdn-edge 5xx rate at 4.8%",
+      "why_not_primary": "The error was isolated to images, while checkout-web reported static assets served normally and the checkout failure was a payment 401."
+    },
+    {
+      "signal": "checkout-web and payment-api latency/5xx increases",
+      "why_not_primary": "These are downstream effects of rejected authentication, not an independent cause; their logs identify invalid issuer responses from auth-gateway."
+    }
+  ],
+  "recommended_next_steps": [
+    "Immediately restore auth-gateway allowed_issuers to include partner-v2, or roll back AUTH-2026-0318, using the approved change process.",
+    "Verify auth-gateway accepts a known-good partner-v2 token and that JWKS lookup resolves the partner-v2 namespace.",
+    "Verify payment-api create_payment succeeds, then complete an end-to-end checkout and confirm checkout-web 401 rates and p95 latency return to baseline.",
+    "After recovery, review the issuer and JWKS namespace rollout validation and add an automated compatibility check before deployment."
+  ]
+}

@@ -1,0 +1,223 @@
+--- a/in/db/migration.sql
++++ b/in/db/migration.sql
+@@ -1,9 +1,55 @@
+-DROP TABLE users;
++PRAGMA foreign_keys = OFF;
+ 
+-CREATE TABLE users (
++BEGIN IMMEDIATE;
++
++-- Rebuild users into the constrained shape while preserving ids, names,
++-- historical created_at values, and existing order references.
++DROP TABLE IF EXISTS _users_migration_source;
++CREATE TABLE _users_migration_source (
+     id TEXT PRIMARY KEY,
+-    email TEXT UNIQUE,
++    email TEXT NOT NULL,
++    name TEXT NOT NULL,
++    status TEXT NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++-- Dirty-data cleanup is deterministic:
++-- u4 duplicate ada@example.com -> ada+u4@example.com
++-- u5 NULL email              -> missing+u5@example.invalid
++-- u6 blank email             -> missing+u6@example.invalid
++INSERT INTO _users_migration_source (id, email, name, status, created_at)
++SELECT
++    id,
++    CASE
++        WHEN id = 'u4' AND email = 'ada@example.com' THEN 'ada+u4@example.com'
++        WHEN id = 'u5' AND email IS NULL THEN 'missing+u5@example.invalid'
++        WHEN id = 'u6' AND TRIM(COALESCE(email, '')) = '' THEN 'missing+u6@example.invalid'
++        ELSE email
++    END AS email,
++    name,
++    'active' AS status,
++    created_at
++FROM users;
++
++DROP TABLE IF EXISTS users__migrated;
++CREATE TABLE users__migrated (
++    id TEXT PRIMARY KEY,
++    email TEXT NOT NULL UNIQUE CHECK (LENGTH(TRIM(email)) > 0),
+     name TEXT NOT NULL,
+     status TEXT NOT NULL DEFAULT 'active',
+-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
++    created_at TEXT NOT NULL
+ );
++
++INSERT INTO users__migrated (id, email, name, status, created_at)
++SELECT id, email, name, status, created_at
++FROM _users_migration_source
++ORDER BY created_at, id;
++
++DROP TABLE users;
++ALTER TABLE users__migrated RENAME TO users;
++
++DROP TABLE _users_migration_source;
++
++COMMIT;
++
++PRAGMA foreign_keys = ON;
+--- a/in/db/migration_report.md
++++ b/in/db/migration_report.md
+@@ -0,0 +1,54 @@
++# Migration Report
++
++Date: 2026-08-31
++
++## Strategy
++
++The migration replaces the unsafe `DROP TABLE users` draft with a transactional table rebuild:
++
++1. Disable foreign-key enforcement for the duration of the rebuild.
++2. Stage all existing users into `_users_migration_source`.
++3. Apply the required deterministic dirty-data cleanup while preserving `id`, `name`, and historical `created_at`.
++4. Create the target `users` table with:
++   - `email TEXT NOT NULL UNIQUE CHECK (LENGTH(TRIM(email)) > 0)`
++   - `status TEXT NOT NULL DEFAULT 'active'`
++5. Copy the staged rows into the new table.
++6. Swap the rebuilt table into place and commit.
++
++This preserves all six existing users and all four existing orders, including the dependent orders for `u4`, `u5`, and `u6`.
++
++## Dirty-data cleanup
++
++- `u1` remains `ada@example.com`.
++- `u4` is rewritten from duplicate `ada@example.com` to `ada+u4@example.com`.
++- `u5` is rewritten from `NULL` to `missing+u5@example.invalid`.
++- `u6` is rewritten from blank `''` to `missing+u6@example.invalid`.
++
++These cleanup values are deterministic, so rerunning the migration does not create new variants for the same users.
++
++## Idempotency
++
++The migration rebuilds `users` from the current contents each time rather than appending rows, so a second run does not duplicate users or orders. The cleanup mapping is stable for `u4`, `u5`, and `u6`, and the row copy preserves existing `id` and `created_at` values.
++
++## Rollback behavior
++
++`rollback.sql` restores the pre-migration `users` schema shape:
++
++- `id`
++- `email`
++- `name`
++- `created_at`
++
++Rollback preserves the same user-row count and order-row count and keeps `orders.user_id` pointing at the same user ids. It does not restore the original dirty email values; the deterministic cleaned emails remain in place while the schema shape is reverted.
++
++## Postchecks
++
++Run `postcheck.sql` after the migration. It verifies:
++
++- user and order row counts
++- cleaned emails for `u4`, `u5`, and `u6`
++- preserved dependent orders for dirty users
++- absence of duplicate, null, and blank emails
++- absence of null or blank statuses
++- `users` table definition and indexes
++- foreign-key integrity
+--- a/in/db/postcheck.sql
++++ b/in/db/postcheck.sql
+@@ -0,0 +1,46 @@
++-- Expected preserved counts from schema.sql:
++-- users: 6
++-- orders: 4
++
++SELECT 'user_count' AS check_name, COUNT(*) AS observed, 6 AS expected
++FROM users;
++
++SELECT 'order_count' AS check_name, COUNT(*) AS observed, 4 AS expected
++FROM orders;
++
++SELECT 'dirty_user_email_cleanup' AS check_name, id, email
++FROM users
++WHERE id IN ('u4', 'u5', 'u6')
++ORDER BY id;
++
++SELECT 'dependent_order_preservation' AS check_name, id, user_id, total_cents
++FROM orders
++WHERE user_id IN ('u4', 'u5', 'u6')
++ORDER BY id;
++
++SELECT 'duplicate_email_rows' AS check_name, email, COUNT(*) AS duplicate_count
++FROM users
++GROUP BY email
++HAVING COUNT(*) > 1;
++
++SELECT 'null_or_blank_email_rows' AS check_name, COUNT(*) AS bad_rows
++FROM users
++WHERE email IS NULL OR LENGTH(TRIM(email)) = 0;
++
++SELECT 'null_or_blank_status_rows' AS check_name, COUNT(*) AS bad_rows
++FROM users
++WHERE status IS NULL OR LENGTH(TRIM(status)) = 0;
++
++SELECT 'non_active_status_rows' AS check_name, COUNT(*) AS rows_found
++FROM users
++WHERE status <> 'active';
++
++PRAGMA table_info(users);
++
++SELECT sql
++FROM sqlite_master
++WHERE type = 'table' AND name = 'users';
++
++PRAGMA index_list(users);
++
++PRAGMA foreign_key_check;
+--- a/in/db/preflight_report.md
++++ b/in/db/preflight_report.md
+@@ -0,0 +1,26 @@
++# Preflight Report
++
++Date: 2026-08-31
++
++## Existing dirty email rows before migration
++
++- Duplicate email: `ada@example.com` is used by `u1` and `u4`.
++- Null email: `u5` has `NULL`.
++- Blank email: `u6` has `''`.
++
++## Required deterministic cleanup
++
++- Keep `u1` as `ada@example.com`.
++- Rewrite `u4` to `ada+u4@example.com`.
++- Rewrite `u5` to `missing+u5@example.invalid`.
++- Rewrite `u6` to `missing+u6@example.invalid`.
++
++## Dependent orders that must be preserved
++
++- `u4` has dependent order `o2`.
++- `u5` has dependent order `o3`.
++- `u6` has dependent order `o4`.
++
++## Risk summary
++
++The original draft was unsafe because dropping and recreating `users` without copying rows would lose all users and orphan dependent order data. The replacement migration rebuilds `users` inside a transaction after staging cleaned source rows.
+--- a/in/db/rollback.sql
++++ b/in/db/rollback.sql
+@@ -0,0 +1,23 @@
++PRAGMA foreign_keys = OFF;
++
++BEGIN IMMEDIATE;
++
++DROP TABLE IF EXISTS users__rollback;
++CREATE TABLE users__rollback (
++    id TEXT PRIMARY KEY,
++    email TEXT,
++    name TEXT NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO users__rollback (id, email, name, created_at)
++SELECT id, email, name, created_at
++FROM users
++ORDER BY created_at, id;
++
++DROP TABLE users;
++ALTER TABLE users__rollback RENAME TO users;
++
++COMMIT;
++
++PRAGMA foreign_keys = ON;

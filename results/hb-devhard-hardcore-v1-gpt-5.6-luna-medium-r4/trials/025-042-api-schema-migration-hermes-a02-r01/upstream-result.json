@@ -1,0 +1,131 @@
+{
+  "task_id": "042-api-schema-migration",
+  "model_id": "hermes",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/025-042-api-schema-migration-hermes-a02-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-003253-3cda642d",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/025-042-api-schema-migration-hermes-a02-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-003253-3cda642d/workspace",
+  "session_id": "highlander-hermes-042-api-schema-migration-a2-042-api-schema-migration-c3b22660",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/025-042-api-schema-migration-hermes-a02-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-003253-3cda642d/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "hermes",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/025-042-api-schema-migration-hermes-a02-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-003253-3cda642d/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/025-042-api-schema-migration-hermes-a02-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-003253-3cda642d/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/025-042-api-schema-migration-hermes-a02-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-003253-3cda642d/highlander-native",
+      "--trial-id",
+      "025-042-api-schema-migration-hermes-a02-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/025-042-api-schema-migration-hermes-a02-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-003253-3cda642d/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "hermes",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/025-042-api-schema-migration-hermes-a02-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-003253-3cda642d/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/025-042-api-schema-migration-hermes-a02-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-003253-3cda642d/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/025-042-api-schema-migration-hermes-a02-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-003253-3cda642d/highlander-native",
+        "--trial-id",
+        "025-042-api-schema-migration-hermes-a02-r01"
+      ],
+      "stdout": "Implemented the schema migration in:\n\n/workspace/in/schema_migration/client.py\n\nChanges include:\n- Legacy v1, v1.1, and v1.2 payload support\n- Already-v2 idempotent handling\n- Nested customer, lines, shipTo, order_ref, and unit_price_cents mappings\n- Multiple line items with integer coercion\n- Shipping method defaulting to standard\n- Unknown-field preservation under metadata.unknownFields\n- PII filtering for the specified sensitive keys\n- Error aggregation via convert_many with index/path/error\n- Backward-compatible two-value convert_many return when no warnings exist\n- conversion_audit.json generation\n- CLI support via `python -m client input.jsonl output.json`\n\nVerification completed:\n- All 5 provided tests pass\n- Sample JSONL CLI conversion verified\n- Audit generated with:\n  - converted_count: 4\n  - error_count: 0\n  - warning_count: 0\n  - pii_dropped_count: 5\n  - unknown_fields_count: 5\n- Error-path verification confirmed paths such as `items[0].qty`\n\nThe environment exposes the requested project under `/workspace/in/schema_migration`; the supplied `/Users/...` path was not mounted.\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-hermes-042-api-schema-migration-a2-042-api-schema-migration-c3b22660"
+  },
+  "oracle_result": {
+    "task": "042-api-schema-migration",
+    "outcome_score": 0.74,
+    "level": "pass",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": true,
+        "weight": 0.25,
+        "detail": "4-raw/trials/025-042-api-schema-migration-hermes-a02-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-003253-3cda642d/workspace/in/schema_migration\nplugins: anyio-4.12.0, cov-4.1.0, asyncio-0.21.1\nasyncio: mode=Mode.STRICT\ncollected 5 items\n\ntests/test_client.py .....                                               [100%]\n\n=============================== warnings summary ===============================\n../../../../../../../../../../../../../../../../../opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: 155 warnings\n  /opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n    return asyncio.iscoroutinefunction(obj)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================= 5 passed, 155 warnings in 0.02s ========================\n"
+      },
+      {
+        "id": "direct_mapping",
+        "pass": false,
+        "weight": 0.6,
+        "detail": {
+          "score": 0.779,
+          "checks": {
+            "base_mapping": true,
+            "multi_item_and_defaults": true,
+            "pii_filtering": true,
+            "v2_idempotent_unknown_fields": true,
+            "v12_nested_payload": true,
+            "convert_many_errors": false,
+            "audit_written_in_project": false,
+            "cli_jsonl_conversion": true
+          },
+          "term_score": 1.0
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.74,
+    "oracle_outcome_score": 0.74,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.74,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 128.532
+}

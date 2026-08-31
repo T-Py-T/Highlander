@@ -1,0 +1,186 @@
+--- a/in/billingdb/migration.sql
++++ b/in/billingdb/migration.sql
+@@ -1,4 +1,39 @@
+--- Unsafe draft: loses orphan payments and is not idempotent.
++-- Run this file as one unit.  The pragma is deliberately outside the
++-- transaction because SQLite does not change it while a transaction is open.
++PRAGMA foreign_keys = ON;
++BEGIN IMMEDIATE;
++
++CREATE TABLE IF NOT EXISTS payment_orphans (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL,
++  reason TEXT NOT NULL
++);
++
++-- Archive before replacing payments.  The primary key and predicate make
++-- this safe to execute again after a partially or fully completed migration.
++INSERT INTO payment_orphans(id, invoice_id, amount_cents, created_at, reason)
++SELECT p.id, p.invoice_id, p.amount_cents, p.created_at,
++       'invoice_id does not reference an invoice at migration time'
++FROM payments AS p
++WHERE NOT EXISTS (SELECT 1 FROM invoices AS i WHERE i.id = p.invoice_id)
++  AND NOT EXISTS (SELECT 1 FROM payment_orphans AS o WHERE o.id = p.id);
++
++DROP TABLE IF EXISTS payments_valid;
++CREATE TABLE payments_valid (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL
++);
++INSERT INTO payments_valid(id, invoice_id, amount_cents, created_at)
++SELECT p.id, p.invoice_id, p.amount_cents, p.created_at
++FROM payments AS p
++WHERE EXISTS (SELECT 1 FROM invoices AS i WHERE i.id = p.invoice_id);
++DROP TABLE payments;
++
++DROP TABLE IF EXISTS invoices_new;
+ CREATE TABLE invoices_new (
+   id TEXT PRIMARY KEY,
+   customer_id TEXT NOT NULL,
+@@ -13,5 +48,20 @@
+ DROP TABLE invoices;
+ ALTER TABLE invoices_new RENAME TO invoices;
+ 
+-DELETE FROM payments
+-WHERE invoice_id NOT IN (SELECT id FROM invoices);
++DROP TABLE IF EXISTS payments_new;
++CREATE TABLE payments_new (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL REFERENCES invoices(id),
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL
++);
++
++-- Only valid payments remain in the constrained table; archived payments are
++-- retained verbatim in payment_orphans.
++INSERT INTO payments_new(id, invoice_id, amount_cents, created_at)
++SELECT id, invoice_id, amount_cents, created_at FROM payments_valid;
++DROP TABLE payments_valid;
++ALTER TABLE payments_new RENAME TO payments;
++
++COMMIT;
++PRAGMA foreign_keys = ON;
+--- a/in/billingdb/migration_report.md
++++ b/in/billingdb/migration_report.md
+@@ -0,0 +1,38 @@
++# Billing Migration Report
++
++## Changes
++
++- Rebuilds `invoices` with `status TEXT NOT NULL DEFAULT 'open'` while
++  copying every existing invoice and its original `created_at`.
++- Copies invalid existing payments to `payment_orphans` before rebuilding
++  `payments`; the orphan payload and a reason are retained.
++- Rebuilds `payments` with a foreign key to `invoices`, so new invalid
++  invoice IDs are rejected.
++- Uses `BEGIN IMMEDIATE` and `COMMIT`; SQLite DDL in this file is therefore
++  transactional.
++
++## Rerun Safety
++
++The orphan archive has a primary key and the archival insert checks it before
++inserting. The rebuilt payments table contains only valid rows, so a second
++run does not recreate or duplicate `p4` and produces the same row counts.
++
++## Expected Results
++
++After applying `schema.sql` and `migration.sql`, the expected counts are:
++
++| Table | Rows |
++| --- | ---: |
++| `invoices` | 3 |
++| `payments` | 3 |
++| `payment_orphans` | 1 (`p4`) |
++
++`postcheck.sql` should report foreign keys enabled, no invalid statuses, no
++payments without invoices, and an empty `PRAGMA foreign_key_check` result.
++
++## Rollback
++
++Run `rollback.sql` only after the migration transaction has committed. It
++restores `invoices(id, customer_id, total_cents, created_at)` and
++`payments(id, invoice_id, amount_cents, created_at)`, moves archived payments
++back into `payments`, removes the foreign key, and drops `payment_orphans`.
+--- a/in/billingdb/postcheck.sql
++++ b/in/billingdb/postcheck.sql
+@@ -0,0 +1,18 @@
++-- Diagnostic post-migration checks. Empty foreign_key_check output is required.
++SELECT 'invoices' AS check_name, COUNT(*) AS value FROM invoices;
++SELECT 'payments' AS check_name, COUNT(*) AS value FROM payments;
++SELECT 'payment_orphans' AS check_name, COUNT(*) AS value FROM payment_orphans;
++SELECT 'null_or_invalid_status' AS check_name, COUNT(*) AS value
++FROM invoices
++WHERE status IS NULL OR status <> 'open';
++SELECT 'payments_without_invoice' AS check_name, COUNT(*) AS value
++FROM payments AS p
++WHERE NOT EXISTS (SELECT 1 FROM invoices AS i WHERE i.id = p.invoice_id);
++SELECT 'p4_archived' AS check_name, COUNT(*) AS value
++FROM payment_orphans
++WHERE id = 'p4' AND invoice_id = 'missing-invoice'
++  AND amount_cents = 700 AND created_at = '2024-01-07T10:00:00Z';
++SELECT 'foreign_keys' AS check_name, foreign_keys AS value FROM pragma_foreign_keys;
++SELECT 'foreign_key_list_payments' AS check_name, COUNT(*) AS value
++FROM pragma_foreign_key_list('payments');
++PRAGMA foreign_key_check;
+--- a/in/billingdb/preflight_report.md
++++ b/in/billingdb/preflight_report.md
+@@ -0,0 +1,18 @@
++# Billing Migration Preflight
++
++Source: `schema.sql` and the data present before migration.
++
++| Object | Rows |
++| --- | ---: |
++| `invoices` | 3 |
++| `payments` | 4 |
++| Payments with a valid invoice | 3 |
++| Orphan payments | 1 |
++
++The orphan is `p4`: invoice `missing-invoice`, amount `700`, created at
++`2024-01-07T10:00:00Z`. It must be copied unchanged to `payment_orphans` with
++the migration reason; it must not be deleted.
++
++The migration must be run against a backup, as with any destructive SQLite
++table rebuild. It enables foreign keys before beginning its explicit
++transaction and leaves them enabled after commit.
+--- a/in/billingdb/rollback.sql
++++ b/in/billingdb/rollback.sql
+@@ -0,0 +1,34 @@
++-- Restore the pre-migration table shapes and put archived payments back.
++PRAGMA foreign_keys = OFF;
++BEGIN IMMEDIATE;
++
++DROP TABLE IF EXISTS payments_old;
++CREATE TABLE payments_old (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL
++);
++INSERT INTO payments_old(id, invoice_id, amount_cents, created_at)
++SELECT id, invoice_id, amount_cents, created_at FROM payments;
++INSERT OR IGNORE INTO payments_old(id, invoice_id, amount_cents, created_at)
++SELECT id, invoice_id, amount_cents, created_at FROM payment_orphans;
++DROP TABLE payments;
++ALTER TABLE payments_old RENAME TO payments;
++
++DROP TABLE IF EXISTS invoices_old;
++CREATE TABLE invoices_old (
++  id TEXT PRIMARY KEY,
++  customer_id TEXT NOT NULL,
++  total_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL
++);
++INSERT INTO invoices_old(id, customer_id, total_cents, created_at)
++SELECT id, customer_id, total_cents, created_at FROM invoices;
++DROP TABLE invoices;
++ALTER TABLE invoices_old RENAME TO invoices;
++
++DROP TABLE IF EXISTS payment_orphans;
++
++COMMIT;
++PRAGMA foreign_keys = ON;

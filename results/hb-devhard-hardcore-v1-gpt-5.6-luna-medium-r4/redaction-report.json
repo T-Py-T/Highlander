@@ -1,0 +1,35 @@
+{
+  "credential_values_exported": false,
+  "generated_cache_artifacts_omitted": 958,
+  "method": "exact-root replacement plus high-confidence secret scan",
+  "native_transcripts_exported": true,
+  "private_raw_source_retained": true,
+  "provider_encrypted_payloads_redacted": 4364,
+  "replacements": [
+    {
+      "occurrences": 6984,
+      "placeholder": "<SOURCE_EVIDENCE_ROOT>"
+    },
+    {
+      "occurrences": 0,
+      "placeholder": "<RUNNER_ROOT>"
+    },
+    {
+      "occurrences": 0,
+      "placeholder": "<RUNNER_ROOT>"
+    },
+    {
+      "occurrences": 1050,
+      "placeholder": "<HOME>"
+    }
+  ],
+  "schema_version": 1,
+  "secret_patterns_checked": [
+    "bearer_token",
+    "github_token",
+    "oauth_token",
+    "openai_key",
+    "private_key"
+  ],
+  "worktree_vcs_artifacts_omitted": 378
+}

@@ -1,0 +1,166 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 434,
+      "path": "control/app.json",
+      "sha256": "86b2f5e1a99b118de71c23dff40d9b1e1e8344fb41d8e0771e6d5ba71f695e7b"
+    },
+    {
+      "bytes": 703,
+      "path": "control/harness.json",
+      "sha256": "601bf9faed758f0acd8268793697ad444ab4211fb095fa3326388c3a5574a876"
+    },
+    {
+      "bytes": 345,
+      "path": "control/trial.json",
+      "sha256": "13b6d374dd9b98bb0d7bbf12ddd4c9a9c9ee8e1cb116f8647f6a6613333421fa"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2714,
+      "path": "controller.stdout.raw",
+      "sha256": "f10c4cb7a478e4aa49bad84612b64ac9cece75e43b57b6f3085ffcf2a5c945c6"
+    },
+    {
+      "bytes": 15685,
+      "path": "diff.patch",
+      "sha256": "d3468d54ccf995fc56550489b09a7a1c470b62f9b5fa5cac451ca849ddd0906b"
+    },
+    {
+      "bytes": 2350,
+      "path": "native/container-plan.json",
+      "sha256": "13eb9adb4f0672003e513287c5503aaf9e6b07357764fc7d78742feb98e3a0f4"
+    },
+    {
+      "bytes": 654,
+      "path": "native/control-proof.json",
+      "sha256": "5fd5526d542884334c60cd7c66f29637789ff8912da055132937a240753b5267"
+    },
+    {
+      "bytes": 2166,
+      "path": "native/execution.json",
+      "sha256": "f53f2f0491350bc9a13ef4cca4529c16fa7770fb151c7f689deb8fb79adb2be1"
+    },
+    {
+      "bytes": 752,
+      "path": "native/invocation.json",
+      "sha256": "d5f1d64aa83e65a995e9f658e60679d98538f8bd3c2d09acd6e316571750dea0"
+    },
+    {
+      "bytes": 48,
+      "path": "native/process-metrics.json",
+      "sha256": "bf225fbe16fbb7db40291698ce9a3771e4d4335cda5a095de5c20a1924c83313"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 2703,
+      "path": "native/stdout.raw",
+      "sha256": "ada2544ad563355b9ff908eb34fba17a7eb21101d6d65e5d1c4dabde3bdd5143"
+    },
+    {
+      "bytes": 0,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 318,
+      "path": "process/observations.json",
+      "sha256": "a8dc91d1dec42c09419be511dd2a587a78c99d82fb9242b4fcee7c7065c9d67c"
+    },
+    {
+      "bytes": 0,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2609,
+      "path": "result.json",
+      "sha256": "d5ea6860666c5034b83f824a8ba6d5b7acb62cf3375ba5dfeec6b6e2f04b2dc8"
+    },
+    {
+      "bytes": 8320,
+      "path": "upstream-result.json",
+      "sha256": "f19ea197aa160f0e447b9536239cc2cac573bab5ff7c8762e01f723ee8036f1b"
+    },
+    {
+      "bytes": 400,
+      "path": "usage-normalized.json",
+      "sha256": "8e9561685170d6f5cae767c269910a5f3d78deb47dc1ef6e96e0dcb2f7f93c98"
+    },
+    {
+      "bytes": 60,
+      "path": "workspace-final/.gitignore",
+      "sha256": "0f6248e61837bf39a36406ecd83af36cef0f2a5ab89cd2aa19c826cfd7b851fe"
+    },
+    {
+      "bytes": 822,
+      "path": "workspace-final/AGENTS.md",
+      "sha256": "1b0aa1d81e4be6cf5e407743dae50e91bafe5e72511f883f58db289563a35246"
+    },
+    {
+      "bytes": 370,
+      "path": "workspace-final/HEARTBEAT.md",
+      "sha256": "a52adedddf94f2be8f692c785337aae7eaa1a19284b11d981706ebd36e65e6a8"
+    },
+    {
+      "bytes": 1008,
+      "path": "workspace-final/SOUL.md",
+      "sha256": "0c2d95c382ab74ba8897a81dcd53bd71952a30bc6ce3ac6a3cee817a1f9d250f"
+    },
+    {
+      "bytes": 1585,
+      "path": "workspace-final/TOOLS.md",
+      "sha256": "d7171f7347c7f3c4ee27dc415c6aacd3658eff4e0a98dd24bac2a80094d866ed"
+    },
+    {
+      "bytes": 842,
+      "path": "workspace-final/USER.md",
+      "sha256": "bfd7f7a5e129a86f1d392374669e5375986b830fce9d0d591de15c296845725e"
+    },
+    {
+      "bytes": 213,
+      "path": "workspace-final/in/db/migration.sql",
+      "sha256": "cd19eff3d4869cf43d3bf0f9daa41557c6724af3e1da605b0c70bd0c83d857f8"
+    },
+    {
+      "bytes": 937,
+      "path": "workspace-final/in/db/migration_policy.md",
+      "sha256": "e3638314798a2c7419e68baa7c1e52663ee752f513f1a025127a3a8ada6b5465"
+    },
+    {
+      "bytes": 964,
+      "path": "workspace-final/in/db/schema.sql",
+      "sha256": "3f097b5cdbd1e6a2522b6252e51a55f1e145cd4a3566c0bcaf71c492fc947a9a"
+    },
+    {
+      "bytes": 408,
+      "path": "workspace-final/memory/MEMORY.md",
+      "sha256": "a0151a00f64bcf2e42219687341d28097ea669a9f117b0a6e65033897a207a8e"
+    },
+    {
+      "bytes": 0,
+      "path": "workspace-final/memory/history.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 7243,
+      "path": "workspace-final/sessions/highlander_direct.jsonl",
+      "sha256": "e836dabbca9c4a88913c7ae1cd20394ebbcd6351c2b8e9f447239ef6ccae5f38"
+    }
+  ],
+  "generated_at": "2026-08-31T23:30:56.460573Z",
+  "schema_version": 1
+}

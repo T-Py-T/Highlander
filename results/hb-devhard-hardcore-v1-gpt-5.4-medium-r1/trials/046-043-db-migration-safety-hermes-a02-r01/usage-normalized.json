@@ -1,0 +1,20 @@
+{
+  "api_calls": 11,
+  "available": true,
+  "cache_read_tokens": 161792,
+  "cache_write_tokens": 0,
+  "cost_status": "native_report_says_no_cost_source",
+  "cost_usd": 0.0,
+  "cross_harness_comparability": "not comparable; native accounting semantics differ",
+  "input_tokens": 18265,
+  "models": [
+    "gpt-5.4"
+  ],
+  "output_tokens": 7436,
+  "providers": [
+    "openai-codex"
+  ],
+  "reasoning_tokens": 2752,
+  "source": "hermes_native_usage_file",
+  "total_tokens": 187493
+}

@@ -1,0 +1,226 @@
+{
+  "modules": [
+    {
+      "name": "minisvc.cli",
+      "path": "/workspace/in/repo/minisvc/cli.py",
+      "purpose": "CLI bootstrap entry point that loads settings, opens the repository, initializes the SQLite schema, and reports readiness."
+    },
+    {
+      "name": "minisvc.config",
+      "path": "/workspace/in/repo/minisvc/config.py",
+      "purpose": "Configuration loader that maps environment variables into an immutable Settings object."
+    },
+    {
+      "name": "minisvc.models",
+      "path": "/workspace/in/repo/minisvc/models.py",
+      "purpose": "Domain model definitions for orders."
+    },
+    {
+      "name": "minisvc.audit",
+      "path": "/workspace/in/repo/minisvc/audit.py",
+      "purpose": "Builds lightweight audit event dictionaries for API responses."
+    },
+    {
+      "name": "minisvc.api.routes",
+      "path": "/workspace/in/repo/minisvc/api/routes.py",
+      "purpose": "Registers HTTP routes by wiring framework callbacks to handler functions."
+    },
+    {
+      "name": "minisvc.api.handlers",
+      "path": "/workspace/in/repo/minisvc/api/handlers.py",
+      "purpose": "Implements create and read order operations, translating payloads and repository results into response dictionaries."
+    },
+    {
+      "name": "minisvc.storage.repo",
+      "path": "/workspace/in/repo/minisvc/storage/repo.py",
+      "purpose": "SQLite-backed persistence adapter for schema initialization, order inserts, and order lookups."
+    }
+  ],
+  "entry_points": [
+    {
+      "id": "minisvc.cli:main",
+      "kind": "cli",
+      "exposed_via": "pyproject.toml [project.scripts].minisvc"
+    },
+    {
+      "id": "minisvc.api.routes:register_routes",
+      "kind": "http_route_registration",
+      "exposed_via": "application integration hook"
+    },
+    {
+      "id": "minisvc.api.handlers:create_order",
+      "kind": "http_handler",
+      "exposed_via": "POST /orders"
+    },
+    {
+      "id": "minisvc.api.handlers:get_order",
+      "kind": "http_handler",
+      "exposed_via": "GET /orders/<order_id>"
+    }
+  ],
+  "dependency_edges": [
+    {
+      "from": "minisvc.cli",
+      "to": "minisvc.config",
+      "type": "imports"
+    },
+    {
+      "from": "minisvc.cli:main",
+      "to": "minisvc.config:load_settings",
+      "type": "calls"
+    },
+    {
+      "from": "minisvc.cli:main",
+      "to": "minisvc.storage.repo:OrderRepository",
+      "type": "instantiates"
+    },
+    {
+      "from": "minisvc.cli:main",
+      "to": "process_env.MINISVC_DB",
+      "type": "reads_config"
+    },
+    {
+      "from": "minisvc.cli:main",
+      "to": "process_env.MINISVC_READONLY",
+      "type": "reads_config"
+    },
+    {
+      "from": "minisvc.api.routes",
+      "to": "minisvc.api.handlers",
+      "type": "imports"
+    },
+    {
+      "from": "minisvc.api.routes:register_routes",
+      "to": "minisvc.api.handlers:create_order",
+      "type": "calls"
+    },
+    {
+      "from": "minisvc.api.routes:register_routes",
+      "to": "minisvc.api.handlers:get_order",
+      "type": "calls"
+    },
+    {
+      "from": "minisvc.api.handlers",
+      "to": "minisvc.models",
+      "type": "imports"
+    },
+    {
+      "from": "minisvc.api.handlers",
+      "to": "minisvc.audit",
+      "type": "imports"
+    },
+    {
+      "from": "minisvc.api.handlers",
+      "to": "minisvc.storage.repo",
+      "type": "imports"
+    },
+    {
+      "from": "minisvc.api.handlers:create_order",
+      "to": "minisvc.models:Order",
+      "type": "instantiates"
+    },
+    {
+      "from": "minisvc.api.handlers:create_order",
+      "to": "minisvc.storage.repo:OrderRepository.save",
+      "type": "calls"
+    },
+    {
+      "from": "minisvc.api.handlers:create_order",
+      "to": "minisvc.audit:order_event",
+      "type": "calls"
+    },
+    {
+      "from": "minisvc.api.handlers:get_order",
+      "to": "minisvc.storage.repo:OrderRepository.get",
+      "type": "calls"
+    },
+    {
+      "from": "minisvc.api.handlers:get_order",
+      "to": "minisvc.audit:order_event",
+      "type": "calls"
+    },
+    {
+      "from": "minisvc.storage.repo",
+      "to": "minisvc.models",
+      "type": "imports"
+    },
+    {
+      "from": "minisvc.storage.repo:OrderRepository.init_schema",
+      "to": "sqlite.orders",
+      "type": "persists_to"
+    },
+    {
+      "from": "minisvc.storage.repo:OrderRepository.save",
+      "to": "sqlite.orders",
+      "type": "persists_to"
+    },
+    {
+      "from": "minisvc.storage.repo:OrderRepository.get",
+      "to": "sqlite.orders",
+      "type": "persists_to"
+    }
+  ],
+  "key_functions": [
+    {
+      "id": "minisvc.cli:main",
+      "summary": "Bootstraps the service environment for local usage by loading settings, creating the repository, and ensuring the orders table exists."
+    },
+    {
+      "id": "minisvc.config:load_settings",
+      "summary": "Reads MINISVC_DB and MINISVC_READONLY from the environment and returns a frozen Settings object."
+    },
+    {
+      "id": "minisvc.api.routes:register_routes",
+      "summary": "Binds POST /orders and GET /orders/<order_id> endpoints to handler lambdas using a provided app object."
+    },
+    {
+      "id": "minisvc.api.handlers:create_order",
+      "summary": "Constructs an Order from request payload fields, persists it through the repository, and returns a created response with an inline audit event."
+    },
+    {
+      "id": "minisvc.api.handlers:get_order",
+      "summary": "Fetches an order by id, returns a missing response when absent, and otherwise returns serialized order data plus a read event."
+    },
+    {
+      "id": "minisvc.audit:order_event",
+      "summary": "Creates an in-memory event dictionary; it does not persist anything."
+    },
+    {
+      "id": "minisvc.storage.repo:OrderRepository.init_schema",
+      "summary": "Creates the single orders table if it does not already exist."
+    },
+    {
+      "id": "minisvc.storage.repo:OrderRepository.save",
+      "summary": "Opens a SQLite connection and inserts an order row without retry or readonly checks."
+    },
+    {
+      "id": "minisvc.storage.repo:OrderRepository.get",
+      "summary": "Reads an order row by primary key and converts it to an Order dataclass when present."
+    }
+  ],
+  "runtime_flows": [
+    {
+      "name": "CLI startup flow",
+      "steps": [
+        "The console script `minisvc` invokes `minisvc.cli:main` via `pyproject.toml`.",
+        "`main` calls `minisvc.config:load_settings` with `os.environ`.",
+        "`load_settings` resolves `MINISVC_DB` and `MINISVC_READONLY` into a `Settings` object.",
+        "`main` instantiates `minisvc.storage.repo:OrderRepository` with `settings.database_path`.",
+        "`main` calls `OrderRepository.init_schema`, which opens SQLite and creates the `orders` table if needed.",
+        "`main` prints a readiness message containing the configured database path and exits with status 0."
+      ]
+    },
+    {
+      "name": "HTTP create-order flow",
+      "steps": [
+        "An application integrates `minisvc.api.routes:register_routes(app, repo)`.",
+        "`register_routes` binds `POST /orders` to a lambda that delegates to `minisvc.api.handlers:create_order`.",
+        "`create_order` reads `order_id`, `customer`, and `total_cents` from the payload and constructs an `Order` dataclass.",
+        "`create_order` calls `OrderRepository.save(order)`.",
+        "`OrderRepository.save` opens SQLite and inserts the order into the `orders` table.",
+        "Control returns to `create_order`, which calls `minisvc.audit:order_event(order, \"created\")`.",
+        "`create_order` returns a response dictionary with status, order id, and the generated event."
+      ]
+    }
+  ]
+}

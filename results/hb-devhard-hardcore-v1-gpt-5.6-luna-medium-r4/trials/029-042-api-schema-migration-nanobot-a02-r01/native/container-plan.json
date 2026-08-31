@@ -1,0 +1,67 @@
+{
+  "adapter": "nanobot",
+  "clean_room": {
+    "adapter": "oci",
+    "architecture": "arm64",
+    "capabilities": "all-dropped",
+    "container_name": "highlander-029-042-api-schema-migration-nanobot-a02-r01-nanobot-a1",
+    "digest_verified": true,
+    "host_home_mounted": false,
+    "image_id": "sha256:0f0ed84adaada7a70c624c6249b77dc3d0cd238822a416279a258e0d2276fc46",
+    "image_reference": "sha256:0f0ed84adaada7a70c624c6249b77dc3d0cd238822a416279a258e0d2276fc46",
+    "labels": {
+      "io.buildah.version": "1.43.2",
+      "io.highlander.baseline": "historical-temporal-proxy",
+      "io.highlander.harness": "nanobot",
+      "io.highlander.profile": "clean-core",
+      "io.highlander.version": "0.1.5.post3"
+    },
+    "network": "bridge",
+    "no_new_privileges": true,
+    "os": "linux",
+    "profile": "clean-core",
+    "publication_credentials_available": false,
+    "reference": "sha256:0f0ed84adaada7a70c624c6249b77dc3d0cd238822a416279a258e0d2276fc46",
+    "repo_digests": [
+      "localhost/highlander/nanobot@sha256:53c20b6e63853bc0efdc60030fd2adbd524ee82701b09d6c1c8709e200ca0859"
+    ],
+    "resources": {
+      "cpus": 2.0,
+      "memory_mb": 4096,
+      "pids_limit": 512,
+      "tmpfs_mb": 1024
+    },
+    "root_filesystem": "read-only",
+    "runtime": "podman",
+    "seed": {
+      "available": true,
+      "imported_file": "oauth.json",
+      "profile": "nanobot-subscription",
+      "required": true
+    },
+    "seed_profile": "nanobot-subscription"
+  },
+  "invocation": {
+    "argv": [
+      "env",
+      "NANOBOT_AGENTS__DEFAULTS__MODEL=openai-codex/gpt-5.6-luna",
+      "NANOBOT_AGENTS__DEFAULTS__PROVIDER=openai_codex",
+      "NANOBOT_AGENTS__DEFAULTS__REASONING_EFFORT=medium",
+      "NANOBOT_AGENTS__DEFAULTS__WORKSPACE=/workspace",
+      "NANOBOT_TOOLS__RESTRICT_TO_WORKSPACE=true",
+      "nanobot",
+      "agent",
+      "--workspace",
+      "/workspace",
+      "--session",
+      "highlander:direct",
+      "--no-markdown",
+      "--logs",
+      "--message"
+    ],
+    "credential_values_recorded": false,
+    "cwd": "/workspace",
+    "prompt_transport": "exact rendered HarnessBench prompt appended as one argv element"
+  },
+  "worktree": "<SOURCE_EVIDENCE_ROOT>/trials/029-042-api-schema-migration-nanobot-a02-r01/hb-work/nanobot/gpt-5.6-luna/oc-bench-v2-042-api-schema-migration-gpt-5.6-luna-20260831-005743-82544393/workspace"
+}

@@ -1,0 +1,156 @@
+{
+  "task_id": "039-repo-architecture-map",
+  "model_id": "hermes",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-039-repo-architecture-map-gpt-5.6-luna-20260831-000210-8cca2cce",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-039-repo-architecture-map-gpt-5.6-luna-20260831-000210-8cca2cce/workspace",
+  "session_id": "highlander-hermes-039-repo-architecture-map-a3-039-repo-architecture-map-d63fd514",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-039-repo-architecture-map-gpt-5.6-luna-20260831-000210-8cca2cce/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "hermes",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-039-repo-architecture-map-gpt-5.6-luna-20260831-000210-8cca2cce/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-039-repo-architecture-map-gpt-5.6-luna-20260831-000210-8cca2cce/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-039-repo-architecture-map-gpt-5.6-luna-20260831-000210-8cca2cce/highlander-native",
+      "--trial-id",
+      "015-039-repo-architecture-map-hermes-a03-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-039-repo-architecture-map-gpt-5.6-luna-20260831-000210-8cca2cce/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "hermes",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-039-repo-architecture-map-gpt-5.6-luna-20260831-000210-8cca2cce/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-039-repo-architecture-map-gpt-5.6-luna-20260831-000210-8cca2cce/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-039-repo-architecture-map-gpt-5.6-luna-20260831-000210-8cca2cce/highlander-native",
+        "--trial-id",
+        "015-039-repo-architecture-map-hermes-a03-r01"
+      ],
+      "stdout": "Created and verified exactly five deliverables in the workspace output directory:\n\n- `/workspace/out/module_map.json`\n- `/workspace/out/architecture.md`\n- `/workspace/out/doc_code_discrepancies.csv`\n- `/workspace/out/risk_register.csv`\n- `/workspace/out/onboarding_plan.md`\n\nValidation completed:\n\n- JSON structure and dependency edge types verified.\n- Required entry points included.\n- CSV headers and assessment values verified.\n- CLI startup exercised successfully with a temporary SQLite database.\n- HTTP create/read order flow exercised successfully.\n- Input repository remains unchanged; no generated files were added.\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-hermes-039-repo-architecture-map-a3-039-repo-architecture-map-d63fd514"
+  },
+  "oracle_result": {
+    "task": "039-repo-architecture-map",
+    "outcome_score": 0.9573,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "module_map_content",
+        "pass": true,
+        "weight": 0.35,
+        "detail": {
+          "score": 1.0,
+          "typed_edge_hits": 6,
+          "sequence_hits": 2,
+          "marker_score": 1.0
+        }
+      },
+      {
+        "id": "architecture_markdown",
+        "pass": true,
+        "weight": 0.18,
+        "detail": {
+          "hits": 8
+        }
+      },
+      {
+        "id": "doc_code_discrepancies",
+        "pass": true,
+        "weight": 0.14,
+        "detail": {
+          "score": 0.8662,
+          "rows": 3,
+          "term_hits": 6,
+          "expectation_hits": 2,
+          "concrete_evidence": 1.0
+        }
+      },
+      {
+        "id": "risk_register",
+        "pass": true,
+        "weight": 0.13,
+        "detail": {
+          "score": 1.0,
+          "rows": 5,
+          "term_hits": 8
+        }
+      },
+      {
+        "id": "onboarding_plan",
+        "pass": false,
+        "weight": 0.08,
+        "detail": {
+          "score": 0.7,
+          "term_hits": 7
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.12,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.9573,
+    "oracle_outcome_score": 0.9573,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9573,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 147.782
+}

@@ -1,0 +1,53 @@
+{
+  "incident_id": "2026-03-22-checkout-payment-authentication",
+  "root_cause_service": "auth-gateway",
+  "root_cause_change_id": "AUTH-2026-0318",
+  "confidence": "high",
+  "affected_services": [
+    "checkout-web",
+    "payment-api",
+    "auth-gateway"
+  ],
+  "evidence": [
+    {
+      "source_file": "/workspace/in/logs/checkout-web.log",
+      "observation": "At 14:09:41Z checkout submit_order failed with HTTP 401 from payment-api; at 14:10:03Z the checkout flow was still blocked by payment authentication failure."
+    },
+    {
+      "source_file": "/workspace/in/logs/payment-api.log",
+      "observation": "At 14:08:59Z payment authentication failed through auth-gateway because issuer partner-v2 was not allowed; create_payment was rejected at 14:09:04Z."
+    },
+    {
+      "source_file": "/workspace/in/logs/auth-gateway.log",
+      "observation": "AUTH-2026-0318 was deployed at 14:05:12Z, changing the JWKS namespace and issuer to partner-v2; validation then failed because allowed_issuers still contained partner-v1."
+    },
+    {
+      "source_file": "/workspace/in/metrics/service_metrics.csv",
+      "observation": "At 14:10Z checkout-web, payment-api, and auth-gateway had elevated HTTP 401 rates of 18.7%, 21.2%, and 28.4%, respectively, while checkout and payment latency also rose."
+    },
+    {
+      "source_file": "/workspace/in/topology.json",
+      "observation": "The dependency path is checkout-web -> payment-api -> auth-gateway, and AUTH-2026-0318 is the recent change on auth-gateway closest to the incident."
+    }
+  ],
+  "excluded_red_herrings": [
+    {
+      "signal": "orders-db CPU at 86%",
+      "why_not_primary": "The database log reports normal 35 ms query latency, zero errors, and no failed checkout transaction reached orders-db before the auth gate."
+    },
+    {
+      "signal": "cdn-edge HTTP 5xx rate at 4.8%",
+      "why_not_primary": "The metric note isolates the failures to images, and checkout-web reports static assets served normally after retry while checkout submissions remained blocked."
+    },
+    {
+      "signal": "orders-db maintenance/vacuum activity",
+      "why_not_primary": "Topology and logs place the failing request on the payment/auth branch; the database change was vacuum tuning only, with no schema or credential change."
+    }
+  ],
+  "recommended_next_steps": [
+    "Immediately pause or roll back AUTH-2026-0318, or add partner-v2 to auth-gateway allowed_issuers after validating the intended issuer configuration.",
+    "Refresh or invalidate the affected JWKS cache namespace and confirm partner-v2 keys are retrievable without fallback to partner-v1.",
+    "Run a controlled checkout payment-authentication test and verify auth-gateway, payment-api, and checkout-web HTTP 401 rates and p95 latency return to baseline.",
+    "Review the change validation and rollout guardrails so issuer and allowed_issuers cannot diverge in a production deployment."
+  ]
+}

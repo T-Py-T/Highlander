@@ -1,0 +1,83 @@
+Done.
+
+I repaired the migration package in the accessible workspace mirror:
+- /workspace/in/billingdb/migration.sql
+- /workspace/in/billingdb/preflight_report.md
+- /workspace/in/billingdb/rollback.sql
+- /workspace/in/billingdb/postcheck.sql
+- /workspace/in/billingdb/migration_report.md
+
+Important environment note:
+- The exact <HOME>/... path from your prompt is not mounted here.
+- /Users is read-only in this Linux environment, so I could not write there.
+- The matching editable project content was present at /workspace/in/billingdb, and that is where I applied the repair.
+
+What changed
+- migration.sql now:
+  - runs inside an explicit transaction
+  - creates payment_orphans if needed
+  - moves orphan payments there before enforcing referential integrity
+  - preserves orphan p4
+  - preserves all invoices and valid payments
+  - preserves invoice created_at values
+  - adds invoices.status TEXT NOT NULL DEFAULT 'open'
+  - rebuilds payments with a foreign key to invoices(id)
+  - restores PRAGMA foreign_keys to ON after commit
+  - is safe to rerun without duplicating moved orphans or corrupting counts
+
+- rollback.sql now:
+  - restores old table shapes:
+    - invoices(id, customer_id, total_cents, created_at)
+    - payments(id, invoice_id, amount_cents, created_at)
+  - merges payment_orphans back into payments
+  - drops payment_orphans
+  - runs in an explicit transaction
+
+- postcheck.sql now checks:
+  - row counts
+  - orphan preservation
+  - status null/default expectations
+  - created_at preservation
+  - missing invoice references in payments
+  - foreign key integrity
+
+- preflight_report.md documents:
+  - initial row counts
+  - orphan inventory
+  - required migration actions
+
+- migration_report.md documents:
+  - fixes made
+  - validation results
+  - environment/path caveat
+
+Validation I actually ran
+Using Python’s built-in sqlite3 (SQLite 3.40.1), I verified:
+- after migration:
+  - invoices = 3
+  - payments = 3
+  - payment_orphans = 1
+  - p4 preserved in payment_orphans
+  - status nulls = 0
+  - non-open statuses = 0
+  - created_at drift = 0
+  - payments with missing invoice = 0
+  - PRAGMA foreign_key_check returned no violations
+  - inserting a bad future payment failed with FOREIGN KEY constraint failed
+
+- after running migration a second time:
+  - invoices still = 3
+  - payments still = 3
+  - payment_orphans still = 1
+  - p4 still present exactly once
+  - no invalid payment references introduced
+
+- after rollback:
+  - invoices columns restored to old shape
+  - payments columns restored to old shape
+  - invoice rows = 3
+  - payment rows = 4
+  - p4 restored to payments
+  - payment_orphans table removed
+
+If you want, I can also paste the final SQL contents inline.

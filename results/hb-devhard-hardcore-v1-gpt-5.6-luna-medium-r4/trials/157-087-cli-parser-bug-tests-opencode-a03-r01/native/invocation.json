@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "opencode",
+    "run",
+    "--format",
+    "json",
+    "--dir",
+    "/workspace",
+    "--model",
+    "openai/gpt-5.6-luna",
+    "--variant",
+    "medium",
+    "--auto",
+    "--pure",
+    "<TASK_BYTES_UTF8>"
+  ],
+  "credential_binding": {
+    "seed_profile": "opencode-subscription",
+    "value_retained": false
+  },
+  "cwd": "/workspace",
+  "harness_id": "opencode",
+  "prompt_sha256": "d62c710f6f0e1bf0b347c0411543b642d0a6965975bc786a40e8c7417d3d2d35",
+  "schema_version": 1
+}

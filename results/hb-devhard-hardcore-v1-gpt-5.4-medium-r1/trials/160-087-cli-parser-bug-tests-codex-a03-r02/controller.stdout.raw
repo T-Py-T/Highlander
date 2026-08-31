@@ -1,0 +1,82 @@
+[harnessbench] run-task 087-cli-parser-bug-tests (harness=codex, mode=live) ...
+[harnessbench] run-task 087-cli-parser-bug-tests finished adapter_ok=True elapsed=135.446s
+{
+  "task_id": "087-cli-parser-bug-tests",
+  "elapsed_sec": 135.446,
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-codex-087-cli-parser-bug-tests-a3-087-cli-parser-bug-tests-b648daf2"
+  },
+  "oracle_result": {
+    "task": "087-cli-parser-bug-tests",
+    "outcome_score": 0.8821,
+    "level": "good",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": true,
+        "weight": 0.25,
+        "detail": "work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-184822-0b0be0d3/workspace/in/csvtool\nplugins: anyio-4.12.0, cov-4.1.0, asyncio-0.21.1\nasyncio: mode=Mode.STRICT\ncollected 7 items\n\ntests/test_cli_existing.py ...                                           [ 42%]\ntests/test_cli_regression.py ....                                        [100%]\n\n=============================== warnings summary ===============================\n../../../../../../../../../../../../../../../../../opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: 217 warnings\n  /opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n    return asyncio.iscoroutinefunction(obj)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================= 7 passed, 217 warnings in 0.30s ========================\n"
+      },
+      {
+        "id": "hidden_cli_behavior",
+        "pass": true,
+        "weight": 0.35,
+        "detail": {
+          "score": 1.0,
+          "stdout": "id,customer,total\no1,\"Ava, Inc\",1200\no3,\"Core, Labs\",750\n",
+          "bad_stderr": "Error: invalid --where expression: 'status'; expected FIELD=VALUE\n"
+        }
+      },
+      {
+        "id": "existing_test_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": null
+      },
+      {
+        "id": "regression_tests_added",
+        "pass": false,
+        "weight": 0.1,
+        "detail": {
+          "score": 0.5714285714285714
+        }
+      },
+      {
+        "id": "implementation_quality",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "score": 0.75
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.8821,
+    "oracle_outcome_score": 0.8821,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.8821,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/160-087-cli-parser-bug-tests-codex-a03-r02/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-184822-0b0be0d3"
+}

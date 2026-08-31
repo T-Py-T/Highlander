@@ -72,6 +72,30 @@ The bundle's `results.jsonl`, `leaderboard.json`, `summary.json`, and
 combined scores are null because no process judge ran. NanoBot is explicitly
 unavailable, not scored zero.
 
+## Retained hard coding and DevOps seasons
+
+The primary same-model baseline is
+`hb-devhard-hardcore-v1-gpt-5.4-medium-r1/`: nine unchanged HarnessBench tasks,
+six harnesses, and three attempts per harness/task. Five harnesses have 27/27
+current valid slots. Atomic has 26/27 and is shown without a rank. Its public
+bundle contains 6,090 manifest-verified artifacts and retains every original
+and replacement result row.
+
+The successor model stratum is
+`hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4/`. It uses the same task matrix
+but is not pooled with GPT-5.4. Both seasons keep process and combined scores
+null because no process judge ran, and both expose native usage with explicit
+coverage rather than inventing missing tokens or subscription costs.
+
+Verify both immutable bundles:
+
+```text
+python3 tools/hb-evidence.py verify-season \
+  results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1
+python3 tools/hb-evidence.py verify-season \
+  results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4
+```
+
 ## Retained protocol qualification
 
 `fake-t002-protocol-r1/` is the first retained public bundle. It contains 48 manifest-verified artifacts from two deterministic fake Contenders and is tied to the exact clean MatchRunner and Arena commit. It is deliberately labeled as protocol evidence rather than a real-harness comparison: no model was called, T002 was not solved, and no performance rank can be inferred.

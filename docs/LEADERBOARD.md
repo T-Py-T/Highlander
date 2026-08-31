@@ -6,7 +6,7 @@ Harness produces the strongest coding and DevOps results?
 
 ## Hard-first six-Harness season
 
-`benchmark-packs/hb-devhard-hardcore-v1.json` freezes nine unchanged official
+`benchmark-packs/hb-devhard-hardcore-v1-r4.json` freezes nine unchanged official
 HarnessBench coding and DevOps tasks. The field is OMP (the current control),
 OpenCode, Codex, Hermes, Atomic, and NanoBot. Each Harness receives three fixed
 attempt slots per task, for 27 scored slots per Harness and 162 total slots.
@@ -23,9 +23,25 @@ typical performance across the workload rather than selecting each Harness's
 best try. The per-task matrix is mandatory, so the aggregate can always be
 traced back to the tasks a Harness solved or missed.
 
-The season remains provisional until the clean-core Atomic route and the
-repaired NanoBot OAuth seed qualify. An unavailable lane is shown as
-unavailable, never as zero.
+The season remains provisional until every clean-core route qualifies under
+the corrected r4 protocol. An unavailable lane is shown as unavailable, never
+as zero. The six r1 route calls are retained as invalid infrastructure evidence:
+the protocol freezer omitted `expected_runtime_reasoning`, so the controller
+rejected every response before scoring. R2 then qualified OMP, Hermes, Atomic,
+and NanoBot but retained OpenCode and Codex as unavailable because Podman
+populated their home directories as root-owned. R3 moves all home/XDG state
+under a fresh writable tmpfs child without changing the benchmark matrix and
+qualified all six routes. R4 corrects the evidence parser before scoring: a
+numeric reasoning-token counter is not a reasoning-effort identity, and a
+partial matching observation is not an explicit control conflict. R1–r3 remain
+retained evidence and are not used for scored calls.
+
+The executable protocol is
+`protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4.json`, SHA-256
+`c0033d61cc3bdc1c30716c3edf6cf8d815f5b96fe17229491c74b1f178fe37df`.
+It adds six unscored route-qualification calls before the 162 scored slots and
+uses the unchanged upstream renderer and deterministic oracles. Reproduction
+and redacted-export commands are in [SEASON-RUNBOOK.md](SEASON-RUNBOOK.md).
 
 ## Original breadth season
 
@@ -101,7 +117,7 @@ Build the empty, provisional hard-first matrix before running any paid Trial:
 
 ```text
 python3 tools/hb-leaderboard.py \
-  --manifest benchmark-packs/hb-devhard-hardcore-v1.json \
+  --manifest benchmark-packs/hb-devhard-hardcore-v1-r4.json \
   --results /dev/null \
   --format markdown
 ```

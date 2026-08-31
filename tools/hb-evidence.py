@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export or verify a sanitized HarnessBench pilot evidence bundle."""
+"""Export or verify sanitized HarnessBench pilot and season evidence."""
 
 from __future__ import annotations
 
@@ -15,7 +15,9 @@ if str(ROOT) not in sys.path:
 from highlander.hb_evidence import (  # noqa: E402
     PilotEvidenceError,
     export_pilot_bundle,
+    export_season_bundle,
     verify_pilot_bundle,
+    verify_season_bundle,
 )
 
 
@@ -28,14 +30,26 @@ def main() -> int:
     export.add_argument("--runner-repository", default=str(ROOT))
     verify = sub.add_parser("verify")
     verify.add_argument("bundle")
+    export_season = sub.add_parser("export-season")
+    export_season.add_argument("--source", required=True)
+    export_season.add_argument("--output", required=True)
+    export_season.add_argument("--runner-repository", default=str(ROOT))
+    verify_season = sub.add_parser("verify-season")
+    verify_season.add_argument("bundle")
     args = parser.parse_args()
     try:
         if args.command == "export":
             result = export_pilot_bundle(
                 args.source, args.output, args.runner_repository
             )
-        else:
+        elif args.command == "verify":
             result = verify_pilot_bundle(args.bundle)
+        elif args.command == "export-season":
+            result = export_season_bundle(
+                args.source, args.output, args.runner_repository
+            )
+        else:
+            result = verify_season_bundle(args.bundle)
     except PilotEvidenceError as exc:
         print(f"HarnessBench pilot evidence: {exc}", file=sys.stderr)
         return 2

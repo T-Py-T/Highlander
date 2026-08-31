@@ -1,0 +1,23 @@
+Implemented and verified the CSV CLI fixes in the mounted workspace:
+
+- `/workspace/in/csvtool/csvtool/cli.py`
+- `/workspace/in/csvtool/csvtool/filtering.py`
+- `/workspace/in/csvtool/tests/test_cli_regression.py`
+
+Changes include:
+
+- Proper CSV parsing and writing with quoted comma preservation.
+- Repeated `--where` predicates with AND semantics.
+- Empty results still emit the selected header and exit successfully.
+- Ascending and descending sort support, including `--sort -field`.
+- Numeric-looking values sort numerically.
+- Clear non-zero errors for malformed `--where` expressions and missing fields.
+- Added focused regression tests without modifying `test_cli_existing.py`.
+
+Verification:
+
+`uv run --with pytest python -m pytest tests`
+
+Result: `8 passed`
+
+The user-provided `/Users/...` path was not present in this Linux environment; the available mapped project path was `/workspace/in/csvtool`.

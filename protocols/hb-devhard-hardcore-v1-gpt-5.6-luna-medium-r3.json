@@ -1,0 +1,1450 @@
+{
+  "attempts_per_task": 3,
+  "claim_boundary": "HarnessBench outcome comparison under frozen configured subscription routes. Native runtime and wire identity are reported when exposed; absence of wire proof is not represented as proof. NanoBot is a version-pinned temporal proxy.",
+  "created_at": "2026-08-31T03:21:58.833515Z",
+  "execution_stages": [
+    {
+      "exit": "all six harness routes qualified and every scheduled slot retained",
+      "id": "hardest-first",
+      "task_ids": [
+        "039-repo-architecture-map",
+        "042-api-schema-migration",
+        "043-db-migration-safety",
+        "064-service-dependency-triage",
+        "086-sql-migration-preflight-rollback"
+      ]
+    },
+    {
+      "exit": "complete nine-task matrix with no missing valid slots",
+      "id": "cross-repository-and-diagnostic",
+      "task_ids": [
+        "083-monorepo-interface-repair",
+        "085-flaky-test-root-cause",
+        "082-compose-config-repair",
+        "087-cli-parser-bug-tests"
+      ]
+    }
+  ],
+  "harnesses": [
+    {
+      "configuration_profile": "clean-core",
+      "configured_model_id": "openai-codex/gpt-5.6-luna",
+      "expected_runtime_model_id": "gpt-5.6-luna",
+      "expected_runtime_provider_id": "openai-codex",
+      "expected_runtime_reasoning": "medium",
+      "fallback_policy": "forbidden",
+      "id": "omp",
+      "provider_id": "openai-codex",
+      "reasoning": "medium",
+      "role": "current-control",
+      "seed_profile": "omp-subscription",
+      "version": "17.2.10",
+      "wire_reasoning": "medium"
+    },
+    {
+      "configuration_profile": "clean-core",
+      "configured_model_id": "openai/gpt-5.6-luna",
+      "expected_runtime_model_id": "gpt-5.6-luna",
+      "expected_runtime_provider_id": "openai",
+      "expected_runtime_reasoning": "medium",
+      "fallback_policy": "forbidden",
+      "id": "opencode",
+      "provider_id": "openai",
+      "reasoning": "medium",
+      "role": "current-challenger",
+      "seed_profile": "opencode-subscription",
+      "version": "1.18.15",
+      "wire_reasoning": "medium"
+    },
+    {
+      "configuration_profile": "clean-core",
+      "configured_model_id": "gpt-5.6-luna",
+      "expected_runtime_model_id": "gpt-5.6-luna",
+      "expected_runtime_provider_id": "openai-codex",
+      "expected_runtime_reasoning": "medium",
+      "fallback_policy": "forbidden",
+      "id": "codex",
+      "provider_id": "openai-codex",
+      "reasoning": "medium",
+      "role": "current-challenger",
+      "seed_profile": "codex-subscription",
+      "version": "0.147.0",
+      "wire_reasoning": "medium"
+    },
+    {
+      "configuration_profile": "clean-core",
+      "configured_model_id": "gpt-5.6-luna",
+      "expected_runtime_model_id": "gpt-5.6-luna",
+      "expected_runtime_provider_id": "openai-codex",
+      "expected_runtime_reasoning": "medium",
+      "fallback_policy": "forbidden",
+      "id": "hermes",
+      "provider_id": "openai-codex",
+      "reasoning": "medium",
+      "role": "current-challenger",
+      "seed_profile": "hermes-subscription",
+      "version": "0.20.0",
+      "wire_reasoning": "medium"
+    },
+    {
+      "configuration_profile": "clean-core",
+      "configured_model_id": "gpt-5.6-luna",
+      "expected_runtime_model_id": "gpt-5.6-luna",
+      "expected_runtime_provider_id": "openai-codex",
+      "expected_runtime_reasoning": "medium",
+      "fallback_policy": "forbidden",
+      "id": "atomic",
+      "provider_id": "openai-codex",
+      "reasoning": "medium",
+      "role": "current-challenger",
+      "seed_profile": "atomic-subscription",
+      "version": "0.9.15",
+      "wire_reasoning": "medium"
+    },
+    {
+      "configuration_profile": "clean-core",
+      "configured_model_id": "openai-codex/gpt-5.6-luna",
+      "expected_runtime_model_id": "gpt-5.6-luna",
+      "expected_runtime_provider_id": "openai-codex",
+      "expected_runtime_reasoning": "medium",
+      "fallback_policy": "forbidden",
+      "id": "nanobot",
+      "provider_id": "openai-codex",
+      "reasoning": "medium",
+      "role": "historical-temporal-proxy",
+      "seed_profile": "nanobot-subscription",
+      "version": "0.1.5.post3",
+      "wire_reasoning": "medium"
+    }
+  ],
+  "invalidation_and_disqualification": {
+    "fallback_policy": "forbidden",
+    "invalid_score_policy": "Invalid and unavailable runs have null scores and are never converted to zero.",
+    "invalid_trial": [
+      "authentication or model-route failure",
+      "harness nonzero exit or timeout",
+      "missing deterministic oracle result",
+      "task, oracle, image, source, manifest, protocol, or upstream drift",
+      "observed model/provider/reasoning conflicts with the frozen control"
+    ],
+    "replacement_retry_policy": "No automatic retries; an infrastructure-invalid replacement must be explicitly recorded under the same scored slot.",
+    "valid_low_score_policy": "A deterministic outcome, including zero, is valid and never retried for performance."
+  },
+  "lane": "oci_clean_core_subscription_realism",
+  "limits": {
+    "common_cost_cap": null,
+    "common_token_cap": null,
+    "controller_grace_seconds": 90,
+    "harness_wall_time_seconds": 1200,
+    "scheduled_qualification_calls": 6,
+    "scheduled_scored_calls": 162
+  },
+  "manifest": {
+    "pack_id": "hb-devhard-hardcore-v1",
+    "path": "benchmark-packs/hb-devhard-hardcore-v1-r3.json",
+    "scoring": {
+      "legacy_weighted_scorecard": "forbidden",
+      "outcome_scale": [
+        0.0,
+        1.0
+      ],
+      "primary": "mean_of_per_task_mean_valid_outcome",
+      "primary_label": "overall typical outcome",
+      "process_score": "optional_separate_frozen_judge_lane",
+      "required_views": [
+        "per_task_mean_and_range",
+        "overall_typical_outcome",
+        "best_capability",
+        "median",
+        "per_task_worst",
+        "full_credit_rate",
+        "zero_score_rate",
+        "attempt_dispersion",
+        "invalid_attempts",
+        "elapsed_time",
+        "operator_interventions"
+      ],
+      "tie_breakers": [
+        "mean_of_per_task_best_valid_outcome_desc",
+        "zero_score_rate_asc",
+        "median_elapsed_seconds_asc_when_comparable"
+      ]
+    },
+    "sha256": "f176015c366cc49fd6b33794873bf15d2189a10ca85f213baaea6f006e2161ea"
+  },
+  "permissions": {
+    "memory_plugins_rules_mcp": "personal state absent or disabled",
+    "network": "provider route available; benchmark tasks require no external service",
+    "operator_intervention": "none after each staged launch",
+    "publication": "no GitHub, SSH, or host publication credentials in workers",
+    "tools": "native shipped harness tools are the treatment",
+    "workspace": "one fresh HarnessBench sandbox per trial"
+  },
+  "protocol_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r3",
+  "purpose": "Same-model hard coding and DevOps comparison using unchanged HarnessBench tasks and deterministic oracles.",
+  "qualification": {
+    "calls_per_harness": 1,
+    "configured_route_is_not_wire_proof": true,
+    "prompt": "This is a model-route qualification. Use no tools. Reply exactly HIGHLANDER_ROUTE_OK.",
+    "required_before_scored_run": true
+  },
+  "runner": {
+    "implementation_commit": "1d56fa5110dbc069692f6099228b089869d5a84f",
+    "implementation_tree": "915eed9c8b8052b6f3f2ed4b5919d14a2ef4de3b",
+    "repository": "https://github.com/T-Py-T/Highlander"
+  },
+  "runtime": {
+    "cpus": 2.0,
+    "host_home_mounted": false,
+    "images": {
+      "atomic": "sha256:b44417c1e8117981759fc3821f4b8d94927e59cc01ce9481366c58dc416b697a",
+      "codex": "sha256:ae11c8dcd4c94cbca5d42be07ea677f4eff88398828a4e7c74b3f0e9d67c2703",
+      "evaluator": "sha256:894a284634a57f7cd48f4f4665972277f21e06c3501a119151aa7d9f937e0281",
+      "hermes": "sha256:f1fd45a751bb2391000dc81241eda4548c56e30eea499c27d211058d6ef48c1f",
+      "nanobot": "sha256:0f0ed84adaada7a70c624c6249b77dc3d0cd238822a416279a258e0d2276fc46",
+      "omp": "sha256:aba65e6191222db45af222cd9a58603479038332201d832cbb52313092d14dee",
+      "opencode": "sha256:78712636baea6b70bfda75ff365cc004dc9e9642d77043cd55002220efe2a8cf"
+    },
+    "memory_mb": 4096,
+    "network": "bridge",
+    "oci": "podman",
+    "pids_limit": 512,
+    "profile": "clean-core",
+    "publication_credentials_available": false,
+    "tmpfs_mb": 1024
+  },
+  "schema_version": 1,
+  "scoring": {
+    "combined": {
+      "score": null,
+      "status": "not_computed"
+    },
+    "outcome": "unchanged deterministic HarnessBench oracle",
+    "process": {
+      "judge": null,
+      "score": null,
+      "status": "not_evaluated"
+    },
+    "ranking": {
+      "legacy_weighted_scorecard": "forbidden",
+      "outcome_scale": [
+        0.0,
+        1.0
+      ],
+      "primary": "mean_of_per_task_mean_valid_outcome",
+      "primary_label": "overall typical outcome",
+      "process_score": "optional_separate_frozen_judge_lane",
+      "required_views": [
+        "per_task_mean_and_range",
+        "overall_typical_outcome",
+        "best_capability",
+        "median",
+        "per_task_worst",
+        "full_credit_rate",
+        "zero_score_rate",
+        "attempt_dispersion",
+        "invalid_attempts",
+        "elapsed_time",
+        "operator_interventions"
+      ],
+      "tie_breakers": [
+        "mean_of_per_task_best_valid_outcome_desc",
+        "zero_score_rate_asc",
+        "median_elapsed_seconds_asc_when_comparable"
+      ]
+    }
+  },
+  "source_hashes": {
+    "highlander/cleanroom.py": "512b18d6cf86e24d1be8cc602ef59fbc247939f50fc1fdfee324daff8280fe51",
+    "highlander/hb_clean.py": "6b5e34c898c6fdb91ddefd8c922642a07135764098b24e5892a4f0dff4d6c6bf",
+    "highlander/hb_season_run.py": "1a3145391b7e1354d08565a36496187faa8910d655a6a4f8268b86fe051782e0",
+    "highlander/season.py": "b278b9fa405487389dd495408bbfb6b5423c12c85172f7fa42473360c0b970dc",
+    "tools/hb-clean-adapter.py": "17813c90d77e10c78440426d282594af5dd20e6c0ab97a62e6eafe516c66d734",
+    "tools/hb-season.py": "9ddafe85b3656add96a01d64033d48219b0eca7d1b9813b91e28e68c24145633"
+  },
+  "tasks": [
+    {
+      "bundle_sha256": "f31c89e7c06e3e0828b03bc2b008d61fff32868e5d6ef1d30e919026094047e1",
+      "difficulty": "hard",
+      "domain": "coding",
+      "file_count": 17,
+      "file_hashes": {
+        "fixtures/in/repo/README.md": "c2ddf127e0e33127473de46be65564f8d6a10e6fb1558fb0560aed38507af589",
+        "fixtures/in/repo/minisvc/__init__.py": "8ed9f6fd0e84c7b8f4f5cd80fa253a07f025a8884a0f35432c0543e542bca16e",
+        "fixtures/in/repo/minisvc/api/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "fixtures/in/repo/minisvc/api/handlers.py": "c4744d2b4c851cc8c0e8054cc52d48251c6a07f083ec63157b73f53e38c78b08",
+        "fixtures/in/repo/minisvc/api/routes.py": "015c44c2d4680272431732dbed40a1aaa922b6b4a970247e8b37b695821fc8a7",
+        "fixtures/in/repo/minisvc/audit.py": "65bde32b34b584a1a522ff6ce5c2894e3a97dbacb248e99c9a1057ba34aba117",
+        "fixtures/in/repo/minisvc/cli.py": "155d80b578265cfe0c367ded17f84b67f7d3ee3f125cb22757ed4d041e33457b",
+        "fixtures/in/repo/minisvc/config.py": "7423a5062adad0ad1d193a66c3d86ea1c6fd46ab8243d093952fd6f8a88a3192",
+        "fixtures/in/repo/minisvc/models.py": "70e9a26f757c9dd9d0b8ce27be86a30fdd301300c7f8120f3f914ad5c51654b8",
+        "fixtures/in/repo/minisvc/storage/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "fixtures/in/repo/minisvc/storage/repo.py": "d62236a546e0d979950192ad56b329a7141eb3ae1a047d15b9b85728a8da0664",
+        "fixtures/in/repo/pyproject.toml": "caf6c48e47366379ba86852cfb977208d1d6e4b883d08ec4284bab7ce6cc57a2",
+        "ground_truth.json": "94f1171144d883ef262d941b4b71b0d58840d5b8c3ec08dfb32cbc5b732a6eb5",
+        "llm_rubric.py": "fc8609ad03f878f9596fc616af83dfa9c4a78bad6d9438d10f845fc78b6596cf",
+        "oracle_grade.py": "1bc71d817751ef585ecd6eee8e1f6bcb540ae9dc546e1270d6be30bc198cf93c",
+        "prompt.txt": "04720b03b43b848f27ca3dee863d99627233560e2b4fe7b5250a272ce29b022c",
+        "task.yaml": "5f3b8a016f7763c2e57bfa9476bbded80e9ed057dfb7976e3e77027c1131cb2c"
+      },
+      "git_tree_sha1": "0da3912ea4fbdd1eeb53db2a4d718f8d725e6d4b",
+      "id": "039-repo-architecture-map",
+      "oracle_sha256": "1bc71d817751ef585ecd6eee8e1f6bcb540ae9dc546e1270d6be30bc198cf93c"
+    },
+    {
+      "bundle_sha256": "4fd1c176aa7546c3d1b24226706697cf22424d02e9de3df101b203b56d4dc384",
+      "difficulty": "hard",
+      "domain": "coding",
+      "file_count": 12,
+      "file_hashes": {
+        "fixtures/in/schema_migration/client.py": "804e9d813ed55509b46d723e067ce03becf0e184df6f3d23f45ec59ef59f372c",
+        "fixtures/in/schema_migration/migration_notes.md": "93c4aca2fc3c6bddbb96a884cfe9002878d1ddd2514beb3e5d647524231b05bb",
+        "fixtures/in/schema_migration/new_schema.json": "227028945ab09d400af5338031874b240cc40aeb2c049ea7f972e01de1614955",
+        "fixtures/in/schema_migration/old_schema.json": "75dd5b6ee8ad3a8a611b1289fc6d96d9dee8deca8353428d1bcd2364ffe08083",
+        "fixtures/in/schema_migration/pii_policy.md": "99657db2b227143d24d9274a59b9a9ee291d8c3acd76c3807591c5d5ac2884bb",
+        "fixtures/in/schema_migration/sample_payloads.jsonl": "fcc7d0bf2a35fc7426090cd3f83107f8222500d84f4114401dca5be7abfdd258",
+        "fixtures/in/schema_migration/tests/test_client.py": "8ba64ae68ad03fb2d181d883b4a1707b32590d8fddaf881330f55a80df358657",
+        "ground_truth.json": "dbb119b167e2d13698e8c3097b24239f5a5b107e166f188fb933f62daf73ca90",
+        "llm_rubric.py": "b027e8b73b30b5b88174732f33515bc89835c051fd9475d11218800ce470dfd8",
+        "oracle_grade.py": "343c51c26bb17eb9d89f834c53e74ca93439926aac62d7d5107b581ffc561891",
+        "prompt.txt": "aed690631fc98f6d05936e5825b50470e33b001cdf336de7e05a8c5ee7bd9acd",
+        "task.yaml": "ffd3829775ec64c84a39cde555cdd71044affec235175f85efefe166a27a59b8"
+      },
+      "git_tree_sha1": "c31ad82fbc7a26a784db28d0b9be72594b815763",
+      "id": "042-api-schema-migration",
+      "oracle_sha256": "343c51c26bb17eb9d89f834c53e74ca93439926aac62d7d5107b581ffc561891"
+    },
+    {
+      "bundle_sha256": "3b3363874ca74ce6c4e7ccd638c0443fdef7627cf61f9b39063e169d51a609fb",
+      "difficulty": "hard",
+      "domain": "coding-devops",
+      "file_count": 8,
+      "file_hashes": {
+        "__pycache__/oracle_grade.cpython-314.pyc": "7ad950b74638a04e2a5cc19eff5080c2d8dc45fbb323e22b94a3ed41e8c47096",
+        "fixtures/in/db/migration.sql": "cd19eff3d4869cf43d3bf0f9daa41557c6724af3e1da605b0c70bd0c83d857f8",
+        "fixtures/in/db/migration_policy.md": "e3638314798a2c7419e68baa7c1e52663ee752f513f1a025127a3a8ada6b5465",
+        "fixtures/in/db/schema.sql": "3f097b5cdbd1e6a2522b6252e51a55f1e145cd4a3566c0bcaf71c492fc947a9a",
+        "ground_truth.json": "2b1d4c545e09b93081b670c9f92078eba5764464ee0b8aade98cf9eb2d67c2d5",
+        "llm_rubric.py": "13768abab8303bd656c4107e35bfe55831dbc8f8453436650beadc14e6ccccfd",
+        "oracle_grade.py": "c5f3c3d33940e8f8c5bc7e4c719291f235cbd036ebcf33694041e6173f0c1171",
+        "prompt.txt": "7006dc9f181565bf81c7bd64bdf30e3d0df62991b6a022307bc2aa39dbebbeb8",
+        "task.yaml": "349a967547a7271f3c65e7c705e78aeeff0083d7fa5d3bcb461bcccbd572e2ee"
+      },
+      "git_tree_sha1": "0cd97524725619f70410ea6ef038ab7b42438516",
+      "id": "043-db-migration-safety",
+      "oracle_sha256": "c5f3c3d33940e8f8c5bc7e4c719291f235cbd036ebcf33694041e6173f0c1171"
+    },
+    {
+      "bundle_sha256": "c683ae6288d89659f31e657f7b4a1a3fe1b8f80691fee9412cc1749265a33fd3",
+      "difficulty": "hard",
+      "domain": "devops",
+      "file_count": 11,
+      "file_hashes": {
+        "fixtures/in/logs/auth-gateway.log": "72e847f715cf8469ceb3dc6e8076c10eb3286eed9e6ec33de4126ab56a75f021",
+        "fixtures/in/logs/checkout-web.log": "03861f5c8a0f05cd960c02dfeb71fa4247a19ce47e682988846a21b976ec7953",
+        "fixtures/in/logs/orders-db.log": "1bd706da909c39842626c3f27cc95bee7d19c98a8b70b09657b326890715e8a8",
+        "fixtures/in/logs/payment-api.log": "cc9e08849c62e13c3278f1c85f459df5b698799accfeebc30bc1d0ed84d8e498",
+        "fixtures/in/metrics/service_metrics.csv": "e1db0be401760fd2b83e90c3e17e97d28844b45e327858b27ca0a0d2876f5f36",
+        "fixtures/in/topology.json": "bf9acde251e643f96534abfb2f1f96d9a4799bd82a40d51d6a5530541528fc49",
+        "ground_truth.json": "f3d674d54b408df8d0531fc16499d464e15641d9792a14b158bfb4523a83a85f",
+        "llm_rubric.py": "6db102b350845f1a3f59be8929163055dc703fbe90e641949308930e7d0a01f1",
+        "oracle_grade.py": "a99176298de8ab2d899f9e5cb200b2028138dab89dafa654a4c5ab7d7897088b",
+        "prompt.txt": "cbdc58f25529a6abc9642ad875e8f823e01e0c13396d27e8d190392ba1a79879",
+        "task.yaml": "49c3c48f624120f3b963acbf17c1aeb8b8881dfb527ad7d4377a396d12b1e5fc"
+      },
+      "git_tree_sha1": "36716a449bba3922c64dc6559ac4d51e70f52bc0",
+      "id": "064-service-dependency-triage",
+      "oracle_sha256": "a99176298de8ab2d899f9e5cb200b2028138dab89dafa654a4c5ab7d7897088b"
+    },
+    {
+      "bundle_sha256": "a9f21e90b18d2dd10c93309e0ff43a9bf9509f4baba64635d014e3511176c343",
+      "difficulty": "unlabeled-upstream",
+      "domain": "coding-devops",
+      "file_count": 7,
+      "file_hashes": {
+        "fixtures/in/billingdb/migration.sql": "34dc8128d01b98ea2894884b0a89e4f6f4d13a42fe13bc20c0257b0364aca425",
+        "fixtures/in/billingdb/migration_policy.md": "55394e08ca2fe3430c9bb0a7da06bcc0bd5dcfc6ea84d1c7a702b52c3529ee5d",
+        "fixtures/in/billingdb/schema.sql": "7ec0ec3b2a4bb67720902905a5b20d3a3361dd318761476f7b99a3c114ef598f",
+        "fixtures/in/billingdb/seed_notes.md": "0ded2b7b12bd629634bf720aa8236b05823d36eb2b19813a35e3033aaa74c721",
+        "oracle_grade.py": "cb8da5c6afd2f2df574720d2a125ac3919d221a91f0919663bac3f450dd78e2c",
+        "prompt.txt": "ef4df078b6a5107ec7e2d0fa70c588b77b3ab7db8dc56559e6c224a0979b28e5",
+        "task.yaml": "9fb1eab1aa85aea476ce44da12c3292fd04d8392837c84cfe7832d59d90e04ca"
+      },
+      "git_tree_sha1": "21d8907875d778d674d3971fb0b79f610be22432",
+      "id": "086-sql-migration-preflight-rollback",
+      "oracle_sha256": "cb8da5c6afd2f2df574720d2a125ac3919d221a91f0919663bac3f450dd78e2c"
+    },
+    {
+      "bundle_sha256": "d6c0da4b06c2b85a4b2a4989af73f7d5ca82796f1c49fe678dff99881d17f013",
+      "difficulty": "unlabeled-upstream",
+      "domain": "coding",
+      "file_count": 15,
+      "file_hashes": {
+        "fixtures/in/shopmono/docs/interface_change.md": "893a99385dcbd8d19a3765e2246fbc5d17fa06f8ce6262b6ad6a3e749db9027d",
+        "fixtures/in/shopmono/packages/catalog/catalog/__init__.py": "d1dc8dfd8a7914db391719296a7952b9593f4c96bffee9c244a61b61ad1c2257",
+        "fixtures/in/shopmono/packages/catalog/catalog/models.py": "0895306f1f1bd955d0346a5422d36c0dea8f20f437938ea16841c8615e4d312b",
+        "fixtures/in/shopmono/packages/catalog/catalog/pricing.py": "f1776a961ccf97fe8d2a3008173127c7b18ace2612b0f6a4708d1db7b59ccfad",
+        "fixtures/in/shopmono/packages/orders/orders/__init__.py": "6ec7a03d5ba7c76e09a7bb147aabeb7722ac97e27fbb276af40aa56464ea6f13",
+        "fixtures/in/shopmono/packages/orders/orders/adapter.py": "c6626542a3146ec950dde0b00628df822aec27560d4e28866596642ad6eafedb",
+        "fixtures/in/shopmono/packages/orders/orders/service.py": "2944cde9cce57e1f64a7a291e25b7077d53f7af5ae136499422dc089ce899453",
+        "fixtures/in/shopmono/packages/reports/reports/__init__.py": "538ac4e98ce2c5da7019767223c5a777d95d6296bc75743f287983108f24e342",
+        "fixtures/in/shopmono/packages/reports/reports/monthly.py": "3ed3961f2b7746f15ea7afeee9d0857c445f4f92f88486f3ed8528b5ed2a8a44",
+        "fixtures/in/shopmono/pyproject.toml": "6656c02ef406999129c9d4646b2f3a7373e9b337f6687a489ffc79e27be89df7",
+        "fixtures/in/shopmono/tests/test_catalog_contract.py": "a5610482612d9d16dd6512f9b0946db91b77219272e51725ece5b13b520cab6a",
+        "fixtures/in/shopmono/tests/test_orders_report_integration.py": "2ab7e8edd06a5cfb21428678b70656563061ad38500b94239f26cdd6648c3230",
+        "oracle_grade.py": "d9becde9735e5d477447d9833607208afb8e9c04d4f785525be9f9a058f94406",
+        "prompt.txt": "d80763e3a6ae5305c9012ad365d16c3c318bce7fac970a368b713b85a7c7c546",
+        "task.yaml": "88c5c46259d113cdbb335ba4561b669ecfdc9385a6ca940226fe2a5a2519089b"
+      },
+      "git_tree_sha1": "a0380fa11f388497fdcbdfb0384e6a55167015bd",
+      "id": "083-monorepo-interface-repair",
+      "oracle_sha256": "d9becde9735e5d477447d9833607208afb8e9c04d4f785525be9f9a058f94406"
+    },
+    {
+      "bundle_sha256": "22674852c3b9763013ec035b69df8a8d5ac357033b48c7fb60f6a74f516c0eaf",
+      "difficulty": "unlabeled-upstream",
+      "domain": "coding",
+      "file_count": 11,
+      "file_hashes": {
+        "fixtures/in/flakyqueue/README.md": "4f8a73e68267c470c2c1dd20414f1d545163291a020826c9ae4355a62ed32abc",
+        "fixtures/in/flakyqueue/flakyqueue/__init__.py": "3cb5fb98aef7db5cd5d2532c8b04133691a0d4123ec66f574d3d3918a64daf11",
+        "fixtures/in/flakyqueue/flakyqueue/clock.py": "d3fc00708564f8d3bbfd7adf93ac4172c112b9f6d4b32ec0bdeb953f94dfb9eb",
+        "fixtures/in/flakyqueue/flakyqueue/scheduler.py": "5e45e62e723b2971e9c4e21fd05974d716e42e5f0a372f60997ddf186971df94",
+        "fixtures/in/flakyqueue/flakyqueue/store.py": "bbafab06eff2d2290dd73bf7305efdfcdd31a841b2dbffe4e20585b9d4d76105",
+        "fixtures/in/flakyqueue/pyproject.toml": "e8c4628ed8f1f109ed9455dff39a67374c0711c7e24e6a5114517abe41fb61db",
+        "fixtures/in/flakyqueue/tests/test_retry_order.py": "e4bc10389202a863dbb4b58c071dc4ae3a1b1835146cf2a468bf8aec8a5c4cae",
+        "fixtures/in/flakyqueue/tests/test_scheduler.py": "1b356f1a048f9b5449b4ad24a18989f8923b1312d5ca7735891dbde9e38f7b3e",
+        "oracle_grade.py": "c56e303d227daedfd5b1fe825a2a9cbea0ad45b1682e39380ca505151488f8b5",
+        "prompt.txt": "89ccae242f7f7dcb1c8d0a14497f17f89891c0734fbdec8ef260bafadaf49a17",
+        "task.yaml": "accbadd4263422b47b5cbd62983743f4896875c636fdef6c0fb8dc3ad26df780"
+      },
+      "git_tree_sha1": "113b20f47d448142165533f99860189b7c0b5500",
+      "id": "085-flaky-test-root-cause",
+      "oracle_sha256": "c56e303d227daedfd5b1fe825a2a9cbea0ad45b1682e39380ca505151488f8b5"
+    },
+    {
+      "bundle_sha256": "17e0d91baecae0bedc38092a683680791a8c2944a83c346b24f5f2d18fc0822f",
+      "difficulty": "medium-hard",
+      "domain": "devops",
+      "file_count": 8,
+      "file_hashes": {
+        "fixtures/in/composeapp/.env.example": "99f50393278ac0e92a58a6ba02c761980fedca268381ee762c1ec574403e8b2a",
+        "fixtures/in/composeapp/README.md": "3225cc0dc4c214d55ffaed9958f90803e7be2b77c603dac6d9450e7f36da396f",
+        "fixtures/in/composeapp/compose.yaml": "12c3ec906c243d06cfa7a35068507167578c4c0b6620181fa89d0282d1812378",
+        "fixtures/in/composeapp/config/service-policy.yml": "545254079313b4d210ba80bb9c459db70f8ad5cd67c41ac8e1a8931635225792",
+        "fixtures/in/composeapp/tools/validate_compose.py": "2cff4c0c0e561e39c568756e68f6b770783098e5c79db5c7156286effc766ec7",
+        "oracle_grade.py": "5dac0a6ac212f75a6d23dab3ae7b1a0e2c51ffd3407fe83df008831d9ce40844",
+        "prompt.txt": "5a711833e46f54054949eba44f755b4cf94dc464360476e4ff611f7f414211f9",
+        "task.yaml": "9e003d2a7b6ce1d0e09f572926547bc218e99bb85ed9ba1bc3fa3b2cbdc0233b"
+      },
+      "git_tree_sha1": "ac504ee0f619d469ca0a9b24cc11cbd127846192",
+      "id": "082-compose-config-repair",
+      "oracle_sha256": "5dac0a6ac212f75a6d23dab3ae7b1a0e2c51ffd3407fe83df008831d9ce40844"
+    },
+    {
+      "bundle_sha256": "9556a2ea2193c5454e2576f6e43e21f515132230e2645898c67f3bc39fb6d2e4",
+      "difficulty": "medium-hard",
+      "domain": "coding",
+      "file_count": 9,
+      "file_hashes": {
+        "fixtures/in/csvtool/README.md": "6160fd37a2c360a0c238e3bb71b57b571ec7dc45c3d8b555193e744ccddb5336",
+        "fixtures/in/csvtool/csvtool/__init__.py": "91447944015cec709e8aa7655f7e9d64e1e4508e7023a57fe3746911c0fc6fed",
+        "fixtures/in/csvtool/csvtool/cli.py": "a6864aab550006bf3f8cfcf87aa2b0aaecb1d5655b752467d30309c518242bfd",
+        "fixtures/in/csvtool/csvtool/filtering.py": "c56754399844824e36a75d4ba9302e86562a5d5ea76b2dc1c46000d0586197bd",
+        "fixtures/in/csvtool/samples/orders.csv": "a224f35f16a714e422d403675bb48e3d6e85327e02e48120a6511f612646433e",
+        "fixtures/in/csvtool/tests/test_cli_existing.py": "f1ab5e14308e49b73ea417adebba816218d7266f16058e2554935317451f4f2e",
+        "oracle_grade.py": "ad7ac24601aa2474c32885aad6648fa4bb10da19fa73110fa94bd4c11e8ad69a",
+        "prompt.txt": "b7850d48d720bbbd6dc027445ba95c8e63c5cb8faa2ce0f3b41f884bd8dcbcc5",
+        "task.yaml": "0a0b24043326ee76e9d4a8308a960a5570a1933883cd4b45ac60eb88198e3df6"
+      },
+      "git_tree_sha1": "426c3d28a82774acf681bf99b1ef2fbeaf84cd31",
+      "id": "087-cli-parser-bug-tests",
+      "oracle_sha256": "ad7ac24601aa2474c32885aad6648fa4bb10da19fa73110fa94bd4c11e8ad69a"
+    }
+  ],
+  "trial_order": [
+    {
+      "attempt": 1,
+      "harness_id": "codex",
+      "sequence": 1,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "atomic",
+      "sequence": 2,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "omp",
+      "sequence": 3,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "hermes",
+      "sequence": 4,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "nanobot",
+      "sequence": 5,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "opencode",
+      "sequence": 6,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "nanobot",
+      "sequence": 7,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "opencode",
+      "sequence": 8,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "omp",
+      "sequence": 9,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "hermes",
+      "sequence": 10,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "codex",
+      "sequence": 11,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "atomic",
+      "sequence": 12,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "atomic",
+      "sequence": 13,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "nanobot",
+      "sequence": 14,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "hermes",
+      "sequence": 15,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "opencode",
+      "sequence": 16,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "codex",
+      "sequence": 17,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "omp",
+      "sequence": 18,
+      "task_id": "039-repo-architecture-map"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "opencode",
+      "sequence": 19,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "atomic",
+      "sequence": 20,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "codex",
+      "sequence": 21,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "nanobot",
+      "sequence": 22,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "hermes",
+      "sequence": 23,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "omp",
+      "sequence": 24,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "hermes",
+      "sequence": 25,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "omp",
+      "sequence": 26,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "atomic",
+      "sequence": 27,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "codex",
+      "sequence": 28,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "nanobot",
+      "sequence": 29,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "opencode",
+      "sequence": 30,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "hermes",
+      "sequence": 31,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "nanobot",
+      "sequence": 32,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "codex",
+      "sequence": 33,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "omp",
+      "sequence": 34,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "atomic",
+      "sequence": 35,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "opencode",
+      "sequence": 36,
+      "task_id": "042-api-schema-migration"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "atomic",
+      "sequence": 37,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "omp",
+      "sequence": 38,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "hermes",
+      "sequence": 39,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "opencode",
+      "sequence": 40,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "nanobot",
+      "sequence": 41,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "codex",
+      "sequence": 42,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "omp",
+      "sequence": 43,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "atomic",
+      "sequence": 44,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "nanobot",
+      "sequence": 45,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "hermes",
+      "sequence": 46,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "opencode",
+      "sequence": 47,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "codex",
+      "sequence": 48,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "atomic",
+      "sequence": 49,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "nanobot",
+      "sequence": 50,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "opencode",
+      "sequence": 51,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "codex",
+      "sequence": 52,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "hermes",
+      "sequence": 53,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "omp",
+      "sequence": 54,
+      "task_id": "043-db-migration-safety"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "opencode",
+      "sequence": 55,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "atomic",
+      "sequence": 56,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "hermes",
+      "sequence": 57,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "omp",
+      "sequence": 58,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "nanobot",
+      "sequence": 59,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "codex",
+      "sequence": 60,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "atomic",
+      "sequence": 61,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "opencode",
+      "sequence": 62,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "hermes",
+      "sequence": 63,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "nanobot",
+      "sequence": 64,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "codex",
+      "sequence": 65,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "omp",
+      "sequence": 66,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "omp",
+      "sequence": 67,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "nanobot",
+      "sequence": 68,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "opencode",
+      "sequence": 69,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "hermes",
+      "sequence": 70,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "codex",
+      "sequence": 71,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "atomic",
+      "sequence": 72,
+      "task_id": "064-service-dependency-triage"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "opencode",
+      "sequence": 73,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "omp",
+      "sequence": 74,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "codex",
+      "sequence": 75,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "nanobot",
+      "sequence": 76,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "atomic",
+      "sequence": 77,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "hermes",
+      "sequence": 78,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "opencode",
+      "sequence": 79,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "hermes",
+      "sequence": 80,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "nanobot",
+      "sequence": 81,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "atomic",
+      "sequence": 82,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "codex",
+      "sequence": 83,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "omp",
+      "sequence": 84,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "atomic",
+      "sequence": 85,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "opencode",
+      "sequence": 86,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "hermes",
+      "sequence": 87,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "nanobot",
+      "sequence": 88,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "codex",
+      "sequence": 89,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "omp",
+      "sequence": 90,
+      "task_id": "086-sql-migration-preflight-rollback"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "nanobot",
+      "sequence": 91,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "opencode",
+      "sequence": 92,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "omp",
+      "sequence": 93,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "codex",
+      "sequence": 94,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "hermes",
+      "sequence": 95,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "atomic",
+      "sequence": 96,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "nanobot",
+      "sequence": 97,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "atomic",
+      "sequence": 98,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "omp",
+      "sequence": 99,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "codex",
+      "sequence": 100,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "hermes",
+      "sequence": 101,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "opencode",
+      "sequence": 102,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "hermes",
+      "sequence": 103,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "atomic",
+      "sequence": 104,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "opencode",
+      "sequence": 105,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "codex",
+      "sequence": 106,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "nanobot",
+      "sequence": 107,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "omp",
+      "sequence": 108,
+      "task_id": "083-monorepo-interface-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "atomic",
+      "sequence": 109,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "hermes",
+      "sequence": 110,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "nanobot",
+      "sequence": 111,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "opencode",
+      "sequence": 112,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "codex",
+      "sequence": 113,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "omp",
+      "sequence": 114,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "atomic",
+      "sequence": 115,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "omp",
+      "sequence": 116,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "hermes",
+      "sequence": 117,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "nanobot",
+      "sequence": 118,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "opencode",
+      "sequence": 119,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "codex",
+      "sequence": 120,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "nanobot",
+      "sequence": 121,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "omp",
+      "sequence": 122,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "atomic",
+      "sequence": 123,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "codex",
+      "sequence": 124,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "hermes",
+      "sequence": 125,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "opencode",
+      "sequence": 126,
+      "task_id": "085-flaky-test-root-cause"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "nanobot",
+      "sequence": 127,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "codex",
+      "sequence": 128,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "omp",
+      "sequence": 129,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "hermes",
+      "sequence": 130,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "atomic",
+      "sequence": 131,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "opencode",
+      "sequence": 132,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "omp",
+      "sequence": 133,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "atomic",
+      "sequence": 134,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "nanobot",
+      "sequence": 135,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "codex",
+      "sequence": 136,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "hermes",
+      "sequence": 137,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "opencode",
+      "sequence": 138,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "nanobot",
+      "sequence": 139,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "hermes",
+      "sequence": 140,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "codex",
+      "sequence": 141,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "opencode",
+      "sequence": 142,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "omp",
+      "sequence": 143,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "atomic",
+      "sequence": 144,
+      "task_id": "082-compose-config-repair"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "codex",
+      "sequence": 145,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "hermes",
+      "sequence": 146,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "atomic",
+      "sequence": 147,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "nanobot",
+      "sequence": 148,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "opencode",
+      "sequence": 149,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 1,
+      "harness_id": "omp",
+      "sequence": 150,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "codex",
+      "sequence": 151,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "hermes",
+      "sequence": 152,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "nanobot",
+      "sequence": 153,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "atomic",
+      "sequence": 154,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "opencode",
+      "sequence": 155,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 2,
+      "harness_id": "omp",
+      "sequence": 156,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "opencode",
+      "sequence": 157,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "nanobot",
+      "sequence": 158,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "atomic",
+      "sequence": 159,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "codex",
+      "sequence": 160,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "hermes",
+      "sequence": 161,
+      "task_id": "087-cli-parser-bug-tests"
+    },
+    {
+      "attempt": 3,
+      "harness_id": "omp",
+      "sequence": 162,
+      "task_id": "087-cli-parser-bug-tests"
+    }
+  ],
+  "trial_order_policy": {
+    "parallelism": 1,
+    "seed": 56001,
+    "type": "seeded_randomized_matched_blocks_within_each_task"
+  },
+  "upstream": {
+    "commit": "1025086a446653702b80cfb48babbeec35db6b2c",
+    "repository": "https://github.com/Qihoo360/harness-bench",
+    "task_files_modified": false,
+    "tree": "49208501704f1d7e2ada03800ac14621f760e1b6"
+  }
+}

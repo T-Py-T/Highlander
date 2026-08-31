@@ -1,0 +1,34 @@
+Done.
+
+I created and verified these deliverables in:
+- /workspace/out/module_map.json
+- /workspace/out/architecture.md
+- /workspace/out/doc_code_discrepancies.csv
+- /workspace/out/risk_register.csv
+- /workspace/out/onboarding_plan.md
+
+Important note:
+- I could not write to the exact <HOME>/.../workspace/out paths because this environment exposes /Users as a read-only filesystem.
+- The fixture repo itself was available at /workspace/in/repo, so I used the writable paired output directory /workspace/out and verified the files there.
+
+What I verified
+- module_map.json has keys:
+  - modules
+  - entry_points
+  - dependency_edges
+  - key_functions
+  - runtime_flows
+- entry_points includes:
+  - minisvc.cli:main
+  - minisvc.api.routes:register_routes
+- doc_code_discrepancies.csv header is correct and contains 5 findings
+- risk_register.csv header is correct and contains 6 risks
+
+Key implementation findings reflected in the outputs
+- README claims about readonly enforcement, retry behavior, and durable audit storage are contradicted by the code.
+- readonly is parsed in minisvc.config.load_settings but never enforced.
+- create_order does not retry SQLite writes.
+- audit events are returned as dicts only; no audit table exists.
+- package marker files were explicitly separated from active runtime logic.
+
+If you want, I can also copy the same files into another writable absolute path you specify.

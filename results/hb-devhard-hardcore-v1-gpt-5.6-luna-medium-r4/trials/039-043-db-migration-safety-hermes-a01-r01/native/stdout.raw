@@ -1,0 +1,27 @@
+Implemented and verified the SQLite migration artifacts under `/workspace/in/db/`:
+
+- `/workspace/in/db/migration.sql`
+  - Explicit transaction
+  - Preserves all users, orders, IDs, references, and historical timestamps
+  - Cleans dirty emails deterministically
+  - Adds `status TEXT NOT NULL DEFAULT 'active'`
+  - Enforces `email TEXT NOT NULL UNIQUE`
+  - Safe to run twice without duplicating or losing data
+
+- `/workspace/in/db/preflight_report.md`
+- `/workspace/in/db/rollback.sql`
+- `/workspace/in/db/postcheck.sql`
+- `/workspace/in/db/migration_report.md`
+
+Verification completed successfully:
+
+- Migration executed
+- Migration executed a second time with identical data
+- Postcheck executed successfully
+- Rollback restored the legacy `users` schema shape
+- User count remained 6
+- Order count remained 4
+- Foreign-key checks passed
+- Dirty-user emails were correctly cleaned
+
+The requested `<HOME>/...` path is not mounted in this environment; `/workspace` is the available mapped workspace path. Neither `schema.sql` nor `migration_policy.md` was modified.

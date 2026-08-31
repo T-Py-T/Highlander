@@ -1,0 +1,5 @@
+Reading additional input from stdin...
+{"type":"thread.started","thread_id":"01a057ef-0903-7be0-b5cb-4ae5309b9cbb"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"HIGHLANDER_ROUTE_OK"}}
+{"type":"turn.completed","usage":{"input_tokens":12453,"cached_input_tokens":4352,"cache_write_input_tokens":0,"output_tokens":30,"reasoning_output_tokens":18}}

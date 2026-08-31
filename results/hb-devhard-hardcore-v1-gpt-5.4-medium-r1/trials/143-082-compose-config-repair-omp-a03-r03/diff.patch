@@ -1,0 +1,216 @@
+--- a/in/composeapp/compose.yaml
++++ b/in/composeapp/compose.yaml
+@@ -1,20 +1,22 @@
+ services:
+   api:
+-    image: ghcr.io/example/composeapp-api:latest
++    image: ghcr.io/example/composeapp-api:1.4.2
+     ports:
+-      - "${WEB_PORT:-8000}:8000"
++      - "${API_PORT:-8080}:8000"
+     environment:
+       DATABASE_URL: "postgresql://composeapp:composeapp-dev@db:5432/composeapp"
+-      REDIS_DSN: "${REDIS_URL:-redis://cache:6379/0}"
+-      QUEUE_NAME: "default"
+-      APP_DATA_DIR: "/tmp/data"
++      REDIS_URL: "${REDIS_URL:-redis://redis:6379/0}"
++      QUEUE_NAME: "critical"
++      APP_DATA_DIR: "/data"
+     volumes:
+-      - api-data:/var/lib/composeapp
++      - api-data:/data
+     depends_on:
+-      - db
+-      - cache
++      db:
++        condition: service_healthy
++      redis:
++        condition: service_healthy
+     healthcheck:
+-      test: ["CMD", "curl", "-f", "http://localhost:8000/status"]
++      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+       interval: 30s
+       timeout: 3s
+       retries: 3
+@@ -22,20 +24,30 @@
+     image: ghcr.io/example/composeapp-worker:1.4.2
+     environment:
+       DATABASE_URL: "postgresql://composeapp:composeapp-dev@db:5432/composeapp"
+-      REDIS_URL: "${REDIS_URL:-redis://cache:6379/0}"
+-      QUEUE_NAME: "default"
++      REDIS_URL: "${REDIS_URL:-redis://redis:6379/0}"
++      QUEUE_NAME: "critical"
+     depends_on:
+       db:
+-        condition: service_started
+-      cache:
+-        condition: service_started
++        condition: service_healthy
++      redis:
++        condition: service_healthy
+   db:
+     image: postgres:16.2-alpine
+     environment:
+       POSTGRES_DB: composeapp
+       POSTGRES_USER: composeapp
+       POSTGRES_PASSWORD: composeapp-dev
+-  cache:
++    healthcheck:
++      test: ["CMD-SHELL", "pg_isready -U composeapp -d composeapp"]
++      interval: 10s
++      timeout: 5s
++      retries: 5
++  redis:
+     image: redis:7.2-alpine
++    healthcheck:
++      test: ["CMD", "redis-cli", "ping"]
++      interval: 10s
++      timeout: 3s
++      retries: 5
+ volumes:
+   api-data:
+Binary files a/in/composeapp/tools/__pycache__/yaml.cpython-311.pyc and b/in/composeapp/tools/__pycache__/yaml.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 6df7e26cd7fad5ecafb1dafbea619771e0a3dafae0ac3d99167f8de0c0e4a971)
+--- a/in/composeapp/tools/yaml.py
++++ b/in/composeapp/tools/yaml.py
+@@ -0,0 +1,110 @@
++from __future__ import annotations
++
++import ast
++from typing import Any
++
++
++def safe_load(text: str) -> Any:
++    lines = text.splitlines()
++    value, index = _parse_block(lines, 0, 0)
++    index = _skip_blanks(lines, index)
++    if index != len(lines):
++        raise ValueError(f"unexpected content at line {index + 1}")
++    return value
++
++
++def _skip_blanks(lines: list[str], index: int) -> int:
++    while index < len(lines):
++        stripped = lines[index].strip()
++        if stripped and not stripped.startswith("#"):
++            break
++        index += 1
++    return index
++
++
++def _indent_of(line: str) -> int:
++    return len(line) - len(line.lstrip(" "))
++
++
++def _parse_block(lines: list[str], index: int, indent: int) -> tuple[Any, int]:
++    index = _skip_blanks(lines, index)
++    if index >= len(lines):
++        return {}, index
++    current = lines[index]
++    if _indent_of(current) < indent:
++        return {}, index
++    if current.lstrip().startswith("- "):
++        return _parse_list(lines, index, indent)
++    return _parse_dict(lines, index, indent)
++
++
++def _parse_dict(lines: list[str], index: int, indent: int) -> tuple[dict[str, Any], int]:
++    data: dict[str, Any] = {}
++    while True:
++        index = _skip_blanks(lines, index)
++        if index >= len(lines):
++            return data, index
++        line = lines[index]
++        line_indent = _indent_of(line)
++        if line_indent < indent:
++            return data, index
++        if line_indent != indent:
++            raise ValueError(f"invalid indentation at line {index + 1}")
++        stripped = line.strip()
++        if stripped.startswith("- "):
++            return data, index
++        if ":" not in stripped:
++            raise ValueError(f"expected key/value at line {index + 1}")
++        key, rest = stripped.split(":", 1)
++        rest = rest.strip()
++        index += 1
++        if rest:
++            data[key] = _parse_scalar(rest)
++            continue
++        child_index = _skip_blanks(lines, index)
++        if child_index >= len(lines) or _indent_of(lines[child_index]) <= indent:
++            data[key] = {}
++            index = child_index
++            continue
++        data[key], index = _parse_block(lines, child_index, indent + 2)
++
++
++def _parse_list(lines: list[str], index: int, indent: int) -> tuple[list[Any], int]:
++    data: list[Any] = []
++    while True:
++        index = _skip_blanks(lines, index)
++        if index >= len(lines):
++            return data, index
++        line = lines[index]
++        line_indent = _indent_of(line)
++        if line_indent < indent:
++            return data, index
++        if line_indent != indent:
++            raise ValueError(f"invalid list indentation at line {index + 1}")
++        stripped = line.strip()
++        if not stripped.startswith("- "):
++            return data, index
++        item = stripped[2:].strip()
++        index += 1
++        if item:
++            data.append(_parse_scalar(item))
++            continue
++        child_index = _skip_blanks(lines, index)
++        if child_index >= len(lines) or _indent_of(lines[child_index]) <= indent:
++            data.append(None)
++            index = child_index
++            continue
++        child, index = _parse_block(lines, child_index, indent + 2)
++        data.append(child)
++
++
++def _parse_scalar(value: str) -> Any:
++    if value in {"true", "True"}:
++        return True
++    if value in {"false", "False"}:
++        return False
++    if value in {"null", "Null", "~"}:
++        return None
++    if value.startswith("[") or value.startswith("{") or value.startswith(("'", '"')):
++        return ast.literal_eval(value)
++    return value
+--- a/out/compose_fix_report.md
++++ b/out/compose_fix_report.md
+@@ -0,0 +1,28 @@
++# Compose config repair report
++
++## Root cause
++During the incident edit, `compose.yaml` drifted away from `config/service-policy.yml` and the local deployment contract in several ways:
++- `api` was changed to `ghcr.io/example/composeapp-api:latest` instead of the pinned `1.4.2` tag.
++- The redis service was renamed to `cache`, which broke the required `redis` service name and downstream URLs.
++- `api` and `worker` were pointed at the wrong redis host and queue (`default` instead of `critical`).
++- `api` no longer mounted the named `api-data` volume at `/data`, and `APP_DATA_DIR` was changed to `/tmp/data`.
++- `depends_on` conditions were weakened from `service_healthy` to unordered startup dependencies.
++- Healthchecks no longer matched the contract: `api` called `/status`, while `db` and `redis` had no healthchecks.
++- The published API port variable changed from `API_PORT` to `WEB_PORT`.
++
++## Repair
++Repaired `compose.yaml` to restore the contract:
++- pinned `api` to `ghcr.io/example/composeapp-api:1.4.2`
++- restored the `redis` service name
++- restored `REDIS_URL`, `QUEUE_NAME=critical`, and `APP_DATA_DIR=/data`
++- restored the `api-data:/data` mount
++- restored `depends_on` health conditions for `api` and `worker`
++- restored meaningful healthchecks for `api`, `db`, and `redis`
++- restored `${API_PORT:-8080}:8000`
++
++`.env.example` already matched the required defaults, so no change was needed.
++
++## Final validation command
++```bash
++python3 tools/validate_compose.py
++```

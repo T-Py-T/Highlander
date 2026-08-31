@@ -1,0 +1,148 @@
+{
+  "task_id": "043-db-migration-safety",
+  "model_id": "codex",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/052-043-db-migration-safety-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-043-db-migration-safety-gpt-5.6-luna-20260831-022633-02be91ea",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/052-043-db-migration-safety-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-043-db-migration-safety-gpt-5.6-luna-20260831-022633-02be91ea/workspace",
+  "session_id": "highlander-codex-043-db-migration-safety-a3-043-db-migration-safety-da7d1471",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/052-043-db-migration-safety-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-043-db-migration-safety-gpt-5.6-luna-20260831-022633-02be91ea/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "codex",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/052-043-db-migration-safety-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-043-db-migration-safety-gpt-5.6-luna-20260831-022633-02be91ea/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/052-043-db-migration-safety-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-043-db-migration-safety-gpt-5.6-luna-20260831-022633-02be91ea/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/052-043-db-migration-safety-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-043-db-migration-safety-gpt-5.6-luna-20260831-022633-02be91ea/highlander-native",
+      "--trial-id",
+      "052-043-db-migration-safety-codex-a03-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/052-043-db-migration-safety-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-043-db-migration-safety-gpt-5.6-luna-20260831-022633-02be91ea/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "codex",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/052-043-db-migration-safety-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-043-db-migration-safety-gpt-5.6-luna-20260831-022633-02be91ea/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/052-043-db-migration-safety-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-043-db-migration-safety-gpt-5.6-luna-20260831-022633-02be91ea/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/052-043-db-migration-safety-codex-a03-r01/hb-work/codex/gpt-5.6-luna/oc-bench-v2-043-db-migration-safety-gpt-5.6-luna-20260831-022633-02be91ea/highlander-native",
+        "--trial-id",
+        "052-043-db-migration-safety-codex-a03-r01"
+      ],
+      "stdout": "Reading additional input from stdin...\n{\"type\":\"thread.started\",\"thread_id\":\"01a0567f-8f17-7c10-acec-d0d87fcddaf9\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_0\",\"type\":\"error\",\"message\":\"Code Mode is unavailable because failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: host executable was not found. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.\"}}\n{\"type\":\"turn.started\"}\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_1\",\"type\":\"agent_message\",\"text\":\"I’m reading the migration policy and the current SQL fixtures first, then I’ll update only the requested migration and create the three verification/report artifacts plus rollback script.\"}}\n2026-08-31T06:26:48.097130Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_2\",\"type\":\"agent_message\",\"text\":\"The first file-read call hit an environment launcher error before running the command. I’m retrying the same read through the shell interface.\"}}\n2026-08-31T06:26:55.263474Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n2026-08-31T06:26:57.947229Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_3\",\"type\":\"agent_message\",\"text\":\"The workspace tool host itself is unavailable (`/usr/local/bin/codex-code-mode-host` is missing), so no filesystem command has executed yet. I’ll make one more attempt before reporting the blocker.\"}}\n2026-08-31T06:27:01.075926Z ERROR codex_core::tools::router: error=failed to spawn code-mode host /usr/local/bin/codex-code-mode-host: No such file or directory (os error 2)\n{\"type\":\"item.completed\",\"item\":{\"id\":\"item_4\",\"type\":\"agent_message\",\"text\":\"I’m blocked by the workspace runtime: its command/edit host is unavailable (`/usr/local/bin/codex-code-mode-host` is missing). No files were modified.\"}}\n{\"type\":\"turn.completed\",\"usage\":{\"input_tokens\":76460,\"cached_input_tokens\":67328,\"cache_write_input_tokens\":0,\"output_tokens\":1125,\"reasoning_output_tokens\":192}}\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-codex-043-db-migration-safety-a3-043-db-migration-safety-da7d1471"
+  },
+  "oracle_result": {
+    "task": "043-db-migration-safety",
+    "outcome_score": 0.098,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "migration_executes",
+        "pass": false,
+        "weight": 0.22,
+        "detail": "FOREIGN KEY constraint failed"
+      },
+      {
+        "id": "sql_quality",
+        "pass": false,
+        "weight": 0.12,
+        "detail": {
+          "term_hits": 5,
+          "forbidden": []
+        }
+      },
+      {
+        "id": "preflight_report",
+        "pass": false,
+        "weight": 0.08,
+        "detail": "preflight must mention duplicate/null/blank u4/u5/u6 issues and dependent orders"
+      },
+      {
+        "id": "rollback_sql",
+        "pass": false,
+        "weight": 0.06,
+        "detail": "rollback should restore old schema shape"
+      },
+      {
+        "id": "postcheck_sql",
+        "pass": false,
+        "weight": 0.06,
+        "detail": "missing"
+      },
+      {
+        "id": "migration_report",
+        "pass": false,
+        "weight": 0.04,
+        "detail": {
+          "score": 0.0,
+          "hits": 0
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.098,
+    "oracle_outcome_score": 0.098,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.098,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 30.569
+}

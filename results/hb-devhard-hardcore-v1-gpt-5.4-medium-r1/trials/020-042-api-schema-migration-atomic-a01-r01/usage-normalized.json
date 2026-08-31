@@ -1,0 +1,20 @@
+{
+  "api_calls": 17,
+  "available": true,
+  "cache_read_tokens": 318464,
+  "cache_write_tokens": 0,
+  "cost_status": "harness_estimate_not_subscription_comparable",
+  "cost_usd": 0.3524785,
+  "cross_harness_comparability": "not comparable; native accounting semantics differ",
+  "input_tokens": 55451,
+  "models": [
+    "gpt-5.4"
+  ],
+  "output_tokens": 8949,
+  "providers": [
+    "openai-codex"
+  ],
+  "reasoning_tokens": 0,
+  "source": "omp_assistant_message_end",
+  "total_tokens": 382864
+}

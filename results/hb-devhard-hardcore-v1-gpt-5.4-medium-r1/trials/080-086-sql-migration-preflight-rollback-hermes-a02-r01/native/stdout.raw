@@ -1,0 +1,72 @@
+Done.
+
+I repaired the migration package in the accessible workspace mirror at:
+- /workspace/in/billingdb/migration.sql
+- /workspace/in/billingdb/preflight_report.md
+- /workspace/in/billingdb/rollback.sql
+- /workspace/in/billingdb/postcheck.sql
+- /workspace/in/billingdb/migration_report.md
+
+Note: the exact <HOME>/... path you supplied does not exist in this runtime; the corresponding files were present under /workspace/in/billingdb, so I edited that package there.
+
+What changed
+- migration.sql
+  - wrapped in explicit transaction: BEGIN IMMEDIATE ... COMMIT
+  - restores PRAGMA foreign_keys = ON after migration
+  - adds invoices.status as TEXT NOT NULL DEFAULT 'open'
+  - preserves invoice created_at values
+  - preserves orphan payments by moving them into payment_orphans before rebuilding payments
+  - rebuilds payments with a real foreign key to invoices(id)
+  - uses INSERT OR IGNORE for payment_orphans so reruns do not duplicate p4
+
+- preflight_report.md
+  - documents initial counts and the detected orphan payment p4
+
+- rollback.sql
+  - explicit transaction
+  - restores old table shapes:
+    - invoices(id, customer_id, total_cents, created_at)
+    - payments(id, invoice_id, amount_cents, created_at)
+  - merges preserved orphan rows back into payments
+  - removes payment_orphans
+  - restores PRAGMA foreign_keys = ON
+
+- postcheck.sql
+  - checks counts
+  - verifies p4 preservation
+  - verifies non-null/default invoice status behavior
+  - checks for invalid payment references
+  - runs PRAGMA foreign_key_check
+
+- migration_report.md
+  - summarizes repairs and includes actual validation results
+
+Validation I actually ran
+Using Python’s SQLite engine, I:
+1. loaded schema.sql
+2. ran migration.sql twice
+3. ran postcheck.sql
+4. ran rollback.sql
+5. ran rollback.sql a second time
+
+Observed results
+- After migration.sql twice:
+  - invoices = 3
+  - payments = 3
+  - payment_orphans = 1
+  - p4 preserved exactly once in payment_orphans
+  - invoice_status_null_count = 0
+  - invoice_status_open_count = 3
+  - invalid_payment_references = 0
+  - PRAGMA foreign_key_check returned no rows
+  - inv1 created_at remained 2024-01-03T10:00:00Z
+
+- After rollback.sql:
+  - invoices shape restored to old 4-column form
+  - payments shape restored to old 4-column form
+  - payments = 4
+  - p4 restored to payments
+  - payment_orphans removed
+  - second rollback run completed without error
+
+If you want, I can also print the final contents of any of the repaired files.

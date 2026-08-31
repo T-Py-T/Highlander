@@ -1,0 +1,26 @@
+{
+  "models": {
+    "opencode": {
+      "adapter": "generic_cli",
+      "args": [
+        "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "opencode",
+        "--workspace",
+        "{workspace}",
+        "--prompt-file",
+        "{prompt_file}",
+        "--evidence-dir",
+        "{sandbox}/highlander-native",
+        "--trial-id",
+        "112-085-flaky-test-root-cause-opencode-a01-r01"
+      ],
+      "command": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "model": "openai/gpt-5.6-luna",
+      "session_prefix": "highlander-opencode-085-flaky-test-root-cause-a1",
+      "timeout_sec": 1200
+    }
+  }
+}

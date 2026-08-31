@@ -1,0 +1,68 @@
+Done.
+
+I found the requested files mounted in this environment at /workspace/in/db rather than the original <HOME>/... path, so I edited the live workspace copies there.
+
+Files updated/created:
+- /workspace/in/db/migration.sql
+- /workspace/in/db/preflight_report.md
+- /workspace/in/db/rollback.sql
+- /workspace/in/db/postcheck.sql
+- /workspace/in/db/migration_report.md
+
+What changed
+- migration.sql now:
+  - runs inside an explicit BEGIN IMMEDIATE transaction
+  - rebuilds users safely instead of dropping data
+  - preserves all user ids and all orders.user_id references
+  - preserves created_at values
+  - adds status TEXT NOT NULL DEFAULT 'active'
+  - enforces email TEXT NOT NULL UNIQUE plus CHECK(length(trim(email)) > 0)
+  - deterministically cleans dirty users exactly as required:
+    - u4 -> ada+u4@example.com
+    - u5 -> missing+u5@example.invalid
+    - u6 -> missing+u6@example.invalid
+  - is safe to run twice on the migrated dataset without duplicating/corrupting rows
+
+- preflight_report.md documents:
+  - duplicate/null/blank email issues
+  - dependent orders for u4, u5, u6
+
+- rollback.sql:
+  - restores the old users schema shape: id, email, name, created_at
+  - preserves user row count and order row count
+  - keeps order references on the same user ids
+
+- postcheck.sql verifies:
+  - user/order row counts
+  - dependent orders for u4/u5/u6
+  - cleaned dirty-user emails
+  - preserved created_at values
+  - schema/index constraints for email/status
+  - no null/blank/duplicate emails and no null statuses
+
+- migration_report.md summarizes:
+  - migration strategy
+  - dirty-data cleanup
+  - idempotency approach
+  - rollback behavior/limitation
+  - postcheck queries to run
+
+Validation performed
+I validated the scripts with Python’s sqlite3 module because the sqlite3 CLI is not installed here.
+
+Verified results:
+- schema.sql loads successfully
+- migration.sql runs successfully
+- running migration.sql a second time preserves the same 6 users and 4 orders
+- cleaned emails are exactly:
+  - u4 = ada+u4@example.com
+  - u5 = missing+u5@example.invalid
+  - u6 = missing+u6@example.invalid
+- all statuses are active
+- created_at values are preserved
+- rollback.sql restores the users table shape to:
+  - id, email, name, created_at
+- orders remain intact after rollback
+
+One important rollback note
+- rollback restores the old schema shape, but it keeps the cleaned email values rather than reintroducing the original dirty values. This is documented in migration_report.md.

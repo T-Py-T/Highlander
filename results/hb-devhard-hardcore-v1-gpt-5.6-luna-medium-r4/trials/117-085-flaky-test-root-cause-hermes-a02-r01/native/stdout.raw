@@ -1,0 +1,7 @@
+Verification completed:
+
+`uv run --with pytest pytest tests`
+
+Result: `4 passed in 0.01s`
+
+The direct `pytest` command remains unavailable because pytest is not installed on PATH. No code changes were needed after the passing verification.

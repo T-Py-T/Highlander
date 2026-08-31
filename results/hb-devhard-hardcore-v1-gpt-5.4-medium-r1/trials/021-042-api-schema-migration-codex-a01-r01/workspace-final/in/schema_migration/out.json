@@ -1,0 +1,116 @@
+[
+  {
+    "orderId": "A100",
+    "buyer": {
+      "id": "C-7",
+      "displayName": "Mina Park"
+    },
+    "lineItems": [
+      {
+        "sku": "PEN",
+        "quantity": 3,
+        "unitPriceCents": 129
+      }
+    ],
+    "shipping": {
+      "method": "standard",
+      "address": {
+        "country": "US",
+        "postalCode": "02139"
+      }
+    },
+    "metadata": {
+      "source": "legacy-v1",
+      "unknownFields": {
+        "campaign": "spring"
+      }
+    }
+  },
+  {
+    "orderId": "C300",
+    "buyer": {
+      "id": "C-9",
+      "displayName": "Ava"
+    },
+    "lineItems": [
+      {
+        "sku": "INK",
+        "quantity": 2,
+        "unitPriceCents": 250
+      },
+      {
+        "sku": "PAD",
+        "quantity": 1,
+        "unitPriceCents": 99
+      }
+    ],
+    "shipping": {
+      "method": "standard",
+      "address": {
+        "country": "CA",
+        "postalCode": "H2X"
+      }
+    },
+    "metadata": {
+      "source": "legacy-v1",
+      "unknownFields": {
+        "gift_note": "front desk"
+      }
+    }
+  },
+  {
+    "orderId": "D400",
+    "buyer": {
+      "id": "C-10",
+      "displayName": "Noor"
+    },
+    "lineItems": [
+      {
+        "sku": "BAG",
+        "quantity": 1,
+        "unitPriceCents": 1200
+      }
+    ],
+    "shipping": {
+      "method": "express",
+      "address": {
+        "country": "GB",
+        "postalCode": "SW1A"
+      }
+    },
+    "metadata": {
+      "source": "legacy-v1",
+      "unknownFields": {
+        "channel": "kiosk",
+        "loyalty_id": "L-88"
+      }
+    }
+  },
+  {
+    "orderId": "E500",
+    "buyer": {
+      "id": "C-11",
+      "displayName": "Iris"
+    },
+    "lineItems": [
+      {
+        "sku": "MUG",
+        "quantity": 4,
+        "unitPriceCents": 325
+      }
+    ],
+    "shipping": {
+      "method": "standard",
+      "address": {
+        "country": "US",
+        "postalCode": "94105"
+      }
+    },
+    "metadata": {
+      "source": "legacy-v1",
+      "unknownFields": {
+        "routing_tag": "beta"
+      }
+    }
+  }
+]

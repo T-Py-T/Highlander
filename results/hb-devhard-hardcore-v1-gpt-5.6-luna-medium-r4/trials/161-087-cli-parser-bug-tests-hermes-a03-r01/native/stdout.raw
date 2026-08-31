@@ -1,0 +1,30 @@
+Implemented and verified the CSV CLI fixes in:
+
+- `/workspace/in/csvtool/csvtool/cli.py`
+- `/workspace/in/csvtool/csvtool/filtering.py`
+- `/workspace/in/csvtool/tests/test_cli_regression.py`
+
+Changes include:
+
+- Proper CSV parsing and writing via Python’s `csv` module
+- Repeated `--where` predicates with AND semantics
+- Empty results retain the selected header
+- Ascending and descending sorting, including `--sort -field`
+- Numeric-aware sorting
+- Clear non-zero errors for malformed expressions and missing fields
+- Regression tests covering the reported bugs
+
+Verification:
+
+- Direct `python -m pytest tests` was unavailable because pytest is not installed in the base environment.
+- Full suite passed using the available toolchain:
+
+`6 passed in 0.15s`
+
+The required command produces:
+
+```text
+id,total
+o1,1200
+o3,750
+```

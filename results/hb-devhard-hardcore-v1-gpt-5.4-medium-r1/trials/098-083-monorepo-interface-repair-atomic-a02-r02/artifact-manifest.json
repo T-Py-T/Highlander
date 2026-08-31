@@ -1,0 +1,176 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 449,
+      "path": "control/app.json",
+      "sha256": "ab0a6d66a3a19adcb829f1e36fe5938d8405190ba95edec37f687d532a003933"
+    },
+    {
+      "bytes": 698,
+      "path": "control/harness.json",
+      "sha256": "d73688b247dc9e52ac96e12e104d47075144b4718e4c2df9d1257096b8bf22da"
+    },
+    {
+      "bytes": 337,
+      "path": "control/trial.json",
+      "sha256": "df409715991ed341c8d2568630b668511ee5d06d35bb79d56e5d195d50909296"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3328,
+      "path": "controller.stdout.raw",
+      "sha256": "ffc0815fb739b2e8e66f10dec65bcb36a9bc344ccf68b3e4afac26d96b1d7f7e"
+    },
+    {
+      "bytes": 7917,
+      "path": "diff.patch",
+      "sha256": "80c96985af01aac79f19b14a9317b314376d4c2e82d38886ee8a444a7849cdb0"
+    },
+    {
+      "bytes": 2168,
+      "path": "native/container-plan.json",
+      "sha256": "f729192e846365300508a4d42df2ef1cd083738474ff30ce93c998e909203ad1"
+    },
+    {
+      "bytes": 655,
+      "path": "native/control-proof.json",
+      "sha256": "c7b89827f81b2b95423614afa2a5cd1ff3563fb967a65864d06929f10966dde7"
+    },
+    {
+      "bytes": 2048,
+      "path": "native/execution.json",
+      "sha256": "519f9b61b7212bc7a4cbfed617dab2e7077fd5b4f560460823925e688ea10877"
+    },
+    {
+      "bytes": 620,
+      "path": "native/invocation.json",
+      "sha256": "a74ba66dee4b4917add1c664f05e31f480b95d3e39f26b20776a93f78f9dd6cd"
+    },
+    {
+      "bytes": 52,
+      "path": "native/process-metrics.json",
+      "sha256": "c69229f607ca1e0d6656ac38fa93c8f238afdcd90220cccffc027ba3ddc08d19"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 928314,
+      "path": "native/stdout.raw",
+      "sha256": "31f53bb0ffc2864e0623f7a25b80357960f30d91f7ab1bd63242cf75f845c8c5"
+    },
+    {
+      "bytes": 7358,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "be4022878f6abdcab3849797ca40fa69d5dc294815868b89fd6bebe108330e9b"
+    },
+    {
+      "bytes": 323,
+      "path": "process/observations.json",
+      "sha256": "7e479712043f7381f7a79902addcf1f392cdd9d3155e1b8c2d25c09fc5cf3bd1"
+    },
+    {
+      "bytes": 2277,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "9d9c6b872b5912491607312681bfe281c8072c556b355cbae3e07635973792fb"
+    },
+    {
+      "bytes": 2751,
+      "path": "result.json",
+      "sha256": "1d33c8fdf8bc2245aa63d5699bf7d8e2341699797323621dbfafd13c3044ed17"
+    },
+    {
+      "bytes": 1051128,
+      "path": "upstream-result.json",
+      "sha256": "2e64f154c88a4985f79ce5c8d48e09e4b41cb598301ab2f671d912c21f902298"
+    },
+    {
+      "bytes": 493,
+      "path": "usage-normalized.json",
+      "sha256": "88eb6c5e2b6da05f07310b01e4a5607d4127aaec87b90aa362dabce4d0a6dc2d"
+    },
+    {
+      "bytes": 470,
+      "path": "workspace-final/.atomic/todos/f0f01b75.md",
+      "sha256": "d99fa5df39488dce61c8f51f990d04b8a3bfdaa15a1d538679de9a67ab23cabd"
+    },
+    {
+      "bytes": 307,
+      "path": "workspace-final/in/shopmono/docs/interface_change.md",
+      "sha256": "893a99385dcbd8d19a3765e2246fbc5d17fa06f8ce6262b6ad6a3e749db9027d"
+    },
+    {
+      "bytes": 67,
+      "path": "workspace-final/in/shopmono/packages/catalog/catalog/__init__.py",
+      "sha256": "d1dc8dfd8a7914db391719296a7952b9593f4c96bffee9c244a61b61ad1c2257"
+    },
+    {
+      "bytes": 234,
+      "path": "workspace-final/in/shopmono/packages/catalog/catalog/models.py",
+      "sha256": "0895306f1f1bd955d0346a5422d36c0dea8f20f437938ea16841c8615e4d312b"
+    },
+    {
+      "bytes": 314,
+      "path": "workspace-final/in/shopmono/packages/catalog/catalog/pricing.py",
+      "sha256": "f1776a961ccf97fe8d2a3008173127c7b18ace2612b0f6a4708d1db7b59ccfad"
+    },
+    {
+      "bytes": 60,
+      "path": "workspace-final/in/shopmono/packages/orders/orders/__init__.py",
+      "sha256": "6ec7a03d5ba7c76e09a7bb147aabeb7722ac97e27fbb276af40aa56464ea6f13"
+    },
+    {
+      "bytes": 996,
+      "path": "workspace-final/in/shopmono/packages/orders/orders/adapter.py",
+      "sha256": "fafdd3f1d97c559a29b4838a6c82658ade022078d6d880cb79b1603b68941df8"
+    },
+    {
+      "bytes": 614,
+      "path": "workspace-final/in/shopmono/packages/orders/orders/service.py",
+      "sha256": "2944cde9cce57e1f64a7a291e25b7077d53f7af5ae136499422dc089ce899453"
+    },
+    {
+      "bytes": 70,
+      "path": "workspace-final/in/shopmono/packages/reports/reports/__init__.py",
+      "sha256": "538ac4e98ce2c5da7019767223c5a777d95d6296bc75743f287983108f24e342"
+    },
+    {
+      "bytes": 471,
+      "path": "workspace-final/in/shopmono/packages/reports/reports/monthly.py",
+      "sha256": "3ed3961f2b7746f15ea7afeee9d0857c445f4f92f88486f3ed8528b5ed2a8a44"
+    },
+    {
+      "bytes": 121,
+      "path": "workspace-final/in/shopmono/pyproject.toml",
+      "sha256": "6656c02ef406999129c9d4646b2f3a7373e9b337f6687a489ffc79e27be89df7"
+    },
+    {
+      "bytes": 469,
+      "path": "workspace-final/in/shopmono/tests/test_catalog_contract.py",
+      "sha256": "a5610482612d9d16dd6512f9b0946db91b77219272e51725ece5b13b520cab6a"
+    },
+    {
+      "bytes": 977,
+      "path": "workspace-final/in/shopmono/tests/test_orders_report_integration.py",
+      "sha256": "2ab7e8edd06a5cfb21428678b70656563061ad38500b94239f26cdd6648c3230"
+    },
+    {
+      "bytes": 1328,
+      "path": "workspace-final/out/interface_fix_report.md",
+      "sha256": "0e337f51d571c161de5ea11c749ddbc483c28d048596d475cfb0aa66b02f2624"
+    }
+  ],
+  "generated_at": "2026-08-31T23:30:56.827474Z",
+  "schema_version": 1
+}

@@ -1,0 +1,37 @@
+# Checkout incident triage notes
+
+## Summary
+User impact flowed along this dependency path:
+checkout-web -> payment-api -> auth-gateway
+
+Observed failure chain: checkout-web returned checkout submit failures after payment auth rejection; payment-api rejected requests because auth-gateway reported invalid issuer; auth-gateway had just deployed AUTH-2026-0318 and then logged a JWKS namespace/issuer mismatch in which token issuer partner-v2 was not present in allowed_issuers.
+
+## Directly observed facts
+- From /workspace/in/topology.json: checkout-web depends on payment-api, and payment-api depends on auth-gateway. The same file lists recent auth-gateway change AUTH-2026-0318 at 2026-03-22T14:05:00Z.
+- From /workspace/in/logs/auth-gateway.log: at 2026-03-22T14:05:12Z, auth-gateway deployed AUTH-2026-0318 with jwks_namespace=partner-v2 issuer=partner-v2. At 2026-03-22T14:08:33Z it logged `jwks cache lookup miss namespace=partner-v2 fallback=partner-v1`. At 2026-03-22T14:08:34Z it logged `validation failed reason=issuer_not_allowed token_issuer=partner-v2 allowed_issuers=partner-v1`.
+- From /workspace/in/logs/payment-api.log: at 2026-03-22T14:08:59Z payment-api logged `token validation failed upstream=auth-gateway reason=issuer_not_allowed issuer=partner-v2`, and at 2026-03-22T14:09:04Z it rejected `create_payment` for request_id=req-8812 with `auth_result=invalid_issuer`.
+- From /workspace/in/logs/checkout-web.log: at 2026-03-22T14:09:41Z checkout-web logged `submit_order failed status=401 upstream=payment-api request_id=req-8812`, and at 2026-03-22T14:10:03Z it warned `dependency payment-api returned auth_failed invalid issuer`.
+- From /workspace/in/metrics/service_metrics.csv: at 2026-03-22T14:10:00Z checkout-web had http_401_rate=18.7 and p95_ms=2400; payment-api had http_401_rate=21.2 with note `auth dependency returning invalid issuer`; auth-gateway had http_401_rate=28.4 with note `jwks cache miss and issuer mismatch`.
+
+## Inferences
+- Root cause is most likely auth-gateway, specifically change AUTH-2026-0318, because the timing of the deploy precedes the first validation failures and the logged mismatch is the earliest explicit technical fault on the user-impacting path.
+- The likely configuration defect is that the rollout changed issuer/JWKS namespace to partner-v2 but did not update `allowed_issuers` from partner-v1, causing token validation to fail.
+- checkout-web and payment-api appear impacted but not primary, because their errors are downstream reflections of auth-gateway issuer rejection.
+
+## Excluded red herrings
+- orders-db CPU spike is not the primary cause. /workspace/in/logs/orders-db.log shows `p95_query_ms=35` and `errors=0`, and also says no failed checkout transaction for request_id=req-8812 reached orders-db. /workspace/in/logs/payment-api.log also states the order-db dependency was not used before the auth gate for failing requests.
+- CDN issues are not the primary cause. /workspace/in/metrics/service_metrics.csv shows cdn-edge 5xx isolated to images, and /workspace/in/logs/checkout-web.log says static assets served normally after retry while the checkout flow remained blocked.
+
+## Immediate mitigation
+1. Restore auth-gateway `allowed_issuers` to include `partner-v2`, or revert AUTH-2026-0318.
+2. Warm or repopulate JWKS cache for namespace `partner-v2` if the rollback path requires cache consistency.
+3. If rollback is chosen, monitor for the disappearance of `issuer_not_allowed` errors before declaring recovery.
+
+## Verification steps
+1. Check auth-gateway logs for cessation of `validation failed reason=issuer_not_allowed token_issuer=partner-v2` and of JWKS cache miss messages for `namespace=partner-v2`.
+2. Check payment-api logs to confirm `create_payment` requests no longer fail with `auth_result=invalid_issuer`.
+3. Check checkout-web metrics/logs to confirm 401 rates fall back toward baseline and checkout submit latency returns toward pre-incident levels.
+4. Confirm a representative checkout request progresses past payment auth and no longer fails on the checkout-web -> payment-api -> auth-gateway path.
+
+## Output assessment
+Observed evidence strongly supports auth-gateway change AUTH-2026-0318 as the primary cause of the checkout incident. Confidence: high.

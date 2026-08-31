@@ -1,0 +1,53 @@
+{
+  "incident_id": "checkout-auth-failure-2026-03-22T14:10Z",
+  "root_cause_service": "auth-gateway",
+  "root_cause_change_id": "AUTH-2026-0318",
+  "confidence": "high",
+  "affected_services": [
+    "checkout-web",
+    "payment-api",
+    "auth-gateway"
+  ],
+  "evidence": [
+    {
+      "source_file": "/workspace/in/topology.json",
+      "observation": "The dependency path from checkout-web to payment-api to auth-gateway places auth-gateway upstream of the failed checkout payment authorization; the file records AUTH-2026-0318 on auth-gateway at 2026-03-22T14:05:00Z."
+    },
+    {
+      "source_file": "/workspace/in/logs/auth-gateway.log",
+      "observation": "After AUTH-2026-0318 deployed at 14:05:12Z, auth-gateway reported a partner-v2 JWKS cache miss, then rejected partner-v2 tokens because only partner-v1 was allowed."
+    },
+    {
+      "source_file": "/workspace/in/logs/payment-api.log",
+      "observation": "At 14:08:59Z payment-api reported auth-gateway issuer_not_allowed for issuer partner-v2, and at 14:09:04Z rejected the payment with auth_result=invalid_issuer."
+    },
+    {
+      "source_file": "/workspace/in/logs/checkout-web.log",
+      "observation": "checkout-web recorded a 401 from payment-api at 14:09:41Z and then reported invalid issuer while the checkout flow remained blocked."
+    },
+    {
+      "source_file": "/workspace/in/metrics/service_metrics.csv",
+      "observation": "At 14:10Z checkout-web and payment-api had elevated 401 rates of 18.7% and 21.2%, while auth-gateway had a 28.4% 401 rate and notes identifying JWKS cache miss and issuer mismatch."
+    }
+  ],
+  "excluded_red_herrings": [
+    {
+      "signal": "orders-db CPU at 86%",
+      "why_not_primary": "Query p95 was normal at 35 ms with zero errors, and no failed checkout transaction reached orders-db before the auth gate."
+    },
+    {
+      "signal": "cdn-edge 4.8% 5xx rate",
+      "why_not_primary": "The metric notes scope the errors to static images; checkout-web reported static assets served normally, while the checkout submission failed with an upstream payment 401."
+    },
+    {
+      "signal": "orders-db vacuum tuning change DB-2026-0144",
+      "why_not_primary": "The topology describes it as vacuum-only with no schema or credential change, and the database log shows normal query latency and no errors."
+    }
+  ],
+  "recommended_next_steps": [
+    "Immediately roll back AUTH-2026-0318 or correct auth-gateway allowed_issuers to include the intended partner-v2 issuer, preserving the matching JWKS namespace configuration.",
+    "Verify auth-gateway accepts a representative partner-v2 token and that JWKS lookup succeeds without fallback to partner-v1.",
+    "Verify payment-api create_payment succeeds, then run an end-to-end checkout and confirm checkout-web 401s and auth failure rates return to baseline.",
+    "Review the change validation and add a deployment check that issuer configuration, allowed issuers, and JWKS namespace agree before rollout."
+  ]
+}

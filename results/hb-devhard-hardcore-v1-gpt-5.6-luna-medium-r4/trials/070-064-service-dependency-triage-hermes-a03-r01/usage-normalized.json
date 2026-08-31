@@ -1,0 +1,20 @@
+{
+  "api_calls": 7,
+  "available": true,
+  "cache_read_tokens": 75776,
+  "cache_write_tokens": 0,
+  "cost_status": "native_report_says_no_cost_source",
+  "cost_usd": 0.0,
+  "cross_harness_comparability": "not comparable; native accounting semantics differ",
+  "input_tokens": 20461,
+  "models": [
+    "gpt-5.6-luna"
+  ],
+  "output_tokens": 3600,
+  "providers": [
+    "openai-codex"
+  ],
+  "reasoning_tokens": 395,
+  "source": "hermes_native_usage_file",
+  "total_tokens": 99837
+}

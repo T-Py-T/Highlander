@@ -1,0 +1,48 @@
+--- a/in/flakyqueue/.pytest_cache/.gitignore
++++ b/in/flakyqueue/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
++++ b/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/flakyqueue/.pytest_cache/README.md
++++ b/in/flakyqueue/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/flakyqueue/.pytest_cache/v/cache/lastfailed
++++ b/in/flakyqueue/.pytest_cache/v/cache/lastfailed
+@@ -0,0 +1,6 @@
++{
++  "tests/test_retry_order.py::test_retry_jitter_uses_injected_random_source": true,
++  "tests/test_retry_order.py::test_retry_task_is_not_ready_until_clock_reaches_run_at": true,
++  "tests/test_scheduler.py::test_ready_order_is_stable_for_equal_priority": true,
++  "tests/test_scheduler.py::test_add_uses_injected_clock": true
++}--- a/in/flakyqueue/.pytest_cache/v/cache/nodeids
++++ b/in/flakyqueue/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,6 @@
++[
++  "tests/test_retry_order.py::test_retry_jitter_uses_injected_random_source",
++  "tests/test_retry_order.py::test_retry_task_is_not_ready_until_clock_reaches_run_at",
++  "tests/test_scheduler.py::test_add_uses_injected_clock",
++  "tests/test_scheduler.py::test_ready_order_is_stable_for_equal_priority"
++]--- a/in/flakyqueue/.pytest_cache/v/cache/stepwise
++++ b/in/flakyqueue/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]Binary files a/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 9fa99e903c317e331f2df97c6b182b7fc77e31c481e52305e275dce2630977ea)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b85606e79fbea6210ef983f27a0cbc299ce0f347e6adb7e39c90f42b3b7ea852)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b36048f6d2ce774532e4c79a4d0e90c3a10c00f05c454d1d429edcf5dcfd37c4)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/store.cpython-314.pyc and b/in/flakyqueue/flakyqueue/__pycache__/store.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 090d2c12987e37d6bc7f5855a7936b7a25fe91997e5c5080bb250a560d2e2ca3)
+Binary files a/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-314-pytest-7.4.3.pyc and b/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 74dfa5ea18c1188a0f92f3051137423882b53418c9072c0fa5cdeaeb6f61e976)
+Binary files a/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-314-pytest-7.4.3.pyc and b/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 429a645db19bd1bbc3131e507e8feba3f8d14ddb97826f49413d60b9e00bb21d)

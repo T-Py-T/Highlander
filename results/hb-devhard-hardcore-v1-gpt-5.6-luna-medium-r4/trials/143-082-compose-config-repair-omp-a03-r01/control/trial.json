@@ -1,0 +1,12 @@
+{
+  "attempt": 3,
+  "configured_model_id": "openai-codex/gpt-5.6-luna",
+  "harness_id": "omp",
+  "operator_interventions": 0,
+  "protocol_sha256": "c0033d61cc3bdc1c30716c3edf6cf8d815f5b96fe17229491c74b1f178fe37df",
+  "provider_id": "openai-codex",
+  "reasoning": "medium",
+  "retry": 1,
+  "sequence": 143,
+  "task_id": "082-compose-config-repair"
+}

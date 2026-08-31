@@ -1,0 +1,33 @@
+Implemented and verified the CSV filtering CLI fixes.
+
+Changes:
+- Replaced manual comma splitting with Python’s `csv` module.
+- Preserved quoted commas during input and output.
+- Added repeatable `--where` with AND semantics.
+- Preserved selected headers for empty results.
+- Added ascending/descending sorting, including `--sort -field`.
+- Added numeric sorting for numeric-looking values.
+- Added clear non-zero errors for:
+  - Invalid `--where` expressions
+  - Missing fields in `--where`, `--select`, or `--sort`
+- Added focused regression tests in:
+  - `/workspace/in/csvtool/tests/test_cli_regression.py`
+
+Updated implementation:
+- `/workspace/in/csvtool/csvtool/cli.py`
+- `/workspace/in/csvtool/csvtool/filtering.py`
+
+Verification:
+- Full suite: 7 passed
+- Required command produced:
+  ```
+  id,total
+  o1,1200
+  o3,750
+  ```
+- Empty result behavior produced:
+  ```
+  id,total
+  ```
+
+The provided `/Users/...` path is exposed in this environment as `/workspace/in/csvtool`.

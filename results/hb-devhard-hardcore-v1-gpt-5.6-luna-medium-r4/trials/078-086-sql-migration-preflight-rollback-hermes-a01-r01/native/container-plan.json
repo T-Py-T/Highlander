@@ -1,0 +1,66 @@
+{
+  "adapter": "hermes",
+  "clean_room": {
+    "adapter": "oci",
+    "architecture": "arm64",
+    "capabilities": "all-dropped",
+    "container_name": "highlander-078-086-sql-migration-preflight-rollback-hermes-a01-r01-hermes-a1",
+    "digest_verified": true,
+    "host_home_mounted": false,
+    "image_id": "sha256:f1fd45a751bb2391000dc81241eda4548c56e30eea499c27d211058d6ef48c1f",
+    "image_reference": "sha256:f1fd45a751bb2391000dc81241eda4548c56e30eea499c27d211058d6ef48c1f",
+    "labels": {
+      "io.buildah.version": "1.43.2",
+      "io.highlander.harness": "hermes",
+      "io.highlander.profile": "clean-core",
+      "io.highlander.source_commit": "3c27eb6234bf91b8ceee9e9071591b31e9b148cb",
+      "io.highlander.source_tag": "v2026.8.3",
+      "io.highlander.uv_version": "0.12.3",
+      "io.highlander.version": "0.20.0"
+    },
+    "network": "bridge",
+    "no_new_privileges": true,
+    "os": "linux",
+    "profile": "clean-core",
+    "publication_credentials_available": false,
+    "reference": "sha256:f1fd45a751bb2391000dc81241eda4548c56e30eea499c27d211058d6ef48c1f",
+    "repo_digests": [
+      "localhost/highlander/hermes@sha256:e74db72cf6657d83c3722493418bd6528a55ae14d9fd55c95fae8129b8702efe"
+    ],
+    "resources": {
+      "cpus": 2.0,
+      "memory_mb": 4096,
+      "pids_limit": 512,
+      "tmpfs_mb": 1024
+    },
+    "root_filesystem": "read-only",
+    "runtime": "podman",
+    "seed": {
+      "available": true,
+      "imported_file": "auth.json",
+      "profile": "hermes-subscription",
+      "required": true
+    },
+    "seed_profile": "hermes-subscription"
+  },
+  "invocation": {
+    "argv": [
+      "hermes",
+      "--model",
+      "gpt-5.6-luna",
+      "--provider",
+      "openai-codex",
+      "--reasoning",
+      "medium",
+      "--yolo",
+      "--safe-mode",
+      "--usage-file",
+      "/workspace/.highlander-usage.json",
+      "--oneshot"
+    ],
+    "credential_values_recorded": false,
+    "cwd": "/workspace",
+    "prompt_transport": "exact rendered HarnessBench prompt appended as one argv element"
+  },
+  "worktree": "<SOURCE_EVIDENCE_ROOT>/trials/078-086-sql-migration-preflight-rollback-hermes-a01-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-031718-a7898fa9/workspace"
+}

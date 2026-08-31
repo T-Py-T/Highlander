@@ -1,0 +1,148 @@
+{
+  "task_id": "043-db-migration-safety",
+  "model_id": "atomic",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/037-043-db-migration-safety-atomic-a01-r01/hb-work/atomic/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-112150-b63763f3",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/037-043-db-migration-safety-atomic-a01-r01/hb-work/atomic/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-112150-b63763f3/workspace",
+  "session_id": "highlander-atomic-043-db-migration-safety-a1-043-db-migration-safety-1a5ad054",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/037-043-db-migration-safety-atomic-a01-r01/hb-work/atomic/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-112150-b63763f3/prompt-round1.txt",
+  "adapter_result": {
+    "ok": false,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "atomic",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/037-043-db-migration-safety-atomic-a01-r01/hb-work/atomic/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-112150-b63763f3/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/037-043-db-migration-safety-atomic-a01-r01/hb-work/atomic/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-112150-b63763f3/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/037-043-db-migration-safety-atomic-a01-r01/hb-work/atomic/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-112150-b63763f3/highlander-native",
+      "--trial-id",
+      "037-043-db-migration-safety-atomic-a01-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/037-043-db-migration-safety-atomic-a01-r01/hb-work/atomic/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-112150-b63763f3/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 125
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": false,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "atomic",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/037-043-db-migration-safety-atomic-a01-r01/hb-work/atomic/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-112150-b63763f3/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/037-043-db-migration-safety-atomic-a01-r01/hb-work/atomic/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-112150-b63763f3/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/037-043-db-migration-safety-atomic-a01-r01/hb-work/atomic/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-112150-b63763f3/highlander-native",
+        "--trial-id",
+        "037-043-db-migration-safety-atomic-a01-r01"
+      ],
+      "stdout": "Error: creating container storage: the container name \"highlander-037-043-db-migration-safety-atomic-a01-r01-atomic-a1\" is already in use by f4f84c0b72ed488a7d3c262ec2e0fc7e51f04850f6975fd11495766a007255b6. You have to remove that container to be able to reuse that name: that name is already in use\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 125
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-atomic-043-db-migration-safety-a1-043-db-migration-safety-1a5ad054"
+  },
+  "oracle_result": {
+    "task": "043-db-migration-safety",
+    "outcome_score": 0.098,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "migration_executes",
+        "pass": false,
+        "weight": 0.22,
+        "detail": "FOREIGN KEY constraint failed"
+      },
+      {
+        "id": "sql_quality",
+        "pass": false,
+        "weight": 0.12,
+        "detail": {
+          "term_hits": 5,
+          "forbidden": []
+        }
+      },
+      {
+        "id": "preflight_report",
+        "pass": false,
+        "weight": 0.08,
+        "detail": "preflight must mention duplicate/null/blank u4/u5/u6 issues and dependent orders"
+      },
+      {
+        "id": "rollback_sql",
+        "pass": false,
+        "weight": 0.06,
+        "detail": "rollback should restore old schema shape"
+      },
+      {
+        "id": "postcheck_sql",
+        "pass": false,
+        "weight": 0.06,
+        "detail": "missing"
+      },
+      {
+        "id": "migration_report",
+        "pass": false,
+        "weight": 0.04,
+        "detail": {
+          "score": 0.0,
+          "hits": 0
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.098,
+    "oracle_outcome_score": 0.098,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.098,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 10.538
+}

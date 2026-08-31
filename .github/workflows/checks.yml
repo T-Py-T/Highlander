@@ -40,3 +40,10 @@ jobs:
 
       - name: Validate runner syntax
         run: bash -n tools/prepare-run.sh tools/run-act-local.sh containers/base/highlander-entrypoint
+
+      - name: Verify retained evidence
+        run: |
+          python tools/evidence-bundle.py verify results/fake-t002-protocol-r1
+          python tools/hb-evidence.py verify results/hb-devhard-043-gpt54-medium-host4-r1
+          python tools/hb-evidence.py verify-season results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4
+          python tools/hb-evidence.py verify-season results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1

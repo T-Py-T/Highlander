@@ -1,0 +1,12 @@
+{
+  "attempt": 2,
+  "configured_model_id": "openai-codex/gpt-5.4",
+  "harness_id": "omp",
+  "operator_interventions": 0,
+  "protocol_sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac",
+  "provider_id": "openai-codex",
+  "reasoning": "medium",
+  "retry": 2,
+  "sequence": 133,
+  "task_id": "082-compose-config-repair"
+}

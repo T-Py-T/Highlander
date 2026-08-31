@@ -1,0 +1,186 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 460,
+      "path": "control/app.json",
+      "sha256": "d249f4feb590b2224262188ced0df9f157d7fbde384b9df0539256268ac328ec"
+    },
+    {
+      "bytes": 733,
+      "path": "control/harness.json",
+      "sha256": "c1f3e53e9d10800a8e857dc25487f45232bbe12ba8af651db885821c90f5ad64"
+    },
+    {
+      "bytes": 351,
+      "path": "control/trial.json",
+      "sha256": "acf6b15a974fe409bc6c92a1681005ffabf6fc5796b8bd8aafcd7f113656f4f0"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2911,
+      "path": "controller.stdout.raw",
+      "sha256": "ba4eb67cf5b3071810b88af0c741253dd995003bab2661de93f44c5768e937dc"
+    },
+    {
+      "bytes": 15038,
+      "path": "diff.patch",
+      "sha256": "465778a8510797f1e3ad52d94cfc27266d0d60d65e4055492c8786c97f444d4b"
+    },
+    {
+      "bytes": 2368,
+      "path": "native/container-plan.json",
+      "sha256": "35b481013cc7add8058faf22bc3ac20161137ce699807993681d8b451e388d73"
+    },
+    {
+      "bytes": 659,
+      "path": "native/control-proof.json",
+      "sha256": "971e0bbe280505c71d3b8203b7ff817374728284f0c362f08e8b12f1d77e1d8d"
+    },
+    {
+      "bytes": 2183,
+      "path": "native/execution.json",
+      "sha256": "7f2ee811bce1b39e2f8722add94dc031da2e8dc00bf49d5b2bd1d89cf6291275"
+    },
+    {
+      "bytes": 757,
+      "path": "native/invocation.json",
+      "sha256": "91f9a4fd94c2fbd2454c8024e66f45926467a09b49c61f4d41f377c371a12d70"
+    },
+    {
+      "bytes": 48,
+      "path": "native/process-metrics.json",
+      "sha256": "bf225fbe16fbb7db40291698ce9a3771e4d4335cda5a095de5c20a1924c83313"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 1832,
+      "path": "native/stdout.raw",
+      "sha256": "cc7729f61c00c6ac569a9226b4069c17489895ae4e8fe51942f8d8fe280fd045"
+    },
+    {
+      "bytes": 0,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 317,
+      "path": "process/observations.json",
+      "sha256": "6e9f358b62a5a857bf7a064e680a74b7e567cb02aa446fd1265c6421eeddc1b7"
+    },
+    {
+      "bytes": 0,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2626,
+      "path": "result.json",
+      "sha256": "027c9cf787dfbe335055664ae9f8360f0f80088062cc728e571a55b36ee9f3c1"
+    },
+    {
+      "bytes": 7793,
+      "path": "upstream-result.json",
+      "sha256": "74b33a263d4782ac22795a37dafdcf4ce890b3c4e121c984515d3157092f81e2"
+    },
+    {
+      "bytes": 400,
+      "path": "usage-normalized.json",
+      "sha256": "8e9561685170d6f5cae767c269910a5f3d78deb47dc1ef6e96e0dcb2f7f93c98"
+    },
+    {
+      "bytes": 60,
+      "path": "workspace-final/.gitignore",
+      "sha256": "0f6248e61837bf39a36406ecd83af36cef0f2a5ab89cd2aa19c826cfd7b851fe"
+    },
+    {
+      "bytes": 822,
+      "path": "workspace-final/AGENTS.md",
+      "sha256": "1b0aa1d81e4be6cf5e407743dae50e91bafe5e72511f883f58db289563a35246"
+    },
+    {
+      "bytes": 370,
+      "path": "workspace-final/HEARTBEAT.md",
+      "sha256": "a52adedddf94f2be8f692c785337aae7eaa1a19284b11d981706ebd36e65e6a8"
+    },
+    {
+      "bytes": 1008,
+      "path": "workspace-final/SOUL.md",
+      "sha256": "0c2d95c382ab74ba8897a81dcd53bd71952a30bc6ce3ac6a3cee817a1f9d250f"
+    },
+    {
+      "bytes": 1585,
+      "path": "workspace-final/TOOLS.md",
+      "sha256": "d7171f7347c7f3c4ee27dc415c6aacd3658eff4e0a98dd24bac2a80094d866ed"
+    },
+    {
+      "bytes": 842,
+      "path": "workspace-final/USER.md",
+      "sha256": "bfd7f7a5e129a86f1d392374669e5375986b830fce9d0d591de15c296845725e"
+    },
+    {
+      "bytes": 377,
+      "path": "workspace-final/in/schema_migration/client.py",
+      "sha256": "804e9d813ed55509b46d723e067ce03becf0e184df6f3d23f45ec59ef59f372c"
+    },
+    {
+      "bytes": 1887,
+      "path": "workspace-final/in/schema_migration/migration_notes.md",
+      "sha256": "93c4aca2fc3c6bddbb96a884cfe9002878d1ddd2514beb3e5d647524231b05bb"
+    },
+    {
+      "bytes": 388,
+      "path": "workspace-final/in/schema_migration/new_schema.json",
+      "sha256": "227028945ab09d400af5338031874b240cc40aeb2c049ea7f972e01de1614955"
+    },
+    {
+      "bytes": 296,
+      "path": "workspace-final/in/schema_migration/old_schema.json",
+      "sha256": "75dd5b6ee8ad3a8a611b1289fc6d96d9dee8deca8353428d1bcd2364ffe08083"
+    },
+    {
+      "bytes": 298,
+      "path": "workspace-final/in/schema_migration/pii_policy.md",
+      "sha256": "99657db2b227143d24d9274a59b9a9ee291d8c3acd76c3807591c5d5ac2884bb"
+    },
+    {
+      "bytes": 981,
+      "path": "workspace-final/in/schema_migration/sample_payloads.jsonl",
+      "sha256": "fcc7d0bf2a35fc7426090cd3f83107f8222500d84f4114401dca5be7abfdd258"
+    },
+    {
+      "bytes": 2704,
+      "path": "workspace-final/in/schema_migration/tests/test_client.py",
+      "sha256": "8ba64ae68ad03fb2d181d883b4a1707b32590d8fddaf881330f55a80df358657"
+    },
+    {
+      "bytes": 408,
+      "path": "workspace-final/memory/MEMORY.md",
+      "sha256": "a0151a00f64bcf2e42219687341d28097ea669a9f117b0a6e65033897a207a8e"
+    },
+    {
+      "bytes": 0,
+      "path": "workspace-final/memory/history.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 4673,
+      "path": "workspace-final/sessions/highlander_direct.jsonl",
+      "sha256": "5103d9737f35295a6dae93780ce2240a579feff770cd0f93401e55a5be31a4d8"
+    }
+  ],
+  "generated_at": "2026-08-31T13:03:39.823549Z",
+  "schema_version": 1
+}

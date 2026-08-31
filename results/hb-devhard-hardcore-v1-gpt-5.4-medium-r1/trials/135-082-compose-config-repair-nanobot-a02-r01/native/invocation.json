@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "env",
+    "NANOBOT_AGENTS__DEFAULTS__MODEL=openai-codex/gpt-5.4",
+    "NANOBOT_AGENTS__DEFAULTS__PROVIDER=openai_codex",
+    "NANOBOT_AGENTS__DEFAULTS__REASONING_EFFORT=medium",
+    "NANOBOT_AGENTS__DEFAULTS__WORKSPACE=/workspace",
+    "NANOBOT_TOOLS__RESTRICT_TO_WORKSPACE=true",
+    "nanobot",
+    "agent",
+    "--workspace",
+    "/workspace",
+    "--session",
+    "highlander:direct",
+    "--no-markdown",
+    "--logs",
+    "--message",
+    "<TASK_BYTES_UTF8>"
+  ],
+  "credential_binding": {
+    "seed_profile": "nanobot-subscription",
+    "value_retained": false
+  },
+  "cwd": "/workspace",
+  "harness_id": "nanobot",
+  "prompt_sha256": "1a2bc6d9020f1cbd0bddd6e734b33ba9c3a8cd0861d0f960453b5dbd8e5e33ac",
+  "schema_version": 1
+}

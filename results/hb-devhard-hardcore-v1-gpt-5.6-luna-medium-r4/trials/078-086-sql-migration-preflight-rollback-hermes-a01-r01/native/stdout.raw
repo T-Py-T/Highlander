@@ -1,0 +1,21 @@
+Repaired the billing migration package under the available workspace mapping:
+
+- `/workspace/in/billingdb/migration.sql`
+- `/workspace/in/billingdb/preflight_report.md`
+- `/workspace/in/billingdb/rollback.sql`
+- `/workspace/in/billingdb/postcheck.sql`
+- `/workspace/in/billingdb/migration_report.md`
+
+The requested `<HOME>/...` path is not mounted in this environment; its package is available at `/workspace/in/billingdb`.
+
+Verified with SQLite:
+
+- Migration preserves 3 invoices and their original `created_at` values.
+- Valid payments remain in `payments` (3 rows).
+- Orphan `p4` is preserved in `payment_orphans`.
+- `invoices.status` is non-null with default `open`.
+- Invalid future payment references are rejected by the foreign key.
+- Running the migration twice leaves counts unchanged.
+- Rollback restores the original invoice and payment column shapes.
+- Rollback restores all 4 payments, including `p4`, while retaining `payment_orphans`.
+- `postcheck.sql` executes successfully with all failure checks returning no rows.

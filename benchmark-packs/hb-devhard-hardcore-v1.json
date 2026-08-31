@@ -2,7 +2,7 @@
   "schema_version": 1,
   "season_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r1",
   "pack_id": "hb-devhard-hardcore-v1",
-  "status": "draft_pending_atomic_and_nanobot_runtime_qualification",
+  "status": "frozen_pending_runtime_qualification",
   "title": "HarnessBench hard coding and DevOps core with Atomic",
   "upstream": {
     "repository": "https://github.com/Qihoo360/harness-bench",

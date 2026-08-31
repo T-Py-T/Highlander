@@ -1,0 +1,103 @@
+--- a/out/root_cause.json
++++ b/out/root_cause.json
+@@ -0,0 +1,53 @@
++{
++  "incident_id": "2026-03-22-checkout-payment-authentication-failure",
++  "root_cause_service": "auth-gateway",
++  "root_cause_change_id": "AUTH-2026-0318",
++  "confidence": "high",
++  "affected_services": [
++    "checkout-web",
++    "payment-api",
++    "auth-gateway"
++  ],
++  "evidence": [
++    {
++      "source_file": "/workspace/in/topology.json",
++      "observation": "The dependency path is checkout-web -> payment-api -> auth-gateway; AUTH-2026-0318 was deployed to auth-gateway at 14:05Z and changed the issuer and JWKS cache namespace."
++    },
++    {
++      "source_file": "/workspace/in/metrics/service_metrics.csv",
++      "observation": "At 14:10Z, checkout-web had an 18.7% HTTP 401 rate and payment-api had a 21.2% HTTP 401 rate; auth-gateway had a 28.4% HTTP 401 rate with notes indicating a JWKS cache miss and issuer mismatch."
++    },
++    {
++      "source_file": "/workspace/in/logs/auth-gateway.log",
++      "observation": "After the deployment, auth-gateway fell back from the partner-v2 JWKS namespace and rejected partner-v2 tokens because only partner-v1 was allowed. The log identifies reverting AUTH-2026-0318 or restoring partner-v2 as rollback candidates."
++    },
++    {
++      "source_file": "/workspace/in/logs/payment-api.log",
++      "observation": "payment-api logged issuer_not_allowed from auth-gateway and rejected request req-8812 as invalid_issuer before reaching the order database."
++    },
++    {
++      "source_file": "/workspace/in/logs/checkout-web.log",
++      "observation": "checkout-web reported a 401 from payment-api and an invalid issuer for checkout session cko-17; static assets recovered but checkout remained blocked."
++    }
++  ],
++  "excluded_red_herrings": [
++    {
++      "signal": "orders-db CPU at 86%",
++      "why_not_primary": "Query p95 remained 35 ms with zero errors, and no failed checkout transaction reached orders-db."
++    },
++    {
++      "signal": "cdn-edge HTTP 5xx rate at 4.8%",
++      "why_not_primary": "The metric notes isolate the failures to images, while checkout authentication failures occurred through payment-api and static assets served normally after retry."
++    },
++    {
++      "signal": "checkout-web latency and 401s",
++      "why_not_primary": "These are downstream symptoms; checkout-web logs identify payment-api as the failing upstream, and payment-api identifies auth-gateway issuer rejection."
++    }
++  ],
++  "recommended_next_steps": [
++    "Immediately restore allowed_issuers to include partner-v2 or revert AUTH-2026-0318, following the documented rollback candidate.",
++    "Verify auth-gateway JWKS cache namespace and issuer configuration agree on partner-v2, then confirm successful token validation.",
++    "Run a synthetic checkout through checkout-web and confirm payment-api returns success, HTTP 401 rates return to baseline, and a transaction reaches orders-db.",
++    "Review the deployment configuration and add a pre-deploy issuer/JWKS compatibility check and alert on issuer_not_allowed spikes."
++  ]
++}
+--- a/out/triage_notes.md
++++ b/out/triage_notes.md
+@@ -0,0 +1,44 @@
++# Checkout Incident Triage
++
++## Conclusion
++
++**Directly observed facts:** `checkout-web` rejected a checkout submission with HTTP 401 from `payment-api`. `payment-api` rejected the request after `auth-gateway` returned `issuer_not_allowed` for issuer `partner-v2`. `auth-gateway` had just deployed change `AUTH-2026-0318`, which used the `partner-v2` JWKS namespace, while its allowed issuer remained `partner-v1`.
++
++**Inference:** The primary root cause is an issuer/JWKS configuration incompatibility introduced by `AUTH-2026-0318` in `auth-gateway`. Confidence is high because the deployment timing, explicit issuer mismatch, dependency path, and matching 401 metrics agree.
++
++## Dependency Path
++
++**Directly observed from `/workspace/in/topology.json`:**
++
++`checkout-web -> payment-api -> auth-gateway`
++
++The user-visible checkout failure begins at `checkout-web`, which calls `payment-api`. Payment authorization depends on `auth-gateway`; authentication failure prevents payment creation and therefore blocks checkout. **Directly observed:** the payment log states the order database was not used before the auth gate for failing requests.
++
++## Timeline and Evidence
++
++- **14:05:00Z:** **Directly observed in `/workspace/in/topology.json`:** `AUTH-2026-0318` was deployed to `auth-gateway` to rotate the issuer and JWKS cache namespace.
++- **14:05:12Z:** **Directly observed in `/workspace/in/logs/auth-gateway.log`:** the deployment configured `partner-v2`.
++- **14:08:33-14:08:34Z:** **Directly observed in `/workspace/in/logs/auth-gateway.log`:** the `partner-v2` JWKS lookup missed, fell back to `partner-v1`, and rejected a `partner-v2` token because `partner-v1` was the only allowed issuer.
++- **14:09:04Z:** **Directly observed in `/workspace/in/logs/payment-api.log`:** payment creation for `req-8812` was rejected as `invalid_issuer`.
++- **14:09:41Z-14:10:03Z:** **Directly observed in `/workspace/in/logs/checkout-web.log`:** checkout received a 401 from payment-api and remained blocked.
++- **14:10:00Z:** **Directly observed in `/workspace/in/metrics/service_metrics.csv`:** HTTP 401 rates were 18.7% for checkout-web, 21.2% for payment-api, and 28.4% for auth-gateway, with issuer mismatch noted for auth-gateway.
++
++## Excluded Signals
++
++**Directly observed:** orders DB CPU was 86%, but query p95 was 35 ms with zero errors, and no failed checkout transaction reached it. This is not the primary cause.
++
++**Directly observed:** CDN edge had a 4.8% 5xx rate isolated to images; checkout static assets served normally after retry. This is unrelated to the authentication rejection.
++
++**Inference:** checkout-web latency and 401s are downstream symptoms, not an independent checkout-web root cause.
++
++## Immediate Mitigation
++
++1. Restore `partner-v2` in `auth-gateway`'s allowed issuer configuration, or revert `AUTH-2026-0318` as the log recommends.
++2. Ensure the JWKS cache points to the matching `partner-v2` namespace and invalidate any stale/fallback cache state.
++3. Avoid retrying checkout requests indefinitely until token validation is healthy; preserve request and payment idempotency.
++
++## Verification
++
++**Directly observed verification targets:** `auth-gateway` must stop logging `issuer_not_allowed`; `payment-api` must stop returning `invalid_issuer`; and checkout-web 401s must fall from the 14:10Z level.
++
++**Inferred end-to-end check:** execute a synthetic checkout, confirm payment authorization succeeds, and verify the resulting transaction reaches `orders-db`. Also monitor auth-gateway, payment-api, and checkout-web 401 rates and p95 latency for at least one normal traffic interval.

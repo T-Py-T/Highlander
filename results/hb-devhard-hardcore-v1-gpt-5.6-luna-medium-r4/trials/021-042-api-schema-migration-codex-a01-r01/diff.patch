@@ -1,0 +1,36 @@
+--- a/in/schema_migration/.pytest_cache/.gitignore
++++ b/in/schema_migration/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/schema_migration/.pytest_cache/CACHEDIR.TAG
++++ b/in/schema_migration/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/schema_migration/.pytest_cache/README.md
++++ b/in/schema_migration/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/schema_migration/.pytest_cache/v/cache/lastfailed
++++ b/in/schema_migration/.pytest_cache/v/cache/lastfailed
+@@ -0,0 +1,3 @@
++{
++  "tests/test_client.py": true
++}--- a/in/schema_migration/.pytest_cache/v/cache/nodeids
++++ b/in/schema_migration/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1 @@
++[]--- a/in/schema_migration/.pytest_cache/v/cache/stepwise
++++ b/in/schema_migration/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]Binary files a/in/schema_migration/__pycache__/client.cpython-314.pyc and b/in/schema_migration/__pycache__/client.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 87c9ff737f64b322f7e20ea3a928739eccc4a295c8ffa9d05ceedefc98fbbf86)
+Binary files a/in/schema_migration/tests/__pycache__/test_client.cpython-314-pytest-7.4.3.pyc and b/in/schema_migration/tests/__pycache__/test_client.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 5bf7022313d8a77a4d0480fa9d7fe6ead21ab514b783e9da869b7f4307c0277f)

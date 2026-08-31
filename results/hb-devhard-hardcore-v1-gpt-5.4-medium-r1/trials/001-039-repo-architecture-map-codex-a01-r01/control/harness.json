@@ -1,0 +1,26 @@
+{
+  "models": {
+    "codex": {
+      "adapter": "generic_cli",
+      "args": [
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "codex",
+        "--workspace",
+        "{workspace}",
+        "--prompt-file",
+        "{prompt_file}",
+        "--evidence-dir",
+        "{sandbox}/highlander-native",
+        "--trial-id",
+        "001-039-repo-architecture-map-codex-a01-r01"
+      ],
+      "command": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "model": "gpt-5.4",
+      "session_prefix": "highlander-codex-039-repo-architecture-map-a1",
+      "timeout_sec": 1200
+    }
+  }
+}

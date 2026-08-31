@@ -1,0 +1,77 @@
+[harnessbench] run-task 042-api-schema-migration (harness=omp, mode=live) ...
+[harnessbench] run-task 042-api-schema-migration finished adapter_ok=True elapsed=240.552s
+{
+  "task_id": "042-api-schema-migration",
+  "elapsed_sec": 240.552,
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-omp-042-api-schema-migration-a3-042-api-schema-migration-d2787bb2"
+  },
+  "oracle_result": {
+    "task": "042-api-schema-migration",
+    "outcome_score": 0.74,
+    "level": "pass",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": true,
+        "weight": 0.25,
+        "detail": "PASSED test_client.py::test_convert_many_collects_errors_without_stopping\nPASSED test_client.py::test_convert_order_to_v2_shape\nPASSED test_client.py::test_defaults_shipping_method_and_keeps_summary_contract\nPASSED test_client.py::test_new_payload_passthrough_and_nullable_defaults\nPASSED test_client.py::test_v12_payload_and_unknown_field_preservation\n5 passed, 0 failed\n"
+      },
+      {
+        "id": "direct_mapping",
+        "pass": false,
+        "weight": 0.6,
+        "detail": {
+          "score": 0.779,
+          "checks": {
+            "base_mapping": true,
+            "multi_item_and_defaults": true,
+            "pii_filtering": true,
+            "v2_idempotent_unknown_fields": true,
+            "v12_nested_payload": true,
+            "convert_many_errors": false,
+            "audit_written_in_project": false,
+            "cli_jsonl_conversion": true
+          },
+          "term_score": 1.0
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.74,
+    "oracle_outcome_score": 0.74,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.74,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/034-042-api-schema-migration-omp-a03-r01/hb-work/omp/gpt-5.4/oc-bench-v2-042-api-schema-migration-gpt-5.4-20260831-105434-f0cb36e9"
+}

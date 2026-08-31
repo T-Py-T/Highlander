@@ -1,0 +1,10 @@
+Fresh verification completed:
+
+`uv run --with pytest pytest tests`
+
+Result:
+- 5 tests passed
+- 0 failures
+- 0 errors
+
+The system Python’s bare `pytest` remains unavailable (`No module named pytest`), so the test runner was invoked through `uv`.

@@ -261,6 +261,7 @@ class CleanRoom:
         )
         started_ns = time.time_ns()
         returncode, timed_out = _capture_process(argv, output_path, timeout_seconds)
+        completed_ns = time.time_ns()
         reconciliation = self.reconcile(clean)
         redacted_argv = list(argv)
         redacted_argv[-1] = "<TASK_BYTES_UTF8>"
@@ -269,7 +270,8 @@ class CleanRoom:
             "returncode": returncode,
             "timed_out": timed_out,
             "started_ns": started_ns,
-            "completed_ns": time.time_ns(),
+            "completed_ns": completed_ns,
+            "elapsed_seconds": round((completed_ns - started_ns) / 1_000_000_000, 3),
             **reconciliation,
         }
 
@@ -420,11 +422,10 @@ class CleanRoom:
     def _seed_path(self, profile: str | None) -> Path | None:
         if not profile:
             return None
-        root_value = os.environ.get("HIGHLANDER_SEED_ROOT")
-        if not root_value:
-            raise HighlanderError(
-                f"seed profile {profile!r} requires HIGHLANDER_SEED_ROOT"
-            )
+        root_value = os.environ.get(
+            "HIGHLANDER_SEED_ROOT",
+            str(Path.home() / ".config" / "highlander" / "seeds"),
+        )
         root = Path(root_value).expanduser().resolve()
         seed = (root / profile).resolve()
         if root not in seed.parents or not seed.is_dir():
@@ -480,7 +481,15 @@ class CleanRoom:
             "--workdir",
             "/workspace",
             "--env",
-            "HOME=/home/highlander",
+            "HOME=/home/highlander/runtime",
+            "--env",
+            "XDG_CACHE_HOME=/home/highlander/runtime/.cache",
+            "--env",
+            "XDG_CONFIG_HOME=/home/highlander/runtime/.config",
+            "--env",
+            "XDG_DATA_HOME=/home/highlander/runtime/.local/share",
+            "--env",
+            "XDG_STATE_HOME=/home/highlander/runtime/.local/state",
             "--env",
             f"HIGHLANDER_HARNESS={adapter}",
         ]
@@ -512,14 +521,25 @@ def extract_control_proof(
         records.append(value)
         _collect_text(value, text_parts)
     observed = {
-        "model": _find_value(records, {"model", "modelID", "model_id"}),
-        "provider": _find_value(records, {"provider", "providerID", "provider_id"}),
-        "reasoning": _find_value(records, {"reasoning", "variant", "effort"}),
-        "upstream_id": _find_value(records, {"upstream_id", "upstreamID"}),
-        "endpoint_or_deployment": _find_value(
+        "model": _find_identity_value(records, {"model", "modelID", "model_id"}),
+        "provider": _find_identity_value(
+            records, {"provider", "providerID", "provider_id"}
+        ),
+        "reasoning": _find_identity_value(
+            records, {"reasoning", "variant", "effort"}
+        ),
+        "upstream_id": _find_identity_value(
+            records, {"upstream_id", "upstreamID"}
+        ),
+        "endpoint_or_deployment": _find_identity_value(
             records, {"endpoint_or_deployment", "endpoint", "deployment"}
         ),
-        "region": _find_value(records, {"region"}),
+        "region": _find_identity_value(records, {"region"}),
+    }
+    runtime_conflicts = {
+        field: {"expected": expected[field], "observed": observed[field]}
+        for field in ("model", "provider", "reasoning")
+        if observed[field] is not None and observed[field] != expected[field]
     }
     runtime_verified = all(
         observed[field] == expected[field] for field in ("model", "provider", "reasoning")
@@ -531,6 +551,8 @@ def extract_control_proof(
     proof = {
         "observed": observed,
         "records_examined": len(records),
+        "runtime_conflict": bool(runtime_conflicts),
+        "runtime_conflicts": runtime_conflicts,
         "runtime_verified": runtime_verified,
         "provider_verified": provider_verified,
     }
@@ -566,18 +588,20 @@ def _container_name(match_id: str, suffix: str) -> str:
     return value[:120]
 
 
-def _find_value(value: Any, names: set[str]) -> Any:
+def _find_identity_value(value: Any, names: set[str]) -> str | None:
     if isinstance(value, dict):
         for key, child in value.items():
-            if key in names and isinstance(child, (str, int, float, bool)):
+            # Model controls are symbolic identities. Numeric fields such as
+            # token usage `reasoning: 0` are counters, not reasoning levels.
+            if key in names and isinstance(child, str):
                 return child
         for child in value.values():
-            found = _find_value(child, names)
+            found = _find_identity_value(child, names)
             if found is not None:
                 return found
     elif isinstance(value, list):
         for child in value:
-            found = _find_value(child, names)
+            found = _find_identity_value(child, names)
             if found is not None:
                 return found
     return None

@@ -1,0 +1,21 @@
+Fresh verification passed.
+
+Command run:
+uv run --with pytest pytest tests
+
+Result:
+5 passed in 0.01s
+
+Passed:
+- tests/test_catalog_contract.py
+- tests/test_orders_report_integration.py
+
+Current changed files:
+- /workspace/in/shopmono/packages/orders/orders/adapter.py
+- /workspace/in/shopmono/packages/orders/orders/service.py
+
+Report file:
+- /workspace/out/interface_fix_report.md
+
+Note:
+- `pytest` is not installed globally here, so I used `uv run --with pytest` to execute the repo test suite successfully.

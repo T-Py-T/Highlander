@@ -1,0 +1,17 @@
+{"event_type": "tool_execution_start", "line": 27, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 28, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 29, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 30, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 31, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 114, "tool_kind": "find"}
+{"event_type": "tool_execution_start", "line": 197, "tool_kind": "bash"}
+{"event_type": "tool_execution_start", "line": 227, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 228, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 229, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 230, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 231, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 232, "tool_kind": "read"}
+{"event_type": "tool_execution_start", "line": 1049, "tool_kind": "write"}
+{"event_type": "tool_execution_start", "line": 1698, "tool_kind": "write"}
+{"event_type": "tool_execution_start", "line": 1757, "tool_kind": "bash"}
+{"event_type": "tool_execution_start", "line": 1817, "tool_kind": "bash"}

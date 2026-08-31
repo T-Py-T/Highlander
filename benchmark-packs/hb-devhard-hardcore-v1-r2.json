@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "season_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r2",
+  "pack_id": "hb-devhard-hardcore-v1",
+  "status": "frozen_pending_runtime_qualification",
+  "supersedes_protocol_id": "hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r1",
+  "protocol_revision_reason": "r1 qualification was invalidated before scoring because its protocol omitted expected_runtime_reasoning; the six provider calls are retained as invalid infrastructure evidence",
+  "title": "HarnessBench hard coding and DevOps core with Atomic",
+  "upstream": {
+    "repository": "https://github.com/Qihoo360/harness-bench",
+    "commit": "1025086a446653702b80cfb48babbeec35db6b2c",
+    "source_tree": "49208501704f1d7e2ada03800ac14621f760e1b6",
+    "task_files_modified": false
+  },
+  "control": {
+    "model_label": "GPT-5.6 Luna",
+    "requested_model_id": "gpt-5.6-luna",
+    "reasoning": "medium",
+    "auth_route": "ChatGPT/Codex subscription OAuth",
+    "fallback_policy": "forbidden",
+    "auxiliary_model_policy": "disabled_or_same_model",
+    "configuration_profile": "clean-core",
+    "execution_order": "randomized_matched_blocks_within_hard_first_stage",
+    "simultaneous_execution": false
+  },
+  "attempts_per_task": 3,
+  "contenders": [
+    {
+      "id": "omp",
+      "name": "Oh My Pi",
+      "version": "17.2.10",
+      "role": "current-control"
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "version": "1.18.15",
+      "role": "current-challenger"
+    },
+    {
+      "id": "codex",
+      "name": "Codex CLI",
+      "version": "0.147.0",
+      "role": "current-challenger"
+    },
+    {
+      "id": "hermes",
+      "name": "Hermes Agent",
+      "version": "0.20.0",
+      "role": "current-challenger"
+    },
+    {
+      "id": "atomic",
+      "name": "Atomic",
+      "version": "0.9.15",
+      "role": "current-challenger"
+    },
+    {
+      "id": "nanobot",
+      "name": "NanoBot",
+      "version": "0.1.5.post3",
+      "role": "historical-temporal-proxy"
+    }
+  ],
+  "execution_stages": [
+    {
+      "id": "hardest-first",
+      "task_ids": [
+        "039-repo-architecture-map",
+        "042-api-schema-migration",
+        "043-db-migration-safety",
+        "064-service-dependency-triage",
+        "086-sql-migration-preflight-rollback"
+      ],
+      "exit": "all six harness routes qualified and every scheduled slot retained"
+    },
+    {
+      "id": "cross-repository-and-diagnostic",
+      "task_ids": [
+        "083-monorepo-interface-repair",
+        "085-flaky-test-root-cause",
+        "082-compose-config-repair",
+        "087-cli-parser-bug-tests"
+      ],
+      "exit": "complete nine-task matrix with no missing valid slots"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "039-repo-architecture-map",
+      "domain": "coding",
+      "difficulty": "hard",
+      "git_tree_sha1": "0da3912ea4fbdd1eeb53db2a4d718f8d725e6d4b",
+      "bundle_sha256": "f31c89e7c06e3e0828b03bc2b008d61fff32868e5d6ef1d30e919026094047e1",
+      "file_count": 17
+    },
+    {
+      "id": "042-api-schema-migration",
+      "domain": "coding",
+      "difficulty": "hard",
+      "git_tree_sha1": "c31ad82fbc7a26a784db28d0b9be72594b815763",
+      "bundle_sha256": "4fd1c176aa7546c3d1b24226706697cf22424d02e9de3df101b203b56d4dc384",
+      "file_count": 12
+    },
+    {
+      "id": "043-db-migration-safety",
+      "domain": "coding-devops",
+      "difficulty": "hard",
+      "git_tree_sha1": "0cd97524725619f70410ea6ef038ab7b42438516",
+      "bundle_sha256": "3b3363874ca74ce6c4e7ccd638c0443fdef7627cf61f9b39063e169d51a609fb",
+      "file_count": 8
+    },
+    {
+      "id": "064-service-dependency-triage",
+      "domain": "devops",
+      "difficulty": "hard",
+      "git_tree_sha1": "36716a449bba3922c64dc6559ac4d51e70f52bc0",
+      "bundle_sha256": "c683ae6288d89659f31e657f7b4a1a3fe1b8f80691fee9412cc1749265a33fd3",
+      "file_count": 11
+    },
+    {
+      "id": "086-sql-migration-preflight-rollback",
+      "domain": "coding-devops",
+      "difficulty": "unlabeled-upstream",
+      "git_tree_sha1": "21d8907875d778d674d3971fb0b79f610be22432",
+      "bundle_sha256": "a9f21e90b18d2dd10c93309e0ff43a9bf9509f4baba64635d014e3511176c343",
+      "file_count": 7
+    },
+    {
+      "id": "083-monorepo-interface-repair",
+      "domain": "coding",
+      "difficulty": "unlabeled-upstream",
+      "git_tree_sha1": "a0380fa11f388497fdcbdfb0384e6a55167015bd",
+      "bundle_sha256": "d6c0da4b06c2b85a4b2a4989af73f7d5ca82796f1c49fe678dff99881d17f013",
+      "file_count": 15
+    },
+    {
+      "id": "085-flaky-test-root-cause",
+      "domain": "coding",
+      "difficulty": "unlabeled-upstream",
+      "git_tree_sha1": "113b20f47d448142165533f99860189b7c0b5500",
+      "bundle_sha256": "22674852c3b9763013ec035b69df8a8d5ac357033b48c7fb60f6a74f516c0eaf",
+      "file_count": 11
+    },
+    {
+      "id": "082-compose-config-repair",
+      "domain": "devops",
+      "difficulty": "medium-hard",
+      "git_tree_sha1": "ac504ee0f619d469ca0a9b24cc11cbd127846192",
+      "bundle_sha256": "17e0d91baecae0bedc38092a683680791a8c2944a83c346b24f5f2d18fc0822f",
+      "file_count": 8
+    },
+    {
+      "id": "087-cli-parser-bug-tests",
+      "domain": "coding",
+      "difficulty": "medium-hard",
+      "git_tree_sha1": "426c3d28a82774acf681bf99b1ef2fbeaf84cd31",
+      "bundle_sha256": "9556a2ea2193c5454e2576f6e43e21f515132230e2645898c67f3bc39fb6d2e4",
+      "file_count": 9
+    }
+  ],
+  "excluded_from_hard_core": [
+    {
+      "id": "041-frontend-state-bug",
+      "reason": "upstream labels it medium; retain for a later breadth pack"
+    },
+    {
+      "id": "047-code-review-risk-report",
+      "reason": "upstream labels it medium and it emphasizes report synthesis over code delivery"
+    },
+    {
+      "id": "019-incident-runbook-synthesis",
+      "reason": "useful DevOps judgment task, but primarily synthesis rather than implementation"
+    }
+  ],
+  "bundle_sha256_method": "Within each task directory: find . -type f -print0 | sort -z | xargs -0 sha256sum, then SHA-256 the resulting byte stream.",
+  "scoring": {
+    "outcome_scale": [
+      0.0,
+      1.0
+    ],
+    "primary": "mean_of_per_task_mean_valid_outcome",
+    "primary_label": "overall typical outcome",
+    "tie_breakers": [
+      "mean_of_per_task_best_valid_outcome_desc",
+      "zero_score_rate_asc",
+      "median_elapsed_seconds_asc_when_comparable"
+    ],
+    "required_views": [
+      "per_task_mean_and_range",
+      "overall_typical_outcome",
+      "best_capability",
+      "median",
+      "per_task_worst",
+      "full_credit_rate",
+      "zero_score_rate",
+      "attempt_dispersion",
+      "invalid_attempts",
+      "elapsed_time",
+      "operator_interventions"
+    ],
+    "process_score": "optional_separate_frozen_judge_lane",
+    "legacy_weighted_scorecard": "forbidden"
+  },
+  "hardness_escalation_gate": {
+    "evaluate_only_after_complete_matrix": true,
+    "trigger_deep_research_when": "at least three current harnesses exceed 0.90 overall and at least 70 percent of current-harness task means exceed 0.95",
+    "successor_focus": [
+      "repository-scale bug repair",
+      "Terraform and Kubernetes",
+      "CI and deployment rollback",
+      "database migration recovery",
+      "offline incident diagnosis"
+    ]
+  },
+  "claim_boundary": "This season compares six harnesses on nine unchanged official coding and DevOps tasks. No harness is ranked until every expected task and attempt slot is valid. NanoBot remains unavailable rather than zero until its dedicated OAuth route qualifies.",
+  "deviations": [
+    {
+      "date": "2026-08-22",
+      "from": "hb-devhard-v1",
+      "change": "create a new hard-core stratum, add Atomic, switch the primary to typical per-task outcome, and defer three lower-priority synthesis or medium tasks",
+      "tracker": "https://github.com/T-Py-T/Highlander/issues/36"
+    }
+  ]
+}

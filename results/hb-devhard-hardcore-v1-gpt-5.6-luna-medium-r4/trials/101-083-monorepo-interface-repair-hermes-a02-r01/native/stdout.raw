@@ -1,0 +1,7 @@
+Fresh verification succeeded with:
+
+`uv run --with pytest python -m pytest tests`
+
+Result: `5 passed in 0.01s`
+
+The direct `pytest` executable remains unavailable because it is not installed on the system PATH; using uv’s isolated pytest runner verifies the suite successfully.

@@ -1,0 +1,240 @@
+--- a/.atomic/todos/7395a779.md
++++ b/.atomic/todos/7395a779.md
+@@ -0,0 +1,12 @@
++{
++  "id": "7395a779",
++  "title": "Fix unsafe SQLite migration and add reports/scripts",
++  "tags": [
++    "sqlite",
++    "migration"
++  ],
++  "status": "completed",
++  "created_at": "2026-08-31T15:39:07.221Z"
++}
++
++Read policy/schema/migration, replaced migration.sql with a safe offline SQLite rebuild migration in an explicit transaction, and added preflight_report.md, rollback.sql, postcheck.sql, and migration_report.md. Validated migration, rerun idempotency, postcheck SQL, and rollback with Python sqlite3.
+--- a/in/db/migration.sql
++++ b/in/db/migration.sql
+@@ -1,9 +1,38 @@
++PRAGMA foreign_keys = OFF;
++BEGIN IMMEDIATE TRANSACTION;
++
++DROP TABLE IF EXISTS temp.users__migration_source;
++CREATE TEMP TABLE users__migration_source AS
++SELECT id, email, name, created_at
++FROM users;
++
+ DROP TABLE users;
+ 
+ CREATE TABLE users (
+     id TEXT PRIMARY KEY,
+-    email TEXT UNIQUE,
++    email TEXT NOT NULL UNIQUE CHECK (length(trim(email)) > 0),
+     name TEXT NOT NULL,
+     status TEXT NOT NULL DEFAULT 'active',
+-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
++    created_at TEXT NOT NULL
+ );
++
++INSERT INTO users (id, email, name, status, created_at)
++SELECT
++    id,
++    CASE
++        WHEN id = 'u4' THEN 'ada+u4@example.com'
++        WHEN id = 'u5' THEN 'missing+u5@example.invalid'
++        WHEN id = 'u6' THEN 'missing+u6@example.invalid'
++        WHEN email IS NULL THEN 'missing+' || id || '@example.invalid'
++        WHEN trim(email) = '' THEN 'missing+' || id || '@example.invalid'
++        ELSE email
++    END,
++    name,
++    'active',
++    created_at
++FROM users__migration_source;
++
++DROP TABLE temp.users__migration_source;
++
++COMMIT;
++PRAGMA foreign_keys = ON;
+--- a/in/db/migration_report.md
++++ b/in/db/migration_report.md
+@@ -0,0 +1,55 @@
++# Migration report
++
++## Strategy
++
++- Run in one explicit transaction with `PRAGMA foreign_keys = OFF` during the table rebuild.
++- Copy current `users` rows into a temp table.
++- Recreate `users` with the target schema:
++  - `status TEXT NOT NULL DEFAULT 'active'`
++  - `email TEXT NOT NULL UNIQUE CHECK (length(trim(email)) > 0)`
++- Reinsert all users with preserved `id`, `name`, and `created_at` values.
++- Keep `orders` untouched so `orders.user_id` stays tied to the same user ids.
++
++## Dirty-data cleanup
++
++The migration keeps all users and rewrites only the unsafe email values.
++
++- `u4` -> `ada+u4@example.com`
++- `u5` -> `missing+u5@example.invalid`
++- `u6` -> `missing+u6@example.invalid`
++
++The script also keeps a fallback cleanup rule for any later null or blank email rows: `missing+<id>@example.invalid`.
++
++## Idempotency
++
++The migration is safe to run twice.
++
++- It always copies the current `users` table into a temp table first.
++- It rebuilds `users` from that temp copy.
++- It does not insert extra rows or change user ids.
++- The fixed cleanup values for `u4`, `u5`, and `u6` stay the same on rerun.
++
++## Rollback behavior and limit
++
++Run `db/rollback.sql` after the migration to restore the old schema shape:
++
++- `id`
++- `email`
++- `name`
++- `created_at`
++
++Rollback preserves user rows, order rows, user ids, and order references. It drops the `status` column and removes the new email constraints by rebuilding `users` in the old shape.
++
++Limit: rollback restores the old schema shape, not the original dirty email values. Cleaned migrated email values stay in place.
++
++## Postcheck queries
++
++Run `db/postcheck.sql` after the migration. It checks:
++
++- user and order row counts
++- orders for `u4`, `u5`, and `u6`
++- exact cleaned email values for dirty users
++- absence of null, blank, and duplicate emails
++- status population
++- schema text for email and status constraints
++- foreign key integrity with `PRAGMA foreign_key_check`
+--- a/in/db/postcheck.sql
++++ b/in/db/postcheck.sql
+@@ -0,0 +1,64 @@
++-- Row counts
++SELECT 'user_row_count' AS check_name, COUNT(*) AS actual, 6 AS expected, COUNT(*) = 6 AS ok
++FROM users;
++
++SELECT 'order_row_count' AS check_name, COUNT(*) AS actual, 4 AS expected, COUNT(*) = 4 AS ok
++FROM orders;
++
++-- Dependent order preservation for dirty users
++SELECT 'orders_for_u4' AS check_name, COUNT(*) AS actual, 1 AS expected, COUNT(*) = 1 AS ok
++FROM orders
++WHERE user_id = 'u4';
++
++SELECT 'orders_for_u5' AS check_name, COUNT(*) AS actual, 1 AS expected, COUNT(*) = 1 AS ok
++FROM orders
++WHERE user_id = 'u5';
++
++SELECT 'orders_for_u6' AS check_name, COUNT(*) AS actual, 1 AS expected, COUNT(*) = 1 AS ok
++FROM orders
++WHERE user_id = 'u6';
++
++-- Dirty-user cleanup values
++SELECT 'dirty_user_email_cleanup' AS check_name, id, email,
++       CASE
++           WHEN id = 'u4' AND email = 'ada+u4@example.com' THEN 1
++           WHEN id = 'u5' AND email = 'missing+u5@example.invalid' THEN 1
++           WHEN id = 'u6' AND email = 'missing+u6@example.invalid' THEN 1
++           ELSE 0
++       END AS ok
++FROM users
++WHERE id IN ('u4', 'u5', 'u6')
++ORDER BY id;
++
++-- Data quality after cleanup
++SELECT 'null_or_blank_emails' AS check_name, COUNT(*) AS actual, 0 AS expected, COUNT(*) = 0 AS ok
++FROM users
++WHERE email IS NULL OR trim(email) = '';
++
++SELECT 'duplicate_emails' AS check_name, COUNT(*) AS actual, 0 AS expected, COUNT(*) = 0 AS ok
++FROM (
++    SELECT email
++    FROM users
++    GROUP BY email
++    HAVING COUNT(*) > 1
++);
++
++SELECT 'null_status_rows' AS check_name, COUNT(*) AS actual, 0 AS expected, COUNT(*) = 0 AS ok
++FROM users
++WHERE status IS NULL;
++
++SELECT 'non_active_status_rows' AS check_name, COUNT(*) AS actual, 0 AS expected, COUNT(*) = 0 AS ok
++FROM users
++WHERE status <> 'active';
++
++-- Schema checks
++SELECT 'users_table_has_status_default' AS check_name,
++       instr((SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'users'), "status TEXT NOT NULL DEFAULT 'active'") > 0 AS ok;
++
++SELECT 'users_table_enforces_email_not_null' AS check_name,
++       instr((SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'users'), 'email TEXT NOT NULL UNIQUE') > 0 AS ok;
++
++SELECT 'users_table_rejects_blank_email' AS check_name,
++       instr((SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'users'), 'CHECK (length(trim(email)) > 0)') > 0 AS ok;
++
++PRAGMA foreign_key_check;
+--- a/in/db/preflight_report.md
++++ b/in/db/preflight_report.md
+@@ -0,0 +1,26 @@
++# Preflight report
++
++## Dirty email rows before migration
++
++| user_id | original email | issue | migrated email |
++| --- | --- | --- | --- |
++| u4 | `ada@example.com` | duplicate of `u1` | `ada+u4@example.com` |
++| u5 | `NULL` | null email | `missing+u5@example.invalid` |
++| u6 | `''` | blank email | `missing+u6@example.invalid` |
++
++## Summary
++
++- `users` rows before migration: 6
++- `orders` rows before migration: 4
++- Dirty email rows before migration: 3
++- Duplicate email value: `ada@example.com` on `u1` and `u4`
++- Null email rows: `u5`
++- Blank email rows: `u6`
++
++## Dependent orders for dirty users
++
++- `u4` has dependent order `o2`
++- `u5` has dependent order `o3`
++- `u6` has dependent order `o4`
++
++These users and order references must be kept during migration.
+--- a/in/db/rollback.sql
++++ b/in/db/rollback.sql
+@@ -0,0 +1,25 @@
++PRAGMA foreign_keys = OFF;
++BEGIN IMMEDIATE TRANSACTION;
++
++DROP TABLE IF EXISTS temp.users__rollback_source;
++CREATE TEMP TABLE users__rollback_source AS
++SELECT id, email, name, created_at
++FROM users;
++
++DROP TABLE users;
++
++CREATE TABLE users (
++    id TEXT PRIMARY KEY,
++    email TEXT,
++    name TEXT NOT NULL,
++    created_at TEXT NOT NULL
++);
++
++INSERT INTO users (id, email, name, created_at)
++SELECT id, email, name, created_at
++FROM users__rollback_source;
++
++DROP TABLE temp.users__rollback_source;
++
++COMMIT;
++PRAGMA foreign_keys = ON;

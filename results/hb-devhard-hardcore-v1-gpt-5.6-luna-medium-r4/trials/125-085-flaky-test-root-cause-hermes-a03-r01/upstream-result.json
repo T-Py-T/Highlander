@@ -1,0 +1,146 @@
+{
+  "task_id": "085-flaky-test-root-cause",
+  "model_id": "hermes",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/125-085-flaky-test-root-cause-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064317-40eea42c",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/125-085-flaky-test-root-cause-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064317-40eea42c/workspace",
+  "session_id": "highlander-hermes-085-flaky-test-root-cause-a3-085-flaky-test-root-cause-4cd77820",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/125-085-flaky-test-root-cause-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064317-40eea42c/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "hermes",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/125-085-flaky-test-root-cause-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064317-40eea42c/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/125-085-flaky-test-root-cause-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064317-40eea42c/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/125-085-flaky-test-root-cause-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064317-40eea42c/highlander-native",
+      "--trial-id",
+      "125-085-flaky-test-root-cause-hermes-a03-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/125-085-flaky-test-root-cause-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064317-40eea42c/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "hermes",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/125-085-flaky-test-root-cause-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064317-40eea42c/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/125-085-flaky-test-root-cause-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064317-40eea42c/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/125-085-flaky-test-root-cause-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-085-flaky-test-root-cause-gpt-5.6-luna-20260831-064317-40eea42c/highlander-native",
+        "--trial-id",
+        "125-085-flaky-test-root-cause-hermes-a03-r01"
+      ],
+      "stdout": "Direct `pytest` is unavailable in this environment:\n\n`pytest: command not found`\n\nConcrete blocker: pytest is not installed on `PATH`.\n\nUsing the available equivalent runner:\n\n`uv run --with pytest pytest`\n\nResult:\n- 4 tests collected\n- 4 passed\n- 0 failures\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-hermes-085-flaky-test-root-cause-a3-085-flaky-test-root-cause-4cd77820"
+  },
+  "oracle_result": {
+    "task": "085-flaky-test-root-cause",
+    "outcome_score": 1.0,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "repeated_pytest_stable",
+        "pass": true,
+        "weight": 0.35,
+        "detail": {
+          "returncodes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "last_output": ""
+        }
+      },
+      {
+        "id": "hidden_determinism",
+        "pass": true,
+        "weight": 0.35,
+        "detail": ""
+      },
+      {
+        "id": "test_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "implementation_quality",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "root_cause_report",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 1.0,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 140.548
+}

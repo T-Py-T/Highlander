@@ -1,0 +1,26 @@
+Repaired the compose stack and wrote the report.
+
+Changed:
+- Restored pinned API image tag `1.4.2`
+- Renamed `cache` to `redis`
+- Restored required environment variables
+- Corrected API port mapping to `${API_PORT:-8080}:8000`
+- Mounted `api-data` at `/data`
+- Restored `/healthz`, `pg_isready`, and `redis-cli ping` healthchecks
+- Restored `service_healthy` dependencies
+- Set the worker and API queue to `critical`
+
+`.env.example` was already consistent and was not changed.
+
+Validation passed offline:
+
+`PYTHONPATH=/tmp python3 tools/validate_compose.py`
+
+Output:
+
+`compose contract ok`
+
+Report:
+`/workspace/out/compose_fix_report.md`
+
+The user-provided `/Users/...` paths map to `/workspace/...` in this environment. No images were pulled and no containers were started.

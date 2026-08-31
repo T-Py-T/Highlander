@@ -1,0 +1,49 @@
+{
+  "incident_id": "oc-bench-v2-064-checkout-auth-issuer",
+  "root_cause_service": "auth-gateway",
+  "root_cause_change_id": "AUTH-2026-0318",
+  "confidence": 0.97,
+  "affected_services": [
+    "checkout-web",
+    "payment-api",
+    "auth-gateway"
+  ],
+  "evidence": [
+    {
+      "source_file": "/workspace/in/topology.json",
+      "observation": "Dependency graph shows checkout-web depends on payment-api, payment-api depends on auth-gateway, and orders-api/orders-db are on a separate branch from payment authorization. Recent change AUTH-2026-0318 was deployed to auth-gateway at 2026-03-22T14:05:00Z."
+    },
+    {
+      "source_file": "/workspace/in/logs/auth-gateway.log",
+      "observation": "auth-gateway deployed change_id=AUTH-2026-0318, then logged jwks cache miss with fallback to partner-v1 and validation failure reason=issuer_not_allowed for token_issuer=partner-v2 while allowed_issuers remained partner-v1."
+    },
+    {
+      "source_file": "/workspace/in/logs/payment-api.log",
+      "observation": "payment-api logged token validation failed upstream=auth-gateway with issuer_not_allowed and then rejected create_payment for request_id=req-8812 with auth_result=invalid_issuer."
+    },
+    {
+      "source_file": "/workspace/in/logs/checkout-web.log",
+      "observation": "checkout-web logged submit_order failed with status=401 from upstream=payment-api and explicitly reported payment-api returned auth_failed invalid issuer during the blocked checkout flow."
+    },
+    {
+      "source_file": "/workspace/in/metrics/service_metrics.csv",
+      "observation": "At 2026-03-22T14:10:00Z, 401 rates spiked on checkout-web (18.7), payment-api (21.2), and auth-gateway (28.4), while auth-gateway notes mention jwks cache miss and issuer mismatch."
+    }
+  ],
+  "excluded_red_herrings": [
+    {
+      "signal": "orders-db CPU spike and DB-2026-0144",
+      "why_not_primary_cause": "orders-db metrics show normal query latency and zero errors, and payment-api states the failing requests were rejected before any order-db dependency use. orders-db also logged that no failed checkout transaction for request_id=req-8812 reached the database."
+    },
+    {
+      "signal": "cdn-edge static asset 5xx and CDN-2026-0091",
+      "why_not_primary_cause": "The CDN issue is isolated to images in metrics, while checkout-web logged static assets served normally after retry and that the user checkout flow remained blocked by payment auth failures."
+    }
+  ],
+  "recommended_next_steps": [
+    "Mitigate immediately by reverting AUTH-2026-0318 or restoring auth-gateway allowed_issuers to include partner-v2 and aligning the JWKS namespace with that issuer.",
+    "Purge or refresh the auth-gateway JWKS cache after the configuration rollback/fix so validation no longer falls back to partner-v1.",
+    "Verify recovery by confirming issuer_not_allowed errors stop in auth-gateway and payment-api logs and that checkout-web 401 rates return to baseline.",
+    "Add a deployment guard or config validation that checks issuer and allowed_issuers consistency before auth-gateway releases."
+  ]
+}

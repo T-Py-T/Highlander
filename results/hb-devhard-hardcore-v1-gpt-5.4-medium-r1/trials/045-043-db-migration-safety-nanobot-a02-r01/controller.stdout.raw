@@ -1,0 +1,94 @@
+[harnessbench] run-task 043-db-migration-safety (harness=nanobot, mode=live) ...
+[harnessbench] run-task 043-db-migration-safety finished adapter_ok=True elapsed=13.543s
+{
+  "task_id": "043-db-migration-safety",
+  "elapsed_sec": 13.543,
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-nanobot-043-db-migration-safety-a2-043-db-migration-safety-2a510e33"
+  },
+  "oracle_result": {
+    "task": "043-db-migration-safety",
+    "outcome_score": 0.098,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "migration_executes",
+        "pass": false,
+        "weight": 0.22,
+        "detail": "FOREIGN KEY constraint failed"
+      },
+      {
+        "id": "sql_quality",
+        "pass": false,
+        "weight": 0.12,
+        "detail": {
+          "term_hits": 5,
+          "forbidden": []
+        }
+      },
+      {
+        "id": "preflight_report",
+        "pass": false,
+        "weight": 0.08,
+        "detail": "preflight must mention duplicate/null/blank u4/u5/u6 issues and dependent orders"
+      },
+      {
+        "id": "rollback_sql",
+        "pass": false,
+        "weight": 0.06,
+        "detail": "rollback should restore old schema shape"
+      },
+      {
+        "id": "postcheck_sql",
+        "pass": false,
+        "weight": 0.06,
+        "detail": "missing"
+      },
+      {
+        "id": "migration_report",
+        "pass": false,
+        "weight": 0.04,
+        "detail": {
+          "score": 0.0,
+          "hits": 0
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.098,
+    "oracle_outcome_score": 0.098,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.098,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/045-043-db-migration-safety-nanobot-a02-r01/hb-work/nanobot/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-114145-55ea879d"
+}

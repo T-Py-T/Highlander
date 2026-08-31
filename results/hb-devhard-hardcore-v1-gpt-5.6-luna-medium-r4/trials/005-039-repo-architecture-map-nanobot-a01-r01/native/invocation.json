@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "env",
+    "NANOBOT_AGENTS__DEFAULTS__MODEL=openai-codex/gpt-5.6-luna",
+    "NANOBOT_AGENTS__DEFAULTS__PROVIDER=openai_codex",
+    "NANOBOT_AGENTS__DEFAULTS__REASONING_EFFORT=medium",
+    "NANOBOT_AGENTS__DEFAULTS__WORKSPACE=/workspace",
+    "NANOBOT_TOOLS__RESTRICT_TO_WORKSPACE=true",
+    "nanobot",
+    "agent",
+    "--workspace",
+    "/workspace",
+    "--session",
+    "highlander:direct",
+    "--no-markdown",
+    "--logs",
+    "--message",
+    "<TASK_BYTES_UTF8>"
+  ],
+  "credential_binding": {
+    "seed_profile": "nanobot-subscription",
+    "value_retained": false
+  },
+  "cwd": "/workspace",
+  "harness_id": "nanobot",
+  "prompt_sha256": "57c36928828b6559d6fde3300ecad5592000b0f3ae8cc157313b280942ac4c26",
+  "schema_version": 1
+}

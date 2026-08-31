@@ -1,0 +1,53 @@
+{
+  "incident_id": "oc-bench-v2-064-service-dependency-triage",
+  "root_cause_service": "auth-gateway",
+  "root_cause_change_id": "AUTH-2026-0318",
+  "confidence": "high",
+  "affected_services": [
+    "checkout-web",
+    "payment-api",
+    "auth-gateway"
+  ],
+  "evidence": [
+    {
+      "source_file": "in/topology.json",
+      "observation": "Topology shows checkout-web depends on payment-api, and payment-api depends on auth-gateway; the recent change on auth-gateway is AUTH-2026-0318, deployed at 2026-03-22T14:05:00Z."
+    },
+    {
+      "source_file": "in/logs/auth-gateway.log",
+      "observation": "Auth gateway deployed AUTH-2026-0318 with jwks_namespace=partner-v2 and issuer=partner-v2, then logged validation failure: token_issuer=partner-v2 but allowed_issuers=partner-v1."
+    },
+    {
+      "source_file": "in/logs/payment-api.log",
+      "observation": "Payment API rejected create_payment for request_id=req-8812 because auth_result=invalid_issuer after upstream token validation failed with issuer_not_allowed for issuer=partner-v2."
+    },
+    {
+      "source_file": "in/logs/checkout-web.log",
+      "observation": "Checkout web submit_order failed with status=401 from upstream payment-api, and logged auth_failed invalid issuer for the checkout session."
+    },
+    {
+      "source_file": "in/metrics/service_metrics.csv",
+      "observation": "At 2026-03-22T14:10:00Z checkout-web, payment-api, and auth-gateway all show elevated 401 rates, while auth-gateway notes a JWKS cache miss and issuer mismatch."
+    }
+  ],
+  "excluded_red_herrings": [
+    {
+      "signal": "orders-db CPU spike",
+      "why_not_primary": "orders-db metrics show p95 query latency stayed normal at 35 ms and errors stayed at 0; orders-db log states no failed checkout transaction reached orders-db for request_id=req-8812."
+    },
+    {
+      "signal": "cdn-edge 5xx errors",
+      "why_not_primary": "CDN metrics say the 5xx increase was isolated to images, and checkout-web log says static assets served normally after retry while checkout remained blocked by payment auth failures."
+    },
+    {
+      "signal": "payment-api elevated latency and 401s",
+      "why_not_primary": "Payment API logs attribute the failures to upstream auth-gateway invalid issuer responses, so payment-api is an affected downstream service rather than the origin."
+    }
+  ],
+  "recommended_next_steps": [
+    "Mitigate by restoring auth-gateway allowed_issuers to include partner-v2 or by reverting AUTH-2026-0318.",
+    "Flush or rebuild the auth-gateway JWKS cache namespace after the issuer configuration is corrected to remove partner-v1 fallback behavior.",
+    "Verify recovery by checking auth-gateway validation logs for successful partner-v2 tokens and confirming checkout-web/payment-api 401 rates return to baseline.",
+    "Review deployment safeguards so issuer rotation and allowed_issuers changes are validated together before rollout."
+  ]
+}

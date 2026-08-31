@@ -1,0 +1,137 @@
+--- a/in/shopmono/.pytest_cache/.gitignore
++++ b/in/shopmono/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/shopmono/.pytest_cache/CACHEDIR.TAG
++++ b/in/shopmono/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/shopmono/.pytest_cache/README.md
++++ b/in/shopmono/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/shopmono/.pytest_cache/v/cache/nodeids
++++ b/in/shopmono/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,7 @@
++[
++  "tests/test_catalog_contract.py::test_legacy_product_dict_contract",
++  "tests/test_catalog_contract.py::test_new_money_product_contract",
++  "tests/test_orders_report_integration.py::test_mixed_currency_order_is_rejected",
++  "tests/test_orders_report_integration.py::test_order_prices_catalog_money_objects",
++  "tests/test_orders_report_integration.py::test_reports_group_by_currency"
++]--- a/in/shopmono/.pytest_cache/v/cache/stepwise
++++ b/in/shopmono/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]Binary files a/in/shopmono/packages/catalog/catalog/__pycache__/__init__.cpython-311.pyc and b/in/shopmono/packages/catalog/catalog/__pycache__/__init__.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 133b8faf6d570f12e4774dd9bb73bef3e9720c4d500654c6e3265d48c4a7066c)
+Binary files a/in/shopmono/packages/catalog/catalog/__pycache__/__init__.cpython-314.pyc and b/in/shopmono/packages/catalog/catalog/__pycache__/__init__.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 0bbc30784cdf7cc1818e93361e1a5dbbeb99b77c01ad45d52667b542b876b74d)
+Binary files a/in/shopmono/packages/catalog/catalog/__pycache__/models.cpython-311.pyc and b/in/shopmono/packages/catalog/catalog/__pycache__/models.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 829b718e92ee1b5212a61719a61499eafeffcc4e0a0e126dbcb11bf98144a20f)
+Binary files a/in/shopmono/packages/catalog/catalog/__pycache__/models.cpython-314.pyc and b/in/shopmono/packages/catalog/catalog/__pycache__/models.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> aafeae2961a872d1f049b5334e7525d283cc0b9f9fb43a4cfec0f7a5cdd909da)
+Binary files a/in/shopmono/packages/catalog/catalog/__pycache__/pricing.cpython-311.pyc and b/in/shopmono/packages/catalog/catalog/__pycache__/pricing.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 62dd31f857b4a4ea041f823cd09435d35deaf04b81bf3be1f509f006e970802e)
+Binary files a/in/shopmono/packages/catalog/catalog/__pycache__/pricing.cpython-314.pyc and b/in/shopmono/packages/catalog/catalog/__pycache__/pricing.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> f6c2ccfeaf0de90f3685f2ef668127da9c5cbcd4f2df0e2e35367c20e0e30993)
+Binary files a/in/shopmono/packages/orders/orders/__pycache__/__init__.cpython-311.pyc and b/in/shopmono/packages/orders/orders/__pycache__/__init__.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 3ad2a3161869e1d6d8af4ea819247a58837b782e6cb16d4f4b5bead76995d2ed)
+Binary files a/in/shopmono/packages/orders/orders/__pycache__/__init__.cpython-314.pyc and b/in/shopmono/packages/orders/orders/__pycache__/__init__.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> c3263b08691c8b6bcd2170cc95ad4a0d31ee1cfb649364668e5437848b1cb1a8)
+Binary files a/in/shopmono/packages/orders/orders/__pycache__/adapter.cpython-311.pyc and b/in/shopmono/packages/orders/orders/__pycache__/adapter.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 253e33436c984a278e8d2ae8170ee884f748310f4da853d5f46bd5d631d2d1b8)
+Binary files a/in/shopmono/packages/orders/orders/__pycache__/adapter.cpython-314.pyc and b/in/shopmono/packages/orders/orders/__pycache__/adapter.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> efdb1287008d08000ac013a9c7f46ddd60da48e678107b58d4f9b3882db56a29)
+Binary files a/in/shopmono/packages/orders/orders/__pycache__/service.cpython-311.pyc and b/in/shopmono/packages/orders/orders/__pycache__/service.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 18e30ba850e201218ebd32fe4468a7a1fbb86ab13976c9600b8d35438a8a74a8)
+Binary files a/in/shopmono/packages/orders/orders/__pycache__/service.cpython-314.pyc and b/in/shopmono/packages/orders/orders/__pycache__/service.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> fc7188d187604d0bb6de3f1d61a71db76b1ed90f7493761982832cd1105ebc88)
+--- a/in/shopmono/packages/orders/orders/adapter.py
++++ b/in/shopmono/packages/orders/orders/adapter.py
+@@ -2,16 +2,28 @@
+ 
+ 
+ def price_cents(product) -> int:
+-    """Return the product price in cents.
++    """Return a product price in cents for current and legacy catalog shapes."""
++    if isinstance(product, dict):
++        if "price_cents" in product:
++            return int(product["price_cents"])
++        price = product["price"]
++    else:
++        price = product.price
+ 
+-    BUG: this still assumes the legacy catalog shape.
+-    """
+-    if isinstance(product, dict):
+-        return int(product["price_cents"])
+-    return int(product.price_cents)
++    if isinstance(price, dict):
++        return int(price["amount_cents"])
++    return int(price.amount_cents)
+ 
+ 
+ def currency(product) -> str:
++    """Return the currency from a Money price or legacy product dictionary."""
+     if isinstance(product, dict):
+-        return product.get("currency", "USD")
+-    return getattr(product, "currency", "USD")
++        if "currency" in product:
++            return product["currency"]
++        price = product.get("price")
++    else:
++        price = product.price
++
++    if isinstance(price, dict):
++        return price.get("currency", "USD")
++    return getattr(price, "currency", "USD")
+Binary files a/in/shopmono/packages/reports/reports/__pycache__/__init__.cpython-311.pyc and b/in/shopmono/packages/reports/reports/__pycache__/__init__.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> c8d45e4461c320502676c420e97ee53b9535860d96ceb45a10a999eaaf97e1c1)
+Binary files a/in/shopmono/packages/reports/reports/__pycache__/__init__.cpython-314.pyc and b/in/shopmono/packages/reports/reports/__pycache__/__init__.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 2b3b9eb3cf093d7a1aa1e4655b9b9a43dc22b9ec910840650f185c829274ad59)
+Binary files a/in/shopmono/packages/reports/reports/__pycache__/monthly.cpython-311.pyc and b/in/shopmono/packages/reports/reports/__pycache__/monthly.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 2b34409c194adc221d3f0e3725f6775f3e882672f2a24689578eb6a1193b4cfb)
+Binary files a/in/shopmono/packages/reports/reports/__pycache__/monthly.cpython-314.pyc and b/in/shopmono/packages/reports/reports/__pycache__/monthly.cpython-314.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> e246f58e1093ee5a0590dd014e2487e356b4ce14c276cd10922f65119b0f310f)
+Binary files a/in/shopmono/tests/__pycache__/test_catalog_contract.cpython-311.pyc and b/in/shopmono/tests/__pycache__/test_catalog_contract.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 9f768e3535a6117af7764c9946aa62985004d915c3bb0002b3f178ca769e1b3c)
+Binary files a/in/shopmono/tests/__pycache__/test_catalog_contract.cpython-314-pytest-7.4.3.pyc and b/in/shopmono/tests/__pycache__/test_catalog_contract.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 45b8fc5e8ef640dc5dbb26b1d59f45838867933e62f60c1180b2a6ecd7d8109a)
+Binary files a/in/shopmono/tests/__pycache__/test_orders_report_integration.cpython-311.pyc and b/in/shopmono/tests/__pycache__/test_orders_report_integration.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 8254801d346cb15317ad35e6fb06090c37d75551dd4575f95f09a043a7278afe)
+Binary files a/in/shopmono/tests/__pycache__/test_orders_report_integration.cpython-314-pytest-7.4.3.pyc and b/in/shopmono/tests/__pycache__/test_orders_report_integration.cpython-314-pytest-7.4.3.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 030b86130e25055758103912830baaa136936fd9a9234be882039a5b34aba104)
+--- a/out/interface_fix_report.md
++++ b/out/interface_fix_report.md
+@@ -0,0 +1,40 @@
++# Interface Fix Report
++
++## Root cause
++
++`catalog.Product` now stores its price in a `Money` object (`product.price.amount_cents` and `product.price.currency`). The `orders` adapter still read the removed `product.price_cents` and `product.currency` attributes. As a result, order pricing failed for current `Product` instances, and currency lookup could incorrectly fall back to USD. The reports package delegates pricing to `orders`, so it inherited the same breakage.
++
++## Changed files
++
++- `in/shopmono/packages/orders/orders/adapter.py`
++  - Read `amount_cents` and `currency` from the current nested Money price.
++  - Retain support for legacy dictionaries containing `price_cents` and optional top-level `currency`.
++  - Also support dictionary representations with nested `price.amount_cents` and `price.currency`.
++- `out/interface_fix_report.md`
++  - Added this root-cause, change, and verification record.
++
++`catalog` was not changed; the `Money` model remains the source-of-truth price representation. `orders.service.price_order` still rejects mixed currencies with `ValueError("mixed currencies are not supported")`.
++
++## Verification
++
++Requested command:
++
++```text
++python -m pytest tests
++```
++
++The supplied absolute macOS path is not mounted in this environment. From the available checkout at `/workspace/in/shopmono`, `python` is unavailable and `python3 -m pytest tests` cannot run because pytest is not installed.
++
++A direct Python smoke check was run from `/workspace/in/shopmono` with the package paths configured. It verified:
++
++- current `Product`/`Money` order totals;
++- report aggregation by USD and EUR;
++- legacy `price_cents` dictionaries;
++- nested dictionary Money representations; and
++- rejection of a mixed-currency order with an error containing `mixed`.
++
++Command used:
++
++```text
++PYTHONPATH=packages/catalog:packages/orders:packages/reports python3 -c '...compatibility and mixed-currency assertions...'
++```

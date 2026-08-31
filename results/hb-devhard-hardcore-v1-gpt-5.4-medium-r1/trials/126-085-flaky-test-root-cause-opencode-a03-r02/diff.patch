@@ -1,0 +1,147 @@
+--- a/in/flakyqueue/.pytest_cache/.gitignore
++++ b/in/flakyqueue/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
++++ b/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/flakyqueue/.pytest_cache/README.md
++++ b/in/flakyqueue/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/flakyqueue/.pytest_cache/v/cache/nodeids
++++ b/in/flakyqueue/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,6 @@
++[
++  "tests/test_retry_order.py::test_retry_jitter_uses_injected_random_source",
++  "tests/test_retry_order.py::test_retry_task_is_not_ready_until_clock_reaches_run_at",
++  "tests/test_scheduler.py::test_add_uses_injected_clock",
++  "tests/test_scheduler.py::test_ready_order_is_stable_for_equal_priority"
++]--- a/in/flakyqueue/.pytest_cache/v/cache/stepwise
++++ b/in/flakyqueue/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]Binary files a/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 292a40669ea9d7a8a8c336e7bcfd754c34bcd56b9ae379d710f41ebd146ccbb0)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b298812fdcc1108f46387e49043876ee02b41f5d617f1c8df90878647165fec5)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b38d933d1b9ce7576215aab4761d742173ee1139d21a18717fef0e468d8b7063)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/store.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/store.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 94253b99eab78e44143493ffdd42ab0a941f7f8f27da88df5029e98ceb1540e8)
+--- a/in/flakyqueue/flakyqueue/scheduler.py
++++ b/in/flakyqueue/flakyqueue/scheduler.py
+@@ -1,7 +1,6 @@
+ from __future__ import annotations
+ 
+ import random
+-import time
+ from dataclasses import dataclass, replace
+ 
+ from flakyqueue.clock import SystemClock
+@@ -24,18 +23,25 @@
+         self.random_source = random_source
+ 
+     def add(self, task_id: str, priority: int) -> Task:
+-        task = Task(id=task_id, priority=priority, created_at=time.time(), run_at=time.time())
++        now = self.clock.now()
++        task = Task(id=task_id, priority=priority, created_at=now, run_at=now)
+         self.store.save(task)
+         return task
+ 
+     def ready(self):
+-        now = time.time()
++        now = self.clock.now()
+         items = [task for task in self.store.all() if task.run_at <= now]
+-        random.shuffle(items)
+-        return sorted(items, key=lambda task: task.priority, reverse=True)
++        return sorted(
++            items,
++            key=lambda task: (-task.priority, task.run_at, task.created_at, task.id),
++        )
+ 
+     def schedule_retry(self, task: Task, base_delay: float = 5.0) -> Task:
+-        jitter = random.random()
+-        updated = replace(task, attempts=task.attempts + 1, run_at=time.time() + base_delay + jitter)
++        jitter = self.random_source.random() if self.random_source is not None else random.random()
++        updated = replace(
++            task,
++            attempts=task.attempts + 1,
++            run_at=self.clock.now() + base_delay + jitter,
++        )
+         self.store.save(updated)
+         return updated
+Binary files a/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-311.pyc and b/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> d11467e757f3e712e2b4dd37f06a17f7a3b8c741e5fb90f5c8af8236abbb8f06)
+Binary files a/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-311.pyc and b/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 449f71f0a5b45cd0a885b34ee3564f35d0c501341f48cc33e642fca6095a2a03)
+Binary files a/out/flakyqueue-venv/bin/python and b/out/flakyqueue-venv/bin/python differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9)
+Binary files a/out/flakyqueue-venv/bin/python3 and b/out/flakyqueue-venv/bin/python3 differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9)
+Binary files a/out/flakyqueue-venv/bin/python3.11 and b/out/flakyqueue-venv/bin/python3.11 differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9)
+--- a/out/flakyqueue-venv/pyvenv.cfg
++++ b/out/flakyqueue-venv/pyvenv.cfg
+@@ -0,0 +1,5 @@
++home = /usr/bin
++include-system-site-packages = false
++version = 3.11.2
++executable = /usr/bin/python3.11
++command = /usr/bin/python3 -m venv /workspace/out/flakyqueue-venv
+--- a/out/root_cause.md
++++ b/out/root_cause.md
+@@ -0,0 +1,51 @@
++## Flaky behavior
++
++- `Scheduler.add()` ignored the injected clock and used wall-clock time directly.
++- `Scheduler.schedule_retry()` ignored both the injected clock and injected random source, so retry `run_at` values depended on real time and global RNG state.
++- `Scheduler.ready()` shuffled ready tasks before sorting only by priority, so equal-priority tasks could appear in different orders across calls.
++
++These behaviors make tests flaky because the tests inject a fake clock and fake random source and expect ordering and retry timing to be derived entirely from those deterministic inputs.
++
++## Root cause
++
++The implementation mixed dependency injection with direct calls to global nondeterministic sources:
++
++- `time.time()` was used in `add()`, `ready()`, and `schedule_retry()` instead of `clock.now()`.
++- `random.random()` was used in `schedule_retry()` instead of the injected `random_source`.
++- `random.shuffle()` introduced unstable tie-breaking for equal-priority tasks.
++
++As a result, the scheduler could not be made deterministic even when tests supplied deterministic clock/random implementations.
++
++## Fix
++
++- Switched `add()` and `ready()` to use `self.clock.now()`.
++- Switched retry jitter to `self.random_source.random()` when a random source is injected, with fallback to `random.random()` for normal runtime behavior.
++- Replaced the shuffle-plus-priority-sort flow in `ready()` with a deterministic sort key:
++  - priority descending
++  - run time ascending
++  - creation time ascending
++  - task id ascending
++
++This preserves retry jitter in production while making scheduling deterministic whenever deterministic dependencies are injected.
++
++## Verification
++
++Attempted:
++
++- `python -m pytest tests` from the repo path requested by the task
++- `python3 -m pytest tests` from `/workspace/in/flakyqueue`
++
++Environment limitation:
++
++- `python` is not installed in PATH here.
++- `python3` is available, but `pytest` is not installed in this container.
++
++Verification actually run:
++
++- `python3 -c "from tests.test_scheduler import test_ready_order_is_stable_for_equal_priority, test_add_uses_injected_clock; from tests.test_retry_order import test_retry_jitter_uses_injected_random_source, test_retry_task_is_not_ready_until_clock_reaches_run_at; test_ready_order_is_stable_for_equal_priority(); test_add_uses_injected_clock(); test_retry_jitter_uses_injected_random_source(); test_retry_task_is_not_ready_until_clock_reaches_run_at(); print('manual test function execution passed')"`
++- `python3 -m compileall flakyqueue tests`
++
++Results:
++
++- Manual execution of all four test functions passed.
++- `compileall` completed successfully.

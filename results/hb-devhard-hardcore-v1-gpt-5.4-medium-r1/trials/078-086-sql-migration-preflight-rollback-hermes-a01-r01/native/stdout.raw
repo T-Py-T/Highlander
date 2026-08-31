@@ -1,0 +1,46 @@
+Done.
+
+I repaired the migration package in the mounted workspace copy at:
+- /workspace/in/billingdb/migration.sql
+- /workspace/in/billingdb/preflight_report.md
+- /workspace/in/billingdb/rollback.sql
+- /workspace/in/billingdb/postcheck.sql
+- /workspace/in/billingdb/migration_report.md
+
+Note: the literal <HOME>/... path was not present in this runtime; the corresponding mounted files were under /workspace/in/billingdb.
+
+What was fixed
+- Added an explicit transaction to the migration.
+- Preserved all baseline invoices and their created_at values.
+- Added invoices.status as NOT NULL DEFAULT 'open'.
+- Preserved orphan payment p4 by moving it to payment_orphans with a reason.
+- Enforced future payments.invoice_id integrity with a foreign key.
+- Made orphan capture idempotent with INSERT OR IGNORE.
+- Added rollback that restores the old invoices/payments shapes and puts orphan payments back into payments.
+- Added post-migration checks for counts, defaults, orphan preservation, and FK integrity.
+
+Verified with real SQLite execution
+- Applied schema.sql
+- Ran migration.sql
+- Ran migration.sql a second time
+- Ran postcheck.sql
+- Ran rollback.sql
+
+Observed results
+- After first migration:
+  - invoices = 3
+  - payments = 3
+  - payment_orphans = 1
+  - p4 preserved in payment_orphans
+  - all invoice statuses = open
+  - foreign_key_check = clean
+- After second migration:
+  - no duplicated orphan rows
+  - counts unchanged
+  - foreign_key_check = clean
+- After rollback:
+  - invoices columns restored to id, customer_id, total_cents, created_at
+  - payments columns restored to id, invoice_id, amount_cents, created_at
+  - p1, p2, p3, p4 all present in payments again
+
+If you want, I can also produce a unified diff of the repaired migration package.

@@ -1,0 +1,148 @@
+{
+  "task_id": "082-compose-config-repair",
+  "model_id": "hermes",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/140-082-compose-config-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-082-compose-config-repair-gpt-5.6-luna-20260831-072318-26d72274",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/140-082-compose-config-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-082-compose-config-repair-gpt-5.6-luna-20260831-072318-26d72274/workspace",
+  "session_id": "highlander-hermes-082-compose-config-repair-a3-082-compose-config-repair-62a158e8",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/140-082-compose-config-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-082-compose-config-repair-gpt-5.6-luna-20260831-072318-26d72274/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "hermes",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/140-082-compose-config-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-082-compose-config-repair-gpt-5.6-luna-20260831-072318-26d72274/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/140-082-compose-config-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-082-compose-config-repair-gpt-5.6-luna-20260831-072318-26d72274/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/140-082-compose-config-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-082-compose-config-repair-gpt-5.6-luna-20260831-072318-26d72274/highlander-native",
+      "--trial-id",
+      "140-082-compose-config-repair-hermes-a03-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/140-082-compose-config-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-082-compose-config-repair-gpt-5.6-luna-20260831-072318-26d72274/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "hermes",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/140-082-compose-config-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-082-compose-config-repair-gpt-5.6-luna-20260831-072318-26d72274/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/140-082-compose-config-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-082-compose-config-repair-gpt-5.6-luna-20260831-072318-26d72274/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/140-082-compose-config-repair-hermes-a03-r01/hb-work/hermes/gpt-5.6-luna/oc-bench-v2-082-compose-config-repair-gpt-5.6-luna-20260831-072318-26d72274/highlander-native",
+        "--trial-id",
+        "140-082-compose-config-repair-hermes-a03-r01"
+      ],
+      "stdout": "Repaired the compose stack and wrote the report.\n\nChanged:\n- Restored pinned API image tag `1.4.2`\n- Renamed `cache` to `redis`\n- Restored required environment variables\n- Corrected API port mapping to `${API_PORT:-8080}:8000`\n- Mounted `api-data` at `/data`\n- Restored `/healthz`, `pg_isready`, and `redis-cli ping` healthchecks\n- Restored `service_healthy` dependencies\n- Set the worker and API queue to `critical`\n\n`.env.example` was already consistent and was not changed.\n\nValidation passed offline:\n\n`PYTHONPATH=/tmp python3 tools/validate_compose.py`\n\nOutput:\n\n`compose contract ok`\n\nReport:\n`/workspace/out/compose_fix_report.md`\n\nThe user-provided `/Users/...` paths map to `/workspace/...` in this environment. No images were pulled and no containers were started.\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-hermes-082-compose-config-repair-a3-082-compose-config-repair-62a158e8"
+  },
+  "oracle_result": {
+    "task": "082-compose-config-repair",
+    "outcome_score": 0.99,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "compose_structure",
+        "pass": true,
+        "weight": 0.25,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "advanced_contract",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "compose_parse",
+        "pass": true,
+        "weight": 0.15,
+        "detail": null
+      },
+      {
+        "id": "local_validator",
+        "pass": true,
+        "weight": 0.2,
+        "detail": "compose contract ok\n"
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "env_example",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "fix_report",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 0.8
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.99,
+    "oracle_outcome_score": 0.99,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.99,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 156.353
+}

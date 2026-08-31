@@ -1,0 +1,89 @@
+Done.
+
+I updated the available workspace copies of the requested files here:
+- /workspace/in/db/migration.sql
+- /workspace/in/db/preflight_report.md
+- /workspace/in/db/rollback.sql
+- /workspace/in/db/postcheck.sql
+- /workspace/in/db/migration_report.md
+
+Note: the exact macOS path you provided under <HOME>/... is not mounted in this environment, so I edited the corresponding accessible files under /workspace/in/db.
+
+What changed
+
+- migration.sql
+  - replaced the unsafe drop-and-recreate-empty approach
+  - now runs in an explicit transaction
+  - rebuilds users into the target schema while copying all rows
+  - preserves ids, created_at values, and order references
+  - applies the exact deterministic cleanup:
+    - u4 -> ada+u4@example.com
+    - u5 -> missing+u5@example.invalid
+    - u6 -> missing+u6@example.invalid
+  - enforces:
+    - status TEXT NOT NULL DEFAULT 'active'
+    - email TEXT NOT NULL
+    - UNIQUE(email)
+    - CHECK(trim(email) <> '')
+
+- preflight_report.md
+  - documents duplicate/null/blank email issues
+  - explicitly mentions dependent orders for u4, u5, u6:
+    - u4 -> o2
+    - u5 -> o3
+    - u6 -> o4
+
+- rollback.sql
+  - restores the old users schema shape:
+    - id, email, name, created_at
+  - preserves user row count and order row count
+  - preserves order references by keeping the same user ids
+
+- postcheck.sql
+  - checks:
+    - user count
+    - order count
+    - dirty-user order preservation
+    - cleaned email values for u4/u5/u6
+    - no null/blank emails
+    - no duplicate email groups
+    - no null statuses
+    - migrated users table definition
+    - unique index metadata
+    - foreign key integrity
+
+- migration_report.md
+  - summarizes strategy, cleanup, idempotency, rollback behavior/limitation, and postchecks
+
+Verification performed
+
+I validated the scripts with Python’s built-in SQLite engine against the provided schema/data:
+
+- migration run once: success
+- migration run a second time: success
+- rollback run after migration: success
+
+Observed verified results:
+- users remained 6
+- orders remained 4
+- order refs preserved:
+  - o2 -> u4
+  - o3 -> u5
+  - o4 -> u6
+- created_at preserved for all users
+- cleaned emails after migration:
+  - u4 = ada+u4@example.com
+  - u5 = missing+u5@example.invalid
+  - u6 = missing+u6@example.invalid
+- constraint probes failed as desired:
+  - null email insert -> NOT NULL constraint failed
+  - blank email insert -> CHECK constraint failed
+  - duplicate email insert -> UNIQUE constraint failed
+- foreign_key_check returned no violations
+- rollback restored users columns to:
+  - id, email, name, created_at
+
+One important rollback note
+- rollback restores the old schema shape, but not the original invalid email values; it keeps the cleaned migrated email values. I documented that limitation in migration_report.md.
+
+If you want, I can also print the final contents of any of the generated files inline.
