@@ -320,7 +320,7 @@ def seed(runtime: str, lock: dict[str, Any], harness: str, profile: str, seed_ro
         "--user",
         f"{uid}:{gid}",
         "--tmpfs",
-        f"/home/highlander:rw,nosuid,nodev,size=512m,uid={uid},gid={gid},mode=0700",
+        "/home/highlander:rw,nosuid,nodev,size=512m,mode=1777",
         "--mount",
         f"type=bind,src={destination},dst=/seed-output,rw",
         "--env",

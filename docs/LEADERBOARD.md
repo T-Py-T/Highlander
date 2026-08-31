@@ -27,6 +27,13 @@ The season remains provisional until the clean-core Atomic route and the
 repaired NanoBot OAuth seed qualify. An unavailable lane is shown as
 unavailable, never as zero.
 
+The executable protocol is
+`protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r1.json`, SHA-256
+`127cc0ce09bce562e7cad2ba86c967d179f31a26b4ed415952a605b797007d21`.
+It adds six unscored route-qualification calls before the 162 scored slots and
+uses the unchanged upstream renderer and deterministic oracles. Reproduction
+and redacted-export commands are in [SEASON-RUNBOOK.md](SEASON-RUNBOOK.md).
+
 ## Original breadth season
 
 `benchmark-packs/hb-devhard-v1.json` freezes 12 unmodified tasks from one

@@ -39,6 +39,13 @@ expect on a typical run. Best-of-three remains visible as a separate maximum
 capability view. Highlander does not claim a real-harness winner from the
 task-043 pilot.
 
+That season is now executable through the pinned upstream HarnessBench runner
+and disposable Podman workers. Its immutable protocol schedules 162 scored
+calls plus six unscored route qualifications. See the
+[reproduction runbook](docs/SEASON-RUNBOOK.md). No multi-task numbers are
+published until every route is qualified and the redacted evidence bundle
+passes local verification.
+
 Current control and challengers:
 
 | Lane | Stack | Experimental question |
@@ -77,7 +84,8 @@ Current control and challengers:
 - A false green is worse than a slow failure.
 - No merge, deploy, production credentials, or branch-rule changes.
 - Run DevOps and SCADA/MES matches only in disposable, simulated, or read-only environments.
-- Keep the benchmark private while the rubric and task quality mature.
+- Keep a run private until its protocol, evidence, privacy, and local workflow
+  gates pass; publish complete reproducible results with their limitations.
 - Desktop applications are excluded from the primary lane. A stack must prove CLI, macOS/Linux/WSL, Herdr, legitimate subscription routes, and phone observe/respond capability before it can displace the control.
 
 ## Quick start
@@ -216,6 +224,7 @@ The retained output from the first accepted local gate is under
 - `docs/MATCH-RUNNER.md` — pilot CLI, state machine, adapter boundary, and tmux workflow.
 - `docs/CLEAN-ROOM.md` — pinned images, authentication seeds, disposable clones, raw evaluation, and cleanup.
 - `docs/LEADERBOARD.md` — the HarnessBench developer-season ranking and result-ledger contract.
+- `docs/SEASON-RUNBOOK.md` — exact clean-room qualification, staged execution, export, and reproduction commands.
 - `docs/EVIDENCE.md` — public Evidence Bundle, control proof, redaction, and qualification contract.
 - `benchmark-packs/` — frozen upstream task packs, controls, versions, hashes, and declared deviations.
 - `tasks/` — public task cards and task authoring rules.
