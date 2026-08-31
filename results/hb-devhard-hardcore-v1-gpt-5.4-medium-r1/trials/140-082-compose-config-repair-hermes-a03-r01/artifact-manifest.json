@@ -1,0 +1,136 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 437,
+      "path": "control/app.json",
+      "sha256": "69e8767caf9236472506a65fb513177198cb4d254dfa83c4d46a4e0282733634"
+    },
+    {
+      "bytes": 690,
+      "path": "control/harness.json",
+      "sha256": "8a41f16a89d751fc360187862b47222d39146cfcf832a1ee719ad9809d2a3e87"
+    },
+    {
+      "bytes": 334,
+      "path": "control/trial.json",
+      "sha256": "6bab2d65706f3f3ba05f25d4a740d948b0c7b3538270460e1e00cad190bde91a"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2694,
+      "path": "controller.stdout.raw",
+      "sha256": "db4a6d8d2fb5c8e9bd8b6f9721b62edff4fc7a711f105ceff12966bf7ba8effd"
+    },
+    {
+      "bytes": 0,
+      "path": "diff.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2227,
+      "path": "native/container-plan.json",
+      "sha256": "5a67e6bf56dd9380fae1537d4526b05ecef45b013baf7abed425d4e267d7110a"
+    },
+    {
+      "bytes": 641,
+      "path": "native/control-proof.json",
+      "sha256": "431d4cc57020a47885e5bc8e0c1afa7892331a5e9cbbefe725e5d63619c63967"
+    },
+    {
+      "bytes": 1945,
+      "path": "native/execution.json",
+      "sha256": "1810c3830c527c328ec5e99a769e7c73db109ca9c7fdf9b2345a4ab5e38c7cdd"
+    },
+    {
+      "bytes": 531,
+      "path": "native/invocation.json",
+      "sha256": "4361db710e84218b25c9e614e414b02c22d47c9b5d6a0dcd870fc3d77be051a0"
+    },
+    {
+      "bytes": 48,
+      "path": "native/process-metrics.json",
+      "sha256": "bf225fbe16fbb7db40291698ce9a3771e4d4335cda5a095de5c20a1924c83313"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 81,
+      "path": "native/stdout.raw",
+      "sha256": "b8dbc80c3a1c62a2819323e1f5da1e1075b1b529a7d95f931ff87e47c55652be"
+    },
+    {
+      "bytes": 0,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 380,
+      "path": "native/usage.json",
+      "sha256": "beff23d4f9ffffa2b8180e2214eeedebb754d5c323809430ca32b76298ca0524"
+    },
+    {
+      "bytes": 330,
+      "path": "process/observations.json",
+      "sha256": "3686418c2cc4a8c101cc02d66c1adbfc309c5e9fc86cfba0aed1faaf1658604e"
+    },
+    {
+      "bytes": 0,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2650,
+      "path": "result.json",
+      "sha256": "e2cb04e382d96a84b454176fde42bf1f1820940f51620c74ba205a834f3d884e"
+    },
+    {
+      "bytes": 5661,
+      "path": "upstream-result.json",
+      "sha256": "e5ae1637ef017797ffe84e06f1702c76731f49a4d7426df8335ac5926fe1a4b8"
+    },
+    {
+      "bytes": 438,
+      "path": "usage-normalized.json",
+      "sha256": "148107f6c64f633690fce9eb1eb02dcb15ec6bfe5597fe3d6c6fc0bb4e4c14d6"
+    },
+    {
+      "bytes": 165,
+      "path": "workspace-final/in/composeapp/.env.example",
+      "sha256": "99f50393278ac0e92a58a6ba02c761980fedca268381ee762c1ec574403e8b2a"
+    },
+    {
+      "bytes": 131,
+      "path": "workspace-final/in/composeapp/README.md",
+      "sha256": "3225cc0dc4c214d55ffaed9958f90803e7be2b77c603dac6d9450e7f36da396f"
+    },
+    {
+      "bytes": 1114,
+      "path": "workspace-final/in/composeapp/compose.yaml",
+      "sha256": "12c3ec906c243d06cfa7a35068507167578c4c0b6620181fa89d0282d1812378"
+    },
+    {
+      "bytes": 758,
+      "path": "workspace-final/in/composeapp/config/service-policy.yml",
+      "sha256": "545254079313b4d210ba80bb9c459db70f8ad5cd67c41ac8e1a8931635225792"
+    },
+    {
+      "bytes": 3336,
+      "path": "workspace-final/in/composeapp/tools/validate_compose.py",
+      "sha256": "2cff4c0c0e561e39c568756e68f6b770783098e5c79db5c7156286effc766ec7"
+    }
+  ],
+  "generated_at": "2026-08-31T23:30:57.167339Z",
+  "schema_version": 1
+}

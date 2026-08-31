@@ -1,0 +1,66 @@
+{
+  "adapter": "codex",
+  "clean_room": {
+    "adapter": "oci",
+    "architecture": "arm64",
+    "capabilities": "all-dropped",
+    "container_name": "highlander-071-064-service-dependency-triage-codex-a03-r01-codex-a1",
+    "digest_verified": true,
+    "host_home_mounted": false,
+    "image_id": "sha256:ae11c8dcd4c94cbca5d42be07ea677f4eff88398828a4e7c74b3f0e9d67c2703",
+    "image_reference": "sha256:ae11c8dcd4c94cbca5d42be07ea677f4eff88398828a4e7c74b3f0e9d67c2703",
+    "labels": {
+      "io.buildah.version": "1.43.2",
+      "io.highlander.harness": "codex",
+      "io.highlander.profile": "clean-core",
+      "io.highlander.version": "0.147.0"
+    },
+    "network": "bridge",
+    "no_new_privileges": true,
+    "os": "linux",
+    "profile": "clean-core",
+    "publication_credentials_available": false,
+    "reference": "sha256:ae11c8dcd4c94cbca5d42be07ea677f4eff88398828a4e7c74b3f0e9d67c2703",
+    "repo_digests": [
+      "localhost/highlander/codex@sha256:49ba17aeb2c7bb0fad721aad3dd3a57e7a3635f5f98830f47c61f012124c5a96"
+    ],
+    "resources": {
+      "cpus": 2.0,
+      "memory_mb": 4096,
+      "pids_limit": 512,
+      "tmpfs_mb": 1024
+    },
+    "root_filesystem": "read-only",
+    "runtime": "podman",
+    "seed": {
+      "available": true,
+      "imported_file": "auth.json",
+      "profile": "codex-subscription",
+      "required": true
+    },
+    "seed_profile": "codex-subscription"
+  },
+  "invocation": {
+    "argv": [
+      "codex",
+      "exec",
+      "--json",
+      "--ephemeral",
+      "--ignore-user-config",
+      "--ignore-rules",
+      "--dangerously-bypass-approvals-and-sandbox",
+      "--cd",
+      "/workspace",
+      "--model",
+      "gpt-5.4",
+      "--config",
+      "model_reasoning_effort=\"medium\"",
+      "--config",
+      "cli_auth_credentials_store=\"file\""
+    ],
+    "credential_values_recorded": false,
+    "cwd": "/workspace",
+    "prompt_transport": "exact rendered HarnessBench prompt appended as one argv element"
+  },
+  "worktree": "<SOURCE_EVIDENCE_ROOT>/trials/071-064-service-dependency-triage-codex-a03-r01/hb-work/codex/gpt-5.4/oc-bench-v2-064-service-dependency-triage-gpt-5.4-20260831-123246-5188bbdc/workspace"
+}

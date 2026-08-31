@@ -1,0 +1,208 @@
+--- a/in/billingdb/migration.sql
++++ b/in/billingdb/migration.sql
+@@ -1,5 +1,24 @@
+--- Unsafe draft: loses orphan payments and is not idempotent.
+-CREATE TABLE invoices_new (
++PRAGMA foreign_keys = OFF;
++BEGIN IMMEDIATE;
++
++DROP TABLE IF EXISTS invoices__migration_new;
++DROP TABLE IF EXISTS payments__migration_new;
++
++CREATE TABLE IF NOT EXISTS payment_orphans (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL,
++  reason TEXT NOT NULL
++);
++
++INSERT OR IGNORE INTO payment_orphans(id, invoice_id, amount_cents, created_at, reason)
++SELECT p.id, p.invoice_id, p.amount_cents, p.created_at, 'missing invoice during migration'
++FROM payments AS p
++LEFT JOIN invoices AS i ON i.id = p.invoice_id
++WHERE i.id IS NULL;
++
++CREATE TABLE invoices__migration_new (
+   id TEXT PRIMARY KEY,
+   customer_id TEXT NOT NULL,
+   total_cents INTEGER NOT NULL,
+@@ -7,11 +26,28 @@
+   status TEXT NOT NULL DEFAULT 'open'
+ );
+ 
+-INSERT INTO invoices_new(id, customer_id, total_cents, created_at)
+-SELECT id, customer_id, total_cents, created_at FROM invoices;
++INSERT OR IGNORE INTO invoices__migration_new(id, customer_id, total_cents, created_at, status)
++SELECT id, customer_id, total_cents, created_at, 'open'
++FROM invoices;
+ 
++CREATE TABLE payments__migration_new (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL,
++  FOREIGN KEY (invoice_id) REFERENCES invoices(id)
++);
++
++INSERT OR IGNORE INTO payments__migration_new(id, invoice_id, amount_cents, created_at)
++SELECT p.id, p.invoice_id, p.amount_cents, p.created_at
++FROM payments AS p
++INNER JOIN invoices AS i ON i.id = p.invoice_id;
++
++DROP TABLE payments;
+ DROP TABLE invoices;
+-ALTER TABLE invoices_new RENAME TO invoices;
+ 
+-DELETE FROM payments
+-WHERE invoice_id NOT IN (SELECT id FROM invoices);
++ALTER TABLE invoices__migration_new RENAME TO invoices;
++ALTER TABLE payments__migration_new RENAME TO payments;
++
++COMMIT;
++PRAGMA foreign_keys = ON;
+--- a/in/billingdb/migration_report.md
++++ b/in/billingdb/migration_report.md
+@@ -0,0 +1,26 @@
++# Billing migration report
++
++## Changes applied
++- Rebuilt `invoices` inside an explicit transaction to add `status TEXT NOT NULL DEFAULT 'open'`.
++- Preserved invoice `id`, `customer_id`, `total_cents`, and historical `created_at` values.
++- Preserved orphan payments by copying them into `payment_orphans` before rebuilding `payments`.
++- Rebuilt `payments` so future `invoice_id` values must reference existing `invoices(id)`.
++- Used `INSERT OR IGNORE` and stable primary keys so rerunning the migration does not duplicate `payment_orphans` rows or invoice/payment rows.
++
++## Expected post-migration state for `schema.sql`
++- `invoices`: 3 rows, each with `status = 'open'`
++- `payments`: 3 rows referencing `inv1` or `inv2`
++- `payment_orphans`: 1 row preserving `p4`
++- `PRAGMA foreign_key_check`: no rows
++
++## Rollback behavior
++- Restores `invoices(id, customer_id, total_cents, created_at)`.
++- Restores `payments(id, invoice_id, amount_cents, created_at)`.
++- Moves preserved rows from `payment_orphans` back into `payments` before dropping `payment_orphans`.
++- Leaves foreign-key enforcement off again to match the original package shape.
++
++## Operator sequence
++1. Review `preflight_report.md`.
++2. Apply `migration.sql`.
++3. Run `postcheck.sql`.
++4. If reversal is required, run `rollback.sql` and re-check row counts and table shapes.
+--- a/in/billingdb/postcheck.sql
++++ b/in/billingdb/postcheck.sql
+@@ -0,0 +1,25 @@
++PRAGMA foreign_keys = ON;
++
++SELECT 'invoice_count' AS check_name, COUNT(*) AS value FROM invoices;
++SELECT 'payment_count' AS check_name, COUNT(*) AS value FROM payments;
++SELECT 'payment_orphan_count' AS check_name, COUNT(*) AS value FROM payment_orphans;
++SELECT 'null_status_count' AS check_name, COUNT(*) AS value FROM invoices WHERE status IS NULL;
++SELECT 'non_open_status_count' AS check_name, COUNT(*) AS value FROM invoices WHERE status <> 'open';
++SELECT 'preserved_invoice_created_at_count' AS check_name, COUNT(*) AS value
++FROM invoices
++WHERE (id, created_at) IN (
++  ('inv1', '2024-01-03T10:00:00Z'),
++  ('inv2', '2024-01-04T10:00:00Z'),
++  ('inv3', '2024-01-05T10:00:00Z')
++);
++SELECT 'preserved_orphan_p4_count' AS check_name, COUNT(*) AS value
++FROM payment_orphans
++WHERE id = 'p4'
++  AND invoice_id = 'missing-invoice'
++  AND amount_cents = 700
++  AND created_at = '2024-01-07T10:00:00Z';
++SELECT 'dangling_payment_count' AS check_name, COUNT(*) AS value
++FROM payments AS p
++LEFT JOIN invoices AS i ON i.id = p.invoice_id
++WHERE i.id IS NULL;
++PRAGMA foreign_key_check;
+--- a/in/billingdb/preflight_report.md
++++ b/in/billingdb/preflight_report.md
+@@ -0,0 +1,32 @@
++# Billing migration preflight report
++
++## Scope
++- Source tables: `invoices`, `payments`
++- Target additions: `invoices.status`, `payment_orphans`, foreign-key-safe `payments`
++
++## Preflight SQL
++```sql
++SELECT 'invoice_count' AS metric, COUNT(*) AS value FROM invoices;
++SELECT 'payment_count' AS metric, COUNT(*) AS value FROM payments;
++SELECT 'orphan_payment_count' AS metric, COUNT(*) AS value
++FROM payments AS p
++LEFT JOIN invoices AS i ON i.id = p.invoice_id
++WHERE i.id IS NULL;
++
++SELECT p.id, p.invoice_id, p.amount_cents, p.created_at
++FROM payments AS p
++LEFT JOIN invoices AS i ON i.id = p.invoice_id
++WHERE i.id IS NULL
++ORDER BY p.id;
++```
++
++## Observed result from `schema.sql`
++- `invoices`: 3 rows
++- `payments`: 4 rows
++- orphan payments: 1 row
++- orphan detail preserved by migration: `p4 | missing-invoice | 700 | 2024-01-07T10:00:00Z`
++
++## Migration gate
++- Do not proceed unless the orphan set is understood and intentionally moved into `payment_orphans`.
++- Do not proceed unless the migration is run as a single explicit transaction.
++- Do not proceed unless postcheck and rollback scripts are available beside the migration.
+--- a/in/billingdb/rollback.sql
++++ b/in/billingdb/rollback.sql
+@@ -0,0 +1,50 @@
++PRAGMA foreign_keys = OFF;
++BEGIN IMMEDIATE;
++
++DROP TABLE IF EXISTS invoices__rollback_new;
++DROP TABLE IF EXISTS payments__rollback_new;
++
++CREATE TABLE IF NOT EXISTS payment_orphans (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL,
++  reason TEXT NOT NULL
++);
++
++CREATE TABLE invoices__rollback_new (
++  id TEXT PRIMARY KEY,
++  customer_id TEXT NOT NULL,
++  total_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL
++);
++
++INSERT OR IGNORE INTO invoices__rollback_new(id, customer_id, total_cents, created_at)
++SELECT id, customer_id, total_cents, created_at
++FROM invoices;
++
++CREATE TABLE payments__rollback_new (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL
++);
++
++INSERT OR IGNORE INTO payments__rollback_new(id, invoice_id, amount_cents, created_at)
++SELECT id, invoice_id, amount_cents, created_at
++FROM payments;
++
++INSERT OR IGNORE INTO payments__rollback_new(id, invoice_id, amount_cents, created_at)
++SELECT id, invoice_id, amount_cents, created_at
++FROM payment_orphans;
++
++DROP TABLE payments;
++DROP TABLE invoices;
++
++ALTER TABLE invoices__rollback_new RENAME TO invoices;
++ALTER TABLE payments__rollback_new RENAME TO payments;
++
++DROP TABLE IF EXISTS payment_orphans;
++
++COMMIT;
++PRAGMA foreign_keys = OFF;

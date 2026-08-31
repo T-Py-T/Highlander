@@ -1,0 +1,22 @@
+Re-ran verification successfully.
+
+Command:
+- `uv run --with pytest python -m pytest tests`
+
+Result:
+- `4 passed in 0.01s`
+
+What passed
+- `tests/test_retry_order.py`
+- `tests/test_scheduler.py`
+
+Verified behavior
+- Injected clock is used for task creation, readiness checks, and retry scheduling.
+- Injected random source is used for retry jitter.
+- Ready-task ordering is deterministic for equal-priority tasks.
+
+Changed implementation:
+- `/workspace/in/flakyqueue/flakyqueue/scheduler.py`
+
+Report:
+- `/workspace/out/root_cause.md`

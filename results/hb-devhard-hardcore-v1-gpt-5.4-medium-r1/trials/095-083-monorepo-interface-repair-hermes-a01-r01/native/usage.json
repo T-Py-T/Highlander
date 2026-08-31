@@ -1,0 +1,18 @@
+{
+  "estimated_cost_usd": 0.0,
+  "cost_status": "included",
+  "cost_source": "none",
+  "input_tokens": 34041,
+  "output_tokens": 4056,
+  "cache_read_tokens": 285184,
+  "cache_write_tokens": 0,
+  "reasoning_tokens": 711,
+  "total_tokens": 323281,
+  "api_calls": 20,
+  "model": "gpt-5.4",
+  "provider": "openai-codex",
+  "session_id": "20260831_173136_2ec87a",
+  "completed": true,
+  "failed": false,
+  "service_tier": null
+}

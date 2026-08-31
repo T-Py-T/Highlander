@@ -1,0 +1,57 @@
+Done.
+
+I updated these files in the workspace mirror:
+- /workspace/in/db/migration.sql
+- /workspace/in/db/preflight_report.md
+- /workspace/in/db/rollback.sql
+- /workspace/in/db/postcheck.sql
+- /workspace/in/db/migration_report.md
+
+Notes:
+- The exact macOS-style paths you provided were not present in this environment.
+- The corresponding files existed at /workspace/in/db/, so I edited only those mirrored targets.
+
+What changed
+- Replaced the destructive migration with a transactional table-rebuild migration that:
+  - preserves all 6 users
+  - preserves all 4 orders and their user_id references
+  - preserves created_at
+  - adds status TEXT NOT NULL DEFAULT 'active'
+  - enforces email NOT NULL, UNIQUE, and non-blank for future writes
+  - deterministically cleans:
+    - u4 -> ada+u4@example.com
+    - u5 -> missing+u5@example.invalid
+    - u6 -> missing+u6@example.invalid
+- Added preflight_report.md documenting duplicate/null/blank email issues and dependent orders for u4/u5/u6.
+- Added rollback.sql to restore the old users schema shape: id, email, name, created_at.
+- Added postcheck.sql with verification queries for counts, FK preservation, exact cleaned emails, and constraints.
+- Added migration_report.md summarizing strategy, cleanup, idempotency behavior, rollback behavior, and postchecks.
+
+Verification performed
+I executed the schema + migration twice + rollback using Python’s built-in sqlite3 module.
+
+Results:
+- first migration run: OK
+- second migration run: OK
+- rollback after migration: OK
+
+Postcheck results after running the migration twice:
+- users_row_count: PASS
+- orders_row_count: PASS
+- dirty_user_orders_preserved: PASS
+- dirty_email_cleanup: PASS
+- email_not_null_or_blank: PASS
+- email_unique: PASS
+- status_column_shape: PASS
+- status_values_present: PASS
+- created_at_preserved_for_dirty_users: PASS
+- foreign_key_check: PASS
+
+Rollback verification:
+- users columns restored to: id, email, name, created_at
+- user count after rollback: 6
+- order count after rollback: 4
+- dirty-user order links preserved: o2->u4, o3->u5, o4->u6
+
+Important rollback note
+- rollback.sql restores the pre-migration schema shape, not the original dirty email values. The cleaned deterministic email values remain, which is documented in migration_report.md.

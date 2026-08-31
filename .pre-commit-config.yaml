@@ -44,3 +44,15 @@ repos:
         entry: python3 tools/hb-evidence.py verify results/hb-devhard-043-gpt54-medium-host4-r1
         language: system
         pass_filenames: false
+
+      - id: highlander-gpt56-season-evidence
+        name: Verify retained GPT-5.6 season evidence
+        entry: python3 tools/hb-evidence.py verify-season results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4
+        language: system
+        pass_filenames: false
+
+      - id: highlander-gpt54-season-evidence
+        name: Verify retained GPT-5.4 season evidence
+        entry: python3 tools/hb-evidence.py verify-season results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1
+        language: system
+        pass_filenames: false

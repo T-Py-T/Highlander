@@ -1,0 +1,468 @@
+import json
+import sys
+from copy import deepcopy
+from pathlib import Path
+from typing import Any, Dict, Iterable, List, Optional, Tuple
+
+PII_EXCLUDED_KEYS = {
+    "ssn",
+    "credit_card",
+    "card_number",
+    "cvv",
+    "phone_number",
+    "passport_number",
+}
+
+AUDIT_PATH = Path(__file__).with_name("conversion_audit.json")
+
+
+class ConversionError(ValueError):
+    def __init__(self, path: str, error: str):
+        super().__init__(error)
+        self.path = path
+        self.error = error
+
+
+class ConvertManyResult:
+    def __init__(self, converted: List[Dict[str, Any]], errors: List[Dict[str, Any]], warnings: Optional[List[Dict[str, Any]]] = None):
+        self.converted = converted
+        self.errors = errors
+        self.warnings = warnings or []
+
+    def __iter__(self):
+        yield self.converted
+        yield self.errors
+
+    def __getitem__(self, index: int):
+        values = (self.converted, self.errors, self.warnings)
+        return values[index]
+
+    def __len__(self):
+        return 3
+
+    def as_tuple(self):
+        return self.converted, self.errors, self.warnings
+
+
+class ConversionContext:
+    def __init__(self):
+        self.warnings: List[Dict[str, Any]] = []
+        self.pii_dropped_count = 0
+        self.unknown_fields_count = 0
+
+    def add_warning(self, index: Optional[int], path: str, warning: str):
+        entry: Dict[str, Any] = {"path": path, "warning": warning}
+        if index is not None:
+            entry["index"] = index
+        self.warnings.append(entry)
+
+
+class _Missing:
+    pass
+
+
+MISSING = _Missing()
+
+
+def _is_v2_payload(payload: Dict[str, Any]) -> bool:
+    return all(key in payload for key in ("orderId", "buyer", "lineItems", "shipping"))
+
+
+def _normalize_shipping_method(value: Any) -> str:
+    if value is None:
+        return "standard"
+    if isinstance(value, str) and value.strip() == "":
+        return "standard"
+    return str(value)
+
+
+def _coerce_int(value: Any, path: str) -> int:
+    if isinstance(value, bool):
+        raise ConversionError(path, "expected integer")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        stripped = value.strip()
+        if stripped and (stripped.isdigit() or (stripped.startswith("-") and stripped[1:].isdigit())):
+            return int(stripped)
+    raise ConversionError(path, "expected integer")
+
+
+def _require_mapping(value: Any, path: str) -> Dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ConversionError(path, "expected object")
+    return value
+
+
+def _require_list(value: Any, path: str) -> List[Any]:
+    if not isinstance(value, list):
+        raise ConversionError(path, "expected array")
+    return value
+
+
+def _require_string(value: Any, path: str) -> str:
+    if value is None:
+        raise ConversionError(path, "missing value")
+    if isinstance(value, str):
+        if value == "":
+            raise ConversionError(path, "missing value")
+        return value
+    return str(value)
+
+
+def _get_required(payload: Dict[str, Any], key: str, path: Optional[str] = None) -> Any:
+    if key not in payload or payload[key] is None:
+        raise ConversionError(path or key, f"missing required field: {path or key}")
+    return payload[key]
+
+
+def _copy_unknowns(value: Any, ctx: ConversionContext, path: str, index: Optional[int]) -> Any:
+    if isinstance(value, dict):
+        copied: Dict[str, Any] = {}
+        for key, child in value.items():
+            if key.lower() in PII_EXCLUDED_KEYS:
+                ctx.pii_dropped_count += 1
+                ctx.add_warning(index, f"{path}.{key}" if path else key, "dropped pii field")
+                continue
+            child_path = f"{path}.{key}" if path else key
+            child_copy = _copy_unknowns(child, ctx, child_path, index)
+            if child_copy not in (None, {}, []):
+                copied[key] = child_copy
+        return copied
+    if isinstance(value, list):
+        items = []
+        for item_index, child in enumerate(value):
+            child_copy = _copy_unknowns(child, ctx, f"{path}[{item_index}]", index)
+            items.append(child_copy)
+        while items and items[-1] in (None, {}, []):
+            items.pop()
+        return items
+    return deepcopy(value)
+
+
+def _collect_unknown_fields(payload: Dict[str, Any], known_keys: Iterable[str], ctx: ConversionContext, index: Optional[int]) -> Dict[str, Any]:
+    unknown: Dict[str, Any] = {}
+    known_set = set(known_keys)
+    for key, value in payload.items():
+        if key in known_set:
+            continue
+        if key.lower() in PII_EXCLUDED_KEYS:
+            ctx.pii_dropped_count += 1
+            ctx.add_warning(index, key, "dropped pii field")
+            continue
+        copied = _copy_unknowns(value, ctx, key, index)
+        if copied in (None, {}, []):
+            continue
+        unknown[key] = copied
+        ctx.unknown_fields_count += 1
+    return unknown
+
+
+def _merge_unknown(target: Dict[str, Any], key: str, value: Any, ctx: ConversionContext):
+    if value in (None, {}, []):
+        return
+    if key not in target:
+        target[key] = value
+        ctx.unknown_fields_count += 1
+        return
+    existing = target[key]
+    if isinstance(existing, dict) and isinstance(value, dict):
+        for child_key, child_value in value.items():
+            _merge_unknown(existing, child_key, child_value, ctx)
+        return
+    if isinstance(existing, list) and isinstance(value, list):
+        if len(existing) < len(value):
+            existing.extend([None] * (len(value) - len(existing)))
+        for idx, child_value in enumerate(value):
+            if idx >= len(existing) or existing[idx] in (None, {}, []):
+                existing[idx] = child_value
+                if child_value not in (None, {}, []):
+                    ctx.unknown_fields_count += 1
+            elif isinstance(existing[idx], dict) and isinstance(child_value, dict):
+                for child_key, grandchild_value in child_value.items():
+                    _merge_unknown(existing[idx], child_key, grandchild_value, ctx)
+        return
+    target[key] = value
+
+
+def _extract_legacy_unknowns(payload: Dict[str, Any], item_key: str, shipping_key: str, customer_key: Optional[str], ctx: ConversionContext, index: Optional[int]) -> Dict[str, Any]:
+    root_known = {
+        "id",
+        "order_ref",
+        "customer_id",
+        "customer_name",
+        "customer",
+        "items",
+        "lines",
+        "ship_to",
+        "shipTo",
+        "shipping_method",
+        "shipping",
+    }
+    unknown = _collect_unknown_fields(payload, root_known, ctx, index)
+
+    items = payload.get(item_key)
+    if isinstance(items, list):
+        extras: List[Any] = []
+        for item_index, item in enumerate(items):
+            if not isinstance(item, dict):
+                continue
+            item_unknown = _collect_unknown_fields(item, {"sku", "qty", "price_cents", "unit_price_cents"}, ctx, index)
+            extras.append(item_unknown)
+        if any(extra not in ({}, None, []) for extra in extras):
+            _merge_unknown(unknown, item_key, extras, ctx)
+
+    shipping = payload.get(shipping_key)
+    if isinstance(shipping, dict):
+        ship_unknown = _collect_unknown_fields(shipping, {"country", "postal", "postalCode", "postal_code"}, ctx, index)
+        if ship_unknown:
+            _merge_unknown(unknown, shipping_key, ship_unknown, ctx)
+
+    if customer_key:
+        customer = payload.get(customer_key)
+        if isinstance(customer, dict):
+            customer_unknown = _collect_unknown_fields(customer, {"id", "name"}, ctx, index)
+            if customer_unknown:
+                _merge_unknown(unknown, customer_key, customer_unknown, ctx)
+
+    return unknown
+
+
+def _convert_line_items(items: Any, source_key: str) -> List[Dict[str, Any]]:
+    raw_items = _require_list(items, source_key)
+    converted: List[Dict[str, Any]] = []
+    for idx, item in enumerate(raw_items):
+        item_path = f"{source_key}[{idx}]"
+        mapping = _require_mapping(item, item_path)
+        sku = _require_string(_get_required(mapping, "sku", f"{item_path}.sku"), f"{item_path}.sku")
+        qty = _coerce_int(_get_required(mapping, "qty", f"{item_path}.qty"), f"{item_path}.qty")
+        price_key = "unit_price_cents" if "unit_price_cents" in mapping else "price_cents"
+        price = _coerce_int(_get_required(mapping, price_key, f"{item_path}.{price_key}"), f"{item_path}.{price_key}")
+        converted.append({
+            "sku": sku,
+            "quantity": qty,
+            "unitPriceCents": price,
+        })
+    return converted
+
+
+def _normalize_v2_metadata(payload: Dict[str, Any], ctx: ConversionContext, index: Optional[int]) -> Dict[str, Any]:
+    metadata = payload.get("metadata")
+    metadata_map = {} if metadata is None else _require_mapping(metadata, "metadata")
+    source = metadata_map.get("source", "public-v2")
+    normalized: Dict[str, Any] = {"source": source}
+
+    existing_unknown = metadata_map.get("unknownFields", {})
+    if existing_unknown is None:
+        existing_unknown = {}
+    if not isinstance(existing_unknown, dict):
+        raise ConversionError("metadata.unknownFields", "expected object")
+    unknown_fields = deepcopy(existing_unknown)
+
+    for key, value in metadata_map.items():
+        if key in {"source", "unknownFields"}:
+            continue
+        if key.lower() in PII_EXCLUDED_KEYS:
+            ctx.pii_dropped_count += 1
+            ctx.add_warning(index, f"metadata.{key}", "dropped pii field")
+            continue
+        copied = _copy_unknowns(value, ctx, f"metadata.{key}", index)
+        if copied not in (None, {}, []):
+            _merge_unknown(unknown_fields, key, copied, ctx)
+
+    top_level_unknown = _collect_unknown_fields(payload, {"orderId", "buyer", "lineItems", "shipping", "metadata"}, ctx, index)
+    for key, value in top_level_unknown.items():
+        _merge_unknown(unknown_fields, key, value, ctx)
+
+    if unknown_fields:
+        normalized["unknownFields"] = unknown_fields
+    return normalized
+
+
+def _convert_v2(payload: Dict[str, Any], ctx: ConversionContext, index: Optional[int]) -> Dict[str, Any]:
+    buyer = _require_mapping(_get_required(payload, "buyer"), "buyer")
+    shipping = _require_mapping(_get_required(payload, "shipping"), "shipping")
+    address = _require_mapping(_get_required(shipping, "address", "shipping.address"), "shipping.address")
+    line_items = _require_list(_get_required(payload, "lineItems"), "lineItems")
+
+    result = deepcopy(payload)
+    result["orderId"] = _require_string(_get_required(payload, "orderId"), "orderId")
+    result["buyer"] = {
+        "id": _require_string(_get_required(buyer, "id", "buyer.id"), "buyer.id"),
+        "displayName": _require_string(_get_required(buyer, "displayName", "buyer.displayName"), "buyer.displayName"),
+    }
+    result["lineItems"] = deepcopy(line_items)
+    result["shipping"] = {
+        "method": _normalize_shipping_method(shipping.get("method")),
+        "address": {
+            "country": _require_string(_get_required(address, "country", "shipping.address.country"), "shipping.address.country"),
+            "postalCode": _require_string(_get_required(address, "postalCode", "shipping.address.postalCode"), "shipping.address.postalCode"),
+        },
+    }
+    result["metadata"] = _normalize_v2_metadata(payload, ctx, index)
+    return result
+
+
+def _convert_legacy(payload: Dict[str, Any], ctx: ConversionContext, index: Optional[int]) -> Dict[str, Any]:
+    if "order_ref" in payload or "customer" in payload or "lines" in payload or "shipTo" in payload:
+        source = "legacy-v1.2"
+        order_id = _require_string(_get_required(payload, "order_ref"), "order_ref")
+        customer = _require_mapping(_get_required(payload, "customer"), "customer")
+        buyer = {
+            "id": _require_string(_get_required(customer, "id", "customer.id"), "customer.id"),
+            "displayName": _require_string(_get_required(customer, "name", "customer.name"), "customer.name"),
+        }
+        line_items = _convert_line_items(_get_required(payload, "lines"), "lines")
+        ship = _require_mapping(_get_required(payload, "shipTo"), "shipTo")
+        postal_key = "postal_code" if "postal_code" in ship else "postalCode"
+        shipping_path = f"shipTo.{postal_key}"
+        shipping = {
+            "method": _normalize_shipping_method(payload.get("shipping_method", payload.get("shipping"))),
+            "address": {
+                "country": _require_string(_get_required(ship, "country", "shipTo.country"), "shipTo.country"),
+                "postalCode": _require_string(_get_required(ship, postal_key, shipping_path), shipping_path),
+            },
+        }
+        unknown = _extract_legacy_unknowns(payload, "lines", "shipTo", "customer", ctx, index)
+    else:
+        source = "legacy-v1.1" if ("shipping" in payload or (isinstance(payload.get("ship_to"), dict) and "postalCode" in payload["ship_to"])) else "legacy-v1"
+        order_id = _require_string(_get_required(payload, "id"), "id")
+        buyer = {
+            "id": _require_string(_get_required(payload, "customer_id"), "customer_id"),
+            "displayName": _require_string(_get_required(payload, "customer_name"), "customer_name"),
+        }
+        line_items = _convert_line_items(_get_required(payload, "items"), "items")
+        ship = _require_mapping(_get_required(payload, "ship_to"), "ship_to")
+        postal_key = "postalCode" if "postalCode" in ship else "postal"
+        shipping_path = f"ship_to.{postal_key}"
+        shipping = {
+            "method": _normalize_shipping_method(payload.get("shipping_method", payload.get("shipping"))),
+            "address": {
+                "country": _require_string(_get_required(ship, "country", "ship_to.country"), "ship_to.country"),
+                "postalCode": _require_string(_get_required(ship, postal_key, shipping_path), shipping_path),
+            },
+        }
+        unknown = _extract_legacy_unknowns(payload, "items", "ship_to", None, ctx, index)
+
+    metadata: Dict[str, Any] = {"source": source}
+    if unknown:
+        metadata["unknownFields"] = unknown
+
+    return {
+        "orderId": order_id,
+        "buyer": buyer,
+        "lineItems": line_items,
+        "shipping": shipping,
+        "metadata": metadata,
+    }
+
+
+def _convert_order_internal(payload: Any, index: Optional[int] = None) -> Tuple[Dict[str, Any], ConversionContext]:
+    if not isinstance(payload, dict):
+        raise ConversionError("$", "payload must be an object")
+    ctx = ConversionContext()
+    if _is_v2_payload(payload):
+        converted = _convert_v2(payload, ctx, index)
+    else:
+        converted = _convert_legacy(payload, ctx, index)
+    return converted, ctx
+
+
+def convert_order(payload):
+    """Convert legacy v1/v1.1/v1.2 or v2 payloads to the v2 public API shape."""
+    converted, _ctx = _convert_order_internal(payload)
+    return converted
+
+
+def _write_audit(converted_count: int, error_count: int, warning_count: int, pii_dropped_count: int, unknown_fields_count: int):
+    audit = {
+        "converted_count": converted_count,
+        "error_count": error_count,
+        "warning_count": warning_count,
+        "pii_dropped_count": pii_dropped_count,
+        "unknown_fields_count": unknown_fields_count,
+    }
+    AUDIT_PATH.write_text(json.dumps(audit, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def convert_many(payloads):
+    converted: List[Dict[str, Any]] = []
+    errors: List[Dict[str, Any]] = []
+    warnings: List[Dict[str, Any]] = []
+    pii_dropped_count = 0
+    unknown_fields_count = 0
+
+    for index, payload in enumerate(payloads):
+        try:
+            item, ctx = _convert_order_internal(payload, index=index)
+        except ConversionError as exc:
+            errors.append({"index": index, "path": exc.path, "error": exc.error})
+            continue
+        converted.append(item)
+        warnings.extend(ctx.warnings)
+        pii_dropped_count += ctx.pii_dropped_count
+        unknown_fields_count += ctx.unknown_fields_count
+
+    _write_audit(
+        converted_count=len(converted),
+        error_count=len(errors),
+        warning_count=len(warnings),
+        pii_dropped_count=pii_dropped_count,
+        unknown_fields_count=unknown_fields_count,
+    )
+
+    return ConvertManyResult(converted, errors, warnings)
+
+
+def summarize_order(v2_payload):
+    return f"{v2_payload['orderId']}:{len(v2_payload['lineItems'])}"
+
+
+def _load_jsonl(path: Path) -> List[Any]:
+    payloads: List[Any] = []
+    with path.open("r", encoding="utf-8") as handle:
+        for line_number, raw_line in enumerate(handle, start=1):
+            line = raw_line.strip()
+            if not line:
+                continue
+            try:
+                payloads.append(json.loads(line))
+            except json.JSONDecodeError as exc:
+                raise ConversionError(f"input[{line_number}]", f"invalid json: {exc.msg}") from exc
+    return payloads
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    args = list(sys.argv[1:] if argv is None else argv)
+    if len(args) != 2:
+        print("Usage: python -m client input.jsonl output.json", file=sys.stderr)
+        return 2
+
+    input_path = Path(args[0])
+    output_path = Path(args[1])
+
+    try:
+        payloads = _load_jsonl(input_path)
+    except ConversionError as exc:
+        print(json.dumps({"path": exc.path, "error": exc.error}), file=sys.stderr)
+        return 1
+
+    result = convert_many(payloads)
+    output_path.write_text(json.dumps(result.converted, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    print(
+        json.dumps(
+            {
+                "converted_count": len(result.converted),
+                "error_count": len(result.errors),
+                "warning_count": len(result.warnings),
+                "audit_path": str(AUDIT_PATH),
+                "output_path": str(output_path),
+            },
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

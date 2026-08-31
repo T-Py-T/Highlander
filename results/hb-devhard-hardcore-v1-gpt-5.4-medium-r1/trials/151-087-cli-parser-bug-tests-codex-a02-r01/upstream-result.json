@@ -1,0 +1,136 @@
+{
+  "task_id": "087-cli-parser-bug-tests",
+  "model_id": "codex",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/workspace",
+  "session_id": "highlander-codex-087-cli-parser-bug-tests-a2-087-cli-parser-bug-tests-b59ff0a2",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/prompt-round1.txt",
+  "adapter_result": {
+    "ok": false,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "codex",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/highlander-native",
+      "--trial-id",
+      "151-087-cli-parser-bug-tests-codex-a02-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 1
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": false,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "codex",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/highlander-native",
+        "--trial-id",
+        "151-087-cli-parser-bug-tests-codex-a02-r01"
+      ],
+      "stdout": "Reading additional input from stdin...\n2026-08-31T18:39:05.495674Z ERROR codex_login::auth::manager: Failed to refresh token: 401 Unauthorized: {\n  \"error\": {\n    \"message\": \"Your refresh token has already been used to generate a new access token. Please try signing in again.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"refresh_token_reused\"\n  }\n}\n2026-08-31T18:39:05.495793Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:05.509253Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:05.548897Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:05.565194Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:05.568909Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:05.582735Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:05.759182Z ERROR codex_models_manager::manager: failed to refresh available models: unexpected status 401 Unauthorized: Provided authentication token is expired. Please try signing in again., url: https://chatgpt.com/backend-api/codex/models?client_version=0.147.0, cf-ray: a33e27ec5f6461e2-DTW, auth error: 401, auth error code: token_expired\n2026-08-31T18:39:05.765309Z ERROR codex_models_manager::manager: failed to refresh available models: unexpected status 401 Unauthorized: Provided authentication token is expired. Please try signing in again., url: https://chatgpt.com/backend-api/codex/models?client_version=0.147.0, cf-ray: a33e27ec5f007308-DTW, auth error: 401, auth error code: token_expired\n2026-08-31T18:39:05.771836Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:05.795872Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n{\"type\":\"thread.started\",\"thread_id\":\"01a0591e-3025-7941-94f4-d957f1b51482\"}\n{\"type\":\"turn.started\"}\n2026-08-31T18:39:05.805036Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:05.813881Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:06.006963Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when UnexpectedServerResponse(\"HTTP 401: {\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Provided authentication token is expired. Please try signing in again.\\\",\\n    \\\"type\\\": null,\\n    \\\"code\\\": \\\"token_expired\\\",\\n    \\\"param\\\": null\\n  },\\n  \\\"status\\\": 401,\\n  \\\"detail\\\": {\\n    \\\"code\\\": \\\"token_expired\\\",\\n    \\\"message\\\": \\\"Provided authentication token is expired. Please try signing in again.\\\"\\n  }\\n}\")\n2026-08-31T18:39:06.017465Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:06.024885Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:06.031024Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:06.213663Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when UnexpectedServerResponse(\"HTTP 401: {\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Provided authentication token is expired. Please try signing in again.\\\",\\n    \\\"type\\\": null,\\n    \\\"code\\\": \\\"token_expired\\\",\\n    \\\"param\\\": null\\n  },\\n  \\\"status\\\": 401,\\n  \\\"detail\\\": {\\n    \\\"code\\\": \\\"token_expired\\\",\\n    \\\"message\\\": \\\"Provided authentication token is expired. Please try signing in again.\\\"\\n  }\\n}\")\n2026-08-31T18:39:06.280913Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 401 Unauthorized, url: wss://chatgpt.com/backend-api/codex/responses\n2026-08-31T18:39:06.305050Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:06.312191Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:06.317998Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:06.612526Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 401 Unauthorized, url: wss://chatgpt.com/backend-api/codex/responses\n2026-08-31T18:39:06.628634Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:06.922299Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:07.284417Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:07.591316Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:07.818760Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:07.824126Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:07.828981Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:08.108901Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 401 Unauthorized, url: wss://chatgpt.com/backend-api/codex/responses\n2026-08-31T18:39:08.131929Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:08.138789Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:08.145020Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n2026-08-31T18:39:08.417951Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 401 Unauthorized, url: wss://chatgpt.com/backend-api/codex/responses\n{\"type\":\"error\",\"message\":\"Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\"}\n{\"type\":\"turn.failed\",\"error\":{\"message\":\"Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\"}}\n2026-08-31T18:39:08.435899Z ERROR codex_login::auth::manager: Failed to refresh token: Your access token could not be refreshed because your refresh token was already used. Please log out and sign in again.\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 1
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-codex-087-cli-parser-bug-tests-a2-087-cli-parser-bug-tests-b59ff0a2"
+  },
+  "oracle_result": {
+    "task": "087-cli-parser-bug-tests",
+    "outcome_score": 0.2867,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": false,
+        "weight": 0.25,
+        "detail": "/test_cli_existing.py:31: AssertionError\n=============================== warnings summary ===============================\n../../../../../../../../../../../../../../../../../opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: 93 warnings\n  /opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n    return asyncio.iscoroutinefunction(obj)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_cli_existing.py::test_filter_select_and_descending_sort - A...\nFAILED tests/test_cli_existing.py::test_quoted_commas_are_preserved_when_selected\nFAILED tests/test_cli_existing.py::test_empty_result_keeps_header - Assertion...\n======================== 3 failed, 93 warnings in 0.10s ========================\n"
+      },
+      {
+        "id": "hidden_cli_behavior",
+        "pass": false,
+        "weight": 0.35,
+        "detail": {
+          "score": 0.3333333333333333,
+          "stdout": "",
+          "bad_stderr": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 203, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/workspace/in/csvtool/csvtool/cli.py\", line 43, in <module>\n    raise SystemExit(main())\n                     ~~~~^^\n  File \"<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/workspace/in/csvtool/csvtool/cli.py\", line 29, in main\n    predicate = parse_where(args.where)\n  File \"<SOURCE_EVIDENCE_ROOT>/trials/151-087-cli-parser-bug-tests-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-143904-222b220f/workspace/in/csvtool/csvtool/filtering.py\", line 7, in parse_where\n    field, value = expr.split(\"=\")\n    ^^^^^^^^^^^^\nValueError: not enough values to unpack (expected 2, got 1)\n"
+        }
+      },
+      {
+        "id": "existing_test_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": null
+      },
+      {
+        "id": "regression_tests_added",
+        "pass": false,
+        "weight": 0.1,
+        "detail": {
+          "score": 0.0
+        }
+      },
+      {
+        "id": "implementation_quality",
+        "pass": false,
+        "weight": 0.1,
+        "detail": {
+          "score": 0.2
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.2867,
+    "oracle_outcome_score": 0.2867,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.2867,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 4.455
+}

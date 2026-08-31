@@ -1,0 +1,26 @@
+{
+  "models": {
+    "atomic": {
+      "adapter": "generic_cli",
+      "args": [
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "atomic",
+        "--workspace",
+        "{workspace}",
+        "--prompt-file",
+        "{prompt_file}",
+        "--evidence-dir",
+        "{sandbox}/highlander-native",
+        "--trial-id",
+        "020-042-api-schema-migration-atomic-a01-r01"
+      ],
+      "command": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "model": "gpt-5.4",
+      "session_prefix": "highlander-atomic-042-api-schema-migration-a1",
+      "timeout_sec": 1200
+    }
+  }
+}

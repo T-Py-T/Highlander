@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "omp",
+    "--print",
+    "--mode",
+    "json",
+    "--cwd",
+    "/workspace",
+    "--model",
+    "openai-codex/gpt-5.4",
+    "--smol",
+    "openai-codex/gpt-5.4",
+    "--slow",
+    "openai-codex/gpt-5.4",
+    "--plan",
+    "openai-codex/gpt-5.4",
+    "--thinking",
+    "medium",
+    "--no-prewalk",
+    "--no-title",
+    "--no-session",
+    "--no-extensions",
+    "--no-skills",
+    "--no-rules",
+    "--approval-mode",
+    "yolo",
+    "--max-time",
+    "1200s",
+    "<TASK_BYTES_UTF8>"
+  ],
+  "credential_binding": {
+    "seed_profile": "omp-subscription",
+    "value_retained": false
+  },
+  "cwd": "/workspace",
+  "harness_id": "omp",
+  "prompt_sha256": "a16759fae306e6f12e893c6a0fae93a58e64a7a4b1c4c0033219d544ffb0c561",
+  "schema_version": 1
+}

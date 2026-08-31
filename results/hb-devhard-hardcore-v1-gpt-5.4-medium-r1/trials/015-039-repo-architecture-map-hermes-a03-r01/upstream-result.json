@@ -1,0 +1,156 @@
+{
+  "task_id": "039-repo-architecture-map",
+  "model_id": "hermes",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-039-repo-architecture-map-gpt-5.4-20260831-095700-ea1522bf",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-039-repo-architecture-map-gpt-5.4-20260831-095700-ea1522bf/workspace",
+  "session_id": "highlander-hermes-039-repo-architecture-map-a3-039-repo-architecture-map-dae5fa69",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-039-repo-architecture-map-gpt-5.4-20260831-095700-ea1522bf/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "hermes",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-039-repo-architecture-map-gpt-5.4-20260831-095700-ea1522bf/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-039-repo-architecture-map-gpt-5.4-20260831-095700-ea1522bf/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-039-repo-architecture-map-gpt-5.4-20260831-095700-ea1522bf/highlander-native",
+      "--trial-id",
+      "015-039-repo-architecture-map-hermes-a03-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-039-repo-architecture-map-gpt-5.4-20260831-095700-ea1522bf/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "hermes",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-039-repo-architecture-map-gpt-5.4-20260831-095700-ea1522bf/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-039-repo-architecture-map-gpt-5.4-20260831-095700-ea1522bf/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/015-039-repo-architecture-map-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-039-repo-architecture-map-gpt-5.4-20260831-095700-ea1522bf/highlander-native",
+        "--trial-id",
+        "015-039-repo-architecture-map-hermes-a03-r01"
+      ],
+      "stdout": "Done.\n\nCreated and validated:\n- /workspace/out/module_map.json\n- /workspace/out/architecture.md\n- /workspace/out/doc_code_discrepancies.csv\n- /workspace/out/risk_register.csv\n- /workspace/out/onboarding_plan.md\n\nValidation performed:\n- Parsed module_map.json successfully\n- Confirmed required JSON keys: modules, entry_points, dependency_edges, key_functions, runtime_flows\n- Confirmed entry points include:\n  - minisvc.cli:main\n  - minisvc.api.routes:register_routes\n- Confirmed both CSV headers and row counts\n- Exercised real code paths:\n  - CLI bootstrap via minisvc.cli.main() printed: minisvc ready at orders.sqlite\n  - Route registration + create/read flow successfully inserted and fetched an order through a fake app harness\n\nImportant environment note:\n- The repository fixture was available at /workspace/in/repo, not at the macOS-style <HOME>/... path from your prompt.\n- I also could not write under /Users because that filesystem location is read-only/nonexistent in this execution environment.\n- So the deliverables were written to the accessible output directory: /workspace/out\n\nKey code/doc findings reflected in the outputs:\n- README readonly claim is contradicted: MINISVC_READONLY is parsed but never enforced\n- README retry claim is contradicted: create_order/save perform a single SQLite write with no retry loop\n- README durable audit claim is contradicted: audit.py only builds dicts; no audit table exists\n\nIf you want, I can also print the contents of any of the generated files inline.\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-hermes-039-repo-architecture-map-a3-039-repo-architecture-map-dae5fa69"
+  },
+  "oracle_result": {
+    "task": "039-repo-architecture-map",
+    "outcome_score": 0.9461,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "module_map_content",
+        "pass": true,
+        "weight": 0.35,
+        "detail": {
+          "score": 0.96,
+          "typed_edge_hits": 6,
+          "sequence_hits": 1,
+          "marker_score": 1.0
+        }
+      },
+      {
+        "id": "architecture_markdown",
+        "pass": true,
+        "weight": 0.18,
+        "detail": {
+          "hits": 8
+        }
+      },
+      {
+        "id": "doc_code_discrepancies",
+        "pass": false,
+        "weight": 0.14,
+        "detail": {
+          "score": 0.829,
+          "rows": 5,
+          "term_hits": 5,
+          "expectation_hits": 2,
+          "concrete_evidence": 1.0
+        }
+      },
+      {
+        "id": "risk_register",
+        "pass": true,
+        "weight": 0.13,
+        "detail": {
+          "score": 1.0,
+          "rows": 5,
+          "term_hits": 8
+        }
+      },
+      {
+        "id": "onboarding_plan",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "score": 0.8,
+          "term_hits": 8
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.12,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.9461,
+    "oracle_outcome_score": 0.9461,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9461,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 409.299
+}

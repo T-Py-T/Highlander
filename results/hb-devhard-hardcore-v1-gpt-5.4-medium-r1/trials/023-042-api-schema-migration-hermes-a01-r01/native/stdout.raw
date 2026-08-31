@@ -1,0 +1,48 @@
+Done.
+
+Updated:
+- /workspace/in/schema_migration/client.py
+
+What changed:
+- Added legacy v1, v1.1, and v1.2 -> v2 conversion
+- Added idempotent passthrough handling for already-v2 payloads
+- Mapped:
+  - id/order_ref -> orderId
+  - customer_id or customer.id -> buyer.id
+  - customer_name or customer.name -> buyer.displayName
+  - items/lines -> lineItems
+  - qty -> quantity
+  - price_cents/unit_price_cents -> unitPriceCents
+  - postal/postalCode/postal_code -> shipping.address.postalCode
+- Defaulted blank/null shipping method to standard
+- Preserved non-PII unknown fields under metadata.unknownFields
+- Excluded obvious PII keys from unknownFields
+- Added convert_many(payloads) with aggregated errors and warnings
+- Wrote conversion_audit.json whenever convert_many runs
+- Added CLI support:
+  - python -m client input.jsonl output.json
+
+Verification:
+- Tests passed with:
+  uv run --with pytest python -m pytest /workspace/in/schema_migration/tests
+
+Result:
+- 5 passed in 0.02s
+
+CLI verification:
+- Ran:
+  uv run --with pytest python -m client /workspace/in/schema_migration/sample_payloads.jsonl /workspace/in/schema_migration/output.json
+- Exit code: 0
+
+Audit file written:
+- /workspace/in/schema_migration/conversion_audit.json
+
+Observed audit contents:
+- converted_count: 4
+- error_count: 0
+- warning_count: 7
+- pii_dropped_count: 5
+- unknown_fields_count: 5
+
+Note:
+The absolute <HOME>/... path from your prompt does not exist in this runtime; the project is mounted here as /workspace/in/schema_migration, and that is the file I updated and verified.

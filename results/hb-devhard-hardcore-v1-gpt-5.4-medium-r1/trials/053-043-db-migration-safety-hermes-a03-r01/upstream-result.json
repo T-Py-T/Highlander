@@ -1,0 +1,250 @@
+{
+  "task_id": "043-db-migration-safety",
+  "model_id": "hermes",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/053-043-db-migration-safety-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-115913-58955e53",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/053-043-db-migration-safety-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-115913-58955e53/workspace",
+  "session_id": "highlander-hermes-043-db-migration-safety-a3-043-db-migration-safety-1f5907fe",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/053-043-db-migration-safety-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-115913-58955e53/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "hermes",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/053-043-db-migration-safety-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-115913-58955e53/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/053-043-db-migration-safety-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-115913-58955e53/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/053-043-db-migration-safety-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-115913-58955e53/highlander-native",
+      "--trial-id",
+      "053-043-db-migration-safety-hermes-a03-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/053-043-db-migration-safety-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-115913-58955e53/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "hermes",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/053-043-db-migration-safety-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-115913-58955e53/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/053-043-db-migration-safety-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-115913-58955e53/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/053-043-db-migration-safety-hermes-a03-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-043-db-migration-safety-gpt-5.4-20260831-115913-58955e53/highlander-native",
+        "--trial-id",
+        "053-043-db-migration-safety-hermes-a03-r01"
+      ],
+      "stdout": "Done.\n\nI updated the available workspace copies of the requested files here:\n- /workspace/in/db/migration.sql\n- /workspace/in/db/preflight_report.md\n- /workspace/in/db/rollback.sql\n- /workspace/in/db/postcheck.sql\n- /workspace/in/db/migration_report.md\n\nNote: the exact macOS path you provided under <HOME>/... is not mounted in this environment, so I edited the corresponding accessible files under /workspace/in/db.\n\nWhat changed\n\n- migration.sql\n  - replaced the unsafe drop-and-recreate-empty approach\n  - now runs in an explicit transaction\n  - rebuilds users into the target schema while copying all rows\n  - preserves ids, created_at values, and order references\n  - applies the exact deterministic cleanup:\n    - u4 -> ada+u4@example.com\n    - u5 -> missing+u5@example.invalid\n    - u6 -> missing+u6@example.invalid\n  - enforces:\n    - status TEXT NOT NULL DEFAULT 'active'\n    - email TEXT NOT NULL\n    - UNIQUE(email)\n    - CHECK(trim(email) <> '')\n\n- preflight_report.md\n  - documents duplicate/null/blank email issues\n  - explicitly mentions dependent orders for u4, u5, u6:\n    - u4 -> o2\n    - u5 -> o3\n    - u6 -> o4\n\n- rollback.sql\n  - restores the old users schema shape:\n    - id, email, name, created_at\n  - preserves user row count and order row count\n  - preserves order references by keeping the same user ids\n\n- postcheck.sql\n  - checks:\n    - user count\n    - order count\n    - dirty-user order preservation\n    - cleaned email values for u4/u5/u6\n    - no null/blank emails\n    - no duplicate email groups\n    - no null statuses\n    - migrated users table definition\n    - unique index metadata\n    - foreign key integrity\n\n- migration_report.md\n  - summarizes strategy, cleanup, idempotency, rollback behavior/limitation, and postchecks\n\nVerification performed\n\nI validated the scripts with Python’s built-in SQLite engine against the provided schema/data:\n\n- migration run once: success\n- migration run a second time: success\n- rollback run after migration: success\n\nObserved verified results:\n- users remained 6\n- orders remained 4\n- order refs preserved:\n  - o2 -> u4\n  - o3 -> u5\n  - o4 -> u6\n- created_at preserved for all users\n- cleaned emails after migration:\n  - u4 = ada+u4@example.com\n  - u5 = missing+u5@example.invalid\n  - u6 = missing+u6@example.invalid\n- constraint probes failed as desired:\n  - null email insert -> NOT NULL constraint failed\n  - blank email insert -> CHECK constraint failed\n  - duplicate email insert -> UNIQUE constraint failed\n- foreign_key_check returned no violations\n- rollback restored users columns to:\n  - id, email, name, created_at\n\nOne important rollback note\n- rollback restores the old schema shape, but not the original invalid email values; it keeps the cleaned migrated email values. I documented that limitation in migration_report.md.\n\nIf you want, I can also print the final contents of any of the generated files inline.\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-hermes-043-db-migration-safety-a3-043-db-migration-safety-1f5907fe"
+  },
+  "oracle_result": {
+    "task": "043-db-migration-safety",
+    "outcome_score": 0.995,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "migration_executes",
+        "pass": true,
+        "weight": 0.22,
+        "detail": null
+      },
+      {
+        "id": "data_preserved",
+        "pass": true,
+        "weight": 0.3,
+        "detail": [
+          [
+            "u1",
+            "ada@example.com",
+            "Ada",
+            "2024-01-02T10:00:00Z",
+            "active"
+          ],
+          [
+            "u2",
+            "lin@example.com",
+            "Lin",
+            "2024-02-03T11:30:00Z",
+            "active"
+          ],
+          [
+            "u3",
+            "grace@example.com",
+            "Grace",
+            "2024-03-04T09:15:00Z",
+            "active"
+          ],
+          [
+            "u4",
+            "ada+u4@example.com",
+            "Ada Legacy",
+            "2023-12-01T08:00:00Z",
+            "active"
+          ],
+          [
+            "u5",
+            "missing+u5@example.invalid",
+            "Null Email Legacy",
+            "2023-11-05T12:00:00Z",
+            "active"
+          ],
+          [
+            "u6",
+            "missing+u6@example.invalid",
+            "Blank Email Legacy",
+            "2023-10-06T07:45:00Z",
+            "active"
+          ]
+        ]
+      },
+      {
+        "id": "orders_preserved",
+        "pass": true,
+        "weight": 0.08,
+        "detail": [
+          [
+            "o1",
+            "u1",
+            1299,
+            "2024-04-01T09:00:00Z"
+          ],
+          [
+            "o2",
+            "u4",
+            4599,
+            "2024-04-02T10:30:00Z"
+          ],
+          [
+            "o3",
+            "u5",
+            799,
+            "2024-04-03T11:45:00Z"
+          ],
+          [
+            "o4",
+            "u6",
+            1599,
+            "2024-04-04T12:10:00Z"
+          ]
+        ]
+      },
+      {
+        "id": "constraints",
+        "pass": true,
+        "weight": 0.22,
+        "detail": {
+          "status_not_null": true,
+          "email_not_null": true,
+          "duplicate_rejected": true,
+          "null_rejected": true,
+          "blank_rejected": true
+        }
+      },
+      {
+        "id": "idempotent",
+        "pass": true,
+        "weight": 0.08,
+        "detail": "migration must be safe to run twice"
+      },
+      {
+        "id": "sql_quality",
+        "pass": true,
+        "weight": 0.12,
+        "detail": {
+          "term_hits": 9,
+          "forbidden": []
+        }
+      },
+      {
+        "id": "preflight_report",
+        "pass": true,
+        "weight": 0.08,
+        "detail": "preflight must mention duplicate/null/blank u4/u5/u6 issues and dependent orders"
+      },
+      {
+        "id": "rollback_sql",
+        "pass": true,
+        "weight": 0.06,
+        "detail": "rollback should restore old schema shape"
+      },
+      {
+        "id": "postcheck_sql",
+        "pass": true,
+        "weight": 0.06,
+        "detail": {
+          "score": 1.0,
+          "term_hits": 9,
+          "executes": true
+        }
+      },
+      {
+        "id": "migration_report",
+        "pass": true,
+        "weight": 0.04,
+        "detail": {
+          "score": 0.875,
+          "hits": 7
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.995,
+    "oracle_outcome_score": 0.995,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.995,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 304.085
+}

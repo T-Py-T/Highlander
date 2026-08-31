@@ -1,0 +1,116 @@
+--- a/in/flakyqueue/.pytest_cache/.gitignore
++++ b/in/flakyqueue/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
++++ b/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/flakyqueue/.pytest_cache/README.md
++++ b/in/flakyqueue/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/flakyqueue/.pytest_cache/v/cache/nodeids
++++ b/in/flakyqueue/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,6 @@
++[
++  "tests/test_retry_order.py::test_retry_jitter_uses_injected_random_source",
++  "tests/test_retry_order.py::test_retry_task_is_not_ready_until_clock_reaches_run_at",
++  "tests/test_scheduler.py::test_add_uses_injected_clock",
++  "tests/test_scheduler.py::test_ready_order_is_stable_for_equal_priority"
++]--- a/in/flakyqueue/.pytest_cache/v/cache/stepwise
++++ b/in/flakyqueue/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]Binary files a/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 292a40669ea9d7a8a8c336e7bcfd754c34bcd56b9ae379d710f41ebd146ccbb0)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b298812fdcc1108f46387e49043876ee02b41f5d617f1c8df90878647165fec5)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> c325cb036548abd7cba4cec889dda0d45db80363beed8769fb189b5935b4d374)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/store.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/store.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 94253b99eab78e44143493ffdd42ab0a941f7f8f27da88df5029e98ceb1540e8)
+--- a/in/flakyqueue/flakyqueue/scheduler.py
++++ b/in/flakyqueue/flakyqueue/scheduler.py
+@@ -1,7 +1,6 @@
+ from __future__ import annotations
+ 
+ import random
+-import time
+ from dataclasses import dataclass, replace
+ 
+ from flakyqueue.clock import SystemClock
+@@ -24,18 +23,26 @@
+         self.random_source = random_source
+ 
+     def add(self, task_id: str, priority: int) -> Task:
+-        task = Task(id=task_id, priority=priority, created_at=time.time(), run_at=time.time())
++        now = self.clock.now()
++        task = Task(id=task_id, priority=priority, created_at=now, run_at=now)
+         self.store.save(task)
+         return task
+ 
+     def ready(self):
+-        now = time.time()
++        now = self.clock.now()
+         items = [task for task in self.store.all() if task.run_at <= now]
+-        random.shuffle(items)
+-        return sorted(items, key=lambda task: task.priority, reverse=True)
++        return sorted(
++            items,
++            key=lambda task: (-task.priority, task.run_at, task.created_at, task.id),
++        )
+ 
+     def schedule_retry(self, task: Task, base_delay: float = 5.0) -> Task:
+-        jitter = random.random()
+-        updated = replace(task, attempts=task.attempts + 1, run_at=time.time() + base_delay + jitter)
++        random_source = self.random_source or random
++        jitter = random_source.random()
++        updated = replace(
++            task,
++            attempts=task.attempts + 1,
++            run_at=self.clock.now() + base_delay + jitter,
++        )
+         self.store.save(updated)
+         return updated
+--- a/out/root_cause.md
++++ b/out/root_cause.md
+@@ -0,0 +1,32 @@
++## Flaky behavior
++
++- `Scheduler.add()` ignored the injected clock and used `time.time()` directly, so tests using a fake clock could see real wall-clock timestamps.
++- `Scheduler.ready()` ignored the injected clock and shuffled ready tasks before sorting them only by priority. For equal-priority tasks, Python's stable sort preserved the randomized shuffle order, so task ordering changed between calls.
++- `Scheduler.schedule_retry()` ignored the injected clock and injected random source, using global `time.time()` and `random.random()` instead. That made retry timestamps depend on real time and process-global randomness.
++
++## Root cause
++
++The implementation accepted injected `clock` and `random_source` dependencies but bypassed them in all timing-sensitive paths. It also introduced nondeterminism in `ready()` by calling `random.shuffle()` before a partial sort that did not define tie-breakers for equal-priority tasks.
++
++## Fix
++
++- Changed `add()` to use `self.clock.now()` for both `created_at` and `run_at`.
++- Changed `ready()` to use `self.clock.now()` and sort deterministically by:
++  - descending `priority`
++  - ascending `run_at`
++  - ascending `created_at`
++  - ascending `id`
++- Changed `schedule_retry()` to use `self.random_source.random()` when provided, falling back to the module `random`, and to compute the retry time from `self.clock.now()`.
++
++## Verification
++
++- Attempted requested command: `python -m pytest tests`
++  - Could not run in this container because `python` is unavailable.
++- Attempted equivalent with system Python: `python3 -m pytest tests`
++  - Could not run because `pytest` is not installed in this container.
++- Ran direct behavioral verification with `python3` against the production code, covering:
++  - stable equal-priority ready ordering across repeated calls
++  - injected clock usage in `add()`
++  - injected random usage in `schedule_retry()`
++  - retry readiness changing only when the injected clock reaches `run_at`
++- Result: manual verification passed.

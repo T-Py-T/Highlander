@@ -1,0 +1,82 @@
+[harnessbench] run-task 087-cli-parser-bug-tests (harness=omp, mode=live) ...
+[harnessbench] run-task 087-cli-parser-bug-tests finished adapter_ok=False elapsed=1.961s
+{
+  "task_id": "087-cli-parser-bug-tests",
+  "elapsed_sec": 1.961,
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-omp-087-cli-parser-bug-tests-a2-087-cli-parser-bug-tests-d0749455"
+  },
+  "oracle_result": {
+    "task": "087-cli-parser-bug-tests",
+    "outcome_score": 0.2867,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": false,
+        "weight": 0.25,
+        "detail": "/test_cli_existing.py:31: AssertionError\n=============================== warnings summary ===============================\n../../../../../../../../../../../../../../../../../opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: 93 warnings\n  /opt/homebrew/lib/python3.14/site-packages/pytest_asyncio/plugin.py:156: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n    return asyncio.iscoroutinefunction(obj)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_cli_existing.py::test_filter_select_and_descending_sort - A...\nFAILED tests/test_cli_existing.py::test_quoted_commas_are_preserved_when_selected\nFAILED tests/test_cli_existing.py::test_empty_result_keeps_header - Assertion...\n======================== 3 failed, 93 warnings in 0.12s ========================\n"
+      },
+      {
+        "id": "hidden_cli_behavior",
+        "pass": false,
+        "weight": 0.35,
+        "detail": {
+          "score": 0.3333333333333333,
+          "stdout": "",
+          "bad_stderr": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 203, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"<SOURCE_EVIDENCE_ROOT>/trials/156-087-cli-parser-bug-tests-omp-a02-r01/hb-work/omp/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-144144-495ea754/workspace/in/csvtool/csvtool/cli.py\", line 43, in <module>\n    raise SystemExit(main())\n                     ~~~~^^\n  File \"<SOURCE_EVIDENCE_ROOT>/trials/156-087-cli-parser-bug-tests-omp-a02-r01/hb-work/omp/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-144144-495ea754/workspace/in/csvtool/csvtool/cli.py\", line 29, in main\n    predicate = parse_where(args.where)\n  File \"<SOURCE_EVIDENCE_ROOT>/trials/156-087-cli-parser-bug-tests-omp-a02-r01/hb-work/omp/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-144144-495ea754/workspace/in/csvtool/csvtool/filtering.py\", line 7, in parse_where\n    field, value = expr.split(\"=\")\n    ^^^^^^^^^^^^\nValueError: not enough values to unpack (expected 2, got 1)\n"
+        }
+      },
+      {
+        "id": "existing_test_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": null
+      },
+      {
+        "id": "regression_tests_added",
+        "pass": false,
+        "weight": 0.1,
+        "detail": {
+          "score": 0.0
+        }
+      },
+      {
+        "id": "implementation_quality",
+        "pass": false,
+        "weight": 0.1,
+        "detail": {
+          "score": 0.2
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.2867,
+    "oracle_outcome_score": 0.2867,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.2867,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/156-087-cli-parser-bug-tests-omp-a02-r01/hb-work/omp/gpt-5.4/oc-bench-v2-087-cli-parser-bug-tests-gpt-5.4-20260831-144144-495ea754"
+}

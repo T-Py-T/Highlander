@@ -1,0 +1,172 @@
+Highlander unit tests....................................................Passed
+- hook id: highlander-unit-tests
+- duration: 13.35s
+
+.........sComplete the subscription login inside the disposable container, then exit.
+...................................s.........
+----------------------------------------------------------------------
+Ran 55 tests in 13.227s
+
+OK (skipped=2)
+Clean authentication seed created: omp-fresh (agent.db only is imported into Trials)
+
+Compile Highlander Python sources........................................Passed
+- hook id: highlander-python-compile
+- duration: 0.05s
+Validate MatchRunner source and example..................................Passed
+- hook id: highlander-match-doctor
+- duration: 0.23s
+
+{
+  "contenders": [
+    {
+      "adapter": "fake",
+      "capability": {
+        "control_proof": {
+          "configured": true,
+          "provider_wire": true,
+          "runtime": true
+        },
+        "execution_implemented": true,
+        "execution_ready": true,
+        "harness": {
+          "name": "fake",
+          "version": "1"
+        },
+        "limitations": [
+          "deterministic test double; not a coding harness"
+        ],
+        "mcp_servers": [],
+        "memory": {
+          "mode": "none",
+          "scope": "trial",
+          "seeded": false
+        },
+        "permissions": "fixture-only",
+        "prompt_transport": "exact-bytes",
+        "protocol": "highlander-fake-v1",
+        "subagents": {
+          "enabled": false
+        },
+        "tools": [
+          "read",
+          "edit",
+          "test"
+        ]
+      },
+      "id": "fake-success"
+    },
+    {
+      "adapter": "fake",
+      "capability": {
+        "control_proof": {
+          "configured": true,
+          "provider_wire": true,
+          "runtime": true
+        },
+        "execution_implemented": true,
+        "execution_ready": true,
+        "harness": {
+          "name": "fake",
+          "version": "1"
+        },
+        "limitations": [
+          "deterministic test double; not a coding harness"
+        ],
+        "mcp_servers": [],
+        "memory": {
+          "mode": "none",
+          "scope": "trial",
+          "seeded": false
+        },
+        "permissions": "fixture-only",
+        "prompt_transport": "exact-bytes",
+        "protocol": "highlander-fake-v1",
+        "subagents": {
+          "enabled": false
+        },
+        "tools": [
+          "read",
+          "edit",
+          "test"
+        ]
+      },
+      "id": "fake-harness-failure"
+    }
+  ],
+  "match_id": "fake-t001-concurrency",
+  "notes": [
+    "No authentication, configuration, worktree, pane, or model call was changed.",
+    "provider/wire proof is required for a strict result; weaker proof is provisional."
+  ],
+  "ready_for_execution": true,
+  "session": {
+    "adapter": "headless",
+    "capability": {
+      "adapter": "headless",
+      "available": true,
+      "structured_completion": "worker outcome files",
+      "visible": false
+    },
+    "concurrency": "all-ready filesystem gate"
+  }
+}
+
+Highlander fixture tests.................................................Passed
+- hook id: highlander-fixture-tests
+- duration: 0.06s
+
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+
+Validate runner shell syntax.............................................Passed
+- hook id: highlander-shell-syntax
+- duration: 0s
+Verify quota-free evidence manifest......................................Passed
+- hook id: highlander-fake-evidence
+- duration: 0.07s
+
+{
+  "artifact_count": 48,
+  "bundle": "<RUNNER_ROOT>/results/fake-t002-protocol-r1",
+  "manifest_sha256": "f7e625941503db7bd42cc44a9afb5993acef428af2916d8eb49c00b6d98eabed",
+  "status": "verified"
+}
+
+Verify retained HarnessBench evidence manifest...........................Passed
+- hook id: highlander-pilot-evidence
+- duration: 0.13s
+
+{
+  "artifact_count": 314,
+  "bundle": "<RUNNER_ROOT>/results/hb-devhard-043-gpt54-medium-host4-r1",
+  "manifest_sha256": "86f73b81ede425f3fecf910b3bf3f8b2a9eacf0e42270fc1f3e85e3323c48217",
+  "status": "verified"
+}
+
+Verify retained GPT-5.6 season evidence..................................Passed
+- hook id: highlander-gpt56-season-evidence
+- duration: 0.97s
+
+{
+  "artifact_count": 4821,
+  "bundle": "<RUNNER_ROOT>/results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4",
+  "manifest_sha256": "3c7e389a1df3339881083bab87de1a2374b7b0cfa8e32cf782575abea512c131",
+  "season_status": "provisional",
+  "status": "verified"
+}
+
+Verify retained GPT-5.4 season evidence..................................Passed
+- hook id: highlander-gpt54-season-evidence
+- duration: 0.98s
+
+{
+  "artifact_count": 6090,
+  "bundle": "<RUNNER_ROOT>/results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1",
+  "manifest_sha256": "a77fb20926e1134fa3d54167bb8630c1516c2a6c2d4599e3ab6c8787f7b3c1eb",
+  "season_status": "provisional",
+  "status": "verified"
+}

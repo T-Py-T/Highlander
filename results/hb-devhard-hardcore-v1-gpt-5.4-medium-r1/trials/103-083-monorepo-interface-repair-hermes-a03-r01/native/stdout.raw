@@ -1,0 +1,28 @@
+Fresh verification rerun completed.
+
+Command
+- uv run --with pytest python -m pytest tests
+
+Working directory
+- /workspace/in/shopmono
+
+Result
+- 5 collected
+- 5 passed
+
+Passing tests
+- tests/test_catalog_contract.py
+- tests/test_orders_report_integration.py
+
+This verifies that:
+- orders reads new catalog Money prices correctly
+- legacy dict products with price_cents still work
+- mixed-currency orders raise an error
+- reports integration passes end-to-end
+
+Changed files
+- /workspace/in/shopmono/packages/orders/orders/adapter.py
+- /workspace/in/shopmono/packages/orders/orders/service.py
+
+Report
+- /workspace/out/interface_fix_report.md

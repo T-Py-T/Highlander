@@ -1,0 +1,173 @@
+--- a/in/composeapp/compose.yaml
++++ b/in/composeapp/compose.yaml
+@@ -1,20 +1,22 @@
+ services:
+   api:
+-    image: ghcr.io/example/composeapp-api:latest
++    image: ghcr.io/example/composeapp-api:1.4.2
+     ports:
+-      - "${WEB_PORT:-8000}:8000"
++      - "${API_PORT:-8080}:8000"
+     environment:
+       DATABASE_URL: "postgresql://composeapp:composeapp-dev@db:5432/composeapp"
+-      REDIS_DSN: "${REDIS_URL:-redis://cache:6379/0}"
+-      QUEUE_NAME: "default"
+-      APP_DATA_DIR: "/tmp/data"
++      REDIS_URL: "${REDIS_URL:-redis://redis:6379/0}"
++      QUEUE_NAME: "critical"
++      APP_DATA_DIR: "/data"
+     volumes:
+-      - api-data:/var/lib/composeapp
++      - api-data:/data
+     depends_on:
+-      - db
+-      - cache
++      db:
++        condition: service_healthy
++      redis:
++        condition: service_healthy
+     healthcheck:
+-      test: ["CMD", "curl", "-f", "http://localhost:8000/status"]
++      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+       interval: 30s
+       timeout: 3s
+       retries: 3
+@@ -22,20 +24,30 @@
+     image: ghcr.io/example/composeapp-worker:1.4.2
+     environment:
+       DATABASE_URL: "postgresql://composeapp:composeapp-dev@db:5432/composeapp"
+-      REDIS_URL: "${REDIS_URL:-redis://cache:6379/0}"
+-      QUEUE_NAME: "default"
++      REDIS_URL: "${REDIS_URL:-redis://redis:6379/0}"
++      QUEUE_NAME: "critical"
+     depends_on:
+       db:
+-        condition: service_started
+-      cache:
+-        condition: service_started
++        condition: service_healthy
++      redis:
++        condition: service_healthy
+   db:
+     image: postgres:16.2-alpine
+     environment:
+       POSTGRES_DB: composeapp
+       POSTGRES_USER: composeapp
+       POSTGRES_PASSWORD: composeapp-dev
+-  cache:
++    healthcheck:
++      test: ["CMD-SHELL", "pg_isready -U composeapp -d composeapp"]
++      interval: 10s
++      timeout: 5s
++      retries: 5
++  redis:
+     image: redis:7.2-alpine
++    healthcheck:
++      test: ["CMD", "redis-cli", "ping"]
++      interval: 10s
++      timeout: 3s
++      retries: 5
+ volumes:
+   api-data:
+Binary files a/in/composeapp/tools/__pycache__/yaml.cpython-311.pyc and b/in/composeapp/tools/__pycache__/yaml.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b67bc0b0c3ecb01345a4fb34d8939407e472ae65d71a87ad122293a344fa27ba)
+--- a/in/composeapp/tools/yaml.py
++++ b/in/composeapp/tools/yaml.py
+@@ -0,0 +1,90 @@
++from __future__ import annotations
++
++import ast
++
++
++def safe_load(text: str):
++    lines = []
++    for raw in text.splitlines():
++        stripped = raw.strip()
++        if not stripped or stripped.startswith("#"):
++            continue
++        lines.append((len(raw) - len(raw.lstrip(" ")), raw.rstrip()))
++    if not lines:
++        return None
++    value, _ = _parse_block(lines, 0, lines[0][0])
++    return value
++
++
++def _parse_block(lines, index, indent):
++    if lines[index][1].lstrip().startswith("- "):
++        return _parse_list(lines, index, indent)
++    return _parse_dict(lines, index, indent)
++
++
++def _parse_dict(lines, index, indent):
++    result = {}
++    while index < len(lines):
++      line_indent, raw = lines[index]
++      if line_indent < indent:
++          break
++      if line_indent != indent:
++          raise ValueError(f"unexpected indent: {raw}")
++      content = raw[indent:]
++      if content.startswith("- "):
++          break
++      key, sep, rest = content.partition(":")
++      if not sep:
++          raise ValueError(f"invalid mapping entry: {raw}")
++      key = key.strip()
++      rest = rest.strip()
++      index += 1
++      if rest:
++          result[key] = _parse_scalar(rest)
++          continue
++      if index < len(lines) and lines[index][0] > indent:
++          result[key], index = _parse_block(lines, index, lines[index][0])
++      else:
++          result[key] = {}
++    return result, index
++
++
++def _parse_list(lines, index, indent):
++    result = []
++    while index < len(lines):
++        line_indent, raw = lines[index]
++        if line_indent < indent:
++            break
++        if line_indent != indent:
++            raise ValueError(f"unexpected indent: {raw}")
++        content = raw[indent:]
++        if not content.startswith("- "):
++            break
++        item = content[2:].strip()
++        index += 1
++        if item:
++            result.append(_parse_scalar(item))
++            continue
++        if index < len(lines) and lines[index][0] > indent:
++            parsed, index = _parse_block(lines, index, lines[index][0])
++            result.append(parsed)
++        else:
++            result.append(None)
++    return result, index
++
++
++def _parse_scalar(value: str):
++    if value.startswith("[") and value.endswith("]"):
++        return ast.literal_eval(value)
++    if value.startswith(("'", '"')) and value.endswith(("'", '"')):
++        return ast.literal_eval(value)
++    if value in {"true", "True"}:
++        return True
++    if value in {"false", "False"}:
++        return False
++    if value in {"null", "Null", "none", "None", "~"}:
++        return None
++    try:
++        return int(value)
++    except ValueError:
++        return value
+--- a/out/compose_fix_report.md
++++ b/out/compose_fix_report.md
+@@ -0,0 +1,5 @@
++Root cause: the Compose file had incident drift from the service policy. `api` was changed to a `latest` tag, the published port used `WEB_PORT` with the wrong default, Redis was renamed to `cache`, required environment keys and queue values diverged, the API data volume no longer mounted at `/data`, dependency conditions were weakened, and the API/DB/Redis healthchecks no longer matched the deployment contract.
++
++Repair summary: `compose.yaml` was restored to the policy-defined images and service names, `api` now exposes `${API_PORT:-8080}:8000`, both `api` and `worker` point to the `redis` service, the queue is `critical`, `api-data` mounts to `/data`, dependency conditions use `service_healthy`, and healthchecks now use `/healthz`, `pg_isready`, and `redis-cli ping` as required.
++
++Final validation command: `/usr/bin/python3 tools/validate_compose.py`

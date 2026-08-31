@@ -1,0 +1,43 @@
+Done.
+
+I updated:
+- /workspace/in/schema_migration/client.py
+
+What changed:
+- Added full legacy v1, v1.1, and v1.2 -> v2 conversion
+- Added v2 passthrough/idempotent handling
+- Normalized blank/null shipping methods to "standard"
+- Mapped:
+  - id / order_ref -> orderId
+  - customer_id / customer.id -> buyer.id
+  - customer_name / customer.name -> buyer.displayName
+  - items / lines -> lineItems
+  - qty -> quantity
+  - price_cents / unit_price_cents -> unitPriceCents
+  - ship_to.postal / ship_to.postalCode / shipTo.postal_code -> shipping.address.postalCode
+- Preserved unknown non-PII fields under metadata.unknownFields
+- Dropped obvious PII-like keys from unknown fields
+- Added aggregated convert_many(payloads)
+  - returns a compatible result object
+  - result[0] = converted
+  - result[1] = errors
+  - result[2] = warnings
+  - unpacking into two values still works: converted, errors = convert_many(...)
+- Added audit writing to:
+  - /workspace/in/schema_migration/conversion_audit.json
+- Added CLI support:
+  - python -m client input.jsonl output.json
+
+Validation:
+- Tests passed with:
+  - uv run --with pytest python -m pytest /workspace/in/schema_migration/tests
+
+Actual result:
+- 5 passed in 0.02s
+
+I also verified the CLI on the sample JSONL:
+- It wrote converted output successfully
+- It wrote /workspace/in/schema_migration/conversion_audit.json successfully
+
+Note:
+- The absolute <HOME>/... path from your prompt does not exist in this Linux runtime, so I edited the mounted project copy at /workspace/in/schema_migration/client.py, which is the accessible workspace here.

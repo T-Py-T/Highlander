@@ -1,0 +1,146 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 437,
+      "path": "control/app.json",
+      "sha256": "5a5a502db8dca18778c78caadecd527b9c5d2b1eeac35a20fe8ef57d415940a8"
+    },
+    {
+      "bytes": 690,
+      "path": "control/harness.json",
+      "sha256": "6830c586c9ce7bce0737517f0aed70b6ac6d1e0e079df54b03034b0a72bbcf98"
+    },
+    {
+      "bytes": 334,
+      "path": "control/trial.json",
+      "sha256": "7caafe6b432cf2200b6e22a2b1ad33c9cfcad6dc57a6c61ce40c8fb0ca8648bd"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2568,
+      "path": "controller.stdout.raw",
+      "sha256": "7e50d74f97979498d776c4ee89836155508714c9d26a595d2f8c0d8be1517f6e"
+    },
+    {
+      "bytes": 7289,
+      "path": "diff.patch",
+      "sha256": "c8ac58757d205fbe848889dc07e31b8043fcd88e80f205057083b65c88fc19e3"
+    },
+    {
+      "bytes": 2156,
+      "path": "native/container-plan.json",
+      "sha256": "eb4a4f516589ed9b5516e68e622802e2176a88eada6f1d03e46dfc250bd2d1e4"
+    },
+    {
+      "bytes": 655,
+      "path": "native/control-proof.json",
+      "sha256": "c7b89827f81b2b95423614afa2a5cd1ff3563fb967a65864d06929f10966dde7"
+    },
+    {
+      "bytes": 2036,
+      "path": "native/execution.json",
+      "sha256": "0fdbd27b0a400866e58105e096fd6f9abfa697fb2dae99c2a0d4d65ac2b8212e"
+    },
+    {
+      "bytes": 620,
+      "path": "native/invocation.json",
+      "sha256": "65d70162fb162fd7017c905d6b8a6bb63a171bde2e7a904c8d6a82b541722b36"
+    },
+    {
+      "bytes": 52,
+      "path": "native/process-metrics.json",
+      "sha256": "1d3c0a5333cfc2deecbf66abb1a645476906f52aeb13baba3458056a0780813e"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 804014,
+      "path": "native/stdout.raw",
+      "sha256": "748942d63c468d19a996b7f0e78f41de0baf3cd7eabe49cf2f01ff98b65be024"
+    },
+    {
+      "bytes": 4200,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "671214090999a9a37c587add329ab34b3d72478e75733ccdc4f0c3da1643ea16"
+    },
+    {
+      "bytes": 323,
+      "path": "process/observations.json",
+      "sha256": "823e25e49a59be7e1739d3b34dabf2517ad1c7eea2402abc44b5b9ed6ab1ca10"
+    },
+    {
+      "bytes": 1467,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "ac129d42f45971fb574662a383eca341647a1394e8c7f173e83546a3eff834a7"
+    },
+    {
+      "bytes": 2724,
+      "path": "result.json",
+      "sha256": "a4774303d2a3edb6d75ed5683b754c0222924f049bc546a7849ac1ef1fb3d5b7"
+    },
+    {
+      "bytes": 926463,
+      "path": "upstream-result.json",
+      "sha256": "49b2aea7d2742cb14d26f11a1e8396a4a8f92e042c057e9af8534e830cd2754f"
+    },
+    {
+      "bytes": 492,
+      "path": "usage-normalized.json",
+      "sha256": "a2c2d297c0289021165334bc24f98facb36b11f2d823dffe662ef7c3eb319dd0"
+    },
+    {
+      "bytes": 653,
+      "path": "workspace-final/.atomic/todos/85aeaeb8.md",
+      "sha256": "e8540de70f678eadd1cf27dbaac13679474a20c244fa5a56381cf8d4c8d535e7"
+    },
+    {
+      "bytes": 165,
+      "path": "workspace-final/in/composeapp/.env.example",
+      "sha256": "99f50393278ac0e92a58a6ba02c761980fedca268381ee762c1ec574403e8b2a"
+    },
+    {
+      "bytes": 131,
+      "path": "workspace-final/in/composeapp/README.md",
+      "sha256": "3225cc0dc4c214d55ffaed9958f90803e7be2b77c603dac6d9450e7f36da396f"
+    },
+    {
+      "bytes": 1427,
+      "path": "workspace-final/in/composeapp/compose.yaml",
+      "sha256": "6d50d0d05989ffe0ce23d2e23ff24c6667336ae96c847d3ac5afe040b6455734"
+    },
+    {
+      "bytes": 758,
+      "path": "workspace-final/in/composeapp/config/service-policy.yml",
+      "sha256": "545254079313b4d210ba80bb9c459db70f8ad5cd67c41ac8e1a8931635225792"
+    },
+    {
+      "bytes": 3336,
+      "path": "workspace-final/in/composeapp/tools/validate_compose.py",
+      "sha256": "2cff4c0c0e561e39c568756e68f6b770783098e5c79db5c7156286effc766ec7"
+    },
+    {
+      "bytes": 2990,
+      "path": "workspace-final/in/composeapp/tools/yaml.py",
+      "sha256": "ea4c73f69128a39649487090483fd19e4c5c82cedfca1ebaf8b217fe6f60e4a9"
+    },
+    {
+      "bytes": 914,
+      "path": "workspace-final/out/compose_fix_report.md",
+      "sha256": "08a4db1122b259baca93d3aac5540fb3a0a4e780437b648ed227462687c5d591"
+    }
+  ],
+  "generated_at": "2026-08-31T23:30:57.100271Z",
+  "schema_version": 1
+}

@@ -1,0 +1,296 @@
+{
+  "files": [
+    {
+      "bytes": 46429,
+      "path": "protocol.json",
+      "sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac"
+    },
+    {
+      "bytes": 112,
+      "path": "protocol.json.sha256",
+      "sha256": "43b48fe2b115dae4ad2507f8a8d0892b86a5c0edbaeb7318f4c7a7b452f9967e"
+    },
+    {
+      "bytes": 6727,
+      "path": "summary.json",
+      "sha256": "7dc1b8e8f2b11a3c0e2a6965fc6e4c08be82435ca4683c1b4604e9a938c76ca4"
+    },
+    {
+      "bytes": 2195,
+      "path": "trials/qualification-01-omp/native/container-plan.json",
+      "sha256": "355f259be9afd334592d6928b1cbca14fa680f93a62241b8dc17f4947f95d9dd"
+    },
+    {
+      "bytes": 668,
+      "path": "trials/qualification-01-omp/native/control-proof.json",
+      "sha256": "9258c954fff103a63f17fc1ecfd0c911f791c46ce51421645ab6138020f68aa0"
+    },
+    {
+      "bytes": 2070,
+      "path": "trials/qualification-01-omp/native/execution.json",
+      "sha256": "d39de20e73d34c613d67e55817fac5089cdb713ea076105f70df2341401a6c6c"
+    },
+    {
+      "bytes": 767,
+      "path": "trials/qualification-01-omp/native/invocation.json",
+      "sha256": "3535de5bec290579b5d5bc131c21b9ec1346f038c085f381e4140edc23dc23a5"
+    },
+    {
+      "bytes": 49,
+      "path": "trials/qualification-01-omp/native/process-metrics.json",
+      "sha256": "883f8d0d8bc4c164b50d1d1d4d9d24dca460c1648ea7e5c92bfd3ef55e57df38"
+    },
+    {
+      "bytes": 52,
+      "path": "trials/qualification-01-omp/native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 9369,
+      "path": "trials/qualification-01-omp/native/stdout.raw",
+      "sha256": "2ba6305bf31021504cab44404f72106dbf40eaeecd7a296a5724bed185057181"
+    },
+    {
+      "bytes": 0,
+      "path": "trials/qualification-01-omp/native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 955,
+      "path": "trials/qualification-01-omp/result.json",
+      "sha256": "1990f3c547b52e93f16b51ec7cd9b1526e7deb29b1328f2a5bddb84ef0250596"
+    },
+    {
+      "bytes": 1922,
+      "path": "trials/qualification-02-opencode/native/container-plan.json",
+      "sha256": "26983094031ef0884d571395ef2c813d1756b07c7b993c8e083229de209e833b"
+    },
+    {
+      "bytes": 642,
+      "path": "trials/qualification-02-opencode/native/control-proof.json",
+      "sha256": "2672ec8a819baa379609ad1f324beb72c92c3c228f797ef88894c089017b974b"
+    },
+    {
+      "bytes": 1814,
+      "path": "trials/qualification-02-opencode/native/execution.json",
+      "sha256": "0f5ba85695cb374b901e7f1a59ef15ecfa0b6637befbf34b99a9087db8b2a331"
+    },
+    {
+      "bytes": 491,
+      "path": "trials/qualification-02-opencode/native/invocation.json",
+      "sha256": "2d06f4abe93cf77b094d11152933ff2a60dcec59f14a70549cc54591e3721ed4"
+    },
+    {
+      "bytes": 48,
+      "path": "trials/qualification-02-opencode/native/process-metrics.json",
+      "sha256": "cbdce081e48eb19b91d74edbaa76c2682289a2f492e0a4cf181df0c26fc56e7f"
+    },
+    {
+      "bytes": 52,
+      "path": "trials/qualification-02-opencode/native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 1051,
+      "path": "trials/qualification-02-opencode/native/stdout.raw",
+      "sha256": "6a13f6350f596a336c91c9ac6657c21dbf0059d9d0e3f76e5771c4fc0359ba99"
+    },
+    {
+      "bytes": 0,
+      "path": "trials/qualification-02-opencode/native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 939,
+      "path": "trials/qualification-02-opencode/result.json",
+      "sha256": "fb2a79d09f8ac5664f0b38ad9293cb627c8e65cb381f17e5c86d02462e87b8aa"
+    },
+    {
+      "bytes": 2056,
+      "path": "trials/qualification-03-codex/native/container-plan.json",
+      "sha256": "be6130e6b2c19c212af91437ac971fe710a26a874368fe340e91019287c6e14c"
+    },
+    {
+      "bytes": 641,
+      "path": "trials/qualification-03-codex/native/control-proof.json",
+      "sha256": "431d4cc57020a47885e5bc8e0c1afa7892331a5e9cbbefe725e5d63619c63967"
+    },
+    {
+      "bytes": 1948,
+      "path": "trials/qualification-03-codex/native/execution.json",
+      "sha256": "a14ab8145fafd6164cf01e9a4057f58f8ad38ceb762b5a0efd5cc37226b7094b"
+    },
+    {
+      "bytes": 637,
+      "path": "trials/qualification-03-codex/native/invocation.json",
+      "sha256": "8de9019e9de7956db7efdd599d7d9f1c61fcc9b4a424ffea7a662aa885164841"
+    },
+    {
+      "bytes": 48,
+      "path": "trials/qualification-03-codex/native/process-metrics.json",
+      "sha256": "9baf9f209c6a0241ddc697fec596d9f54530238156321a2b30b83c2b47b49fd0"
+    },
+    {
+      "bytes": 52,
+      "path": "trials/qualification-03-codex/native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 402,
+      "path": "trials/qualification-03-codex/native/stdout.raw",
+      "sha256": "8d128551293ed5c9c11f7539764bdbdade08cafd85549d9067f11cc2debc8beb"
+    },
+    {
+      "bytes": 0,
+      "path": "trials/qualification-03-codex/native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 932,
+      "path": "trials/qualification-03-codex/result.json",
+      "sha256": "cc02ff75be5e3f3dfcc919a1e813ca821211d08850e732d76c87df7d74fae5a7"
+    },
+    {
+      "bytes": 2121,
+      "path": "trials/qualification-04-hermes/native/container-plan.json",
+      "sha256": "86638544f08372a725b396c4d4870493a8eff5e28555052b564eb2d951432d3a"
+    },
+    {
+      "bytes": 641,
+      "path": "trials/qualification-04-hermes/native/control-proof.json",
+      "sha256": "431d4cc57020a47885e5bc8e0c1afa7892331a5e9cbbefe725e5d63619c63967"
+    },
+    {
+      "bytes": 1846,
+      "path": "trials/qualification-04-hermes/native/execution.json",
+      "sha256": "442ede7413fc8cebbdb4c5423f05b203d3f46cb0897bcc810a592a1f25b43786"
+    },
+    {
+      "bytes": 531,
+      "path": "trials/qualification-04-hermes/native/invocation.json",
+      "sha256": "e233da30e0059d2ba94631565ebc13539adcc18af0a30bba8405a163f4fe4db9"
+    },
+    {
+      "bytes": 48,
+      "path": "trials/qualification-04-hermes/native/process-metrics.json",
+      "sha256": "bf225fbe16fbb7db40291698ce9a3771e4d4335cda5a095de5c20a1924c83313"
+    },
+    {
+      "bytes": 52,
+      "path": "trials/qualification-04-hermes/native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 20,
+      "path": "trials/qualification-04-hermes/native/stdout.raw",
+      "sha256": "14a6044dbe65f13cb677f9667065ae6aebaa2eb1b28761ad36f68bb3efcf929f"
+    },
+    {
+      "bytes": 0,
+      "path": "trials/qualification-04-hermes/native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 412,
+      "path": "trials/qualification-04-hermes/native/usage.json",
+      "sha256": "81cef153403c6be7e8a389197548e3a65e65ea4592347e191804caf35a7cffbd"
+    },
+    {
+      "bytes": 934,
+      "path": "trials/qualification-04-hermes/result.json",
+      "sha256": "c18d6fd528d6a1dba57dc107cf62f121e201f394848f3f04ffd4423816681127"
+    },
+    {
+      "bytes": 2050,
+      "path": "trials/qualification-05-atomic/native/container-plan.json",
+      "sha256": "1e90a54bd3264f06570c782123a2de44f4e3b681ffb629f72710936d7b0c8628"
+    },
+    {
+      "bytes": 655,
+      "path": "trials/qualification-05-atomic/native/control-proof.json",
+      "sha256": "c7b89827f81b2b95423614afa2a5cd1ff3563fb967a65864d06929f10966dde7"
+    },
+    {
+      "bytes": 1935,
+      "path": "trials/qualification-05-atomic/native/execution.json",
+      "sha256": "9b9d0cf3d0d3159a0c4e4e2269817ffbc03671f503db5665b8d6fe594a7c987d"
+    },
+    {
+      "bytes": 620,
+      "path": "trials/qualification-05-atomic/native/invocation.json",
+      "sha256": "6097a5a0ac6bc8106237d3ff9f1f377bc688ae21cf5e3bd592ced7b563394b13"
+    },
+    {
+      "bytes": 49,
+      "path": "trials/qualification-05-atomic/native/process-metrics.json",
+      "sha256": "146eb5964edf4d58eb145262cd767a0ea751512c7d58682d06aec545f6b701dc"
+    },
+    {
+      "bytes": 52,
+      "path": "trials/qualification-05-atomic/native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 10121,
+      "path": "trials/qualification-05-atomic/native/stdout.raw",
+      "sha256": "512239db5a86d870b2abf0c7573060ca51b249f54485147b1bb6a0891418dfd5"
+    },
+    {
+      "bytes": 0,
+      "path": "trials/qualification-05-atomic/native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 948,
+      "path": "trials/qualification-05-atomic/result.json",
+      "sha256": "687c6bd8801d8b45b1cd59efbbb50786f865fd26f570fdf84d36b49e5f71284f"
+    },
+    {
+      "bytes": 2249,
+      "path": "trials/qualification-06-nanobot/native/container-plan.json",
+      "sha256": "2f36226c72483825212425db63f0c75094cf9610a73c427f9c75f13da07c0e1c"
+    },
+    {
+      "bytes": 654,
+      "path": "trials/qualification-06-nanobot/native/control-proof.json",
+      "sha256": "5fd5526d542884334c60cd7c66f29637789ff8912da055132937a240753b5267"
+    },
+    {
+      "bytes": 2071,
+      "path": "trials/qualification-06-nanobot/native/execution.json",
+      "sha256": "fdaf90ea5104d0f7c42cdba06992e44445943caaf5e7408789b33df305964cf9"
+    },
+    {
+      "bytes": 752,
+      "path": "trials/qualification-06-nanobot/native/invocation.json",
+      "sha256": "6cc32486f88881f6be854ac3f791077709c149fe725de9e9f53e047b00fdcf2c"
+    },
+    {
+      "bytes": 48,
+      "path": "trials/qualification-06-nanobot/native/process-metrics.json",
+      "sha256": "bf225fbe16fbb7db40291698ce9a3771e4d4335cda5a095de5c20a1924c83313"
+    },
+    {
+      "bytes": 52,
+      "path": "trials/qualification-06-nanobot/native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 904,
+      "path": "trials/qualification-06-nanobot/native/stdout.raw",
+      "sha256": "4e8a9b5a8009ba63adf5b6bec1e8a0006c1669143891f6f593dd5349a5c9c027"
+    },
+    {
+      "bytes": 0,
+      "path": "trials/qualification-06-nanobot/native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 949,
+      "path": "trials/qualification-06-nanobot/result.json",
+      "sha256": "abccdc7621dd8e638a19ebb3aedff7b8b06d14753f7c07fd4926812624a33cf5"
+    }
+  ],
+  "generated_at": "2026-08-31T13:08:28.092543Z",
+  "schema_version": 1
+}

@@ -1,0 +1,66 @@
+[harnessbench] run-task 064-service-dependency-triage (harness=nanobot, mode=live) ...
+[harnessbench] run-task 064-service-dependency-triage finished adapter_ok=True elapsed=21.053s
+{
+  "task_id": "064-service-dependency-triage",
+  "elapsed_sec": 21.053,
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-nanobot-064-service-dependency-triage-a1-064-service-dependency-triage-3fbfc45f"
+  },
+  "oracle_result": {
+    "task": "064-service-dependency-triage",
+    "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/059-064-service-dependency-triage-nanobot-a01-r01/hb-work/nanobot/gpt-5.4/oc-bench-v2-064-service-dependency-triage-gpt-5.4-20260831-121400-6c84c7de/workspace",
+    "outcome_score": 0.06,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "root_cause_missing",
+        "label": "root_cause.json exists",
+        "pass": false,
+        "weight": 0.74,
+        "detail": "missing"
+      },
+      {
+        "id": "triage_notes_missing",
+        "label": "triage_notes.md exists",
+        "pass": false,
+        "weight": 0.2,
+        "detail": "missing"
+      },
+      {
+        "id": "source_unchanged",
+        "label": "fixtures are not modified",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.06,
+    "oracle_outcome_score": 0.06,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.06,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/059-064-service-dependency-triage-nanobot-a01-r01/hb-work/nanobot/gpt-5.4/oc-bench-v2-064-service-dependency-triage-gpt-5.4-20260831-121400-6c84c7de"
+}

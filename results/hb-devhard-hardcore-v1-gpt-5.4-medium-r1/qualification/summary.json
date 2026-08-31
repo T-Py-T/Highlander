@@ -1,0 +1,192 @@
+{
+  "combined_score": null,
+  "completed_at": "2026-08-31T13:08:28.089500Z",
+  "model_calls": 6,
+  "process_score": null,
+  "protocol_id": "hb-devhard-hardcore-v1-gpt-5.4-medium-r1",
+  "protocol_sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac",
+  "ready_for_scored_run": true,
+  "rows": [
+    {
+      "artifact_path": "trials/qualification-01-omp",
+      "control_proof": {
+        "configured_model_id": "openai-codex/gpt-5.4",
+        "configured_provider_id": "openai-codex",
+        "configured_reasoning": "medium",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "endpoint_or_deployment": null,
+          "model": "gpt-5.4",
+          "provider": "openai-codex",
+          "reasoning": null,
+          "region": null,
+          "upstream_id": null
+        },
+        "provider_wire_verified": false,
+        "qualification_boundary": "configured route retained; exact wire identity not exposed by native output",
+        "runtime_conflict": false,
+        "runtime_conflicts": {},
+        "runtime_observation_available": true,
+        "runtime_verified": false,
+        "schema_version": 2
+      },
+      "harness_id": "omp",
+      "protocol_sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac",
+      "reason": null,
+      "sequence": 1,
+      "status": "qualified"
+    },
+    {
+      "artifact_path": "trials/qualification-02-opencode",
+      "control_proof": {
+        "configured_model_id": "openai/gpt-5.4",
+        "configured_provider_id": "openai",
+        "configured_reasoning": "medium",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "endpoint_or_deployment": null,
+          "model": null,
+          "provider": null,
+          "reasoning": null,
+          "region": null,
+          "upstream_id": null
+        },
+        "provider_wire_verified": false,
+        "qualification_boundary": "configured route retained; exact wire identity not exposed by native output",
+        "runtime_conflict": false,
+        "runtime_conflicts": {},
+        "runtime_observation_available": false,
+        "runtime_verified": false,
+        "schema_version": 2
+      },
+      "harness_id": "opencode",
+      "protocol_sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac",
+      "reason": null,
+      "sequence": 2,
+      "status": "qualified"
+    },
+    {
+      "artifact_path": "trials/qualification-03-codex",
+      "control_proof": {
+        "configured_model_id": "gpt-5.4",
+        "configured_provider_id": "openai-codex",
+        "configured_reasoning": "medium",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "endpoint_or_deployment": null,
+          "model": null,
+          "provider": null,
+          "reasoning": null,
+          "region": null,
+          "upstream_id": null
+        },
+        "provider_wire_verified": false,
+        "qualification_boundary": "configured route retained; exact wire identity not exposed by native output",
+        "runtime_conflict": false,
+        "runtime_conflicts": {},
+        "runtime_observation_available": false,
+        "runtime_verified": false,
+        "schema_version": 2
+      },
+      "harness_id": "codex",
+      "protocol_sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac",
+      "reason": null,
+      "sequence": 3,
+      "status": "qualified"
+    },
+    {
+      "artifact_path": "trials/qualification-04-hermes",
+      "control_proof": {
+        "configured_model_id": "gpt-5.4",
+        "configured_provider_id": "openai-codex",
+        "configured_reasoning": "medium",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "endpoint_or_deployment": null,
+          "model": null,
+          "provider": null,
+          "reasoning": null,
+          "region": null,
+          "upstream_id": null
+        },
+        "provider_wire_verified": false,
+        "qualification_boundary": "configured route retained; exact wire identity not exposed by native output",
+        "runtime_conflict": false,
+        "runtime_conflicts": {},
+        "runtime_observation_available": false,
+        "runtime_verified": false,
+        "schema_version": 2
+      },
+      "harness_id": "hermes",
+      "protocol_sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac",
+      "reason": null,
+      "sequence": 4,
+      "status": "qualified"
+    },
+    {
+      "artifact_path": "trials/qualification-05-atomic",
+      "control_proof": {
+        "configured_model_id": "gpt-5.4",
+        "configured_provider_id": "openai-codex",
+        "configured_reasoning": "medium",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "endpoint_or_deployment": null,
+          "model": "gpt-5.4",
+          "provider": "openai-codex",
+          "reasoning": null,
+          "region": null,
+          "upstream_id": null
+        },
+        "provider_wire_verified": false,
+        "qualification_boundary": "configured route retained; exact wire identity not exposed by native output",
+        "runtime_conflict": false,
+        "runtime_conflicts": {},
+        "runtime_observation_available": true,
+        "runtime_verified": false,
+        "schema_version": 2
+      },
+      "harness_id": "atomic",
+      "protocol_sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac",
+      "reason": null,
+      "sequence": 5,
+      "status": "qualified"
+    },
+    {
+      "artifact_path": "trials/qualification-06-nanobot",
+      "control_proof": {
+        "configured_model_id": "openai-codex/gpt-5.4",
+        "configured_provider_id": "openai-codex",
+        "configured_reasoning": "medium",
+        "configured_verified": true,
+        "fallback_policy": "forbidden",
+        "observed": {
+          "endpoint_or_deployment": null,
+          "model": null,
+          "provider": null,
+          "reasoning": null,
+          "region": null,
+          "upstream_id": null
+        },
+        "provider_wire_verified": false,
+        "qualification_boundary": "configured route retained; exact wire identity not exposed by native output",
+        "runtime_conflict": false,
+        "runtime_conflicts": {},
+        "runtime_observation_available": false,
+        "runtime_verified": false,
+        "schema_version": 2
+      },
+      "harness_id": "nanobot",
+      "protocol_sha256": "1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac",
+      "reason": null,
+      "sequence": 6,
+      "status": "qualified"
+    }
+  ],
+  "schema_version": 1
+}

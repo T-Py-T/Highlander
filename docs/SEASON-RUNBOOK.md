@@ -6,14 +6,21 @@ prompt rendering, and deterministic outcome scoring. Highlander supplies only
 the randomized schedule, disposable harness containers, evidence retention,
 aggregation, redaction, and publication checks.
 
-The frozen protocol is
-`protocols/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4.json`, SHA-256
-`c0033d61cc3bdc1c30716c3edf6cf8d815f5b96fe17229491c74b1f178fe37df`.
-It schedules nine tasks, six harnesses, and three attempts per task: 162 scored
-calls. A separate one-call-per-harness route qualification adds six calls.
+Two frozen model strata use the same nine tasks, six harnesses, and three
+attempts per task: 162 scored slots plus six unscored route qualifications.
 Process and combined scores are not evaluated.
 
-Protocols r1–r3 are retained but must not be used. R1's six qualification calls were
+| Stratum | Protocol | SHA-256 | Published evidence |
+|---|---|---|---|
+| Historical control | `hb-devhard-hardcore-v1-gpt-5.4-medium-r1` | `1eb2276c21ce20d8dbaca80ff4b555d5d8c6c1263646d95066a451825b82c1ac` | 161/162 current valid slots; five complete harnesses; Atomic 26/27 |
+| Successor model | `hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4` | `c0033d61cc3bdc1c30716c3edf6cf8d815f5b96fe17229491c74b1f178fe37df` | 148/162 valid slots; five complete harnesses; Atomic 13/27 |
+
+The GPT-5.4 stratum is the primary comparison with the original HarnessBench
+model generation. It is not an exact recreation of the original worker image,
+harness version, provider state, or execution date. NanoBot is therefore a
+version-pinned temporal proxy. The two Highlander strata must never be pooled.
+
+GPT-5.6 protocols r1–r3 are retained but must not be used. R1's six qualification calls were
 invalidated when a missing `expected_runtime_reasoning` field caused a shared
 controller `KeyError`. R2 added that control, qualified four lanes, and retained
 OpenCode and Codex as unavailable after Podman populated root-owned home paths.
@@ -141,6 +148,50 @@ python3 tools/hb-evidence.py verify-season \
   results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4
 ```
 
+## GPT-5.4 matched companion commands
+
+Use the same lifecycle with the GPT-5.4 protocol and companion manifest:
+
+```text
+python3 tools/hb-season.py doctor \
+  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.4-medium-r1.json \
+  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.4-medium-r1.json.sha256 \
+  --upstream .highlander/upstream/harness-bench
+
+python3 tools/hb-season.py qualify \
+  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.4-medium-r1.json \
+  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.4-medium-r1.json.sha256 \
+  --upstream .highlander/upstream/harness-bench
+
+python3 tools/hb-season.py run \
+  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.4-medium-r1.json \
+  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.4-medium-r1.json.sha256 \
+  --manifest benchmark-packs/hb-devhard-hardcore-v1-gpt54-r1.json \
+  --upstream .highlander/upstream/harness-bench \
+  --stage hardest-first
+
+python3 tools/hb-season.py run \
+  --protocol protocols/hb-devhard-hardcore-v1-gpt-5.4-medium-r1.json \
+  --protocol-sha256 protocols/hb-devhard-hardcore-v1-gpt-5.4-medium-r1.json.sha256 \
+  --manifest benchmark-packs/hb-devhard-hardcore-v1-gpt54-r1.json \
+  --upstream .highlander/upstream/harness-bench \
+  --stage cross-repository-and-diagnostic
+
+python3 tools/hb-evidence.py export-season \
+  --source .highlander/runs/hb-devhard-hardcore-v1-gpt-5.4-medium-r1-raw \
+  --output results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1
+
+python3 tools/hb-evidence.py verify-season \
+  results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1
+```
+
+The retained Highlander run used `--retry-invalid` only after a documented
+pre-model authorization or container failure. Valid low scores were never
+retried. Every replacement remains in `results.jsonl`; aggregation selects the
+latest row for each frozen slot. The final unresolved Atomic CLI-parser slot
+timed out twice at the exact 1,200-second wall limit and remains invalid rather
+than becoming a zero or being retried until favorable.
+
 Before a pull request, run `pre-commit run --all-files --verbose` and
 `tools/run-act-local.sh`. Public visibility is the final operation, after the
 result bundle, README table, issue trail, privacy scan, clean-checkout
@@ -155,5 +206,6 @@ verification, and local workflow all pass.
 - NanoBot is the pinned historical temporal proxy used to connect this season
   to the original HarnessBench landscape. It is not an exact reproduction of
   the unpublished historical environment.
-- A missing lane is unranked and unavailable. Highlander ranks only a complete
-  six-harness matrix.
+- A contender missing any fixed slot is visible but unranked. Complete
+  contenders may be ranked in a provisional season while the incomplete lane
+  remains explicit.

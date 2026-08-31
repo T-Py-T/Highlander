@@ -1,0 +1,20 @@
+Done.
+
+Created and verified these files in the writable fixture output directory:
+- /workspace/out/module_map.json
+- /workspace/out/architecture.md
+- /workspace/out/doc_code_discrepancies.csv
+- /workspace/out/risk_register.csv
+- /workspace/out/onboarding_plan.md
+
+Verification:
+- module_map.json contains keys: modules, entry_points, dependency_edges, key_functions, runtime_flows
+- entry_points includes:
+  - minisvc.cli:main
+  - minisvc.api.routes:register_routes
+- doc_code_discrepancies.csv has the required header and covers readonly enforcement, retry behavior, and audit persistence
+- risk_register.csv has the required header and covers storage/durability, audit behavior, configuration/runtime environment, and API input validation
+
+Important blocker:
+- I could not write to the exact <HOME>/.../workspace/out paths because /Users is mounted read-only in this environment.
+- The requested deliverables are therefore available at /workspace/out instead.

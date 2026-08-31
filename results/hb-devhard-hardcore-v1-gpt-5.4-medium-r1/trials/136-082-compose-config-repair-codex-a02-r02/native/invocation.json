@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "codex",
+    "exec",
+    "--json",
+    "--ephemeral",
+    "--ignore-user-config",
+    "--ignore-rules",
+    "--dangerously-bypass-approvals-and-sandbox",
+    "--cd",
+    "/workspace",
+    "--model",
+    "gpt-5.4",
+    "--config",
+    "model_reasoning_effort=\"medium\"",
+    "--config",
+    "cli_auth_credentials_store=\"file\"",
+    "<TASK_BYTES_UTF8>"
+  ],
+  "credential_binding": {
+    "seed_profile": "codex-subscription",
+    "value_retained": false
+  },
+  "cwd": "/workspace",
+  "harness_id": "codex",
+  "prompt_sha256": "237075a1cc3a0f7ceb2e2a4dc423f23c46e4b03ea6f062c0e0b6e882f8b1da72",
+  "schema_version": 1
+}

@@ -1,0 +1,92 @@
+[harnessbench] run-task 085-flaky-test-root-cause (harness=omp, mode=live) ...
+[harnessbench] run-task 085-flaky-test-root-cause finished adapter_ok=True elapsed=155.029s
+{
+  "task_id": "085-flaky-test-root-cause",
+  "elapsed_sec": 155.029,
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-omp-085-flaky-test-root-cause-a1-085-flaky-test-root-cause-3a1fba4f"
+  },
+  "oracle_result": {
+    "task": "085-flaky-test-root-cause",
+    "outcome_score": 1.0,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "repeated_pytest_stable",
+        "pass": true,
+        "weight": 0.35,
+        "detail": {
+          "returncodes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "last_output": ""
+        }
+      },
+      {
+        "id": "hidden_determinism",
+        "pass": true,
+        "weight": 0.35,
+        "detail": ""
+      },
+      {
+        "id": "test_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "implementation_quality",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "root_cause_report",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 1.0,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/114-085-flaky-test-root-cause-omp-a01-r01/hb-work/omp/gpt-5.4/oc-bench-v2-085-flaky-test-root-cause-gpt-5.4-20260831-140003-07423ca2"
+}

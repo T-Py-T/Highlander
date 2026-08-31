@@ -1,0 +1,16 @@
+Fresh verification passed.
+
+Command run:
+uv run --with pytest python3 -m pytest tests
+
+What passed:
+- tests/test_catalog_contract.py: 2 tests passed
+- tests/test_orders_report_integration.py: 3 tests passed
+
+Total:
+- 5 passed in 0.01s
+
+The adapter fix remains good:
+- supports Product.price as Money(amount_cents, currency)
+- preserves legacy dict support via price_cents
+- mixed-currency orders still raise an error

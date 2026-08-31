@@ -1,0 +1,146 @@
+{
+  "artifacts": [
+    {
+      "bytes": 207,
+      "path": "cleanup.json",
+      "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
+    },
+    {
+      "bytes": 431,
+      "path": "control/app.json",
+      "sha256": "213f2e0b33d5b3652fe2563e1be9a39deb58bd824fa1baf13ce028646018507f"
+    },
+    {
+      "bytes": 686,
+      "path": "control/harness.json",
+      "sha256": "6299d5f19e71e6c817daace2df310cc49718f2b5df8bc5246d9a35da97c30d66"
+    },
+    {
+      "bytes": 331,
+      "path": "control/trial.json",
+      "sha256": "f6b4ef98523420aa5c99f5e9eea29e608e6361f3749691d80e6d76a1e22fe011"
+    },
+    {
+      "bytes": 0,
+      "path": "controller.stderr.raw",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 4876,
+      "path": "controller.stdout.raw",
+      "sha256": "b155a178f99c5ac113c0d648b727a02bf0ff427a326cd16c2400f4a2487d29fd"
+    },
+    {
+      "bytes": 7213,
+      "path": "diff.patch",
+      "sha256": "c92c90de97ee56ef4c7a1b2bc67d9e6e6fc47b5c4c2fd2bf9802444d09ea9edf"
+    },
+    {
+      "bytes": 2221,
+      "path": "native/container-plan.json",
+      "sha256": "d3ac1fa590490978b561ece042578f2bb9738d822f4e879d6179ac209a933ad6"
+    },
+    {
+      "bytes": 641,
+      "path": "native/control-proof.json",
+      "sha256": "431d4cc57020a47885e5bc8e0c1afa7892331a5e9cbbefe725e5d63619c63967"
+    },
+    {
+      "bytes": 1941,
+      "path": "native/execution.json",
+      "sha256": "9ad4772c88c581b47fc10012256b286b68fad1690322bec3758d0bdc81fd5fa0"
+    },
+    {
+      "bytes": 531,
+      "path": "native/invocation.json",
+      "sha256": "93ebeb60e36f553d977d294854a4b4a2a30f52874960150338909b854319a70c"
+    },
+    {
+      "bytes": 48,
+      "path": "native/process-metrics.json",
+      "sha256": "bf225fbe16fbb7db40291698ce9a3771e4d4335cda5a095de5c20a1924c83313"
+    },
+    {
+      "bytes": 52,
+      "path": "native/stderr.raw",
+      "sha256": "b68e00abe3b8d7ea5434220ca3dd8ef0a34b96a47317588dbdd53e7a5dc9e50f"
+    },
+    {
+      "bytes": 2496,
+      "path": "native/stdout.raw",
+      "sha256": "a5a59591acb0d6ba3d240945d77b0438f54c49e45b487ae4a2aef99fba5ab088"
+    },
+    {
+      "bytes": 0,
+      "path": "native/tool-ledger.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 425,
+      "path": "native/usage.json",
+      "sha256": "2ccedd9fa1fdb2b4dfe68811c023247820a03fe79c1e12ea635cb24abebc2fbf"
+    },
+    {
+      "bytes": 332,
+      "path": "process/observations.json",
+      "sha256": "a6f7eab21e7774a4b832325bd1c8bb2c5c1844693df9679b935577e87bdac7ad"
+    },
+    {
+      "bytes": 0,
+      "path": "process/tool-invocations.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2692,
+      "path": "result.json",
+      "sha256": "e640993b7ab0cf47f14aa3ecc1732f3bda29ee40c739c51887718fd42f0de574"
+    },
+    {
+      "bytes": 10283,
+      "path": "upstream-result.json",
+      "sha256": "aace91ccbb0bb7f574883a5e83cf553a093a10f073f643b9e796b214d2e40392"
+    },
+    {
+      "bytes": 479,
+      "path": "usage-normalized.json",
+      "sha256": "3e69a8346c11145f5f307d577afbb2205bba098119f7ea9e98f46d030bf5250e"
+    },
+    {
+      "bytes": 776,
+      "path": "workspace-final/in/db/migration.sql",
+      "sha256": "1e2276ddfd520818071d65c1b25e6764469c3d3bf0cbfefa7671361a709be36f"
+    },
+    {
+      "bytes": 937,
+      "path": "workspace-final/in/db/migration_policy.md",
+      "sha256": "e3638314798a2c7419e68baa7c1e52663ee752f513f1a025127a3a8ada6b5465"
+    },
+    {
+      "bytes": 2619,
+      "path": "workspace-final/in/db/migration_report.md",
+      "sha256": "d680e18df42c9e5929283f854ddd1756d8ac22ee30ea8b74b7a72d609cd43d8a"
+    },
+    {
+      "bytes": 1588,
+      "path": "workspace-final/in/db/postcheck.sql",
+      "sha256": "c65f382815e59f20361b8e7c85ed338ada5982289b41f070bab1a6995bca11bd"
+    },
+    {
+      "bytes": 1092,
+      "path": "workspace-final/in/db/preflight_report.md",
+      "sha256": "3fd38d6267d98e0ba7ffa088ebb2ffd89417fe61650d2a89a62c4590d36612cc"
+    },
+    {
+      "bytes": 455,
+      "path": "workspace-final/in/db/rollback.sql",
+      "sha256": "5b280dd144726798ef3327fa3de8011cfaf93725450d2d4078e67a3a6706569c"
+    },
+    {
+      "bytes": 964,
+      "path": "workspace-final/in/db/schema.sql",
+      "sha256": "3f097b5cdbd1e6a2522b6252e51a55f1e145cd4a3566c0bcaf71c492fc947a9a"
+    }
+  ],
+  "generated_at": "2026-08-31T23:30:56.463076Z",
+  "schema_version": 1
+}

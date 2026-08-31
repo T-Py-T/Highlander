@@ -1,0 +1,16 @@
+{
+  "api_calls": 20,
+  "available": true,
+  "cache_read_tokens": 198656,
+  "cache_write_tokens": 0,
+  "cost_status": "native_value_not_subscription_comparable",
+  "cost_usd": 0.0,
+  "cross_harness_comparability": "not comparable; native accounting semantics differ",
+  "input_tokens": 20717,
+  "models": [],
+  "output_tokens": 4498,
+  "providers": [],
+  "reasoning_tokens": 1165,
+  "source": "opencode_step_finish",
+  "total_tokens": 225036
+}

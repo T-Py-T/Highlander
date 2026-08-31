@@ -1,0 +1,166 @@
+[Highlander checks/tests] ⭐ Run Set up job
+[Highlander checks/tests] 🚀  Start image=docker.io/catthehacker/ubuntu:act-latest
+[Highlander checks/tests]   🐳  docker pull image=docker.io/catthehacker/ubuntu:act-latest platform=linux/amd64 username= forcePull=false
+[Highlander checks/tests]   🐳  docker create image=docker.io/catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="none"
+[Highlander checks/tests]   🐳  docker run image=docker.io/catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="none"
+[Highlander checks/tests]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[Highlander checks/tests]   ✅  Success - Set up job
+[Highlander checks/tests]   ☁  git clone 'https://github.com/actions/setup-python' # ref=a26af69be951a213d495a4c3e4e4022e16d87065
+[Highlander checks/tests] ⭐ Run Main Check out repository
+[Highlander checks/tests]   🐳  docker cp src=<RUNNER_ROOT>/. dst=<RUNNER_ROOT>
+[Highlander checks/tests]   ✅  Success - Main Check out repository [5.043301625s]
+[Highlander checks/tests] ⭐ Run Main Confirm local act Python
+[Highlander checks/tests]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[Highlander checks/tests]   | Python 3.12.3
+[Highlander checks/tests]   ✅  Success - Main Confirm local act Python [538.209666ms]
+[Highlander checks/tests] ⭐ Run Main Run Highlander unit tests
+[Highlander checks/tests]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/3] user= workdir=
+[Highlander checks/tests]   | .........sComplete the subscription login inside the disposable container, then exit.
+[Highlander checks/tests]   | ...................................s.........
+[Highlander checks/tests]   | ----------------------------------------------------------------------
+[Highlander checks/tests]   | Ran 55 tests in 42.277s
+[Highlander checks/tests]   |
+[Highlander checks/tests]   | OK (skipped=2)
+[Highlander checks/tests]   | Clean authentication seed created: omp-fresh (agent.db only is imported into Trials)
+[Highlander checks/tests]   ✅  Success - Main Run Highlander unit tests [44.216788208s]
+[Highlander checks/tests] ⭐ Run Main Validate MatchRunner source and example
+[Highlander checks/tests]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/4] user= workdir=
+[Highlander checks/tests]   | {
+[Highlander checks/tests]   |   "contenders": [
+[Highlander checks/tests]   |     {
+[Highlander checks/tests]   |       "adapter": "fake",
+[Highlander checks/tests]   |       "capability": {
+[Highlander checks/tests]   |         "control_proof": {
+[Highlander checks/tests]   |           "configured": true,
+[Highlander checks/tests]   |           "provider_wire": true,
+[Highlander checks/tests]   |           "runtime": true
+[Highlander checks/tests]   |         },
+[Highlander checks/tests]   |         "execution_implemented": true,
+[Highlander checks/tests]   |         "execution_ready": true,
+[Highlander checks/tests]   |         "harness": {
+[Highlander checks/tests]   |           "name": "fake",
+[Highlander checks/tests]   |           "version": "1"
+[Highlander checks/tests]   |         },
+[Highlander checks/tests]   |         "limitations": [
+[Highlander checks/tests]   |           "deterministic test double; not a coding harness"
+[Highlander checks/tests]   |         ],
+[Highlander checks/tests]   |         "mcp_servers": [],
+[Highlander checks/tests]   |         "memory": {
+[Highlander checks/tests]   |           "mode": "none",
+[Highlander checks/tests]   |           "scope": "trial",
+[Highlander checks/tests]   |           "seeded": false
+[Highlander checks/tests]   |         },
+[Highlander checks/tests]   |         "permissions": "fixture-only",
+[Highlander checks/tests]   |         "prompt_transport": "exact-bytes",
+[Highlander checks/tests]   |         "protocol": "highlander-fake-v1",
+[Highlander checks/tests]   |         "subagents": {
+[Highlander checks/tests]   |           "enabled": false
+[Highlander checks/tests]   |         },
+[Highlander checks/tests]   |         "tools": [
+[Highlander checks/tests]   |           "read",
+[Highlander checks/tests]   |           "edit",
+[Highlander checks/tests]   |           "test"
+[Highlander checks/tests]   |         ]
+[Highlander checks/tests]   |       },
+[Highlander checks/tests]   |       "id": "fake-success"
+[Highlander checks/tests]   |     },
+[Highlander checks/tests]   |     {
+[Highlander checks/tests]   |       "adapter": "fake",
+[Highlander checks/tests]   |       "capability": {
+[Highlander checks/tests]   |         "control_proof": {
+[Highlander checks/tests]   |           "configured": true,
+[Highlander checks/tests]   |           "provider_wire": true,
+[Highlander checks/tests]   |           "runtime": true
+[Highlander checks/tests]   |         },
+[Highlander checks/tests]   |         "execution_implemented": true,
+[Highlander checks/tests]   |         "execution_ready": true,
+[Highlander checks/tests]   |         "harness": {
+[Highlander checks/tests]   |           "name": "fake",
+[Highlander checks/tests]   |           "version": "1"
+[Highlander checks/tests]   |         },
+[Highlander checks/tests]   |         "limitations": [
+[Highlander checks/tests]   |           "deterministic test double; not a coding harness"
+[Highlander checks/tests]   |         ],
+[Highlander checks/tests]   |         "mcp_servers": [],
+[Highlander checks/tests]   |         "memory": {
+[Highlander checks/tests]   |           "mode": "none",
+[Highlander checks/tests]   |           "scope": "trial",
+[Highlander checks/tests]   |           "seeded": false
+[Highlander checks/tests]   |         },
+[Highlander checks/tests]   |         "permissions": "fixture-only",
+[Highlander checks/tests]   |         "prompt_transport": "exact-bytes",
+[Highlander checks/tests]   |         "protocol": "highlander-fake-v1",
+[Highlander checks/tests]   |         "subagents": {
+[Highlander checks/tests]   |           "enabled": false
+[Highlander checks/tests]   |         },
+[Highlander checks/tests]   |         "tools": [
+[Highlander checks/tests]   |           "read",
+[Highlander checks/tests]   |           "edit",
+[Highlander checks/tests]   |           "test"
+[Highlander checks/tests]   |         ]
+[Highlander checks/tests]   |       },
+[Highlander checks/tests]   |       "id": "fake-harness-failure"
+[Highlander checks/tests]   |     }
+[Highlander checks/tests]   |   ],
+[Highlander checks/tests]   |   "match_id": "fake-t001-concurrency",
+[Highlander checks/tests]   |   "notes": [
+[Highlander checks/tests]   |     "No authentication, configuration, worktree, pane, or model call was changed.",
+[Highlander checks/tests]   |     "provider/wire proof is required for a strict result; weaker proof is provisional."
+[Highlander checks/tests]   |   ],
+[Highlander checks/tests]   |   "ready_for_execution": true,
+[Highlander checks/tests]   |   "session": {
+[Highlander checks/tests]   |     "adapter": "headless",
+[Highlander checks/tests]   |     "capability": {
+[Highlander checks/tests]   |       "adapter": "headless",
+[Highlander checks/tests]   |       "available": true,
+[Highlander checks/tests]   |       "structured_completion": "worker outcome files",
+[Highlander checks/tests]   |       "visible": false
+[Highlander checks/tests]   |     },
+[Highlander checks/tests]   |     "concurrency": "all-ready filesystem gate"
+[Highlander checks/tests]   |   }
+[Highlander checks/tests]   | }
+[Highlander checks/tests]   ✅  Success - Main Validate MatchRunner source and example [5.529904917s]
+[Highlander checks/tests] ⭐ Run Main Run fixture tests
+[Highlander checks/tests]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/5] user= workdir=
+[Highlander checks/tests]   | ..
+[Highlander checks/tests]   | ----------------------------------------------------------------------
+[Highlander checks/tests]   | Ran 2 tests in 0.002s
+[Highlander checks/tests]   |
+[Highlander checks/tests]   | OK
+[Highlander checks/tests]   ✅  Success - Main Run fixture tests [730.473959ms]
+[Highlander checks/tests] ⭐ Run Main Validate runner syntax
+[Highlander checks/tests]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/6] user= workdir=
+[Highlander checks/tests]   ✅  Success - Main Validate runner syntax [333.923667ms]
+[Highlander checks/tests] ⭐ Run Main Verify retained evidence
+[Highlander checks/tests]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/7] user= workdir=
+[Highlander checks/tests]   | {
+[Highlander checks/tests]   |   "artifact_count": 48,
+[Highlander checks/tests]   |   "bundle": "<RUNNER_ROOT>/results/fake-t002-protocol-r1",
+[Highlander checks/tests]   |   "manifest_sha256": "f7e625941503db7bd42cc44a9afb5993acef428af2916d8eb49c00b6d98eabed",
+[Highlander checks/tests]   |   "status": "verified"
+[Highlander checks/tests]   | }
+[Highlander checks/tests]   | {
+[Highlander checks/tests]   |   "artifact_count": 314,
+[Highlander checks/tests]   |   "bundle": "<RUNNER_ROOT>/results/hb-devhard-043-gpt54-medium-host4-r1",
+[Highlander checks/tests]   |   "manifest_sha256": "86f73b81ede425f3fecf910b3bf3f8b2a9eacf0e42270fc1f3e85e3323c48217",
+[Highlander checks/tests]   |   "status": "verified"
+[Highlander checks/tests]   | }
+[Highlander checks/tests]   | {
+[Highlander checks/tests]   |   "artifact_count": 4821,
+[Highlander checks/tests]   |   "bundle": "<RUNNER_ROOT>/results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4",
+[Highlander checks/tests]   |   "manifest_sha256": "3c7e389a1df3339881083bab87de1a2374b7b0cfa8e32cf782575abea512c131",
+[Highlander checks/tests]   |   "season_status": "provisional",
+[Highlander checks/tests]   |   "status": "verified"
+[Highlander checks/tests]   | }
+[Highlander checks/tests]   | {
+[Highlander checks/tests]   |   "artifact_count": 6090,
+[Highlander checks/tests]   |   "bundle": "<RUNNER_ROOT>/results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1",
+[Highlander checks/tests]   |   "manifest_sha256": "a77fb20926e1134fa3d54167bb8630c1516c2a6c2d4599e3ab6c8787f7b3c1eb",
+[Highlander checks/tests]   |   "season_status": "provisional",
+[Highlander checks/tests]   |   "status": "verified"
+[Highlander checks/tests]   | }
+[Highlander checks/tests]   ✅  Success - Main Verify retained evidence [19.849563125s]
+[Highlander checks/tests] ⭐ Run Complete job
+[Highlander checks/tests] Cleaning up container for job tests
+[Highlander checks/tests]   ✅  Success - Complete job
+[Highlander checks/tests] 🏁  Job succeeded

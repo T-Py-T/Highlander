@@ -8,56 +8,77 @@ This is a harness experiment, not a model leaderboard. In the primary lane, ever
 
 ## Results
 
-The first retained real pilot ran official HarnessBench task 043 three times for
-each available harness with GPT-5.4 at medium reasoning. The image is sorted by
-mean outcome for readability; one task is not enough evidence to declare a
-winner or replace the daily stack.
+The primary public baseline holds the configured GPT-5.4 route, medium reasoning, nine unchanged
+official HarnessBench coding/DevOps tasks, three attempts, evaluator bytes,
+limits, permissions, and disposable clean-core configuration fixed. Only the
+harness changes. Personal plugins, extensions, rules, memory, MCP servers, and
+operator steering are absent.
 
-![HarnessBench task 043 repeated pilot results](docs/assets/harnessbench-task-043-results.svg)
+![GPT-5.4 hard coding and DevOps harness results](docs/assets/gpt54-hard-season-results.svg)
 
-See the [complete result report](results/hb-devhard-043-gpt54-medium-host4-r1/report.md)
-for per-Trial outcomes, durations, variance, tool observations, and the
-314-artifact verification manifest.
+| Rank | Harness | Overall outcome | Attempt σ | Current valid slots |
+|---:|---|---:|---:|---:|
+| 1 | Codex CLI 0.147.0 | 0.9299 | 0.0880 | 27/27 |
+| 2 | OpenCode 1.18.15 | 0.9244 | 0.0896 | 27/27 |
+| 3 | OMP 17.2.10 | 0.8968 | 0.1528 | 27/27 |
+| 4 | Hermes 0.20.0 | 0.7533 | 0.2943 | 27/27 |
+| 5 | NanoBot 0.1.5.post3 | 0.1801 | 0.0775 | 27/27 |
+| — | Atomic 0.9.15 | 0.9158 valid-only | 0.0985 | 26/27; unranked |
 
-The retained [T002 quota-free protocol bundle](results/fake-t002-protocol-r1/README.md)
-ties 48 sanitized artifacts to MatchRunner commit `383b7a7`, proves the
-all-ready release and parent-owned qualification path with two deterministic
-fake Contenders, and records zero model calls and zero cost. Its claim boundary
-is intentionally narrow: it validates the evidence protocol, not real-harness
-coding performance.
+This is an observed baseline, not a universal harness winner claim. Codex's
+0.0055 lead over OpenCode is smaller than either harness's run-to-run
+dispersion. OMP remains competitive, but one valid 0.262 migration result makes
+its typical outcome less stable. Atomic produced a strong valid-only aggregate,
+but its first CLI-parser attempt reached the frozen 1,200-second limit twice;
+that slot is retained as invalid, never changed to zero, and Atomic is not
+ranked. NanoBot is the version-pinned historical temporal proxy, not an exact
+recreation of the original HarnessBench environment.
 
-Verify the complete bundle locally:
+The [full GPT-5.4 leaderboard](results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1/leaderboard.md)
+contains every task mean and attempt range. The public bundle also retains all
+200 ledger rows—162 original slots and 38 explicitly linked infrastructure
+replacement attempts—plus native transcripts, tool ledgers, diffs, final
+workspaces, evaluator output, usage observations, cleanup proof, and 6,090
+manifested artifacts. Five harnesses are complete; the latest fixed matrix is
+161 valid slots and one Atomic timeout, with zero operator interventions.
+
+### Efficiency observations
+
+Native token and cost fields are preserved per Trial but are not folded into
+correctness. Different harnesses count cached context and calls differently, so
+these values are useful within a harness and directional across harnesses, not
+provider-grade billing comparisons.
+
+| Harness | Mean native tokens / valid Trial | Token coverage | Native cost signal / Trial |
+|---|---:|---:|---:|
+| Codex CLI | 254,056 | 27/27 | unavailable |
+| OpenCode | 204,098 | 27/27 | `$0` subscription field; not a cost claim |
+| OMP | 361,778 | 27/27 | `$0.269` harness estimate |
+| Hermes | 249,679 | 20/27 numeric | included/no cost source |
+| NanoBot | unavailable | 0/27 | unavailable |
+| Atomic | 341,570 | 26/26 valid | `$0.245` harness estimate |
+
+The separate [GPT-5.6 Luna successor season](results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4/leaderboard.md)
+uses the same task matrix but remains its own temporal/model stratum: OMP
+0.9026, Hermes 0.8960, OpenCode 0.8941, NanoBot 0.2673, and Codex 0.1801 were
+complete; Atomic was 13/27 and unranked. Do not pool those scores with GPT-5.4
+or read the cross-season delta as a model-quality measurement because the runs
+occurred at different times and provider-wire identity was not exposed by every
+harness.
+
+Reproduce or verify the seasons with the [runbook](docs/SEASON-RUNBOOK.md):
 
 ```text
-python3 tools/evidence-bundle.py verify results/fake-t002-protocol-r1
+python3 tools/hb-evidence.py verify-season \
+  results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1
+python3 tools/hb-evidence.py verify-season \
+  results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4
 ```
 
-The next evidence gate is a nine-task hard coding/DevOps season with three
-attempts per task and six Harnesses. Its leaderboard shows every task score and
-ranks complete Harnesses by the mean of their per-task means—the result to
-expect on a typical run. Best-of-three remains visible as a separate maximum
-capability view. Highlander does not claim a real-harness winner from the
-task-043 pilot.
-
-That season is now executable through the pinned upstream HarnessBench runner
-and disposable Podman workers. Its immutable protocol schedules 162 scored
-calls plus six unscored route qualifications. See the
-[reproduction runbook](docs/SEASON-RUNBOOK.md). No multi-task numbers are
-published until every route is qualified and the redacted evidence bundle
-passes local verification.
-
-Current control and challengers:
-
-| Lane | Stack | Experimental question |
-|---|---|---|
-| Control | Ghostty → Herdr → OMP | What does the current harness produce with the fixed model? |
-| Control-plus | Ghostty → Herdr → OMP → optional CCGram | Does phone supervision improve continuity without changing the coding runtime? |
-| Challenger | OpenCode | Does a different coding runtime improve tool use, permissions, or recovery for that same model? |
-| Challenger | Atomic | Does Atomic's native coding toolset and subscription route improve raw task outcomes with the same model? |
-| Challenger | Codex CLI | How much leverage comes from the first-party coding runtime with the same model and clean controls? |
-| Challenger | Ghostty → Herdr → Pi + Firstmate | Does a Pi-based factory layer improve planning, crew coordination, and delivery with the same model? |
-| Challenger | Hermes Agent | Does persistence and remote autonomy reduce supervision for that same model? |
-| Conditional | Goose → ACP → native Claude/Codex/Pi | Does subscription reuse add harness leverage without changing the model comparison? |
+The earlier [task-043 repeated pilot](results/hb-devhard-043-gpt54-medium-host4-r1/report.md)
+and [T002 quota-free protocol bundle](results/fake-t002-protocol-r1/README.md)
+remain as calibration and protocol evidence. Neither supersedes the complete
+nine-task baseline above.
 
 ## Software factory
 

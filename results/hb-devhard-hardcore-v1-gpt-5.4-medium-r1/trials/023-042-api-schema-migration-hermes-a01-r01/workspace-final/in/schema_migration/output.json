@@ -1,0 +1,116 @@
+[
+  {
+    "buyer": {
+      "displayName": "Mina Park",
+      "id": "C-7"
+    },
+    "lineItems": [
+      {
+        "quantity": 3,
+        "sku": "PEN",
+        "unitPriceCents": 129
+      }
+    ],
+    "metadata": {
+      "source": "legacy-v1",
+      "unknownFields": {
+        "campaign": "spring"
+      }
+    },
+    "orderId": "A100",
+    "shipping": {
+      "address": {
+        "country": "US",
+        "postalCode": "02139"
+      },
+      "method": "standard"
+    }
+  },
+  {
+    "buyer": {
+      "displayName": "Ava",
+      "id": "C-9"
+    },
+    "lineItems": [
+      {
+        "quantity": 2,
+        "sku": "INK",
+        "unitPriceCents": 250
+      },
+      {
+        "quantity": 1,
+        "sku": "PAD",
+        "unitPriceCents": 99
+      }
+    ],
+    "metadata": {
+      "source": "legacy-v1",
+      "unknownFields": {
+        "gift_note": "front desk"
+      }
+    },
+    "orderId": "C300",
+    "shipping": {
+      "address": {
+        "country": "CA",
+        "postalCode": "H2X"
+      },
+      "method": "standard"
+    }
+  },
+  {
+    "buyer": {
+      "displayName": "Noor",
+      "id": "C-10"
+    },
+    "lineItems": [
+      {
+        "quantity": 1,
+        "sku": "BAG",
+        "unitPriceCents": 1200
+      }
+    ],
+    "metadata": {
+      "source": "legacy-v1.1",
+      "unknownFields": {
+        "channel": "kiosk",
+        "loyalty_id": "L-88"
+      }
+    },
+    "orderId": "D400",
+    "shipping": {
+      "address": {
+        "country": "GB",
+        "postalCode": "SW1A"
+      },
+      "method": "express"
+    }
+  },
+  {
+    "buyer": {
+      "displayName": "Iris",
+      "id": "C-11"
+    },
+    "lineItems": [
+      {
+        "quantity": 4,
+        "sku": "MUG",
+        "unitPriceCents": 325
+      }
+    ],
+    "metadata": {
+      "source": "legacy-v1.2",
+      "unknownFields": {
+        "routing_tag": "beta"
+      }
+    },
+    "orderId": "E500",
+    "shipping": {
+      "address": {
+        "country": "US",
+        "postalCode": "94105"
+      },
+      "method": "standard"
+    }
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "hermes",
+    "--model",
+    "gpt-5.4",
+    "--provider",
+    "openai-codex",
+    "--reasoning",
+    "medium",
+    "--yolo",
+    "--safe-mode",
+    "--usage-file",
+    "/workspace/.highlander-usage.json",
+    "--oneshot",
+    "<TASK_BYTES_UTF8>"
+  ],
+  "credential_binding": {
+    "seed_profile": "hermes-subscription",
+    "value_retained": false
+  },
+  "cwd": "/workspace",
+  "harness_id": "hermes",
+  "prompt_sha256": "d79dad30ac91977c1996c8aad7fcb1f15d29e791af2bb09bfa75f450fc62f3e4",
+  "schema_version": 1
+}

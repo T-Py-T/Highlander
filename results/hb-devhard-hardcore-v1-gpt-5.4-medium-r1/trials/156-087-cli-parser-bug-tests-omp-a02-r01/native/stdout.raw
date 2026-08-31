@@ -1,0 +1,13 @@
+{"type":"session","version":3,"id":"01a05920-a01b-7000-afeb-f98faf0d2903","timestamp":"2026-08-31T18:41:45.499Z","cwd":"/workspace"}
+550700 | ` + `Use /login, set an API key environment variable, or create ${Z5()}
+550701 | 
+550702 | ` + "Then use /model to select a model.");
+550703 |       }
+550704 |       const w = await this.#H.getApiKey(this.model, this.sessionId);
+550705 |         throw new Error(`No API key found for ${this.model.provider}.
+                       ^
+error: No API key found for openai-codex.
+
+Use /login, set an API key environment variable, or create /home/highlander/runtime/.omp/agent/agent.db
+      at #l3 (/$bunfs/root/packages/coding-agent/src/cli.js:550705:15)
+

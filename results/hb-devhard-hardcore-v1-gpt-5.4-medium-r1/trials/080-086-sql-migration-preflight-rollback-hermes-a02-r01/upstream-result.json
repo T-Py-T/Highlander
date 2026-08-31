@@ -1,0 +1,215 @@
+{
+  "task_id": "086-sql-migration-preflight-rollback",
+  "model_id": "hermes",
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "mode": "live",
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/080-086-sql-migration-preflight-rollback-hermes-a02-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.4-20260831-125139-f2deaff0",
+  "workspace": "<SOURCE_EVIDENCE_ROOT>/trials/080-086-sql-migration-preflight-rollback-hermes-a02-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.4-20260831-125139-f2deaff0/workspace",
+  "session_id": "highlander-hermes-086-sql-migration-preflight-rollback-a2-086-sql-migration-preflight-rollback-d9920852",
+  "prompt_file": "<SOURCE_EVIDENCE_ROOT>/trials/080-086-sql-migration-preflight-rollback-hermes-a02-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.4-20260831-125139-f2deaff0/prompt-round1.txt",
+  "adapter_result": {
+    "ok": true,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "--protocol",
+      "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+      "--harness",
+      "hermes",
+      "--workspace",
+      "<SOURCE_EVIDENCE_ROOT>/trials/080-086-sql-migration-preflight-rollback-hermes-a02-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.4-20260831-125139-f2deaff0/workspace",
+      "--prompt-file",
+      "<SOURCE_EVIDENCE_ROOT>/trials/080-086-sql-migration-preflight-rollback-hermes-a02-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.4-20260831-125139-f2deaff0/prompt-round1.txt",
+      "--evidence-dir",
+      "<SOURCE_EVIDENCE_ROOT>/trials/080-086-sql-migration-preflight-rollback-hermes-a02-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.4-20260831-125139-f2deaff0/highlander-native",
+      "--trial-id",
+      "080-086-sql-migration-preflight-rollback-hermes-a02-r01"
+    ],
+    "stdout": "{\n  \"proxy_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/080-086-sql-migration-preflight-rollback-hermes-a02-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.4-20260831-125139-f2deaff0/usage-proxy\",\n  \"rounds\": [],\n  \"totals\": {},\n  \"error\": \"missing responses/\"\n}",
+    "stderr": "",
+    "metadata": {
+      "returncode": 0
+    }
+  },
+  "adapter_results": [
+    {
+      "ok": true,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "--protocol",
+        "<SOURCE_EVIDENCE_ROOT>/protocol.json",
+        "--harness",
+        "hermes",
+        "--workspace",
+        "<SOURCE_EVIDENCE_ROOT>/trials/080-086-sql-migration-preflight-rollback-hermes-a02-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.4-20260831-125139-f2deaff0/workspace",
+        "--prompt-file",
+        "<SOURCE_EVIDENCE_ROOT>/trials/080-086-sql-migration-preflight-rollback-hermes-a02-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.4-20260831-125139-f2deaff0/prompt-round1.txt",
+        "--evidence-dir",
+        "<SOURCE_EVIDENCE_ROOT>/trials/080-086-sql-migration-preflight-rollback-hermes-a02-r01/hb-work/hermes/gpt-5.4/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.4-20260831-125139-f2deaff0/highlander-native",
+        "--trial-id",
+        "080-086-sql-migration-preflight-rollback-hermes-a02-r01"
+      ],
+      "stdout": "Done.\n\nI repaired the migration package in the accessible workspace mirror at:\n- /workspace/in/billingdb/migration.sql\n- /workspace/in/billingdb/preflight_report.md\n- /workspace/in/billingdb/rollback.sql\n- /workspace/in/billingdb/postcheck.sql\n- /workspace/in/billingdb/migration_report.md\n\nNote: the exact <HOME>/... path you supplied does not exist in this runtime; the corresponding files were present under /workspace/in/billingdb, so I edited that package there.\n\nWhat changed\n- migration.sql\n  - wrapped in explicit transaction: BEGIN IMMEDIATE ... COMMIT\n  - restores PRAGMA foreign_keys = ON after migration\n  - adds invoices.status as TEXT NOT NULL DEFAULT 'open'\n  - preserves invoice created_at values\n  - preserves orphan payments by moving them into payment_orphans before rebuilding payments\n  - rebuilds payments with a real foreign key to invoices(id)\n  - uses INSERT OR IGNORE for payment_orphans so reruns do not duplicate p4\n\n- preflight_report.md\n  - documents initial counts and the detected orphan payment p4\n\n- rollback.sql\n  - explicit transaction\n  - restores old table shapes:\n    - invoices(id, customer_id, total_cents, created_at)\n    - payments(id, invoice_id, amount_cents, created_at)\n  - merges preserved orphan rows back into payments\n  - removes payment_orphans\n  - restores PRAGMA foreign_keys = ON\n\n- postcheck.sql\n  - checks counts\n  - verifies p4 preservation\n  - verifies non-null/default invoice status behavior\n  - checks for invalid payment references\n  - runs PRAGMA foreign_key_check\n\n- migration_report.md\n  - summarizes repairs and includes actual validation results\n\nValidation I actually ran\nUsing Python’s SQLite engine, I:\n1. loaded schema.sql\n2. ran migration.sql twice\n3. ran postcheck.sql\n4. ran rollback.sql\n5. ran rollback.sql a second time\n\nObserved results\n- After migration.sql twice:\n  - invoices = 3\n  - payments = 3\n  - payment_orphans = 1\n  - p4 preserved exactly once in payment_orphans\n  - invoice_status_null_count = 0\n  - invoice_status_open_count = 3\n  - invalid_payment_references = 0\n  - PRAGMA foreign_key_check returned no rows\n  - inv1 created_at remained 2024-01-03T10:00:00Z\n\n- After rollback.sql:\n  - invoices shape restored to old 4-column form\n  - payments shape restored to old 4-column form\n  - payments = 4\n  - p4 restored to payments\n  - payment_orphans removed\n  - second rollback run completed without error\n\nIf you want, I can also print the final contents of any of the repaired files.\n",
+      "stderr": "",
+      "metadata": {
+        "returncode": 0
+      }
+    }
+  ],
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-hermes-086-sql-migration-preflight-rollback-a2-086-sql-migration-preflight-rollback-d9920852"
+  },
+  "oracle_result": {
+    "task": "086-sql-migration-preflight-rollback",
+    "outcome_score": 0.9945,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "migration_executes",
+        "pass": true,
+        "weight": 0.15,
+        "detail": null
+      },
+      {
+        "id": "data_preservation",
+        "pass": true,
+        "weight": 0.25,
+        "detail": {
+          "invoices": [
+            [
+              "inv1",
+              "cust-a",
+              1200,
+              "2024-01-03T10:00:00Z",
+              "open"
+            ],
+            [
+              "inv2",
+              "cust-b",
+              5000,
+              "2024-01-04T10:00:00Z",
+              "open"
+            ],
+            [
+              "inv3",
+              "cust-a",
+              800,
+              "2024-01-05T10:00:00Z",
+              "open"
+            ]
+          ],
+          "payments": [
+            [
+              "p1",
+              "inv1",
+              1200,
+              "2024-01-06T10:00:00Z"
+            ],
+            [
+              "p2",
+              "inv2",
+              2500,
+              "2024-01-06T11:00:00Z"
+            ],
+            [
+              "p3",
+              "inv2",
+              2500,
+              "2024-01-06T12:00:00Z"
+            ]
+          ],
+          "orphans": [
+            [
+              "p4",
+              "missing-invoice",
+              700,
+              "2024-01-07T10:00:00Z",
+              "missing_invoice_reference"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "constraints",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "status_not_null": true,
+          "fk_exists": true,
+          "bad_insert_rejected": true
+        }
+      },
+      {
+        "id": "idempotent",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "sql_quality",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "rollback_executes",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "postcheck_sql",
+        "pass": true,
+        "weight": 0.06,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "documentation",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 0.89
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.9945,
+    "oracle_outcome_score": 0.9945,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9945,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "runtime_state": {},
+  "elapsed_sec": 222.431
+}

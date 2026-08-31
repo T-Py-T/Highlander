@@ -1,0 +1,143 @@
+--- a/in/flakyqueue/.pytest_cache/.gitignore
++++ b/in/flakyqueue/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
++++ b/in/flakyqueue/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/in/flakyqueue/.pytest_cache/README.md
++++ b/in/flakyqueue/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/in/flakyqueue/.pytest_cache/v/cache/nodeids
++++ b/in/flakyqueue/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,6 @@
++[
++  "tests/test_retry_order.py::test_retry_jitter_uses_injected_random_source",
++  "tests/test_retry_order.py::test_retry_task_is_not_ready_until_clock_reaches_run_at",
++  "tests/test_scheduler.py::test_add_uses_injected_clock",
++  "tests/test_scheduler.py::test_ready_order_is_stable_for_equal_priority"
++]--- a/in/flakyqueue/.pytest_cache/v/cache/stepwise
++++ b/in/flakyqueue/.pytest_cache/v/cache/stepwise
+@@ -0,0 +1 @@
++[]Binary files a/in/flakyqueue/.venv/bin/python and b/in/flakyqueue/.venv/bin/python differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9)
+Binary files a/in/flakyqueue/.venv/bin/python3 and b/in/flakyqueue/.venv/bin/python3 differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9)
+Binary files a/in/flakyqueue/.venv/bin/python3.11 and b/in/flakyqueue/.venv/bin/python3.11 differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9)
+--- a/in/flakyqueue/.venv/pyvenv.cfg
++++ b/in/flakyqueue/.venv/pyvenv.cfg
+@@ -0,0 +1,5 @@
++home = /usr/bin
++include-system-site-packages = false
++version = 3.11.2
++executable = /usr/bin/python3.11
++command = /usr/bin/python3 -m venv /workspace/in/flakyqueue/.venv
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/__init__.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 292a40669ea9d7a8a8c336e7bcfd754c34bcd56b9ae379d710f41ebd146ccbb0)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/clock.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b298812fdcc1108f46387e49043876ee02b41f5d617f1c8df90878647165fec5)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/scheduler.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 1085d2853974cdc6d0c749960681800b26c21ec779130864beda685c88af82bc)
+Binary files a/in/flakyqueue/flakyqueue/__pycache__/store.cpython-311.pyc and b/in/flakyqueue/flakyqueue/__pycache__/store.cpython-311.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 94253b99eab78e44143493ffdd42ab0a941f7f8f27da88df5029e98ceb1540e8)
+--- a/in/flakyqueue/flakyqueue/scheduler.py
++++ b/in/flakyqueue/flakyqueue/scheduler.py
+@@ -1,7 +1,6 @@
+ from __future__ import annotations
+ 
+ import random
+-import time
+ from dataclasses import dataclass, replace
+ 
+ from flakyqueue.clock import SystemClock
+@@ -21,21 +20,25 @@
+     def __init__(self, clock=None, store=None, random_source=None) -> None:
+         self.clock = clock or SystemClock()
+         self.store = store or MemoryStore()
+-        self.random_source = random_source
++        self.random_source = random_source or random
+ 
+     def add(self, task_id: str, priority: int) -> Task:
+-        task = Task(id=task_id, priority=priority, created_at=time.time(), run_at=time.time())
++        now = self.clock.now()
++        task = Task(id=task_id, priority=priority, created_at=now, run_at=now)
+         self.store.save(task)
+         return task
+ 
+     def ready(self):
+-        now = time.time()
++        now = self.clock.now()
+         items = [task for task in self.store.all() if task.run_at <= now]
+-        random.shuffle(items)
+-        return sorted(items, key=lambda task: task.priority, reverse=True)
++        return sorted(items, key=lambda task: (-task.priority, task.run_at, task.id))
+ 
+     def schedule_retry(self, task: Task, base_delay: float = 5.0) -> Task:
+-        jitter = random.random()
+-        updated = replace(task, attempts=task.attempts + 1, run_at=time.time() + base_delay + jitter)
++        jitter = self.random_source.random()
++        updated = replace(
++            task,
++            attempts=task.attempts + 1,
++            run_at=self.clock.now() + base_delay + jitter,
++        )
+         self.store.save(updated)
+         return updated
+Binary files a/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-311-pytest-9.1.1.pyc and b/in/flakyqueue/tests/__pycache__/test_retry_order.cpython-311-pytest-9.1.1.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 5022725f89bfccc317e383c9e097f53f3fe9051c4ce02e357080145fd9b21e96)
+Binary files a/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-311-pytest-9.1.1.pyc and b/in/flakyqueue/tests/__pycache__/test_scheduler.cpython-311-pytest-9.1.1.pyc differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> 29ce833f2ba3fc571365837cbde7c3be550faaa87a052ac0ecf2792eae46475d)
+--- a/out/root_cause.md
++++ b/out/root_cause.md
+@@ -0,0 +1,46 @@
++Flaky behavior
++
++The pytest failures came from production nondeterminism in `Scheduler`, not from unstable tests. The symptoms were:
++
++- `add()` ignored the injected clock and stamped tasks with wall-clock time.
++- `ready()` ignored the injected clock and randomized ready-task order on every call.
++- `schedule_retry()` ignored the injected random source and wall clock, so retry `run_at` values varied by environment and timing.
++
++Root cause
++
++`flakyqueue/scheduler.py` accepted `clock` and `random_source` dependencies but still called the global `time.time()`, `random.random()`, and `random.shuffle()` functions directly. That broke determinism under test and in any production usage that injects a fake or controlled clock/random source.
++
++The ordering bug was specifically caused by shuffling all ready tasks before sorting only by priority. For equal-priority tasks, the shuffle outcome leaked into the final result, so repeated `ready()` calls could return different orders for the same underlying queue state.
++
++Fix
++
++I changed the implementation to:
++
++- use `self.clock.now()` in `add()`, `ready()`, and `schedule_retry()`
++- default `random_source` to the module-level `random` object when none is injected
++- use `self.random_source.random()` for retry jitter
++- remove shuffle-based ordering and sort ready tasks deterministically by `(-priority, run_at, id)`
++
++This preserves retry jitter while making it deterministic whenever a deterministic random source is injected.
++
++Verification
++
++I ran:
++
++- `python3 -m pytest tests`
++
++Result:
++
++- `4 passed in 0.02s`
++
++I also ran a direct Python check against the patched scheduler to confirm:
++
++- equal-priority tasks return in stable order: `['task-c', 'task-a', 'task-b']`
++- injected retry jitter is honored exactly: `run_at == 1010.25`
++- a retried task does not become ready until the injected clock reaches its scheduled `run_at`
++
++Note on output path
++
++The requested host path under `<HOME>/.../workspace/out/root_cause.md` is not writable from this container because `/Users` is mounted read-only here. I wrote this report to the mounted workspace output path instead:
++
++- `/workspace/out/root_cause.md`

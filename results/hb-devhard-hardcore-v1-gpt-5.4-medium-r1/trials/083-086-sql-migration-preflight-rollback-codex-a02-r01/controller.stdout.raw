@@ -1,0 +1,161 @@
+[harnessbench] run-task 086-sql-migration-preflight-rollback (harness=codex, mode=live) ...
+[harnessbench] run-task 086-sql-migration-preflight-rollback finished adapter_ok=True elapsed=164.833s
+{
+  "task_id": "086-sql-migration-preflight-rollback",
+  "elapsed_sec": 164.833,
+  "api_model_slug": "unknown-api",
+  "api_model_label": "",
+  "usage_summary": {
+    "available": false,
+    "reason": "adapter metadata has no usage root",
+    "session_id": "highlander-codex-086-sql-migration-preflight-rollback-a2-086-sql-migration-preflight-rollback-2b9d276a"
+  },
+  "oracle_result": {
+    "task": "086-sql-migration-preflight-rollback",
+    "outcome_score": 0.9944,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "migration_executes",
+        "pass": true,
+        "weight": 0.15,
+        "detail": null
+      },
+      {
+        "id": "data_preservation",
+        "pass": true,
+        "weight": 0.25,
+        "detail": {
+          "invoices": [
+            [
+              "inv1",
+              "cust-a",
+              1200,
+              "2024-01-03T10:00:00Z",
+              "open"
+            ],
+            [
+              "inv2",
+              "cust-b",
+              5000,
+              "2024-01-04T10:00:00Z",
+              "open"
+            ],
+            [
+              "inv3",
+              "cust-a",
+              800,
+              "2024-01-05T10:00:00Z",
+              "open"
+            ]
+          ],
+          "payments": [
+            [
+              "p1",
+              "inv1",
+              1200,
+              "2024-01-06T10:00:00Z"
+            ],
+            [
+              "p2",
+              "inv2",
+              2500,
+              "2024-01-06T11:00:00Z"
+            ],
+            [
+              "p3",
+              "inv2",
+              2500,
+              "2024-01-06T12:00:00Z"
+            ]
+          ],
+          "orphans": [
+            [
+              "p4",
+              "missing-invoice",
+              700,
+              "2024-01-07T10:00:00Z",
+              "missing invoice during migration"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "constraints",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "status_not_null": true,
+          "fk_exists": true,
+          "bad_insert_rejected": true
+        }
+      },
+      {
+        "id": "idempotent",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "sql_quality",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "rollback_executes",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "postcheck_sql",
+        "pass": true,
+        "weight": 0.06,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "documentation",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 0.8875
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": null,
+    "source_response_file": null,
+    "proxy_trace_error": "missing responses/",
+    "rubric_prompt_source": null,
+    "rubric_model": null,
+    "rubric": {
+      "skipped": true,
+      "reason": "HARNESSBENCH_SKIP_PROCESS_GRADE"
+    },
+    "process_score": null,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.9944,
+    "oracle_outcome_score": 0.9944,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9944,
+    "notes": "process skipped by env; security=1; oracle quality LLM already in outcome blend"
+  },
+  "sandbox": "<SOURCE_EVIDENCE_ROOT>/trials/083-086-sql-migration-preflight-rollback-codex-a02-r01/hb-work/codex/gpt-5.4/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.4-20260831-125837-a933cf61"
+}

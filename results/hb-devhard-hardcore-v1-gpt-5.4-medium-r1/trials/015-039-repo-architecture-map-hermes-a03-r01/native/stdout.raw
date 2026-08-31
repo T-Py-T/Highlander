@@ -1,0 +1,31 @@
+Done.
+
+Created and validated:
+- /workspace/out/module_map.json
+- /workspace/out/architecture.md
+- /workspace/out/doc_code_discrepancies.csv
+- /workspace/out/risk_register.csv
+- /workspace/out/onboarding_plan.md
+
+Validation performed:
+- Parsed module_map.json successfully
+- Confirmed required JSON keys: modules, entry_points, dependency_edges, key_functions, runtime_flows
+- Confirmed entry points include:
+  - minisvc.cli:main
+  - minisvc.api.routes:register_routes
+- Confirmed both CSV headers and row counts
+- Exercised real code paths:
+  - CLI bootstrap via minisvc.cli.main() printed: minisvc ready at orders.sqlite
+  - Route registration + create/read flow successfully inserted and fetched an order through a fake app harness
+
+Important environment note:
+- The repository fixture was available at /workspace/in/repo, not at the macOS-style <HOME>/... path from your prompt.
+- I also could not write under /Users because that filesystem location is read-only/nonexistent in this execution environment.
+- So the deliverables were written to the accessible output directory: /workspace/out
+
+Key code/doc findings reflected in the outputs:
+- README readonly claim is contradicted: MINISVC_READONLY is parsed but never enforced
+- README retry claim is contradicted: create_order/save perform a single SQLite write with no retry loop
+- README durable audit claim is contradicted: audit.py only builds dicts; no audit table exists
+
+If you want, I can also print the contents of any of the generated files inline.

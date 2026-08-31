@@ -1,0 +1,61 @@
+{
+  "incident_id": "checkout-2026-03-22-auth-issuer-regression",
+  "root_cause_service": "auth-gateway",
+  "root_cause_change_id": "AUTH-2026-0318",
+  "confidence": 0.97,
+  "affected_services": [
+    "checkout-web",
+    "payment-api",
+    "auth-gateway"
+  ],
+  "evidence": [
+    {
+      "source_file": "/workspace/in/topology.json",
+      "observation": "The checkout request path is checkout-web -> payment-api -> auth-gateway, so auth failures on the payment path can directly block checkout submissions."
+    },
+    {
+      "source_file": "/workspace/in/topology.json",
+      "observation": "Recent change AUTH-2026-0318 was deployed to auth-gateway at 2026-03-22T14:05:00Z and changed issuer and JWKS cache namespace for partner-token validation."
+    },
+    {
+      "source_file": "/workspace/in/logs/auth-gateway.log",
+      "observation": "At 2026-03-22T14:05:12Z auth-gateway logged deployment of AUTH-2026-0318 with jwks_namespace=partner-v2 and issuer=partner-v2."
+    },
+    {
+      "source_file": "/workspace/in/logs/auth-gateway.log",
+      "observation": "At 2026-03-22T14:08:33Z-14:08:34Z auth-gateway logged a JWKS cache miss on partner-v2, fallback to partner-v1, and validation failure because token_issuer=partner-v2 while allowed_issuers=partner-v1."
+    },
+    {
+      "source_file": "/workspace/in/logs/payment-api.log",
+      "observation": "payment-api logged token validation failure from auth-gateway with reason=issuer_not_allowed at 2026-03-22T14:08:59Z and then rejected create_payment with auth_result=invalid_issuer at 2026-03-22T14:09:04Z."
+    },
+    {
+      "source_file": "/workspace/in/logs/checkout-web.log",
+      "observation": "checkout-web logged submit_order failed status=401 upstream=payment-api at 2026-03-22T14:09:41Z and then recorded invalid issuer from payment-api at 2026-03-22T14:10:03Z."
+    },
+    {
+      "source_file": "/workspace/in/metrics/service_metrics.csv",
+      "observation": "At 2026-03-22T14:10:00Z checkout-web 401 rate rose to 18.7%, payment-api 401 rate rose to 21.2%, and auth-gateway 401 rate rose to 28.4% with notes explicitly referencing invalid issuer and issuer mismatch."
+    }
+  ],
+  "excluded_red_herrings": [
+    {
+      "signal": "cdn-edge static asset 5xx spike",
+      "why_not_primary_cause": "Metrics mark the issue as isolated to images, and checkout-web later logged that static assets were served normally after retry while checkout remained blocked."
+    },
+    {
+      "signal": "orders-db CPU spike during vacuum",
+      "why_not_primary_cause": "orders-db latency remained normal at p95_query_ms=35 with errors=0, and both payment-api and orders-db logs state the failing checkout request did not reach the database path before the auth gate."
+    },
+    {
+      "signal": "checkout-web latency increase",
+      "why_not_primary_cause": "The latency increase is downstream impact from repeated auth failures; checkout-web logs identify payment-api invalid issuer responses rather than an application-local fault."
+    }
+  ],
+  "recommended_next_steps": [
+    "Roll back AUTH-2026-0318 or immediately restore partner-v2 in auth-gateway allowed_issuers and JWKS cache configuration.",
+    "Flush or rebuild the auth-gateway JWKS cache namespace so partner-v2 tokens no longer fall back to partner-v1 data.",
+    "Replay a partner-v2 checkout token through auth-gateway and payment-api to confirm validation succeeds without issuer_not_allowed.",
+    "Verify checkout-web 401 rate returns to baseline and confirm no residual failures are reaching payment-api."
+  ]
+}

@@ -46,7 +46,20 @@ class CleanRoomSeedToolTests(unittest.TestCase):
                 mock.patch.object(
                     CLEAN_ROOM_TOOL.subprocess, "run", side_effect=fake_run
                 ),
-                mock.patch.object(CLEAN_ROOM_TOOL.sys, "platform", "darwin"),
+                mock.patch.object(
+                    CLEAN_ROOM_TOOL.os,
+                    "listxattr",
+                    return_value=[
+                        "user.containers.override_stat",
+                        "security.selinux",
+                    ],
+                    create=True,
+                ),
+                mock.patch.object(
+                    CLEAN_ROOM_TOOL.os,
+                    "removexattr",
+                    create=True,
+                ) as remove_xattr,
             ):
                 CLEAN_ROOM_TOOL.seed(
                     "podman",
@@ -87,12 +100,17 @@ class CleanRoomSeedToolTests(unittest.TestCase):
                 ["podman", "volume", "rm", "highlander-seed-omp-fresh"],
                 calls,
             )
-            xattr_deletes = [
-                call for call in calls if call[:2] == ["/usr/bin/xattr", "-d"]
-            ]
-            self.assertEqual(
-                [call[2] for call in xattr_deletes],
-                ["user.containers.override_stat", "security.selinux"],
+            remove_xattr.assert_has_calls(
+                [
+                    mock.call(
+                        (destination / "agent.db").resolve(),
+                        "user.containers.override_stat",
+                    ),
+                    mock.call(
+                        (destination / "agent.db").resolve(),
+                        "security.selinux",
+                    ),
+                ]
             )
 
 

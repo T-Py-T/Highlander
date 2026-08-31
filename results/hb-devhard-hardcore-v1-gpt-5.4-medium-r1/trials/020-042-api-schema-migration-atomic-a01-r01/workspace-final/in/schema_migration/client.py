@@ -1,0 +1,351 @@
+from __future__ import annotations
+
+import json
+import sys
+from copy import deepcopy
+from pathlib import Path
+
+
+AUDIT_PATH = Path(__file__).with_name("conversion_audit.json")
+PII_KEYS = {
+    "ssn",
+    "credit_card",
+    "card_number",
+    "cvv",
+    "phone_number",
+    "passport_number",
+}
+V2_TOP_LEVEL_KEYS = {"orderId", "buyer", "lineItems", "shipping", "metadata"}
+LEGACY_TOP_LEVEL_KEYS = {
+    "id",
+    "order_ref",
+    "customer_id",
+    "customer_name",
+    "customer",
+    "items",
+    "lines",
+    "ship_to",
+    "shipTo",
+    "shipping_method",
+    "shipping",
+}
+
+
+class ConversionError(ValueError):
+    def __init__(self, path: str, error: str):
+        super().__init__(error)
+        self.path = path
+        self.error = error
+
+
+class ConversionWarning(dict):
+    def __init__(self, index: int | None, path: str, warning: str):
+        super().__init__(index=index, path=path, warning=warning)
+
+
+class ConversionResult:
+    def __init__(self, converted, errors, warnings):
+        self.converted = converted
+        self.errors = errors
+        self.warnings = warnings
+
+    def __iter__(self):
+        yield self.converted
+        yield self.errors
+
+    def __len__(self):
+        return 2
+
+    def __getitem__(self, index):
+        if index == 0:
+            return self.converted
+        if index == 1:
+            return self.errors
+        if index == 2:
+            return self.warnings
+        raise IndexError(index)
+
+    def as_tuple(self):
+        return (self.converted, self.errors, self.warnings)
+
+
+class _Tracker:
+    def __init__(self):
+        self.warning_count = 0
+        self.pii_dropped_count = 0
+        self.unknown_fields_count = 0
+
+
+def _is_blank(value):
+    return value is None or (isinstance(value, str) and value.strip() == "")
+
+
+def _require_dict(payload, path):
+    if not isinstance(payload, dict):
+        raise ConversionError(path, "must be an object")
+    return payload
+
+
+def _require_list(value, path):
+    if not isinstance(value, list):
+        raise ConversionError(path, "must be a list")
+    if not value:
+        raise ConversionError(path, "must not be empty")
+    return value
+
+
+def _require_value(value, path):
+    if _is_blank(value):
+        raise ConversionError(path, "missing required value")
+    return value
+
+
+def _to_int(value, path):
+    if isinstance(value, bool):
+        raise ConversionError(path, "must be an integer")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str) and value.strip():
+        try:
+            return int(value)
+        except ValueError as exc:
+            raise ConversionError(path, "must be an integer") from exc
+    raise ConversionError(path, "must be an integer")
+
+
+def _shipping_method(value):
+    return "standard" if _is_blank(value) else value
+
+
+def _split_unknown_fields(source, mapped_keys, tracker, warnings, index):
+    unknown = {}
+    for key, value in source.items():
+        if key in mapped_keys:
+            continue
+        if key.lower() in PII_KEYS:
+            tracker.pii_dropped_count += 1
+            tracker.warning_count += 1
+            warnings.append(ConversionWarning(index, key, "dropped pii field"))
+            continue
+        unknown[key] = deepcopy(value)
+        tracker.unknown_fields_count += 1
+        tracker.warning_count += 1
+        warnings.append(ConversionWarning(index, f"metadata.unknownFields.{key}", "preserved unknown field"))
+    return unknown
+
+
+def _convert_legacy_line_items(items_key, items):
+    converted = []
+    for i, item in enumerate(_require_list(items, items_key)):
+        _require_dict(item, f"{items_key}[{i}]")
+        qty = _to_int(_require_value(item.get("qty"), f"{items_key}[{i}].qty"), f"{items_key}[{i}].qty")
+        price_key = "unit_price_cents" if "unit_price_cents" in item else "price_cents"
+        price = _to_int(
+            _require_value(item.get(price_key), f"{items_key}[{i}].{price_key}"),
+            f"{items_key}[{i}].{price_key}",
+        )
+        line = {
+            key: deepcopy(value)
+            for key, value in item.items()
+            if key not in {"qty", "price_cents", "unit_price_cents"}
+        }
+        line["quantity"] = qty
+        line["unitPriceCents"] = price
+        converted.append(line)
+    return converted
+
+
+def _convert_legacy_shipping(payload):
+    shipping_source = payload.get("shipTo") if "shipTo" in payload else payload.get("ship_to")
+    shipping_path = "shipTo" if "shipTo" in payload else "ship_to"
+    address = _require_dict(_require_value(shipping_source, shipping_path), shipping_path)
+    postal = None
+    postal_path = None
+    for key in ("postal", "postalCode", "postal_code"):
+        if key in address:
+            postal = address.get(key)
+            postal_path = f"{shipping_path}.{key}"
+            break
+    postal = _require_value(postal, postal_path or f"{shipping_path}.postal")
+    converted_address = {
+        key: deepcopy(value)
+        for key, value in address.items()
+        if key not in {"postal", "postalCode", "postal_code"}
+    }
+    converted_address["postalCode"] = postal
+    return {
+        "method": _shipping_method(payload.get("shipping_method", payload.get("shipping"))),
+        "address": converted_address,
+    }
+
+
+def _convert_v2(payload, tracker, warnings, index):
+    buyer = _require_dict(_require_value(payload.get("buyer"), "buyer"), "buyer")
+    shipping = _require_dict(_require_value(payload.get("shipping"), "shipping"), "shipping")
+    metadata = _require_dict(payload.get("metadata") or {}, "metadata")
+    line_items = _require_list(payload.get("lineItems"), "lineItems")
+
+    _require_value(payload.get("orderId"), "orderId")
+    _require_value(buyer.get("id"), "buyer.id")
+    _require_value(buyer.get("displayName"), "buyer.displayName")
+    address = _require_dict(_require_value(shipping.get("address"), "shipping.address"), "shipping.address")
+    _require_value(address.get("postalCode"), "shipping.address.postalCode")
+
+    preserved_metadata = deepcopy(metadata)
+    unknown_existing = preserved_metadata.get("unknownFields")
+    if unknown_existing is None:
+        unknown_existing = {}
+    elif not isinstance(unknown_existing, dict):
+        raise ConversionError("metadata.unknownFields", "must be an object")
+
+    metadata_extra_unknown = _split_unknown_fields(
+        preserved_metadata,
+        {"source", "unknownFields"},
+        tracker,
+        warnings,
+        index,
+    )
+    preserved_metadata = {
+        "source": preserved_metadata.get("source"),
+        "unknownFields": deepcopy(unknown_existing),
+    }
+    if metadata_extra_unknown:
+        preserved_metadata["unknownFields"].update(metadata_extra_unknown)
+
+    extra_unknown = _split_unknown_fields(payload, V2_TOP_LEVEL_KEYS, tracker, warnings, index)
+    if extra_unknown:
+        preserved_metadata["unknownFields"].update(extra_unknown)
+    if _is_blank(preserved_metadata.get("source")):
+        preserved_metadata["source"] = "public-v2"
+
+    converted = deepcopy(payload)
+    converted["shipping"] = deepcopy(shipping)
+    converted["shipping"]["method"] = _shipping_method(shipping.get("method"))
+    converted["metadata"] = preserved_metadata
+    converted["lineItems"] = deepcopy(line_items)
+    return converted
+
+
+def _convert_legacy(payload, tracker, warnings, index):
+    order_id_key = "order_ref" if "order_ref" in payload else "id"
+    order_id = _require_value(payload.get(order_id_key), order_id_key)
+
+    if "customer" in payload:
+        customer = _require_dict(_require_value(payload.get("customer"), "customer"), "customer")
+        buyer = {
+            "id": _require_value(customer.get("id"), "customer.id"),
+            "displayName": _require_value(customer.get("name"), "customer.name"),
+        }
+    else:
+        buyer = {
+            "id": _require_value(payload.get("customer_id"), "customer_id"),
+            "displayName": _require_value(payload.get("customer_name"), "customer_name"),
+        }
+
+    items_key = "lines" if "lines" in payload else "items"
+    line_items = _convert_legacy_line_items(items_key, payload.get(items_key))
+    shipping = _convert_legacy_shipping(payload)
+
+    unknown = _split_unknown_fields(payload, LEGACY_TOP_LEVEL_KEYS, tracker, warnings, index)
+    metadata = {"source": "legacy-v1"}
+    if unknown:
+        metadata["unknownFields"] = unknown
+
+    return {
+        "orderId": order_id,
+        "buyer": buyer,
+        "lineItems": line_items,
+        "shipping": shipping,
+        "metadata": metadata,
+    }
+
+
+def _convert_order(payload, tracker=None, warnings=None, index=None):
+    tracker = tracker or _Tracker()
+    warnings = warnings if warnings is not None else []
+    payload = _require_dict(payload, "payload")
+    if "orderId" in payload:
+        return _convert_v2(payload, tracker, warnings, index)
+    return _convert_legacy(payload, tracker, warnings, index)
+
+
+def convert_order(payload):
+    """Convert a legacy or v2 order payload to the v2 public API shape."""
+    return _convert_order(payload)
+
+
+def _write_audit(converted_count, errors, warnings, tracker):
+    AUDIT_PATH.write_text(
+        json.dumps(
+            {
+                "converted_count": converted_count,
+                "error_count": len(errors),
+                "warning_count": len(warnings),
+                "pii_dropped_count": tracker.pii_dropped_count,
+                "unknown_fields_count": tracker.unknown_fields_count,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def convert_many(payloads):
+    converted = []
+    errors = []
+    warnings = []
+    tracker = _Tracker()
+
+    for index, payload in enumerate(payloads):
+        try:
+            converted.append(_convert_order(payload, tracker=tracker, warnings=warnings, index=index))
+        except ConversionError as exc:
+            errors.append({"index": index, "path": exc.path, "error": exc.error})
+
+    _write_audit(len(converted), errors, warnings, tracker)
+    return ConversionResult(converted, errors, warnings)
+
+
+def summarize_order(v2_payload):
+    return f"{v2_payload['orderId']}:{len(v2_payload['lineItems'])}"
+
+
+def _load_jsonl(path):
+    payloads = []
+    with open(path, "r", encoding="utf-8") as handle:
+        for line_no, line in enumerate(handle, start=1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                payloads.append(json.loads(line))
+            except json.JSONDecodeError as exc:
+                raise ConversionError(f"input[{line_no}]", f"invalid json: {exc.msg}") from exc
+    return payloads
+
+
+def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if len(argv) != 2:
+        print("Usage: python -m client input.jsonl output.json", file=sys.stderr)
+        return 2
+
+    input_path, output_path = argv
+    try:
+        payloads = _load_jsonl(input_path)
+        result = convert_many(payloads)
+    except ConversionError as exc:
+        print(json.dumps({"path": exc.path, "error": exc.error}), file=sys.stderr)
+        return 1
+
+    with open(output_path, "w", encoding="utf-8") as handle:
+        json.dump(result[0], handle, indent=2)
+        handle.write("\n")
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

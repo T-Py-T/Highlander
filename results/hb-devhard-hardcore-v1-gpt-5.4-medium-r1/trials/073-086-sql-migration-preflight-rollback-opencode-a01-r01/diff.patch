@@ -1,0 +1,276 @@
+Binary files a/billing_idempotency_test.db and b/billing_idempotency_test.db differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b150e48d587724434109c488f1992c04f91daa59f87f567c554a7d92c241f4d1)
+--- a/in/billingdb/migration.sql
++++ b/in/billingdb/migration.sql
+@@ -1,5 +1,28 @@
+--- Unsafe draft: loses orphan payments and is not idempotent.
+-CREATE TABLE invoices_new (
++PRAGMA foreign_keys = OFF;
++
++BEGIN IMMEDIATE;
++
++CREATE TABLE IF NOT EXISTS payment_orphans (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL,
++  reason TEXT NOT NULL
++);
++
++-- Keep invoice statuses in sync across reruns so the migration stays idempotent.
++CREATE TABLE IF NOT EXISTS _invoice_status_shadow (
++  id TEXT PRIMARY KEY,
++  status TEXT NOT NULL
++);
++
++DROP TRIGGER IF EXISTS invoices_status_shadow_ai;
++DROP TRIGGER IF EXISTS invoices_status_shadow_au;
++DROP TRIGGER IF EXISTS invoices_status_shadow_ad;
++
++ALTER TABLE invoices RENAME TO invoices__migration_source;
++
++CREATE TABLE invoices (
+   id TEXT PRIMARY KEY,
+   customer_id TEXT NOT NULL,
+   total_cents INTEGER NOT NULL,
+@@ -7,11 +30,93 @@
+   status TEXT NOT NULL DEFAULT 'open'
+ );
+ 
+-INSERT INTO invoices_new(id, customer_id, total_cents, created_at)
+-SELECT id, customer_id, total_cents, created_at FROM invoices;
++INSERT INTO invoices (id, customer_id, total_cents, created_at, status)
++SELECT
++  source.id,
++  source.customer_id,
++  source.total_cents,
++  source.created_at,
++  COALESCE(shadow.status, 'open')
++FROM invoices__migration_source AS source
++LEFT JOIN _invoice_status_shadow AS shadow
++  ON shadow.id = source.id;
+ 
+-DROP TABLE invoices;
+-ALTER TABLE invoices_new RENAME TO invoices;
++INSERT OR REPLACE INTO _invoice_status_shadow (id, status)
++SELECT id, status
++FROM invoices;
+ 
+-DELETE FROM payments
+-WHERE invoice_id NOT IN (SELECT id FROM invoices);
++DELETE FROM _invoice_status_shadow
++WHERE id NOT IN (SELECT id FROM invoices);
++
++CREATE TRIGGER invoices_status_shadow_ai
++AFTER INSERT ON invoices
++BEGIN
++  INSERT OR REPLACE INTO _invoice_status_shadow (id, status)
++  VALUES (NEW.id, NEW.status);
++END;
++
++CREATE TRIGGER invoices_status_shadow_au
++AFTER UPDATE OF status ON invoices
++BEGIN
++  INSERT OR REPLACE INTO _invoice_status_shadow (id, status)
++  VALUES (NEW.id, NEW.status);
++END;
++
++CREATE TRIGGER invoices_status_shadow_ad
++AFTER DELETE ON invoices
++BEGIN
++  DELETE FROM _invoice_status_shadow WHERE id = OLD.id;
++END;
++
++DROP TABLE invoices__migration_source;
++
++ALTER TABLE payments RENAME TO payments__migration_source;
++
++CREATE TABLE payments (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL,
++  FOREIGN KEY (invoice_id) REFERENCES invoices(id)
++);
++
++INSERT INTO payment_orphans (id, invoice_id, amount_cents, created_at, reason)
++SELECT
++  source.id,
++  source.invoice_id,
++  source.amount_cents,
++  source.created_at,
++  'Missing invoice during billing migration'
++FROM payments__migration_source AS source
++LEFT JOIN invoices AS i
++  ON i.id = source.invoice_id
++WHERE i.id IS NULL
++  AND NOT EXISTS (
++    SELECT 1
++    FROM payment_orphans AS existing
++    WHERE existing.id = source.id
++  );
++
++INSERT INTO payments (id, invoice_id, amount_cents, created_at)
++SELECT
++  source.id,
++  source.invoice_id,
++  source.amount_cents,
++  source.created_at
++FROM payments__migration_source AS source
++WHERE EXISTS (
++  SELECT 1
++  FROM invoices AS i
++  WHERE i.id = source.invoice_id
++)
++  AND NOT EXISTS (
++    SELECT 1
++    FROM payments AS existing
++    WHERE existing.id = source.id
++  );
++
++DROP TABLE payments__migration_source;
++
++COMMIT;
++
++PRAGMA foreign_keys = ON;
+--- a/in/billingdb/migration_report.md
++++ b/in/billingdb/migration_report.md
+@@ -0,0 +1,24 @@
++# Migration Report
++
++## Delivered Files
++
++- `migration.sql`: explicit transaction, invoice rebuild with `status`, orphan preservation, and referential enforcement
++- `rollback.sql`: restores the legacy table shapes and merges preserved orphans back into `payments`
++- `postcheck.sql`: validates row counts, orphan preservation, default statuses, and foreign-key integrity
++- `preflight_report.md`: documents source counts and the orphan payment that must be preserved
++
++## Key Repairs
++
++- removed the destructive orphan-payment delete from the draft
++- preserved all invoices, payments tied to real invoices, and historical `created_at` values
++- added `payment_orphans` so `p4` is retained instead of dropped
++- enforced `payments.invoice_id` references with a foreign key in the rebuilt `payments` table
++- wrapped the migration in an explicit transaction and restored `PRAGMA foreign_keys` after the rebuild
++- made reruns non-duplicating by rebuilding from current tables and using `payment_orphans` / `_invoice_status_shadow` as stable migration state
++
++## Expected Result On `schema.sql`
++
++- `invoices`: 3 rows, all with `status = 'open'`
++- `payments`: 3 rows referencing valid invoices only
++- `payment_orphans`: 1 row containing `p4`
++- `rollback.sql` returns the schema to `invoices(id, customer_id, total_cents, created_at)` and `payments(id, invoice_id, amount_cents, created_at)` while restoring `p4` to `payments`
+--- a/in/billingdb/postcheck.sql
++++ b/in/billingdb/postcheck.sql
+@@ -0,0 +1,31 @@
++SELECT 'invoices_count' AS check_name, COUNT(*) AS observed, 3 AS expected
++FROM invoices;
++
++SELECT 'payments_count' AS check_name, COUNT(*) AS observed, 3 AS expected
++FROM payments;
++
++SELECT 'payment_orphans_count' AS check_name, COUNT(*) AS observed, 1 AS expected
++FROM payment_orphans;
++
++SELECT 'orphan_p4_preserved' AS check_name, COUNT(*) AS observed, 1 AS expected
++FROM payment_orphans
++WHERE id = 'p4'
++  AND invoice_id = 'missing-invoice'
++  AND amount_cents = 700
++  AND created_at = '2024-01-07T10:00:00Z';
++
++SELECT 'invoice_status_nulls' AS check_name, COUNT(*) AS observed, 0 AS expected
++FROM invoices
++WHERE status IS NULL;
++
++SELECT 'invoice_status_default_open' AS check_name, COUNT(*) AS observed, 3 AS expected
++FROM invoices
++WHERE status = 'open';
++
++SELECT 'invalid_payment_references' AS check_name, COUNT(*) AS observed, 0 AS expected
++FROM payments AS p
++LEFT JOIN invoices AS i
++  ON i.id = p.invoice_id
++WHERE i.id IS NULL;
++
++PRAGMA foreign_key_check;
+--- a/in/billingdb/preflight_report.md
++++ b/in/billingdb/preflight_report.md
+@@ -0,0 +1,22 @@
++# Preflight Report
++
++## Source Summary
++
++- `invoices` rows: 3
++- `payments` rows: 4
++- orphan payments detected: 1
++
++## Orphan Payments
++
++| id | invoice_id | amount_cents | created_at | issue |
++| --- | --- | ---: | --- | --- |
++| `p4` | `missing-invoice` | 700 | `2024-01-07T10:00:00Z` | invoice does not exist in `invoices` |
++
++## Migration Actions
++
++- rebuild `invoices` to add `status TEXT NOT NULL DEFAULT 'open'`
++- preserve every invoice row and original `created_at`
++- move orphan payments into `payment_orphans` before enforcing foreign keys on `payments`
++- rebuild `payments` with a foreign key to `invoices(id)` for future referential safety
++- execute the migration inside an explicit transaction
++- support safe reruns without duplicating invoice, payment, or orphan rows
+--- a/in/billingdb/rollback.sql
++++ b/in/billingdb/rollback.sql
+@@ -0,0 +1,52 @@
++PRAGMA foreign_keys = OFF;
++
++BEGIN IMMEDIATE;
++
++DROP TRIGGER IF EXISTS invoices_status_shadow_ai;
++DROP TRIGGER IF EXISTS invoices_status_shadow_au;
++DROP TRIGGER IF EXISTS invoices_status_shadow_ad;
++
++ALTER TABLE invoices RENAME TO invoices__rollback_source;
++
++CREATE TABLE invoices (
++  id TEXT PRIMARY KEY,
++  customer_id TEXT NOT NULL,
++  total_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL
++);
++
++INSERT INTO invoices (id, customer_id, total_cents, created_at)
++SELECT id, customer_id, total_cents, created_at
++FROM invoices__rollback_source;
++
++DROP TABLE invoices__rollback_source;
++
++ALTER TABLE payments RENAME TO payments__rollback_source;
++
++CREATE TABLE payments (
++  id TEXT PRIMARY KEY,
++  invoice_id TEXT NOT NULL,
++  amount_cents INTEGER NOT NULL,
++  created_at TEXT NOT NULL
++);
++
++INSERT INTO payments (id, invoice_id, amount_cents, created_at)
++SELECT id, invoice_id, amount_cents, created_at
++FROM payments__rollback_source;
++
++INSERT INTO payments (id, invoice_id, amount_cents, created_at)
++SELECT orphan.id, orphan.invoice_id, orphan.amount_cents, orphan.created_at
++FROM payment_orphans AS orphan
++WHERE NOT EXISTS (
++  SELECT 1
++  FROM payments AS existing
++  WHERE existing.id = orphan.id
++);
++
++DROP TABLE payments__rollback_source;
++DROP TABLE IF EXISTS payment_orphans;
++DROP TABLE IF EXISTS _invoice_status_shadow;
++
++COMMIT;
++
++PRAGMA foreign_keys = ON;
+Binary files a/out/billingdb_verify.db and b/out/billingdb_verify.db differ (e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -> b4f37c5468f8a22eb4ae6610d0918683539b75a1d14ebb23489909ab47798cfe)
