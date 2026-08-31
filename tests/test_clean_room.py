@@ -361,6 +361,39 @@ class CleanRoomMatchTests(unittest.TestCase):
         )
         self.assertTrue(all("mode=1777" in value for value in tmpfs_values))
 
+    def test_clean_room_uses_an_unpopulated_writable_home_inside_tmpfs(self):
+        clean_room = CleanRoom(
+            {
+                "runtime": "podman",
+                "network": "bridge",
+                "cpus": 2,
+                "memory_mb": 2048,
+                "pids_limit": 256,
+                "tmpfs_mb": 512,
+            }
+        )
+        argv = clean_room._container_argv(
+            name="highlander-home-test",
+            image=self.OPENCODE_IMAGE,
+            workspace=self.repository,
+            command=["true"],
+            adapter="opencode",
+            seed=None,
+            read_only_workspace=False,
+        )
+        env_values = {
+            argv[index + 1]
+            for index, value in enumerate(argv)
+            if value == "--env"
+        }
+        self.assertIn("HOME=/home/highlander/runtime", env_values)
+        self.assertIn(
+            "XDG_CONFIG_HOME=/home/highlander/runtime/.config", env_values
+        )
+        self.assertIn(
+            "XDG_DATA_HOME=/home/highlander/runtime/.local/share", env_values
+        )
+
     def test_clean_room_codex_forces_file_backed_subscription_auth(self):
         spec_path = self.write_spec(match_id="codex-auth-config")
         payload = json.loads(spec_path.read_text(encoding="utf-8"))
