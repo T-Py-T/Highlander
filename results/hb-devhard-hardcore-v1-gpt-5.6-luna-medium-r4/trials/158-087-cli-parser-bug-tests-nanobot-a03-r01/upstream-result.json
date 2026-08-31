@@ -12,7 +12,7 @@
     "ok": true,
     "command": [
       "/opt/homebrew/opt/python@3.14/bin/python3.14",
-      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
       "--protocol",
       "<SOURCE_EVIDENCE_ROOT>/protocol.json",
       "--harness",
@@ -37,7 +37,7 @@
       "ok": true,
       "command": [
         "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
         "--protocol",
         "<SOURCE_EVIDENCE_ROOT>/protocol.json",
         "--harness",
@@ -51,7 +51,7 @@
         "--trial-id",
         "158-087-cli-parser-bug-tests-nanobot-a03-r01"
       ],
-      "stdout": "  Created AGENTS.md\n  Created HEARTBEAT.md\n  Created SOUL.md\n  Created TOOLS.md\n  Created USER.md\n  Created memory/MEMORY.md\n  Created memory/history.jsonl\n2026-08-31 12:32:32.922 | INFO     | nanobot.utils.gitstore:init:113 - Git store initialized at /workspace\n2026-08-31 12:32:32.938 | INFO     | nanobot.agent.loop:_process_message:958 - Processing message from cli:user: The CSV filtering CLI in `<RUNNER_ROOT>/.highlande...\n2026-08-31 12:32:42.327 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: exec({\"command\": \"pwd && ls -la && python -m pytest tests\", \"working_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/158-087-cli)\n2026-08-31 12:32:42.328 | WARNING  | nanobot.agent.runner:_run_tool:815 - Tool exec blocked by workspace/safety guard; aborting turn: Error: working_dir is outside the configured workspace\n2026-08-31 12:32:42.328 | DEBUG    | nanobot.agent.loop:after_iteration:158 - LLM usage: prompt=0 completion=0 cached=0\n2026-08-31 12:32:42.332 | INFO     | nanobot.agent.loop:_process_message:1098 - Response to cli:user: Error: RuntimeError: Error: working_dir is outside the configured workspace\n\n🐈 nanobot\nError: RuntimeError: Error: working_dir is outside the configured workspace\n\n2026-08-31 12:32:42.359 | DEBUG    | nanobot.agent.memory:maybe_consolidate_by_tokens:619 - Token consolidation idle highlander:direct: 7363/65536 via tiktoken, msgs=4\n",
+      "stdout": "  Created AGENTS.md\n  Created HEARTBEAT.md\n  Created SOUL.md\n  Created TOOLS.md\n  Created USER.md\n  Created memory/MEMORY.md\n  Created memory/history.jsonl\n2026-08-31 12:32:32.922 | INFO     | nanobot.utils.gitstore:init:113 - Git store initialized at /workspace\n2026-08-31 12:32:32.938 | INFO     | nanobot.agent.loop:_process_message:958 - Processing message from cli:user: The CSV filtering CLI in `<HOME>/Documents/HomeLife/Highlander/.highlande...\n2026-08-31 12:32:42.327 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: exec({\"command\": \"pwd && ls -la && python -m pytest tests\", \"working_dir\": \"<SOURCE_EVIDENCE_ROOT>/trials/158-087-cli)\n2026-08-31 12:32:42.328 | WARNING  | nanobot.agent.runner:_run_tool:815 - Tool exec blocked by workspace/safety guard; aborting turn: Error: working_dir is outside the configured workspace\n2026-08-31 12:32:42.328 | DEBUG    | nanobot.agent.loop:after_iteration:158 - LLM usage: prompt=0 completion=0 cached=0\n2026-08-31 12:32:42.332 | INFO     | nanobot.agent.loop:_process_message:1098 - Response to cli:user: Error: RuntimeError: Error: working_dir is outside the configured workspace\n\n🐈 nanobot\nError: RuntimeError: Error: working_dir is outside the configured workspace\n\n2026-08-31 12:32:42.359 | DEBUG    | nanobot.agent.memory:maybe_consolidate_by_tokens:619 - Token consolidation idle highlander:direct: 7363/65536 via tiktoken, msgs=4\n",
       "stderr": "",
       "metadata": {
         "returncode": 0

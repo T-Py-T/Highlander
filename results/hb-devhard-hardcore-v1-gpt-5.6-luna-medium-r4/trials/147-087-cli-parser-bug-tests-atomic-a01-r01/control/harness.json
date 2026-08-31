@@ -3,7 +3,7 @@
     "atomic": {
       "adapter": "generic_cli",
       "args": [
-        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
         "--protocol",
         "<SOURCE_EVIDENCE_ROOT>/protocol.json",
         "--harness",

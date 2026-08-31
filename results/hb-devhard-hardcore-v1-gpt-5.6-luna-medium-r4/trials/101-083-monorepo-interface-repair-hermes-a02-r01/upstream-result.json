@@ -12,7 +12,7 @@
     "ok": true,
     "command": [
       "/opt/homebrew/opt/python@3.14/bin/python3.14",
-      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
       "--protocol",
       "<SOURCE_EVIDENCE_ROOT>/protocol.json",
       "--harness",
@@ -37,7 +37,7 @@
       "ok": true,
       "command": [
         "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
         "--protocol",
         "<SOURCE_EVIDENCE_ROOT>/protocol.json",
         "--harness",

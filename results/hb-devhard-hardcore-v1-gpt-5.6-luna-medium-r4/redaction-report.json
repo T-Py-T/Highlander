@@ -11,11 +11,15 @@
       "placeholder": "<SOURCE_EVIDENCE_ROOT>"
     },
     {
-      "occurrences": 870,
+      "occurrences": 0,
       "placeholder": "<RUNNER_ROOT>"
     },
     {
-      "occurrences": 180,
+      "occurrences": 0,
+      "placeholder": "<RUNNER_ROOT>"
+    },
+    {
+      "occurrences": 1050,
       "placeholder": "<HOME>"
     }
   ],
@@ -26,5 +30,6 @@
     "oauth_token",
     "openai_key",
     "private_key"
-  ]
+  ],
+  "worktree_vcs_artifacts_omitted": 378
 }

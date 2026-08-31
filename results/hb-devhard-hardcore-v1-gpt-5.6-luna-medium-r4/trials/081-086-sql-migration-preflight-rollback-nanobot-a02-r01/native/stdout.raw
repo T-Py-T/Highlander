@@ -6,7 +6,7 @@
   Created memory/MEMORY.md
   Created memory/history.jsonl
 2026-08-31 07:26:10.910 | INFO     | nanobot.utils.gitstore:init:113 - Git store initialized at /workspace
-2026-08-31 07:26:10.921 | INFO     | nanobot.agent.loop:_process_message:958 - Processing message from cli:user: The SQLite billing migration in `<RUNNER_ROOT>/.hi...
+2026-08-31 07:26:10.921 | INFO     | nanobot.agent.loop:_process_message:958 - Processing message from cli:user: The SQLite billing migration in `<HOME>/Documents/HomeLife/Highlander/.hi...
 2026-08-31 07:26:22.627 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: read_file({"path": "<SOURCE_EVIDENCE_ROOT>/trials/081-086-sql-migration-preflight-rollback-nanobot-a02-r01/hb-work/nanobot)
 2026-08-31 07:26:22.627 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: read_file({"path": "<SOURCE_EVIDENCE_ROOT>/trials/081-086-sql-migration-preflight-rollback-nanobot-a02-r01/hb-work/nanobot)
 2026-08-31 07:26:22.627 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: read_file({"path": "<SOURCE_EVIDENCE_ROOT>/trials/081-086-sql-migration-preflight-rollback-nanobot-a02-r01/hb-work/nanobot)
@@ -14,11 +14,11 @@
 2026-08-31 07:26:22.629 | WARNING  | nanobot.agent.runner:_run_tool:815 - Tool read_file blocked by workspace/safety guard; aborting turn: Error: Path <SOURCE_EVIDENCE_ROOT>/trials/081-086-sql-migration-preflight-rollback-nanobot-a02-r01/hb-work/nanob
 2026-08-31 07:26:22.630 | WARNING  | nanobot.agent.runner:_run_tool:815 - Tool read_file blocked by workspace/safety guard; aborting turn: Error: Path <SOURCE_EVIDENCE_ROOT>/trials/081-086-sql-migration-preflight-rollback-nanobot-a02-r01/hb-work/nanob
 2026-08-31 07:26:22.630 | DEBUG    | nanobot.agent.loop:after_iteration:158 - LLM usage: prompt=0 completion=0 cached=0
-2026-08-31 07:26:22.633 | INFO     | nanobot.agent.loop:_process_message:1098 - Response to cli:user: Error: RuntimeError: Error: Path <RUNNER_ROOT>/.highlander/runs/hb-devhard-hardcore-v1-gpt...
+2026-08-31 07:26:22.633 | INFO     | nanobot.agent.loop:_process_message:1098 - Response to cli:user: Error: RuntimeError: Error: Path <HOME>/Documents/HomeLife/Highlander/.highlander/runs/hb-devhard-hardcore-v1-gpt...
 
 🐈 nanobot
 Error: RuntimeError: Error: Path 
-<RUNNER_ROOT>/.highlander/runs/hb-devhard-hardcore
+<HOME>/Documents/HomeLife/Highlander/.highlander/runs/hb-devhard-hardcore
 -v1-gpt-5.6-luna-medium-r4-raw/trials/081-086-sql-migration-preflight-rollback-n
 anobot-a02-r01/hb-work/nanobot/gpt-5.6-luna/oc-bench-v2-086-sql-migration-prefli
 ght-rollback-gpt-5.6-luna-20260831-032610-c29e90d2/workspace/in/billingdb/migrat

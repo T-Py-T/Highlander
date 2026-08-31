@@ -6,7 +6,7 @@
   Created memory/MEMORY.md
   Created memory/history.jsonl
 2026-08-31 12:32:32.922 | INFO     | nanobot.utils.gitstore:init:113 - Git store initialized at /workspace
-2026-08-31 12:32:32.938 | INFO     | nanobot.agent.loop:_process_message:958 - Processing message from cli:user: The CSV filtering CLI in `<RUNNER_ROOT>/.highlande...
+2026-08-31 12:32:32.938 | INFO     | nanobot.agent.loop:_process_message:958 - Processing message from cli:user: The CSV filtering CLI in `<HOME>/Documents/HomeLife/Highlander/.highlande...
 2026-08-31 12:32:42.327 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: exec({"command": "pwd && ls -la && python -m pytest tests", "working_dir": "<SOURCE_EVIDENCE_ROOT>/trials/158-087-cli)
 2026-08-31 12:32:42.328 | WARNING  | nanobot.agent.runner:_run_tool:815 - Tool exec blocked by workspace/safety guard; aborting turn: Error: working_dir is outside the configured workspace
 2026-08-31 12:32:42.328 | DEBUG    | nanobot.agent.loop:after_iteration:158 - LLM usage: prompt=0 completion=0 cached=0

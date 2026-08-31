@@ -6,14 +6,14 @@
       "sha256": "ec7136a6877b20bdfe737abdc1b2f1b4e94c77aeb0f15d793cc2fe60b31776a2"
     },
     {
-      "bytes": 440,
+      "bytes": 463,
       "path": "control/app.json",
-      "sha256": "a9c1f72ae1165b6ac20549cd192f8b506c2beb89e14b871cec17b118790db770"
+      "sha256": "1f0932ecac85443f228e8a2e5a574e3f80139918e2bd81b99bf906e9f0aed240"
     },
     {
-      "bytes": 712,
+      "bytes": 735,
       "path": "control/harness.json",
-      "sha256": "ebdbbdcf9152e1fcbfe9593a2e59f67d8ccc10867c48d18771fafd6d255605ec"
+      "sha256": "22ba46ed9279236fbfd46fc24d80c011f0333b1021cf05a3f55976ae3bac46cc"
     },
     {
       "bytes": 351,
@@ -91,84 +91,14 @@
       "sha256": "cdf03d8cb38853359eeb0f9480ec9ccbd5c7f7e3c1f0fd1ef558effd454e3164"
     },
     {
-      "bytes": 12389,
+      "bytes": 12435,
       "path": "upstream-result.json",
-      "sha256": "b44c31e42608b0aa0554ffe188b1afc0cd5539888c9a17d12bb8968540e95e35"
+      "sha256": "bedcb391a38f2a0d70ce7efab9da967dca7b0a55d1fe5b9c358a5d46e4ea4f25"
     },
     {
       "bytes": 400,
       "path": "usage-normalized.json",
       "sha256": "8e9561685170d6f5cae767c269910a5f3d78deb47dc1ef6e96e0dcb2f7f93c98"
-    },
-    {
-      "bytes": 23,
-      "path": "workspace-final/.git/HEAD",
-      "sha256": "f6f2b945f6c411b02ba3da9c7ace88dcf71b6af65ba2e0d89aa82900042b5a10"
-    },
-    {
-      "bytes": 92,
-      "path": "workspace-final/.git/config",
-      "sha256": "cfe7ba1238c9a78be7535d7c63bcaf5a4d5011d46b07c9b45d3bbf7d6c312dfe"
-    },
-    {
-      "bytes": 18,
-      "path": "workspace-final/.git/description",
-      "sha256": "dff25157a84480762865d6884596b9d72e5e71aa4a922ebd34e52bd649f78cdf"
-    },
-    {
-      "bytes": 336,
-      "path": "workspace-final/.git/index",
-      "sha256": "01796f2e74273479153e0181e392b4361b0843a3f9487a319fbe7ead96dc7f94"
-    },
-    {
-      "bytes": 0,
-      "path": "workspace-final/.git/info/exclude",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "bytes": 158,
-      "path": "workspace-final/.git/logs/HEAD",
-      "sha256": "7eb06603bf5ff9070699a53e3056cf7d6259c644a4089797664ad0abfa7914cc"
-    },
-    {
-      "bytes": 595,
-      "path": "workspace-final/.git/objects/27/b6097145cf669b6b4ae0be4bbf0cba9fc2a36f",
-      "sha256": "a2fc4b0f923cba607a3cc2ba9f513528da8ca8d4a2e21ce6b93f8375dbf02498"
-    },
-    {
-      "bytes": 64,
-      "path": "workspace-final/.git/objects/34/0868ba1c7a346c35a3491a2f7f3253301f4666",
-      "sha256": "43b04fb50963320eb592a3ffe55f149d9379d4ccb0f84c6063eade22157dc86b"
-    },
-    {
-      "bytes": 123,
-      "path": "workspace-final/.git/objects/5d/24788c572860c0cb617111e033aaa5ab630734",
-      "sha256": "c38d17d6483cb92949cd52562999541518fab24300747c40c6702fd60e7350fc"
-    },
-    {
-      "bytes": 54,
-      "path": "workspace-final/.git/objects/63/d78c88a940f2afb4aea7d03e819d39c6fe50ef",
-      "sha256": "ece932b6ebdd6c5d8ee51c972e02ed8e0fee722a4143a2a401b41cb57b6aab7b"
-    },
-    {
-      "bytes": 497,
-      "path": "workspace-final/.git/objects/67/1ec49a110f8a0a5d65134c4c484d24497bc870",
-      "sha256": "951c377cf302fc15abaddb83943f30faf62b6a0b9e94d170866c75e0b2fddeff"
-    },
-    {
-      "bytes": 148,
-      "path": "workspace-final/.git/objects/d0/d770e808ab9c2233de388bb2e5d7db7ca38461",
-      "sha256": "c19b171db1d01aebc693dc2e7dd7d9fcf7c03f655614bed3ee8f8e3b0ad5c2e3"
-    },
-    {
-      "bytes": 250,
-      "path": "workspace-final/.git/objects/fd/2ca96811ac7aae57f7c40ee17ae17cc80d224b",
-      "sha256": "ee3bfcd9dadb477546444fea1b10acc64539c5192aa5e77f73c621b21a0aa641"
-    },
-    {
-      "bytes": 41,
-      "path": "workspace-final/.git/refs/heads/master",
-      "sha256": "f521728ece7fd32ea1e812b673cca965a301ac9fa6f99a9aab7b75c810a8b97b"
     },
     {
       "bytes": 60,
@@ -301,6 +231,6 @@
       "sha256": "bb955b644eff47f8222ea816bbde5da45a2b38db8c9529c59ef2e6873b55d833"
     }
   ],
-  "generated_at": "2026-08-31T13:01:36.974043Z",
+  "generated_at": "2026-08-31T13:03:39.720116Z",
   "schema_version": 1
 }

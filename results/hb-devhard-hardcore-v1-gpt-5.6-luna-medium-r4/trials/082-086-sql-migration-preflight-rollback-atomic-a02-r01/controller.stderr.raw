@@ -1,14 +1,14 @@
 Traceback (most recent call last):
   File "<frozen runpy>", line 203, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "<RUNNER_ROOT>/.highlander/upstream/harness-bench/src/harnessbench/cli.py", line 295, in <module>
+  File "<HOME>/Documents/HomeLife/Highlander/.highlander/upstream/harness-bench/src/harnessbench/cli.py", line 295, in <module>
     raise SystemExit(main())
                      ~~~~^^
-  File "<RUNNER_ROOT>/.highlander/upstream/harness-bench/src/harnessbench/cli.py", line 178, in main
+  File "<HOME>/Documents/HomeLife/Highlander/.highlander/upstream/harness-bench/src/harnessbench/cli.py", line 178, in main
     result = run_task(app_cfg, tasks[task_id], args.harness, model_cfg, args.mode, keep_workspace=not args.delete_sandbox)
-  File "<RUNNER_ROOT>/.highlander/upstream/harness-bench/src/harnessbench/runner.py", line 551, in run_task
+  File "<HOME>/Documents/HomeLife/Highlander/.highlander/upstream/harness-bench/src/harnessbench/runner.py", line 551, in run_task
     adapter_result = adapter.run(ctx)
-  File "<RUNNER_ROOT>/.highlander/upstream/harness-bench/src/harnessbench/adapters/generic_cli.py", line 42, in run
+  File "<HOME>/Documents/HomeLife/Highlander/.highlander/upstream/harness-bench/src/harnessbench/adapters/generic_cli.py", line 42, in run
     completed = subprocess.run(
         cmd,
     ...<5 lines>...
@@ -27,4 +27,4 @@ Traceback (most recent call last):
     raise TimeoutExpired(
     ...<2 lines>...
             stderr=b''.join(stderr_seq) if stderr_seq else None)
-subprocess.TimeoutExpired: Command '['/opt/homebrew/opt/python@3.14/bin/python3.14', '<RUNNER_ROOT>/tools/hb-clean-adapter.py', '--protocol', '<SOURCE_EVIDENCE_ROOT>/protocol.json', '--harness', 'atomic', '--workspace', '<SOURCE_EVIDENCE_ROOT>/trials/082-086-sql-migration-preflight-rollback-atomic-a02-r01/hb-work/atomic/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-032623-65dbf67d/workspace', '--prompt-file', '<SOURCE_EVIDENCE_ROOT>/trials/082-086-sql-migration-preflight-rollback-atomic-a02-r01/hb-work/atomic/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-032623-65dbf67d/prompt-round1.txt', '--evidence-dir', '<SOURCE_EVIDENCE_ROOT>/trials/082-086-sql-migration-preflight-rollback-atomic-a02-r01/hb-work/atomic/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-032623-65dbf67d/highlander-native', '--trial-id', '082-086-sql-migration-preflight-rollback-atomic-a02-r01']' timed out after 1200 seconds
+subprocess.TimeoutExpired: Command '['/opt/homebrew/opt/python@3.14/bin/python3.14', '<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py', '--protocol', '<SOURCE_EVIDENCE_ROOT>/protocol.json', '--harness', 'atomic', '--workspace', '<SOURCE_EVIDENCE_ROOT>/trials/082-086-sql-migration-preflight-rollback-atomic-a02-r01/hb-work/atomic/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-032623-65dbf67d/workspace', '--prompt-file', '<SOURCE_EVIDENCE_ROOT>/trials/082-086-sql-migration-preflight-rollback-atomic-a02-r01/hb-work/atomic/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-032623-65dbf67d/prompt-round1.txt', '--evidence-dir', '<SOURCE_EVIDENCE_ROOT>/trials/082-086-sql-migration-preflight-rollback-atomic-a02-r01/hb-work/atomic/gpt-5.6-luna/oc-bench-v2-086-sql-migration-preflight-rollback-gpt-5.6-luna-20260831-032623-65dbf67d/highlander-native', '--trial-id', '082-086-sql-migration-preflight-rollback-atomic-a02-r01']' timed out after 1200 seconds

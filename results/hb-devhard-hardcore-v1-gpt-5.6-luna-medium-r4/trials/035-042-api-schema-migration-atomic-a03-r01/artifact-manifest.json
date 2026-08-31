@@ -6,14 +6,14 @@
       "sha256": "5b3736000964be257bbd6bd81624eb5eeb6125dff9299b80a929a6ce88e33ccd"
     },
     {
-      "bytes": 434,
+      "bytes": 457,
       "path": "control/app.json",
-      "sha256": "1830afa446f2e1b41d949b622724a6ce56c285b54cfd4465fdd4d0b437d5d26c"
+      "sha256": "48ec02746ffd2883da5a96fa538d8c4199bf54f05517a02d0f770322e547c1ac"
     },
     {
-      "bytes": 693,
+      "bytes": 716,
       "path": "control/harness.json",
-      "sha256": "342a06a272f527b40f249ac30324b993a8daa3b968689b5be79121e7f6448082"
+      "sha256": "b68dacea351e20d5e87239294ed1f60cefb2905d0c74474c4cf9e5e575eea865"
     },
     {
       "bytes": 337,
@@ -21,9 +21,9 @@
       "sha256": "80bb5cb119814ebaaa206b6087111f58c7279c2df493d33487e35335299b818c"
     },
     {
-      "bytes": 2890,
+      "bytes": 3005,
       "path": "controller.stderr.raw",
-      "sha256": "e620dbb57e0c12540dc2a4f164bc318f88377cb51c3b0e6b5d87ef424639c85d"
+      "sha256": "a8039bc9d799bc8193caed90775212410e84ecd3c6dfb2a208b7d3c0b892f0f2"
     },
     {
       "bytes": 81,
@@ -51,6 +51,6 @@
       "sha256": "2999f47063b6964799572b69bdb6766b6cc827d9a76dda0ba9e011e99fab2000"
     }
   ],
-  "generated_at": "2026-08-31T13:01:37.161331Z",
+  "generated_at": "2026-08-31T13:03:39.903615Z",
   "schema_version": 1
 }

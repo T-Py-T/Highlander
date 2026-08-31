@@ -6,7 +6,7 @@
   Created memory/MEMORY.md
   Created memory/history.jsonl
 2026-08-31 10:37:06.332 | INFO     | nanobot.utils.gitstore:init:113 - Git store initialized at /workspace
-2026-08-31 10:37:06.343 | INFO     | nanobot.agent.loop:_process_message:958 - Processing message from cli:user: The pytest suite in `<RUNNER_ROOT>/.highlander/run...
+2026-08-31 10:37:06.343 | INFO     | nanobot.agent.loop:_process_message:958 - Processing message from cli:user: The pytest suite in `<HOME>/Documents/HomeLife/Highlander/.highlander/run...
 2026-08-31 10:37:12.775 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: exec({"command": "python -m pytest tests", "working_dir": "<SOURCE_EVIDENCE_ROOT>/trials/118-085-flaky-test-root-caus)
 2026-08-31 10:37:12.776 | WARNING  | nanobot.agent.runner:_run_tool:815 - Tool exec blocked by workspace/safety guard; aborting turn: Error: working_dir is outside the configured workspace
 2026-08-31 10:37:12.776 | DEBUG    | nanobot.agent.loop:after_iteration:158 - LLM usage: prompt=0 completion=0 cached=0

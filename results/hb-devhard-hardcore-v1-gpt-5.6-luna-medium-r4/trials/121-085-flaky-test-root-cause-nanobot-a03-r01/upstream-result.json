@@ -12,7 +12,7 @@
     "ok": true,
     "command": [
       "/opt/homebrew/opt/python@3.14/bin/python3.14",
-      "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+      "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
       "--protocol",
       "<SOURCE_EVIDENCE_ROOT>/protocol.json",
       "--harness",
@@ -37,7 +37,7 @@
       "ok": true,
       "command": [
         "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "<RUNNER_ROOT>/tools/hb-clean-adapter.py",
+        "<HOME>/Documents/HomeLife/Highlander/tools/hb-clean-adapter.py",
         "--protocol",
         "<SOURCE_EVIDENCE_ROOT>/protocol.json",
         "--harness",
@@ -51,7 +51,7 @@
         "--trial-id",
         "121-085-flaky-test-root-cause-nanobot-a03-r01"
       ],
-      "stdout": "  Created AGENTS.md\n  Created HEARTBEAT.md\n  Created SOUL.md\n  Created TOOLS.md\n  Created USER.md\n  Created memory/MEMORY.md\n  Created memory/history.jsonl\n2026-08-31 10:39:07.132 | INFO     | nanobot.utils.gitstore:init:113 - Git store initialized at /workspace\n2026-08-31 10:39:07.144 | INFO     | nanobot.agent.loop:_process_message:958 - Processing message from cli:user: The pytest suite in `<RUNNER_ROOT>/.highlander/run...\n2026-08-31 10:39:10.685 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: my({\"action\": \"check\", \"key\": \"max_iterations\"})\n2026-08-31 10:39:10.688 | DEBUG    | nanobot.agent.loop:after_iteration:158 - LLM usage: prompt=0 completion=0 cached=0\n2026-08-31 10:39:18.007 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: exec({\"command\": \"pwd && ls -la <SOURCE_EVIDENCE_ROOT>/trials/121-085-flaky-test-root-cause-nanobot-a03-r01/hb-work/n)\n2026-08-31 10:39:18.007 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: glob({\"pattern\": \"**/*\", \"path\": \"/workspace\", \"max_results\": 50, \"head_limit\": 50, \"offset\": 0, \"entry_type\": \"files\"})\n2026-08-31 10:39:18.010 | WARNING  | nanobot.agent.runner:_run_tool:815 - Tool exec blocked by workspace/safety guard; aborting turn: Error: Command blocked by safety guard (path outside working dir)\n2026-08-31 10:39:18.018 | DEBUG    | nanobot.agent.loop:after_iteration:158 - LLM usage: prompt=0 completion=0 cached=0\n2026-08-31 10:39:18.020 | INFO     | nanobot.agent.loop:_process_message:1098 - Response to cli:user: Error: RuntimeError: Error: Command blocked by safety guard (path outside working dir)\n\n🐈 nanobot\nError: RuntimeError: Error: Command blocked by safety guard (path outside \nworking dir)\n\n2026-08-31 10:39:18.044 | DEBUG    | nanobot.agent.memory:maybe_consolidate_by_tokens:619 - Token consolidation idle highlander:direct: 7803/65536 via tiktoken, msgs=7\n",
+      "stdout": "  Created AGENTS.md\n  Created HEARTBEAT.md\n  Created SOUL.md\n  Created TOOLS.md\n  Created USER.md\n  Created memory/MEMORY.md\n  Created memory/history.jsonl\n2026-08-31 10:39:07.132 | INFO     | nanobot.utils.gitstore:init:113 - Git store initialized at /workspace\n2026-08-31 10:39:07.144 | INFO     | nanobot.agent.loop:_process_message:958 - Processing message from cli:user: The pytest suite in `<HOME>/Documents/HomeLife/Highlander/.highlander/run...\n2026-08-31 10:39:10.685 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: my({\"action\": \"check\", \"key\": \"max_iterations\"})\n2026-08-31 10:39:10.688 | DEBUG    | nanobot.agent.loop:after_iteration:158 - LLM usage: prompt=0 completion=0 cached=0\n2026-08-31 10:39:18.007 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: exec({\"command\": \"pwd && ls -la <SOURCE_EVIDENCE_ROOT>/trials/121-085-flaky-test-root-cause-nanobot-a03-r01/hb-work/n)\n2026-08-31 10:39:18.007 | INFO     | nanobot.agent.loop:before_execute_tools:133 - Tool call: glob({\"pattern\": \"**/*\", \"path\": \"/workspace\", \"max_results\": 50, \"head_limit\": 50, \"offset\": 0, \"entry_type\": \"files\"})\n2026-08-31 10:39:18.010 | WARNING  | nanobot.agent.runner:_run_tool:815 - Tool exec blocked by workspace/safety guard; aborting turn: Error: Command blocked by safety guard (path outside working dir)\n2026-08-31 10:39:18.018 | DEBUG    | nanobot.agent.loop:after_iteration:158 - LLM usage: prompt=0 completion=0 cached=0\n2026-08-31 10:39:18.020 | INFO     | nanobot.agent.loop:_process_message:1098 - Response to cli:user: Error: RuntimeError: Error: Command blocked by safety guard (path outside working dir)\n\n🐈 nanobot\nError: RuntimeError: Error: Command blocked by safety guard (path outside \nworking dir)\n\n2026-08-31 10:39:18.044 | DEBUG    | nanobot.agent.memory:maybe_consolidate_by_tokens:619 - Token consolidation idle highlander:direct: 7803/65536 via tiktoken, msgs=7\n",
       "stderr": "",
       "metadata": {
         "returncode": 0

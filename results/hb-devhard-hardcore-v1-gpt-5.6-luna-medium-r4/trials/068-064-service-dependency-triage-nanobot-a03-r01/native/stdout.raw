@@ -23,11 +23,11 @@ Inputs:
 2026-08-31 06:46:33.285 | WARNING  | nanobot.agent.runner:_run_tool:815 - Tool read_file blocked by workspace/safety guard; aborting turn: Error: Path <SOURCE_EVIDENCE_ROOT>/trials/068-064-service-dependency-triage-nanobot-a03-r01/hb-work/nanobot/gpt-
 2026-08-31 06:46:33.285 | WARNING  | nanobot.agent.runner:_run_tool:815 - Tool read_file blocked by workspace/safety guard; aborting turn: Error: Path <SOURCE_EVIDENCE_ROOT>/trials/068-064-service-dependency-triage-nanobot-a03-r01/hb-work/nanobot/gpt-
 2026-08-31 06:46:33.286 | DEBUG    | nanobot.agent.loop:after_iteration:158 - LLM usage: prompt=0 completion=0 cached=0
-2026-08-31 06:46:33.289 | INFO     | nanobot.agent.loop:_process_message:1098 - Response to cli:user: Error: RuntimeError: Error: Path <RUNNER_ROOT>/.highlander/runs/hb-devhard-hardcore-v1-gpt...
+2026-08-31 06:46:33.289 | INFO     | nanobot.agent.loop:_process_message:1098 - Response to cli:user: Error: RuntimeError: Error: Path <HOME>/Documents/HomeLife/Highlander/.highlander/runs/hb-devhard-hardcore-v1-gpt...
 
 🐈 nanobot
 Error: RuntimeError: Error: Path 
-<RUNNER_ROOT>/.highlander/runs/hb-devhard-hardcore
+<HOME>/Documents/HomeLife/Highlander/.highlander/runs/hb-devhard-hardcore
 -v1-gpt-5.6-luna-medium-r4-raw/trials/068-064-service-dependency-triage-nanobot-
 a03-r01/hb-work/nanobot/gpt-5.6-luna/oc-bench-v2-064-service-dependency-triage-g
 pt-5.6-luna-20260831-024614-e8784b06/workspace/in/topology.json is outside 
