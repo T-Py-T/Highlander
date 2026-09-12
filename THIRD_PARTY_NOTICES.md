@@ -10,3 +10,7 @@ Retained result bundles may also contain sanitized output produced by
 third-party tools. The root MIT license does not grant rights to third-party
 task content, provider software, model output, trademarks, or captured tool
 output beyond the rights supplied by their respective owners.
+
+Highlander's MIT license covers original Highlander code, tests, schemas, and
+documentation. Third-party inputs and captured outputs remain under their
+original terms.
