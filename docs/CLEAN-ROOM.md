@@ -13,10 +13,10 @@ There is deliberately no commit, push, PR, no-mistakes run, auto-fix, or post-Tr
 - Only the independent workspace and an optional authentication seed are mounted. The host home, SSH keys, GitHub credentials, Docker socket, and normal Harness configuration are absent.
 - OMP starts with extension, skill, rule, session, title, and prewalk discovery disabled. Shipped Harness tools remain available because they are part of the Harness treatment.
 - OpenCode starts in pure mode with sharing and auto-update disabled.
-- NanoBot `0.1.5.post3` is retained as a historical temporal-proxy image. Its OAuth token is seeded independently; host NanoBot and Codex configuration are never mounted.
-- Codex `0.147.0` uses OpenAI's checksum-verified Linux release binary. Its trial home is ephemeral and only the isolated `auth.json` is imported.
-- Hermes `0.20.0` is built from tag `v2026.8.3` at its exact Git commit using the release's hash-locked `uv.lock`; safe mode excludes host plugins, memories, rules, and MCP configuration.
-- Atomic `0.9.15` uses the checksum-verified official Linux binary, JSON
+- NanoBot `0.3.0` is installed from its exact PyPI release. Its OAuth token is seeded independently; host NanoBot and Codex configuration are never mounted.
+- Codex `0.154.0` uses OpenAI's checksum-verified Linux release binary. Its trial home is ephemeral and only the isolated `auth.json` is imported.
+- Hermes `0.21.2` is built from tag `v2026.9.11` at its exact Git commit using the release's hash-locked `uv.lock`; safe mode excludes host plugins, memories, rules, and MCP configuration.
+- Atomic `0.9.18` uses the checksum-verified official Linux binary, JSON
   non-interactive mode, an ephemeral session, and disabled personal skills,
   templates, themes, and context-file discovery. Its shipped native coding
   tools remain part of the Harness treatment; the OCI boundary supplies the
