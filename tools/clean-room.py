@@ -21,13 +21,13 @@ DEFAULT_LOCK = ROOT / ".highlander" / "images.lock.json"
 SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 BARE_SHA256 = re.compile(r"^[0-9a-f]{64}$")
 TAGS = {
-    "evaluator": "highlander/evaluator:go1.26.5-bookworm-v1",
-    "omp": "highlander/omp:17.2.10-clean-core",
-    "opencode": "highlander/opencode:1.18.15-clean-core",
-    "nanobot": "highlander/nanobot:0.1.5.post3-clean-core",
-    "codex": "highlander/codex:0.147.0-clean-core",
-    "hermes": "highlander/hermes:0.20.0-clean-core",
-    "atomic": "highlander/atomic:0.9.15-clean-core",
+    "evaluator": "highlander/evaluator:go1.27.1-bookworm-v1",
+    "omp": "highlander/omp:18.1.19-clean-core",
+    "opencode": "highlander/opencode:1.18.30-clean-core",
+    "nanobot": "highlander/nanobot:0.3.0-clean-core",
+    "codex": "highlander/codex:0.154.0-clean-core",
+    "hermes": "highlander/hermes:0.21.2-clean-core",
+    "atomic": "highlander/atomic:0.9.18-clean-core",
 }
 
 
@@ -273,38 +273,38 @@ def build(runtime: str, lock_path: Path) -> None:
         "images": images,
         "sources": {
             "omp": {
-                "version": "17.2.10",
-                "linux_amd64_sha256": "4fe564b23482cd627671a2417842498c97b2f72b5f8a3a4efb8094e623df7a33",
-                "linux_arm64_sha256": "c935d5d25eb677a625934f81f4b21b0ff05b64400feb9e90f02f0efe39676386",
+                "version": "18.1.19",
+                "linux_amd64_sha256": "4b5df0c61cc978223bd12f7e8d533554e80bb360a9192491de13da3d53b283ac",
+                "linux_arm64_sha256": "b321b6bb2a96068df2f4972f98654c23e451371a275cfbb0a98ef6f5f858f239",
             },
             "opencode": {
-                "version": "1.18.15",
-                "linux_amd64_sha256": "d842e0e8c622c672a481b7dc6f0329009b64db96b2ba6041e56f4f93f0293b1c",
-                "linux_arm64_sha256": "500611819ff88916b185649990505a9be76ad13ca5bb4b9323e5abdd39b1c6fb",
+                "version": "1.18.30",
+                "linux_amd64_sha256": "55007246858165496ff85ba1c2b648f7421e8e2013bf4189a680c9ff8e699d17",
+                "linux_arm64_sha256": "4111a55c2a02c0fac314bd51e9a2330280e6d29d2b85b9554fff6d62612566ed",
             },
             "nanobot": {
-                "version": "0.1.5.post3",
-                "package": "nanobot-ai==0.1.5.post3",
-                "role": "historical-temporal-proxy",
+                "version": "0.3.0",
+                "package": "nanobot-ai==0.3.0",
+                "role": "current-release",
             },
             "codex": {
-                "version": "0.147.0",
-                "release_tag": "rust-v0.147.0",
-                "linux_amd64_sha256": "0246e2e773834e07f0fb5249ed6ebad12e4591e608f8c7bb97dd6a9690544c36",
-                "linux_arm64_sha256": "eb677c80f666b1ab8b4b1d083b66e8d614b1281d960bb6f9fd8ca98f58b38b90",
+                "version": "0.154.0",
+                "release_tag": "rust-v0.154.0",
+                "linux_amd64_sha256": "d7e18b2597ae8f242f5f31ee9e90deef48dbc9edd634d9868fb6435d08c07f02",
+                "linux_arm64_sha256": "583b48df32804213bdcd338c2e5adb06b34340821fa757a726cc0a524fa33c27",
             },
             "hermes": {
-                "version": "0.20.0",
-                "release_tag": "v2026.8.3",
-                "commit": "3c27eb6234bf91b8ceee9e9071591b31e9b148cb",
-                "uv_lock_sha256": "aab3c83f71b683507a590b6315b23bdc0abd6b63b76b2349eae15bf00dfbaf2b",
-                "uv_version": "0.12.3",
+                "version": "0.21.2",
+                "release_tag": "v2026.9.11",
+                "commit": "939e45c91d751fadd94dcd1b873ac3cb44846213",
+                "uv_lock_sha256": "69b130365c9077ac9880c167daa64e39afc5611bb563a79a2fb3c612949beae9",
+                "uv_version": "0.12.13",
             },
             "atomic": {
-                "version": "0.9.15",
-                "release_tag": "0.9.15",
-                "linux_amd64_sha256": "ef5fed6b3510b1842ad8d7768cfb78b27659093e37a5e078d7eb2ca7363634f1",
-                "linux_arm64_sha256": "2364d968d34deec3e64ac795f3fb3debac8463745b89ca7b6e71469fbd4200a8",
+                "version": "0.9.18",
+                "release_tag": "0.9.18",
+                "linux_amd64_sha256": "51ca278acda3fdb674e7e2d2828de0891dc3e70eef8e7cbdb04f45951fcfbfa6",
+                "linux_arm64_sha256": "d70e28713e79defb6d0f785ccbab0e8d252f8416e5d3028622f05018d19cfd9a",
             },
         },
     }
