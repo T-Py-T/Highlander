@@ -1,5 +1,7 @@
 # Highlander
 
+[![Highlander checks](https://github.com/T-Py-T/Highlander/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/T-Py-T/Highlander/actions/workflows/checks.yml)
+
 Highlander is a local gauntlet for comparing AI coding-agent harnesses under controlled models, tasks, and evaluators. It schedules repeatable matches, runs contenders in disposable environments, evaluates their changes, and retains the evidence needed to inspect each result.
 
 Use Highlander when you need to compare the effect of harness tools, memory, permissions, orchestration, or recovery behavior without treating a model change as a harness result.
