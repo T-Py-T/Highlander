@@ -72,6 +72,8 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - Personal plugins, extensions, rules, memory, MCP servers, and operator steering are excluded from the primary controlled lane.
 - Desktop applications are outside the primary lane.
 
+**Tip-cite bank:** `T-Py-T/Highlander #PR` + `<8-char-main-tip>`; the Steward resolves it against `main`, and blocked or untested status is never `READY`.
+
 ## License
 
 Original Highlander code, tests, schemas, and documentation are available under the [MIT License](LICENSE). Third-party inputs and captured outputs remain under their original terms. See [third-party notices](THIRD_PARTY_NOTICES.md).
