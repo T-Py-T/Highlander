@@ -6,6 +6,15 @@ Highlander is a local gauntlet for comparing AI coding-agent harnesses under con
 
 Use Highlander when you need to compare the effect of harness tools, memory, permissions, orchestration, or recovery behavior without treating a model change as a harness result.
 
+## What this proves
+
+For a staffing reader, Highlander is a working example of controlled evaluation infrastructure:
+
+- **Experimental discipline:** it compares harnesses with the repository commit, models, task packet, evaluator, limits, and permissions held fixed—not a model swap presented as a harness result.
+- **Reproducible operations:** it schedules isolated trials and retains the transcript, tool ledger, diff, tests, evaluator output, usage observations, operator interactions, and evidence paths for inspection.
+- **Safe execution boundaries:** `run` is a dry run by default; `--execute` is explicit, and real runs use the disposable clean-room path with separate credentials and cost approval.
+- **Honest reporting:** invalid attempts remain visible, while results stay scoped to the named harness versions, model route, task pack, controls, and run period. Dispersion is reported rather than collapsed into a universal winner claim.
+
 ## Current result
 
 The primary public baseline used GPT-5.4 with medium reasoning, nine unchanged HarnessBench coding and DevOps tasks, and three attempts per harness.
@@ -72,7 +81,7 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - Personal plugins, extensions, rules, memory, MCP servers, and operator steering are excluded from the primary controlled lane.
 - Desktop applications are outside the primary lane.
 
-**Tip-cite bank:** `T-Py-T/Highlander #PR` + `<8-char-main-tip>`; the Steward resolves it against `main`, and blocked or untested status is never `READY`.
+**Tip-cite bank (Ship 45):** `T-Py-T/Highlander #<PR>` + `<8-char-main-tip>`; the Steward resolves it against `main`, and blocked or untested status is never `READY`.
 
 ## License
 
