@@ -64,6 +64,7 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 
 ## Documentation
 
+- [Contributing](CONTRIBUTING.md) covers local gates, PR expectations, evidence boundaries, and tip-cites.
 - [Gauntlet design](docs/GAUNTLET.md) defines the comparison rules and scoring model.
 - [Match runner](docs/MATCH-RUNNER.md) describes the CLI, state machine, adapters, and tmux workflow.
 - [Clean-room execution](docs/CLEAN-ROOM.md) covers disposable images, isolated homes, authentication seeds, and cleanup.
