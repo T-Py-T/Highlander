@@ -81,7 +81,7 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - Personal plugins, extensions, rules, memory, MCP servers, and operator steering are excluded from the primary controlled lane.
 - Desktop applications are outside the primary lane.
 
-**Tip-cite bank (Ship 45):** `T-Py-T/Highlander #<PR>` + `<8-char-main-tip>`; the Steward resolves it against `main`, and blocked or untested status is never `READY`.
+**Tip-cite bank (Ship 45):** `T-Py-T/Highlander #44` + `<8-char-main-tip>`; the Steward resolves it against `main`, and blocked or untested status is never `READY`.
 
 ## License
 
