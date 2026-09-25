@@ -34,6 +34,24 @@ Five harnesses completed all 27 slots. Atomic retained one timeout and remains u
 
 See the [full leaderboard](results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1/leaderboard.md) for per-task means, attempt ranges, validity, and the retained evidence bundle.
 
+## Hireability and evidence map
+
+For a staffing reader, the strongest signals are inspectable engineering choices rather than a benchmark headline:
+
+| Signal | Where to verify it |
+|---|---|
+| Controlled experiment design | [Gauntlet design](docs/GAUNTLET.md) and [leaderboard contract](docs/LEADERBOARD.md) |
+| Safe, repeatable execution | [Match runner](docs/MATCH-RUNNER.md) and [clean-room execution](docs/CLEAN-ROOM.md) |
+| Evidence capture and redaction | [Evidence contract](docs/EVIDENCE.md), including manifest verification |
+| Honest handling of invalid or incomplete runs | The [current result](#current-result) and [open problems inventory](docs/OPEN_PROBLEMS.md) |
+| Maintainer judgment and collaboration | [Contributing](CONTRIBUTING.md), [support guidance](SUPPORT.md), and [Code of Conduct](CODE_OF_CONDUCT.md) |
+
+These links are an evidence trail for how the system is built and operated; they are not a claim of production readiness or a substitute for the stated limits.
+
+### Evidence is not `READY`
+
+Evidence is the inspectable record of commands, diffs, tests, evaluator output, manifests, and retained artifact paths. It may document a valid result, an invalid attempt, a blocked path, or incomplete work. `READY` is a separate status that requires the applicable checks and acceptance criteria to pass. A tip-cite, confident summary, or untested or blocked work is never `READY`.
+
 ## Inspect a match safely
 
 Check the included fake match and print its execution plan:
@@ -83,7 +101,15 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - Personal plugins, extensions, rules, memory, MCP servers, and operator steering are excluded from the primary controlled lane.
 - Desktop applications are outside the primary lane.
 
-**Tip-cite bank:** `T-Py-T/Highlander <8-char-main-tip> PR#<number>`; use the first eight hexadecimal characters of the merge commit on `main`, and never treat a tip-cite or blocked or untested work as `READY`.
+## Tip-cite bank
+
+Record merged work as:
+
+```text
+T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>
+```
+
+`<8-char-main-tip>` is the first eight hexadecimal characters of the merge commit on `main`; `<number>` is the actual pull-request number. Resolve the cite against `main`, never a branch tip or an invented or reused value. A tip-cite records provenance only and never makes blocked, incomplete, or untested work `READY`. See [Contributing](CONTRIBUTING.md#tip-cite-bank) for the contributor procedure.
 
 ## License
 
