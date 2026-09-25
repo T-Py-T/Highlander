@@ -46,7 +46,7 @@ For a staffing reader, the strongest signals are inspectable engineering choices
 | Honest handling of invalid or incomplete runs | The [current result](#current-result) and [open problems inventory](docs/OPEN_PROBLEMS.md) |
 | Maintainer judgment and collaboration | [Contributing](CONTRIBUTING.md), [support guidance](SUPPORT.md), and [Code of Conduct](CODE_OF_CONDUCT.md) |
 
-These links are an evidence trail for how the system is built and operated; they are not a claim of production readiness or a substitute for the stated limits.
+These links are an evidence trail for how the system is built and operated; the [open problems inventory](docs/OPEN_PROBLEMS.md) keeps unresolved limits visible and defines the [tip-cite protocol](docs/OPEN_PROBLEMS.md#tip-cite-protocol). Neither is a claim of production readiness or a substitute for the stated limits.
 
 ### Evidence is not `READY`
 
