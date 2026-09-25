@@ -71,6 +71,7 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - [Leaderboard contract](docs/LEADERBOARD.md) defines ranking, reliability, and invalid-run handling.
 - [Season runbook](docs/SEASON-RUNBOOK.md) gives the qualification, execution, export, and verification steps.
 - [Evidence contract](docs/EVIDENCE.md) defines public bundles, redaction, and manifest verification.
+- [Open problems inventory](docs/OPEN_PROBLEMS.md) records unresolved scope, execution, evidence, and stewardship questions; it is not an acceptance gate.
 - [Mobile supervision](docs/MOBILE-SUPERVISION.md) describes observe-and-respond experiments.
 - [Security policy](SECURITY.md) explains how to report vulnerabilities and what must stay out of retained evidence.
 
@@ -82,7 +83,7 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - Personal plugins, extensions, rules, memory, MCP servers, and operator steering are excluded from the primary controlled lane.
 - Desktop applications are outside the primary lane.
 
-**Tip-cite bank (Ship 45):** `T-Py-T/Highlander #44` + `<8-char-main-tip>`; the Steward resolves it against `main`, and blocked or untested status is never `READY`.
+**Tip-cite bank (Ship 53):** `T-Py-T/Highlander #<PR> + <8-char-main-tip>`; the Steward resolves it against `main`, and blocked or untested status is never `READY`.
 
 ## License
 
