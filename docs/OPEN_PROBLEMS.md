@@ -4,6 +4,10 @@ This page records questions Highlander has not closed. It is an inventory for
 stewardship and future seasons, not an acceptance gate, scorecard, or claim that
 any item is solved. An open, blocked, or untested item is not `READY`.
 
+See [Contributing](../CONTRIBUTING.md) for contributor setup, evidence
+boundaries, and tip-cite rules. Staffing-oriented project context is in
+[What this proves](../README.md#what-this-proves).
+
 ## Claim scope and comparison
 
 - **Version-bound results versus universal winner claims.** A result is bound to
@@ -73,9 +77,10 @@ For a merged result, cite the repository, pull request, and exact eight-characte
 hexadecimal tip from the merged commit on `main`:
 
 ```text
-T-Py-T/Highlander #PR + <8-char-main-tip>
+T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>
 ```
 
-The Steward resolves the eight-character tip against `main`. Replace `#PR` with
-the actual pull-request number only after it exists; never invent a tip or reuse
-an older one. A tip-cite records provenance and is never `READY` by itself.
+The Steward resolves the eight-character tip against `main`. Use the first eight
+hexadecimal characters of the merge commit and the actual pull-request number
+only after it exists; never invent a tip or reuse an older one. A tip-cite records
+provenance and is never `READY` by itself.
