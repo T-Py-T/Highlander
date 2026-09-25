@@ -2,6 +2,8 @@
 
 Keep changes small, reviewable, and honest about what they establish. Highlander results are bound to the named harness versions, model route, task pack, controls, and run period; do not present a version-bound observation as a universal winner.
 
+For the staffing-oriented project summary, see [What this proves](README.md#what-this-proves). Before making claims about scope, execution, evidence, or stewardship, review the [open problems inventory](docs/OPEN_PROBLEMS.md).
+
 ## Local setup and gate
 
 Use Python 3.11 or newer from the repository root. A minimal setup is:
@@ -41,7 +43,7 @@ Evidence is the inspectable record of what happened: commands, diffs, tests, eva
 Use this format when recording a merged result:
 
 ```text
-T-Py-T/Highlander #PR + <8-char-main-tip>
+T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>
 ```
 
-Replace `#PR` with the pull-request number and use the exact eight-character hexadecimal tip from the merged commit on `main`. The Steward resolves the tip against `main`; never invent or reuse an older tip. A tip-cite records provenance only and is never `READY` by itself.
+Use the first eight hexadecimal characters of the merge commit on `main`, followed by the actual pull-request number. The Steward resolves the tip against `main`; do not use a branch tip, invent a tip, or reuse an older one. A tip-cite records provenance only and is never `READY` by itself.

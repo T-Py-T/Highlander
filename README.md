@@ -83,7 +83,7 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - Personal plugins, extensions, rules, memory, MCP servers, and operator steering are excluded from the primary controlled lane.
 - Desktop applications are outside the primary lane.
 
-**Tip-cite bank (Ship 53):** `T-Py-T/Highlander #<PR> + <8-char-main-tip>`; the Steward resolves it against `main`, and blocked or untested status is never `READY`.
+**Tip-cite bank:** `T-Py-T/Highlander <8-char-main-tip> PR#<number>`; use the first eight hexadecimal characters of the merge commit on `main`, and never treat a tip-cite or blocked or untested work as `READY`.
 
 ## License
 
