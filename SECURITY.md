@@ -26,4 +26,4 @@ When recording a merged security change, use this format:
 T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>
 ```
 
-Use the first eight hexadecimal characters of the merge commit on `main` and the actual pull-request number. Do not use a branch tip, invent a tip, or reuse an older one. A tip-cite records provenance only; it does not make a report or fix `READY`. Untested, blocked, or incomplete work must not be marked `READY`, and a confident summary is not evidence by itself.
+Use the first eight hexadecimal characters of the merge commit on `main`, followed by the actual pull-request number. The Steward resolves the eight-character tip against `main`; cite it only after the merge and PR exist. Never use a branch tip, invent a tip or PR number, or reuse an older cite. A tip-cite records provenance only and is never `READY` by itself. Untested, blocked, or incomplete work must not be marked `READY`; do not invent a `READY` status, and a confident summary is not evidence by itself.
