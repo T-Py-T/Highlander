@@ -114,3 +114,7 @@ T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>
 ## License
 
 Original Highlander code, tests, schemas, and documentation are available under the [MIT License](LICENSE). Third-party inputs and captured outputs remain under their original terms. See [third-party notices](THIRD_PARTY_NOTICES.md).
+
+## Honesty footer
+
+This documentation reports inspectable evidence and version-bound observations; it does not establish production readiness, a universal winner, or completion when work is open, blocked, invalid, or incomplete. A tip-cite identifies a revision only, never `READY`: use `T-Py-T/Highlander <8-char-main-tip> PR#<number>`, where the tip is the first eight hexadecimal characters of the merge commit on `main` and the number is the actual pull request. Resolve it against `main`, never a branch tip, invented value, or reused cite.
