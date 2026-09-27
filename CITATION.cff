@@ -1,3 +1,4 @@
+# tip-cite bank base `3289c70c` + PR #64; Steward resolves after merge; provenance pointer only; never READY.
 cff-version: 1.2.0
 message: "If you use Highlander, please cite it as below."
 title: "Highlander"
