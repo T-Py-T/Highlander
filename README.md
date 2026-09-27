@@ -90,6 +90,7 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - [Season runbook](docs/SEASON-RUNBOOK.md) gives the qualification, execution, export, and verification steps.
 - [Evidence contract](docs/EVIDENCE.md) defines public bundles, redaction, and manifest verification.
 - [Open problems inventory](docs/OPEN_PROBLEMS.md) records unresolved scope, execution, evidence, and stewardship questions; it is not an acceptance gate.
+- [Architecture decision records](docs/adr/README.md) capture planning decisions and boundaries; they are not an acceptance gate.
 - [Mobile supervision](docs/MOBILE-SUPERVISION.md) describes observe-and-respond experiments.
 - [Security policy](SECURITY.md) explains how to report vulnerabilities and what must stay out of retained evidence.
 
