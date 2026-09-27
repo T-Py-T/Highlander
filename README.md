@@ -95,6 +95,7 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - [Security policy](SECURITY.md) explains how to report vulnerabilities and what must stay out of retained evidence.
 - [Citation metadata](CITATION.cff) records software attribution fields; it is not an acceptance gate.
 - Keep exploring: [notice and attribution](NOTICE.md) records copyright boundaries and stewardship limits; it is not an acceptance gate.
+- Keep exploring: [maintainers](MAINTAINERS.md) records project steward contact and boundaries; it is not an acceptance gate.
 
 ## Limits
 
