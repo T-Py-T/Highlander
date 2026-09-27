@@ -94,6 +94,7 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - [Mobile supervision](docs/MOBILE-SUPERVISION.md) describes observe-and-respond experiments.
 - [Security policy](SECURITY.md) explains how to report vulnerabilities and what must stay out of retained evidence.
 - [Citation metadata](CITATION.cff) records software attribution fields; it is not an acceptance gate.
+- Keep exploring: [notice and attribution](NOTICE.md) records copyright boundaries and stewardship limits; it is not an acceptance gate.
 
 ## Limits
 
