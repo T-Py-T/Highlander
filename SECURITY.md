@@ -1,5 +1,7 @@
 # Security policy
 
+For local setup, pull-request expectations, and the shared tip-cite procedure when proposing a fix, see [Contributing](CONTRIBUTING.md).
+
 ## Supported code
 
 The current `main` branch is the only supported version. Highlander is a local benchmark tool and does not operate a hosted service.
@@ -26,4 +28,4 @@ When recording a merged security change, use this format:
 T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>
 ```
 
-Use the first eight hexadecimal characters of the merge commit on `main`, followed by the actual pull-request number. The Steward resolves the eight-character tip against `main`; cite it only after the merge and PR exist. Never use a branch tip, invent a tip or PR number, or reuse an older cite. A tip-cite records provenance only and is never `READY` by itself. Untested, blocked, or incomplete work must not be marked `READY`; do not invent a `READY` status, and a confident summary is not evidence by itself.
+Resolve the cite against `main` only after the merge and pull request exist. See [Contributing](CONTRIBUTING.md#tip-cite-bank) and the [open problems tip-cite protocol](docs/OPEN_PROBLEMS.md#tip-cite-protocol) for the shared steward procedure. A tip-cite records provenance only and is never `READY` by itself; untested, blocked, or incomplete work must not be marked `READY`, and a confident summary is not evidence by itself.
