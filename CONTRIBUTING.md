@@ -2,7 +2,7 @@
 
 Keep changes small, reviewable, and honest about what they establish. Highlander results are bound to the named harness versions, model route, task pack, controls, and run period; do not present a version-bound observation as a universal winner.
 
-For the staffing-oriented project summary, see [What this proves](README.md#what-this-proves). Before making claims about scope, execution, evidence, or stewardship, review the [open problems inventory](docs/OPEN_PROBLEMS.md).
+For the staffing-oriented project summary, see [What this proves](README.md#what-this-proves) and the [hireability and evidence map](docs/HIREABILITY.md). Before making claims about scope, execution, evidence, or stewardship, review the [open problems inventory](docs/OPEN_PROBLEMS.md). For vulnerability reports and evidence-safe disclosure, see [Security policy](SECURITY.md).
 
 ## Local setup and gate
 
@@ -31,7 +31,7 @@ pre-commit run --all-files --verbose
 
 - Keep the PR focused and explain the behavior or documentation change.
 - Report the commands run and their results; link retained evidence when applicable.
-- Keep real credentials, private data, and unapproved live execution out of commits and evidence.
+- Keep real credentials, private data, and unapproved live execution out of commits and evidence (see [Security policy](SECURITY.md#keep-reports-and-evidence-safe)).
 - Preserve invalid, blocked, and incomplete outcomes rather than hiding them.
 
 ## Evidence is not READY
@@ -46,4 +46,4 @@ Use this format when recording a merged result:
 T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>
 ```
 
-Use the first eight hexadecimal characters of the merge commit on `main`, followed by the actual pull-request number. The Steward resolves the tip against `main`; do not use a branch tip, invent a tip, or reuse an older one. A tip-cite records provenance only and is never `READY` by itself.
+Use the first eight hexadecimal characters of the merge commit on `main` and the actual pull-request number only after the pull request is merged. See the [open problems tip-cite protocol](docs/OPEN_PROBLEMS.md#tip-cite-protocol) for the shared steward procedure. A tip-cite records provenance only and is never `READY` by itself.
