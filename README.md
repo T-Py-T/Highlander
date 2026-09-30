@@ -6,14 +6,15 @@ Highlander is a local gauntlet for comparing AI coding-agent harnesses under con
 
 Use Highlander when you need to compare the effect of harness tools, memory, permissions, orchestration, or recovery behavior without treating a model change as a harness result.
 
+**Stack:** Python 3.11+, `highlander` CLI, pre-commit gates, GitHub Actions checks; synthetic fixtures locally, disposable clean-room execution for real harness runs.
+
+**Topics (GitHub / wiki discoverability):** AI coding agents, agent harness benchmarking, reproducible evaluation, developer tools, Python CLI, software engineering experiments, MLOps-adjacent tooling.
+
+Staffing-oriented evidence map: [docs/HIREABILITY.md](docs/HIREABILITY.md) (inspectable choices only; not `READY`).
+
 ## What this proves
 
-For a staffing reader, Highlander is a working example of controlled evaluation infrastructure:
-
-- **Experimental discipline:** it compares harnesses with the repository commit, models, task packet, evaluator, limits, and permissions held fixed—not a model swap presented as a harness result.
-- **Reproducible operations:** it schedules isolated trials and retains the transcript, tool ledger, diff, tests, evaluator output, usage observations, operator interactions, and evidence paths for inspection.
-- **Safe execution boundaries:** `run` is a dry run by default; `--execute` is explicit, and real runs use the disposable clean-room path with separate credentials and cost approval.
-- **Honest reporting:** invalid attempts remain visible, while results stay scoped to the named harness versions, model route, task pack, controls, and run period. Dispersion is reported rather than collapsed into a universal winner claim.
+Staffing readers: controlled evaluation infrastructure with an inspectable evidence trail. Details live in [hireability and evidence map](docs/HIREABILITY.md#what-this-proves); that page is not `READY`.
 
 ## Current result
 
@@ -33,24 +34,6 @@ The primary public baseline used GPT-5.4 with medium reasoning, nine unchanged H
 Five harnesses completed all 27 slots. Atomic retained one timeout and remains unranked. Codex CLI's 0.0055 lead over OpenCode is smaller than either harness's run-to-run dispersion, so this result is a version-bound observation rather than a universal winner claim.
 
 See the [full leaderboard](results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1/leaderboard.md) for per-task means, attempt ranges, validity, and the retained evidence bundle.
-
-## Hireability and evidence map
-
-For a staffing reader, the strongest signals are inspectable engineering choices rather than a benchmark headline:
-
-| Signal | Where to verify it |
-|---|---|
-| Controlled experiment design | [Gauntlet design](docs/GAUNTLET.md) and [leaderboard contract](docs/LEADERBOARD.md) |
-| Safe, repeatable execution | [Match runner](docs/MATCH-RUNNER.md) and [clean-room execution](docs/CLEAN-ROOM.md) |
-| Evidence capture and redaction | [Evidence contract](docs/EVIDENCE.md), including manifest verification |
-| Honest handling of invalid or incomplete runs | The [current result](#current-result) and [open problems inventory](docs/OPEN_PROBLEMS.md) |
-| Maintainer judgment and collaboration | [Contributing](CONTRIBUTING.md), [support guidance](SUPPORT.md), and [Code of Conduct](CODE_OF_CONDUCT.md) |
-
-These links are an evidence trail for how the system is built and operated; the [open problems inventory](docs/OPEN_PROBLEMS.md) keeps unresolved limits visible and defines the [tip-cite protocol](docs/OPEN_PROBLEMS.md#tip-cite-protocol). Neither is a claim of production readiness or a substitute for the stated limits.
-
-### Evidence is not `READY`
-
-Evidence is the inspectable record of commands, diffs, tests, evaluator output, manifests, and retained artifact paths. It may document a valid result, an invalid attempt, a blocked path, or incomplete work. `READY` is a separate status that requires the applicable checks and acceptance criteria to pass. A tip-cite, confident summary, or untested or blocked work is never `READY`.
 
 ## Inspect a match safely
 
@@ -94,6 +77,7 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - [Mobile supervision](docs/MOBILE-SUPERVISION.md) describes observe-and-respond experiments.
 - [Security policy](SECURITY.md) explains how to report vulnerabilities and what must stay out of retained evidence.
 - [Citation metadata](CITATION.cff) records software attribution fields; it is not an acceptance gate.
+- Keep exploring: [hireability and evidence map](docs/HIREABILITY.md) orients staffing readers; it is not an acceptance gate.
 - Keep exploring: [docs index](docs/README.md) orients readers to the `/docs` tree, tip-cite honesty, and stewardship links; it is not an acceptance gate.
 - Keep exploring: [notice and attribution](NOTICE.md) records copyright boundaries and stewardship limits; it is not an acceptance gate.
 - Keep exploring: [maintainers](MAINTAINERS.md) records project steward contact and boundaries; it is not an acceptance gate.
