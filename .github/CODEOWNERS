@@ -1,0 +1,8 @@
+# Highlander CODEOWNERS — review routing for GitHub config and templates.
+#
+# Tip-cite bank base `7ed26182` + this PR pending Steward; Steward resolves after merge;
+# provenance only; never `READY`. Baseline cite: T-Py-T/Highlander 7ed26182 PR#72 — docs: PR template tip-cite lean (ship 293).
+# Shared procedure: CONTRIBUTING.md#tip-cite-bank and docs/OPEN_PROBLEMS.md#tip-cite-protocol.
+# A tip-cite records provenance only; tip≠`READY`. Do not invent scores or mark untested, blocked, or incomplete work `READY`.
+
+.github/ @T-Py-T
