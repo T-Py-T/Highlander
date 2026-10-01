@@ -7,10 +7,12 @@
 
 ## Tip-cite and readiness
 
-- [ ] Tip-cite: `T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>`.
-- [ ] The tip-cite resolves against `main` and identifies this pull request after merge.
-- [ ] A tip-cite records provenance only; it is not a score and does not make this pull request `READY`.
+Tip-cite bank base `158867be` + this PR pending Steward; Steward resolves after merge; provenance only; never `READY`.
+
+- [ ] Tip-cite: `T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>` (resolve against `main` after merge; tip≠`READY`).
 - [ ] Do not invent scores or claim or imply `READY`; blocked, untested, or unresolved work is never `READY`, and only the Steward can resolve readiness.
+
+See [Contributing](../CONTRIBUTING.md#tip-cite-bank) and the [open problems tip-cite protocol](../docs/OPEN_PROBLEMS.md#tip-cite-protocol) for the shared steward procedure.
 
 ## Honesty footer
 
