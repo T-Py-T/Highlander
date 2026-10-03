@@ -14,7 +14,6 @@ This repository does not ship an `AUTHORS` file. Contributor attribution is not 
 
 ## Tip-cite bank
 
-Tip-cite bank base `02f0a382` + this PR pending Steward; Steward resolves after merge; provenance only; never READY.
 
 When recording a merged documentation or stewardship change, use:
 

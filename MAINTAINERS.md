@@ -14,7 +14,6 @@ This repository does not ship a `.github/FUNDING.yml` or other funding solicitat
 
 ## Tip-cite bank
 
-Tip-cite bank base `800ee0ea` + this PR pending Steward; Steward resolves after merge; provenance only; never READY.
 
 When recording a merged documentation or stewardship change, use:
 

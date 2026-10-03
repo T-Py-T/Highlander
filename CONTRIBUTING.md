@@ -2,7 +2,7 @@
 
 Keep changes small, reviewable, and honest about what they establish. Highlander results are bound to the named harness versions, model route, task pack, controls, and run period; do not present a version-bound observation as a universal winner.
 
-For the staffing-oriented project summary, see [What this proves](README.md#what-this-proves) and the [hireability and evidence map](docs/HIREABILITY.md). Before making claims about scope, execution, evidence, or stewardship, review the [open problems inventory](docs/OPEN_PROBLEMS.md). For vulnerability reports and evidence-safe disclosure, see [Security policy](SECURITY.md).
+For the staffing-oriented project summary, see [What this proves](README.md#what-this-proves). Before making claims about scope, execution, evidence, or stewardship, review the [open problems inventory](docs/OPEN_PROBLEMS.md). For vulnerability reports and evidence-safe disclosure, see [Security policy](SECURITY.md).
 
 ## Local setup and gate
 

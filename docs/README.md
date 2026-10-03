@@ -31,7 +31,6 @@ A page in `/docs` may describe a valid result, an invalid attempt, a blocked pat
 
 ## Tip-cite bank
 
-Tip-cite bank base `f33f5e97` + this PR pending Steward; Steward resolves after merge; provenance only; never READY.
 
 When recording a merged documentation or stewardship change, use:
 
