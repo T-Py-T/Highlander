@@ -39,6 +39,6 @@ Disqualify the mobile treatment if it sends input to the wrong session, cannot d
 
 - `OMP + Herdr` with phone SSH baseline;
 - `OMP + Herdr + CCGram` Telegram bridge;
-- `Pi + Firstmate + Herdr` with phone SSH, then CCGram only after the base is stable;
+- `Pi + the operator + Herdr` with phone SSH, then CCGram only after the base is stable;
 - `OpenCode + Herdr` with phone SSH, then a separate OpenCode web/server test;
 - watchlist-only tests for MobileCLI, ADHDev, and Fusion until their Herdr/WSL paths are proven.

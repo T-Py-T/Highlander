@@ -10,11 +10,9 @@ Use Highlander when you need to compare the effect of harness tools, memory, per
 
 **Topics (GitHub / wiki discoverability):** AI coding agents, agent harness benchmarking, reproducible evaluation, developer tools, Python CLI, software engineering experiments, MLOps-adjacent tooling.
 
-Staffing-oriented evidence map: [docs/HIREABILITY.md](docs/HIREABILITY.md) (inspectable choices only; not `READY`).
-
 ## What this proves
 
-Staffing readers: controlled evaluation infrastructure with an inspectable evidence trail. Details live in [hireability and evidence map](docs/HIREABILITY.md#what-this-proves); that page is not `READY`.
+Staffing readers: controlled evaluation infrastructure with an inspectable evidence trail.
 
 ## Current result
 
@@ -77,7 +75,6 @@ The test suite and retained fixtures use synthetic data. Real harness execution 
 - [Mobile supervision](docs/MOBILE-SUPERVISION.md) describes observe-and-respond experiments.
 - [Security policy](SECURITY.md) explains how to report vulnerabilities and what must stay out of retained evidence.
 - [Citation metadata](CITATION.cff) records software attribution fields; it is not an acceptance gate.
-- Keep exploring: [hireability and evidence map](docs/HIREABILITY.md) orients staffing readers; it is not an acceptance gate.
 - Keep exploring: [docs index](docs/README.md) orients readers to the `/docs` tree, tip-cite honesty, and stewardship links; it is not an acceptance gate.
 - Keep exploring: [notice and attribution](NOTICE.md) records copyright boundaries and stewardship limits; it is not an acceptance gate.
 - Keep exploring: [maintainers](MAINTAINERS.md) records project steward contact and boundaries; it is not an acceptance gate.
