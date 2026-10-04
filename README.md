@@ -2,21 +2,81 @@
 
 [![Highlander checks](https://github.com/T-Py-T/Highlander/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/T-Py-T/Highlander/actions/workflows/checks.yml)
 
-Highlander is a local gauntlet for comparing AI coding-agent harnesses under controlled models, tasks, and evaluators. It schedules repeatable matches, runs contenders in disposable environments, evaluates their changes, and retains the evidence needed to inspect each result.
+**A reproducible gauntlet for comparing AI coding-agent harnesses under controlled models, tasks, and evaluators.**
 
-Use Highlander when you need to compare the effect of harness tools, memory, permissions, orchestration, or recovery behavior without treating a model change as a harness result.
+Hand several coding agents the same model, the same repository, the same task, and the same time budget, and they still don't produce the same work. What's left over is the harness: its tools, memory, permissions, subagents, prompt handling, and how it recovers when something goes wrong. Highlander is built to measure that difference instead of guessing at it.
 
-**Stack:** Python 3.11+, `highlander` CLI, pre-commit gates, GitHub Actions checks; synthetic fixtures locally, disposable clean-room execution for real harness runs.
+A match freezes the model and everything else that could explain a result, runs each contender in its own disposable environment, scores the resulting repository with a deterministic evaluator, and keeps the transcript, tool ledger, diff, tests, and manifests so anyone can check the number against what actually happened.
 
-**Topics (GitHub / wiki discoverability):** AI coding agents, agent harness benchmarking, reproducible evaluation, developer tools, Python CLI, software engineering experiments, MLOps-adjacent tooling.
+- [Why this exists](#why-this-exists)
+- [How a match works](#how-a-match-works)
+- [Getting started](#getting-started)
+- [A worked example](#a-worked-example-reproduce-a-published-season)
+- [Running real harnesses](#running-real-harnesses)
+- [Project status](#project-status)
+- [Documentation](#documentation)
+- [What a result does not say](#what-a-result-does-not-say)
+- [Contributing](#contributing)
+- [License](#license)
 
-## What this proves
+## Why this exists
 
-Staffing readers: controlled evaluation infrastructure with an inspectable evidence trail.
+Most published agent comparisons change two things at once. A new tool wins, but it was also pointed at a stronger model, or a larger context window, or a different fallback route, and the write-up has no way to separate the two. The score ends up describing a bundle, not a harness.
 
-## Current result
+Highlander treats the model as a control, not a score dimension. Every contender in a primary match uses the same provider, the same exact model identifier, the same reasoning level, the same context and turn limits, and the same forbidden-fallback policy, against the same repository snapshot and the same unmodified task. If a harness cannot route the fixed model, that incompatibility is recorded as a finding and the run moves to a separate subscription-realism lane rather than being quietly ranked alongside the controlled results.
 
-The primary public baseline used GPT-5.4 with medium reasoning, nine unchanged HarnessBench coding and DevOps tasks, and three attempts per harness.
+The second half of the idea is that a score is worthless without its receipts. Every trial retains the artifacts needed to re-derive it, and the manifests are self-verifying, so a reader can confirm that a published bundle is the bundle that was produced.
+
+## How a match works
+
+1. A match spec fixes the repository commit, task, evaluator, model controls, limits, and permissions.
+2. Highlander prepares an isolated trial workspace for each contender.
+3. Every harness receives the identical task packet, byte for byte.
+4. Deterministic evaluators score the resulting repository state.
+5. Highlander retains the transcript, tool ledger, diff, tests, evaluator output, usage observations, and operator interactions.
+6. The leaderboard ranks only valid, comparable trials, and keeps invalid attempts visible rather than dropping them.
+
+Highlander's vocabulary for these pieces — match, trial, contender, control profile, arena, evidence bundle — is defined in [CONTEXT.md](CONTEXT.md), which is worth two minutes before reading a result directory.
+
+## Getting started
+
+You need Python 3.11 or newer and a clone of this repository. That is the whole list: Highlander's planning and inspection paths are standard library only, so there is nothing to install and nothing to configure before the commands below will work.
+
+```sh
+git clone https://github.com/T-Py-T/Highlander.git
+cd Highlander
+```
+
+Check the included fake match. `doctor` is a read-only preflight that reports each adapter's declared capabilities and whether the match is ready to run:
+
+```sh
+python3 tools/highlander.py doctor examples/matches/fake-t001.json
+```
+
+Then plan it. `run` is a dry run unless you pass `--execute`, so this prints the execution plan without creating worktrees, starting a harness, or making a model call:
+
+```sh
+python3 tools/highlander.py run examples/matches/fake-t001.json
+```
+
+The plan it prints is the thing a match is actually built from: the resolved base SHA, the task's byte length and SHA-256, the model route and reasoning level, per-trial worktree and evidence paths, and the redacted invocation for each contender. Read it, and you know exactly what a real run would do.
+
+The contenders in `examples/matches/fake-t001.json` are deterministic test doubles rather than real coding agents — one is scripted to succeed, one to fail — so the example is safe to run anywhere and costs nothing. `examples/matches/omp-opencode-low-reasoning.json` shows the same spec shape with two real harnesses and placeholder provider fields.
+
+Other subcommands are `status`, which reads retained match state, and `stop`, which ends an active tmux match session.
+
+If you want to run the full repository gate the way CI does, install `pre-commit` and run it. The nine hooks execute the unit tests, compile the sources, validate the example match, and re-verify all four retained evidence bundles:
+
+```sh
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install --upgrade pip pre-commit
+pre-commit run --all-files --verbose
+```
+
+## A worked example: reproduce a published season
+
+The primary published baseline is a season called `hb-devhard-hardcore-v1-gpt-5.4-medium-r1`: GPT-5.4 at medium reasoning, nine unmodified HarnessBench coding and DevOps tasks from [Qihoo360/harness-bench](https://github.com/Qihoo360/harness-bench), six harnesses, three attempts each. Its complete evidence bundle is checked into this repository, so you can verify it without running anything.
 
 ![GPT-5.4 hard coding and DevOps harness results](docs/assets/gpt54-hard-season-results.svg)
 
@@ -29,78 +89,89 @@ The primary public baseline used GPT-5.4 with medium reasoning, nine unchanged H
 | 5 | NanoBot 0.1.5.post3 | 0.1801 | 0.0775 | 27/27 |
 | — | Atomic 0.9.15 | 0.9158 valid-only | 0.0985 | 26/27; unranked |
 
-Five harnesses completed all 27 slots. Atomic retained one timeout and remains unranked. Codex CLI's 0.0055 lead over OpenCode is smaller than either harness's run-to-run dispersion, so this result is a version-bound observation rather than a universal winner claim.
+Codex CLI's 0.0055 lead over OpenCode is smaller than either harness's run-to-run dispersion. That is not a tiebreak; it means these two are indistinguishable at this sample size, and the table should be read as a version-bound observation rather than a verdict. Atomic retained one timeout, so it is shown with its valid-only score and no rank.
 
-See the [full leaderboard](results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1/leaderboard.md) for per-task means, attempt ranges, validity, and the retained evidence bundle.
-
-## Inspect a match safely
-
-Check the included fake match and print its execution plan:
+First, check that the bundle on disk is intact. This walks the manifest and hashes all 6,090 retained artifacts:
 
 ```sh
-python3 tools/highlander.py doctor examples/matches/fake-t001.json
-python3 tools/highlander.py run examples/matches/fake-t001.json
+python3 tools/hb-evidence.py verify-season results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1
 ```
 
-`run` is a dry run unless you pass `--execute`. The plan records the base commit, task hash, worktree and evidence paths, adapter versions, model controls, and redacted invocations. These commands do not create worktrees, start harnesses, or make model calls.
+```json
+{
+  "artifact_count": 6090,
+  "bundle": "<your-clone>/results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1",
+  "manifest_sha256": "a77fb20926e1134fa3d54167bb8630c1516c2a6c2d4599e3ab6c8787f7b3c1eb",
+  "season_status": "provisional",
+  "status": "verified"
+}
+```
 
-Run the complete local repository gate:
+Then rebuild the leaderboard yourself from the retained per-trial rows, rather than trusting the published table:
 
 ```sh
-pre-commit run --all-files --verbose
+cd results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1
+python3 ../../tools/hb-leaderboard.py \
+  --manifest season-manifest.json \
+  --results results.jsonl \
+  --format markdown
 ```
 
-The test suite and retained fixtures use synthetic data. Real harness execution is restricted to the disposable clean-room path and requires separate credentials and cost approval.
+The output matches the committed [`leaderboard.md`](results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1/leaderboard.md) line for line, including per-task means, attempt ranges, and invalid counts.
 
-## How a match works
+From there you can go down to a single attempt. Each directory under `trials/` holds that attempt's `diff.patch`, `result.json`, normalized usage, cleanup proof, the harness's own `native/` transcript and `tool-ledger.jsonl`, the control proof that the requested model was the model on the wire, and the final workspace. If you disagree with a score, the material to argue with is right there.
 
-1. A match fixes the repository commit, task, evaluator, model controls, limits, and permissions.
-2. Highlander prepares an isolated trial for each contender.
-3. Each harness receives the same visible task packet.
-4. Deterministic evaluators score the resulting repository state.
-5. Highlander retains the transcript, tool ledger, diff, tests, evaluator output, usage observations, and operator interactions.
-6. The leaderboard ranks only valid, comparable trials and keeps invalid attempts visible.
+Three more bundles are published the same way. `results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4` is the GPT-5.6 stratum, run on the same task matrix and deliberately *not* pooled with GPT-5.4 — the ordering is different, which is the point. `results/hb-devhard-043-gpt54-medium-host4-r1` is an earlier single-task pilot, and `results/fake-t002-protocol-r1` is a model-free protocol bundle that exists to exercise the evidence format itself. [`results/README.md`](results/README.md) explains what each one does and does not establish.
+
+## Running real harnesses
+
+Everything above runs on a laptop with no credentials. Executing actual coding agents does not, and the requirements are deliberately heavy:
+
+- **A container runtime.** Real trials run in a disposable OCI clean room: immutable images, read-only container root, dropped capabilities, an independent clone with `origin` removed, a fresh home directory, and no host credentials or configuration mounted. You build the images locally with `python3 tools/clean-room.py --runtime podman build` (Docker works too).
+- **Your own provider credentials and cost approval.** Highlander brokers an authentication-only seed into each trial; it does not ship or proxy any account. Real runs make paid model calls, and `--execute` is required before a single one happens.
+- **Patience with the gates.** A run that changes the model, tier, context budget, or fallback route is not a harness result, and the runner is built to refuse it rather than publish it.
+
+[docs/CLEAN-ROOM.md](docs/CLEAN-ROOM.md) documents the full setup, including how each harness image is pinned and checksum-verified, and [docs/SEASON-RUNBOOK.md](docs/SEASON-RUNBOOK.md) covers qualification, execution, export, and verification for a complete season.
+
+## Project status
+
+Highlander is early and run by a single maintainer. Being specific about that:
+
+- There is **no hosted demo and no web leaderboard**. The results in this repository are read as files, and the screenshot above is a static SVG committed to `docs/assets/`.
+- There are **no published external users** of the project, and no published third-party reproduction of a season.
+- Both published seasons are marked **provisional**. Their process and combined scores are null because no process judge has run, and native token and cost accounting is incomplete wherever providers do not expose comparable fields.
+- Every published run so far was produced by the maintainer. The real-harness path has not been reported working on anyone else's machine, so if you try it and it breaks, that is useful information — please open an issue.
+
+[docs/OPEN_PROBLEMS.md](docs/OPEN_PROBLEMS.md) is a longer and blunter version of this list.
 
 ## Documentation
 
-- [Contributing](CONTRIBUTING.md) covers local gates, PR expectations, evidence boundaries, and tip-cites.
-- [Gauntlet design](docs/GAUNTLET.md) defines the comparison rules and scoring model.
-- [Match runner](docs/MATCH-RUNNER.md) describes the CLI, state machine, adapters, and tmux workflow.
-- [Clean-room execution](docs/CLEAN-ROOM.md) covers disposable images, isolated homes, authentication seeds, and cleanup.
-- [Leaderboard contract](docs/LEADERBOARD.md) defines ranking, reliability, and invalid-run handling.
-- [Season runbook](docs/SEASON-RUNBOOK.md) gives the qualification, execution, export, and verification steps.
-- [Evidence contract](docs/EVIDENCE.md) defines public bundles, redaction, and manifest verification.
-- [Open problems inventory](docs/OPEN_PROBLEMS.md) records unresolved scope, execution, evidence, and stewardship questions; it is not an acceptance gate.
-- [Architecture decision records](docs/adr/README.md) capture planning decisions and boundaries; they are not an acceptance gate.
-- [Mobile supervision](docs/MOBILE-SUPERVISION.md) describes observe-and-respond experiments.
-- [Security policy](SECURITY.md) explains how to report vulnerabilities and what must stay out of retained evidence.
-- [Citation metadata](CITATION.cff) records software attribution fields; it is not an acceptance gate.
-- Keep exploring: [docs index](docs/README.md) orients readers to the `/docs` tree, tip-cite honesty, and stewardship links; it is not an acceptance gate.
-- Keep exploring: [notice and attribution](NOTICE.md) records copyright boundaries and stewardship limits; it is not an acceptance gate.
-- Keep exploring: [maintainers](MAINTAINERS.md) records project steward contact and boundaries; it is not an acceptance gate.
+| Document | What it covers |
+|---|---|
+| [CONTEXT.md](CONTEXT.md) | The vocabulary: match, trial, contender, control profile, arena, evidence bundle |
+| [Gauntlet design](docs/GAUNTLET.md) | Comparison rules, match lanes, hard gates, and the scoring model |
+| [Match runner](docs/MATCH-RUNNER.md) | CLI, state machine, adapters, and the tmux workflow |
+| [Clean-room execution](docs/CLEAN-ROOM.md) | Disposable images, isolated homes, authentication seeds, and cleanup |
+| [Leaderboard contract](docs/LEADERBOARD.md) | Ranking, reliability, and how invalid runs are handled |
+| [Season runbook](docs/SEASON-RUNBOOK.md) | Qualification, execution, export, and verification |
+| [Evidence contract](docs/EVIDENCE.md) | Public bundles, redaction, and manifest verification |
+| [Open problems](docs/OPEN_PROBLEMS.md) | Unresolved scope, execution, evidence, and stewardship questions |
+| [Decision records](docs/adr/README.md) | Why the model is the control, why the match engine is filesystem-backed |
+| [Mobile supervision](docs/MOBILE-SUPERVISION.md) | Observe-and-respond experiments |
+| [Security policy](SECURITY.md) | Reporting vulnerabilities, and what must never enter retained evidence |
 
-## Limits
+## What a result does not say
 
-- Results apply to the named harness versions, model route, task pack, controls, and run period.
-- Native token and cost fields are not comparable across all harnesses because providers expose different accounting data.
+- A result applies to the named harness versions, model route, task pack, controls, and run period. It is not a claim about a harness in general or about its next release.
+- Native token and cost figures are not comparable across all harnesses, because providers expose different accounting data. Missing figures stay missing rather than being estimated.
 - HarnessBench inputs, provider software, and captured third-party output keep their original licenses and terms.
-- Personal plugins, extensions, rules, memory, MCP servers, and operator steering are excluded from the primary controlled lane.
-- Desktop applications are outside the primary lane.
+- Personal plugins, extensions, rules, memory, MCP servers, and operator steering are excluded from the primary controlled lane, so a result does not describe a harness as you have configured it.
+- Desktop applications are out of scope; the primary lane requires a usable CLI.
 
-## Tip-cite bank
+## Contributing
 
-Record merged work as:
-
-```text
-T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>
-```
-
-`<8-char-main-tip>` is the first eight hexadecimal characters of the merge commit on `main`; `<number>` is the actual pull-request number. Resolve the cite against `main`, never a branch tip or an invented or reused value. A tip-cite records provenance only and never makes blocked, incomplete, or untested work `READY`. See [Contributing](CONTRIBUTING.md#tip-cite-bank) for the contributor procedure.
+Issues and pull requests are welcome. [CONTRIBUTING.md](CONTRIBUTING.md) covers local setup, the pre-commit gate to run before opening a PR, and the evidence boundaries — the short version is to keep changes small, report the commands you actually ran, and leave invalid or blocked outcomes visible instead of tidying them away. [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) applies to everyone taking part, and [SUPPORT.md](SUPPORT.md) is the place to start for questions.
 
 ## License
 
-Original Highlander code, tests, schemas, and documentation are available under the [MIT License](LICENSE). Third-party inputs and captured outputs remain under their original terms. See [third-party notices](THIRD_PARTY_NOTICES.md).
-
-## Honesty footer
-
-This documentation reports inspectable evidence and version-bound observations; it does not establish production readiness, a universal winner, or completion when work is open, blocked, invalid, or incomplete. A tip-cite identifies a revision only, never `READY`: use `T-Py-T/Highlander <8-char-main-tip> PR#<number>`, where the tip is the first eight hexadecimal characters of the merge commit on `main` and the number is the actual pull request. Resolve it against `main`, never a branch tip, invented value, or reused cite.
+Original Highlander code, tests, schemas, and documentation are released under the [MIT License](LICENSE). Third-party inputs and captured harness output remain under their original terms; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [NOTICE.md](NOTICE.md).
