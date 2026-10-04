@@ -5,8 +5,7 @@ stewardship and future seasons, not an acceptance gate, scorecard, or claim that
 any item is solved. An open, blocked, or untested item is not `READY`.
 
 See [Contributing](../CONTRIBUTING.md) for contributor setup, evidence
-boundaries, and tip-cite rules. Staffing-oriented project context is in
-[What this proves](../README.md#what-this-proves).
+boundaries, and tip-cite rules.
 
 ## Claim scope and comparison
 
