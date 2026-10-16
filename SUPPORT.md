@@ -2,12 +2,11 @@
 
 Use this page for support questions, troubleshooting context, and pointers to the repository's documented limits. Keep reports reproducible: include the command or workflow, the observed result, and the relevant artifact or path when available.
 
-## Tip-cite
+## Where to ask
 
-Tip-cite: `f882e609 PR#48` — current `main` merge tip used as the documentation anchor for this page.
-
-A tip-cite records provenance only. It is not a score, an acceptance gate, or a `READY` signal. Do not invent scores or mark untested, blocked, or incomplete work `READY`; support notes do not make work `READY`.
+- Questions and bug reports: open a [GitHub issue](https://github.com/T-Py-T/Highlander/issues) using the bug report or feature request template.
+- Security problems: follow the [Security policy](SECURITY.md) instead of opening a public issue.
 
 ## Open problems
 
-See the [open-problems inventory](docs/OPEN_PROBLEMS.md) for unresolved scope, execution, evidence, and stewardship questions. That inventory is a pointer for context, not an acceptance gate.
+See the [open-problems inventory](docs/OPEN_PROBLEMS.md) for unresolved scope, execution, and evidence questions.

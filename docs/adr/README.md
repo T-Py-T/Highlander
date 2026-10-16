@@ -27,7 +27,6 @@ T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>
 
 The cited tip is exactly the first eight characters of the merge commit's hexadecimal object ID (`[0-9a-f]{8}`), and `PR#<number>` is the actual pull-request number. Resolve both only after the pull request exists and is merged. Never use a branch tip, invent or pad a tip, invent a PR number, or reuse an older cite. A tip-cite records provenance only; it never establishes `READY`.
 
-See [Contributing](../../CONTRIBUTING.md#tip-cite-bank) and the [open problems tip-cite protocol](../OPEN_PROBLEMS.md#tip-cite-protocol) for the shared steward procedure.
 
 ## Baseline provenance
 
