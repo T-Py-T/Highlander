@@ -2,7 +2,7 @@
 
 Keep changes small, reviewable, and honest about what they establish. Highlander results are bound to the named harness versions, model route, task pack, controls, and run period; do not present a version-bound observation as a universal winner.
 
-Before making claims about scope, execution, evidence, or stewardship, review the [open problems inventory](docs/OPEN_PROBLEMS.md). For vulnerability reports and evidence-safe disclosure, see [Security policy](SECURITY.md).
+Before making claims about scope, execution, or evidence, review the [open problems inventory](docs/OPEN_PROBLEMS.md). For vulnerability reports and evidence-safe disclosure, see [Security policy](SECURITY.md).
 
 ## Local setup and gate
 
@@ -34,16 +34,6 @@ pre-commit run --all-files --verbose
 - Keep real credentials, private data, and unapproved live execution out of commits and evidence (see [Security policy](SECURITY.md#keep-reports-and-evidence-safe)).
 - Preserve invalid, blocked, and incomplete outcomes rather than hiding them.
 
-## Evidence is not READY
+## Evidence
 
-Evidence is the inspectable record of what happened: commands, diffs, tests, evaluator output, manifests, and paths to retained artifacts. Evidence may show an invalid, blocked, or incomplete attempt. `READY` is a separate status that requires the applicable checks and acceptance criteria to pass. Untested or blocked work is never `READY`, and a confident summary is not evidence by itself.
-
-## Tip-cite bank
-
-Use this format when recording a merged result:
-
-```text
-T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>
-```
-
-Use the first eight hexadecimal characters of the merge commit on `main` and the actual pull-request number only after the pull request is merged. See the [open problems tip-cite protocol](docs/OPEN_PROBLEMS.md#tip-cite-protocol) for the shared steward procedure. A tip-cite records provenance only and is never `READY` by itself.
+Evidence is the inspectable record of what happened: commands, diffs, tests, evaluator output, manifests, and paths to retained artifacts. Evidence may show an invalid, blocked, or incomplete attempt; keep those outcomes visible. A change is done when the applicable checks and acceptance criteria pass, and a confident summary is not evidence by itself.

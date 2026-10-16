@@ -18,12 +18,6 @@ Explain the intended behavior, constraints, and acceptance criteria.
 
 Link tests, documentation checks, retained artifacts, or other inspectable evidence. State when evidence is missing, blocked, or untested; do not fill gaps with a confident summary.
 
-## Tip-cite
+## Alternatives
 
-`T-Py-T/Highlander <8-char-main-tip> PR#<number> — <short description>`
-
-Use the first eight hexadecimal characters of the merge commit on `main` and the actual pull-request number. Resolve the cite against `main`; never use a branch tip, invent a tip, or reuse an older one.
-
-## Status
-
-A tip-cite records provenance only; it does not make this issue `READY`. `READY` requires the applicable checks and acceptance criteria to pass. Untested, blocked, or incomplete work must not be marked `READY`.
+Other approaches you considered, if any.
