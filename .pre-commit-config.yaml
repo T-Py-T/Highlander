@@ -1,6 +1,11 @@
 minimum_pre_commit_version: "4.0.0"
 
 repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.22.1
+    hooks:
+      - id: gitleaks
+
   - repo: local
     hooks:
       - id: highlander-unit-tests

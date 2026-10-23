@@ -1,11 +1,23 @@
 name: Highlander checks
 
 on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
   push:
     branches:
       - main
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -30,23 +42,5 @@ jobs:
           python --version
           python -c 'import sys; assert sys.version_info >= (3, 11)'
 
-      - name: Run Highlander unit tests
-        run: python -m unittest discover -s tests
-
-      - name: Validate MatchRunner source and example
-        run: |
-          python -m compileall -q highlander tools
-          python tools/highlander.py doctor examples/matches/fake-t001.json
-
-      - name: Run fixture tests
-        run: python -m unittest discover -s fixtures/job-runner -p 'test_*.py'
-
-      - name: Validate runner syntax
-        run: bash -n tools/prepare-run.sh tools/run-act-local.sh containers/base/highlander-entrypoint
-
-      - name: Verify retained evidence
-        run: |
-          python tools/evidence-bundle.py verify results/fake-t002-protocol-r1
-          python tools/hb-evidence.py verify results/hb-devhard-043-gpt54-medium-host4-r1
-          python tools/hb-evidence.py verify-season results/hb-devhard-hardcore-v1-gpt-5.6-luna-medium-r4
-          python tools/hb-evidence.py verify-season results/hb-devhard-hardcore-v1-gpt-5.4-medium-r1
+      - name: Run local CI checks
+        run: bash scripts/ci-local.sh
